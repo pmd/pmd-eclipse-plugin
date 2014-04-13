@@ -137,6 +137,7 @@ public class PMDGenerateASTAction extends AbstractUIAction implements IRunnableW
         ByteArrayInputStream astInputStream = null;
         try {
             JavaParser parser = new JavaParser(new JavaCharStream(file.getContents()));
+            parser.setJdkVersion(Integer.MAX_VALUE);
             ASTCompilationUnit compilationUnit = parser.CompilationUnit();
             byteArrayOutputStream = new ByteArrayOutputStream();
             IAstWriter astWriter = PMDPlugin.getDefault().getAstWriter();
