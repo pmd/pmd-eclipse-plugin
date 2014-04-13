@@ -17,9 +17,11 @@ import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.ui.model.FileRecord;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
 import net.sourceforge.pmd.eclipse.ui.views.ast.ASTUtil;
+import net.sourceforge.pmd.lang.dfa.DFAGraphMethod;
+import net.sourceforge.pmd.lang.dfa.DFAGraphRule;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
+import net.sourceforge.pmd.lang.java.dfa.JavaDFAGraphRule;
 import net.sourceforge.pmd.util.StringUtil;
-import net.sourceforge.pmd.util.designer.DFAGraphRule;
 
 import org.eclipse.core.resources.IResource;
 import org.eclipse.jface.resource.ColorRegistry;
@@ -296,7 +298,7 @@ public abstract class AbstractStructureInspectorPage extends Page implements IPr
 		// with the DFAGraphRule to get the Methods;
 		// PMD needs this Resource as a String
 		try {
-			DFAGraphRule dfaGraphRule = new DFAGraphRule();
+			DFAGraphRule dfaGraphRule = new JavaDFAGraphRule();
 			RuleSet rs = new RuleSet();
 			rs.addRule(dfaGraphRule);
 	
@@ -314,7 +316,11 @@ public abstract class AbstractStructureInspectorPage extends Page implements IPr
 			new SourceCodeProcessor(new PMDConfiguration()).processSourceCode(input, rSets, ctx);
 			
 			// the Rule then can give us the Methods
-			methodList.addAll(dfaGraphRule.getMethods());
+			for (DFAGraphMethod m : dfaGraphRule.getMethods()) {
+			    if (m instanceof ASTMethodDeclaration) {
+			        methodList.add((ASTMethodDeclaration)m);
+			    }
+			}
 			Collections.sort(methodList, ASTUtil.MethodComparator);
 		} catch (PMDException pmde) {
 			logError(StringKeys.ERROR_PMD_EXCEPTION + toString(), pmde);

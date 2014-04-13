@@ -6,10 +6,13 @@ Eclipse Update Site: <https://sourceforge.net/projects/pmd/files/pmd-eclipse/upd
 
 ## ????: 4.0.3.v????
 
+* Updated PMD to 5.1.0
 * Support workspace-relative path in ruleSetFile property ([pull request #36], [feature request #1133])
+* Update Updatesite for Kepler and PMD 5.1.0 ([feature request #1179])
 
 [pull request #36]: https://github.com/pmd/pmd/pull/36
-[feature request #1133]: http://sourceforge.net/p/pmd/bugs/1133/
+[feature request #1133]: https://sourceforge.net/p/pmd/bugs/1133/
+[feature request #1179]: https://sourceforge.net/p/pmd/bugs/1179/
 
 ## 31-October-2013: 4.0.2.v20131031-1124
 
