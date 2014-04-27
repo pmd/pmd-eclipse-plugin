@@ -6,7 +6,7 @@ Eclipse Update Site: <https://sourceforge.net/projects/pmd/files/pmd-eclipse/upd
 
 ## ????: 4.0.3.v????
 
-* Updated PMD to 5.1.0
+* Updated PMD to 5.1.1
 * Support workspace-relative path in ruleSetFile property ([pull request #36], [feature request #1133])
 * Update Updatesite for Kepler and PMD 5.1.0 ([feature request #1179])
 * "Generate Abstract Syntax Tree" always run in JDK 1.4 mode ([bug #1174])
