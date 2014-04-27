@@ -64,14 +64,14 @@ Releasing and updating the official eclipse update site
     vim ReleaseNotes.md
     # Commit and tag
     git commit -a -m "Prepare release pmd-eclipse-plugin $VERSION.$BUILDQUALIFIER"
-    git tag pmd-eclipse-plugin/$VERSION.$BUILDQUALIFIER
+    git tag $VERSION.$BUILDQUALIFIER
     # Build the plugin
     mvn clean install -Ppublish-to-update-site -Declipse.updatesite.path=$UPDATE_SITE_MIRROR
 
     # Test the new update site with eclipse - it should contain the new version
     # If everything is fine, push the local changes
     git push origin master
-    git push origin tag pmd-eclipse-plugin/$VERSION.$BUILDQUALIFIER
+    git push origin tag $VERSION.$BUILDQUALIFIER
     # upload the official update site
     rsync -avhP $UPDATE_SITE_MIRROR $SFUSER@web.sourceforge.net:/home/frs/project/pmd/pmd-eclipse/update-site/
     # Cleanup the release branch which was only needed during the release process
@@ -86,7 +86,7 @@ You can use the following template:
     A new PMD for Eclipse plugin version has been released.
     It is available via the update site: <https://sourceforge.net/projects/pmd/files/pmd-eclipse/update-site/>
     
-    * Release Notes: <https://github.com/pmd/pmd/blob/pmd-eclipse-plugin/$VERSION/pmd-eclipse-plugin/ReleaseNotes.md>
+    * Release Notes: <https://github.com/pmd/pmd-eclipse-plugin/blob/$VERSION.$BUILDQUALIFIER/ReleaseNotes.md>
 
 
 
