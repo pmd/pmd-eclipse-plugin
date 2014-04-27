@@ -4,7 +4,9 @@ Installation instructions: <http://pmd.sourceforge.net/eclipse/>
 
 Eclipse Update Site: <https://sourceforge.net/projects/pmd/files/pmd-eclipse/update-site/>
 
-## ????: 4.0.3.v????
+## ????: 4.0.4.v????
+
+## 27-April-2014: 4.0.3.v20140427-0831
 
 * Updated PMD to 5.1.1
 * Support workspace-relative path in ruleSetFile property ([pull request #36], [feature request #1133])
