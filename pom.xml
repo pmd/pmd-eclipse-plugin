@@ -14,8 +14,7 @@
   </modules>
 
   <properties>
-    <tycho.version>0.18.1</tycho.version>
-    <tycho-extras.version>0.18.1</tycho-extras.version>
+    <tycho.version>0.20.0</tycho.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <pmd.version>5.1.2</pmd.version>
   </properties>
@@ -140,12 +139,12 @@
         <plugin>
           <groupId>org.eclipse.tycho.extras</groupId>
           <artifactId>tycho-source-feature-plugin</artifactId>
-          <version>${tycho-extras.version}</version>
+          <version>${tycho.version}</version>
         </plugin>
         <plugin>
           <groupId>org.eclipse.tycho.extras</groupId>
           <artifactId>tycho-custom-bundle-plugin</artifactId>
-          <version>${tycho-extras.version}</version>
+          <version>${tycho.version}</version>
         </plugin>
         <plugin>
           <groupId>org.eclipse.tycho</groupId>
@@ -164,7 +163,7 @@
         <plugin>
           <groupId>org.eclipse.tycho.extras</groupId>
           <artifactId>tycho-p2-extras-plugin</artifactId>
-          <version>${tycho-extras.version}</version>
+          <version>${tycho.version}</version>
         </plugin>
       </plugins>
     </pluginManagement>
