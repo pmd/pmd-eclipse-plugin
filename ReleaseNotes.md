@@ -6,10 +6,8 @@ Eclipse Update Site: <https://sourceforge.net/projects/pmd/files/pmd-eclipse/upd
 
 ## ????: 4.0.4.v????
 
-* Fix packaging ([pull request #1], [bug #1129])
-
-[pull request #1]: https://github.com/pmd/pmd-eclipse-plugin/pull/1
-[bug #1129]: https://sourceforge.net/p/pmd/bugs/1129/
+* Updated PMD to 5.1.2
+* Fix packaging ([pull request #1](https://github.com/pmd/pmd-eclipse-plugin/pull/1), [bug #1129](https://sourceforge.net/p/pmd/bugs/1129/))
 
 
 ## 27-April-2014: 4.0.3.v20140427-0831
