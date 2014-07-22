@@ -23,6 +23,12 @@
         <groupId>org.codehaus.castor</groupId>
         <artifactId>castor</artifactId>
         <version>1.1.2.1</version>
+        <exclusions>
+            <exclusion>
+                <artifactId>xerces</artifactId>
+                <groupId>xerces</groupId>
+            </exclusion>
+        </exclusions>
     </dependency>
   </dependencies>
 
