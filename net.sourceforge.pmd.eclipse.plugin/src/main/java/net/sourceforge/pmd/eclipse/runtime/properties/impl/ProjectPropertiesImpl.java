@@ -233,7 +233,7 @@ public class ProjectPropertiesImpl implements IProjectProperties {
         log.debug("Set working set for project " + project.getName() + ": "
                 + (projectWorkingSet == null ? "none" : projectWorkingSet.getName()));
 
-        needRebuild |= projectWorkingSet == null ? projectWorkingSet != null:!this.projectWorkingSet.equals(projectWorkingSet);
+        needRebuild |= projectWorkingSet == null ? this.projectWorkingSet != null:!projectWorkingSet.equals(this.projectWorkingSet);
         this.projectWorkingSet = projectWorkingSet;
     }
 
