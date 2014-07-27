@@ -53,7 +53,6 @@ import org.eclipse.ui.IWorkingSet;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -62,7 +61,6 @@ import org.junit.Test;
  * @author Philippe Herlin
  * 
  */
-@Ignore("doesn't work - workspace is closed")
 public class ProjectPropertiesModelTest {
   private IProject testProject;
   private RuleSet initialPluginRuleSet;

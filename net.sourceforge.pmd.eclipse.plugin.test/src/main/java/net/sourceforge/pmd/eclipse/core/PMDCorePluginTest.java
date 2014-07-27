@@ -42,7 +42,6 @@ import net.sourceforge.pmd.RuleSetNotFoundException;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -51,7 +50,6 @@ import org.junit.Test;
  * @author Philippe Herlin
  * 
  */
-@Ignore("Needs a OSGI context")
 public class PMDCorePluginTest {
 
   /**

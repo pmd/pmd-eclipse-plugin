@@ -58,7 +58,7 @@ import org.junit.Test;
  * @author Philippe Herlin
  * 
  */
-@Ignore("doesn't work - workspace is closed")
+//@Ignore("doesn't work - workspace is closed")
 public class RenderReportCmdTest {
   private IProject testProject;
 

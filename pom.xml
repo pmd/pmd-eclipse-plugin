@@ -8,8 +8,8 @@
   <modules>
     <module>net.sourceforge.pmd.eclipse</module>
     <module>net.sourceforge.pmd.eclipse.plugin</module>
-    <module>net.sourceforge.pmd.eclipse.plugin.test</module>
     <module>net.sourceforge.pmd.eclipse.plugin.test.fragment</module>
+    <module>net.sourceforge.pmd.eclipse.plugin.test</module>
     <module>net.sourceforge.pmd.eclipse.p2updatesite</module>
   </modules>
 

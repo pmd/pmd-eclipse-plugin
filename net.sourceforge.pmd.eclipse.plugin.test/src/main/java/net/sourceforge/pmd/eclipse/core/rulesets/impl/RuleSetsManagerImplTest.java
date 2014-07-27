@@ -136,9 +136,7 @@ public class RuleSetsManagerImplTest {
   @Test
   public void testWriteToXml() throws PMDCoreException, UnsupportedEncodingException, IOException {
     ByteArrayOutputStream out = null;
-    final InputStream in = new FileInputStream("./test/testRuleSetsManager.rulesets");
-    if (in == null)
-      throw new IllegalStateException("The test file testRuleSetsManager.rulesets cannot be found. The test cannot be performed.");
+    final InputStream in = new FileInputStream("./src/main/resources/testRuleSetsManager.rulesets");
 
     final byte[] bytes = new byte[in.available()];
     in.read(bytes);

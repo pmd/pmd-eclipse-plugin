@@ -56,7 +56,7 @@ import org.junit.Test;
  * @author Philippe Herlin
  * 
  */
-@Ignore("doesn't work - workspace is closed")
+//@Ignore("doesn't work - workspace is closed")
 public class ReviewCmdTest {
   private IProject testProject;
 
