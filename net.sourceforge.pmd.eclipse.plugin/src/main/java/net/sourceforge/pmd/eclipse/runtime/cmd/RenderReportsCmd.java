@@ -101,7 +101,9 @@ public class RenderReportsCmd extends AbstractProjectCommand {
      * @param reportFile the file name where the report will be saved
      */
     public void registerRenderer(Renderer renderer, String reportFile) {
-        renderers.put(reportFile, renderer);
+        if (reportFile != null && renderer != null) {
+            renderers.put(reportFile, renderer);
+        }
     }
 
     /**
