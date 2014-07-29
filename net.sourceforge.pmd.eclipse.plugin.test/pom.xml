@@ -20,15 +20,15 @@
         <configuration>
 <!--           <useUIHarness>true</useUIHarness> -->
             <testFailureIgnore>true</testFailureIgnore>
+            <dependencies>
+                <dependency>
+                    <type>eclipse-plugin</type>
+                    <groupId>net.sourceforge.pmd</groupId>
+                    <artifactId>net.sourceforge.pmd.eclipse.plugin.test.fragment</artifactId>
+                    <version>0.0.0</version>
+                </dependency>
+            </dependencies>
         </configuration>
-        <dependencies>
-            <dependency>
-                <type>eclipse-plugin</type>
-                <groupId>net.sourceforge.pmd</groupId>
-                <artifactId>net.sourceforge.pmd.eclipse.plugin.test.fragment</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-        </dependencies>
       </plugin>
     </plugins>
   </build>
