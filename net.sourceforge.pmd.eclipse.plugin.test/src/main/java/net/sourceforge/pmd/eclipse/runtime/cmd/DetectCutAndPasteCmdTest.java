@@ -64,7 +64,6 @@ public class DetectCutAndPasteCmdTest {
    */
   @Before
   public void setUp() throws Exception {
-
     // 1. Create a Java project
     this.testProject = EclipseUtils.createJavaProject("PMDTestProject");
     Assert.assertTrue("A test project cannot be created; the tests cannot be performed.",
@@ -111,10 +110,10 @@ public class DetectCutAndPasteCmdTest {
     cmd.join();
 
     final IFolder reportFolder = this.testProject.getFolder(PMDRuntimeConstants.REPORT_FOLDER);
-    Assert.assertTrue(reportFolder.exists());
+    Assert.assertTrue("The report folder doesn't exist: " + reportFolder, reportFolder.exists());
 
     final IFile reportFile = reportFolder.getFile(PMDRuntimeConstants.SIMPLE_CPDREPORT_NAME);
-    Assert.assertTrue(reportFile.exists());
+    Assert.assertTrue("The report file doesn't exist: " + reportFile, reportFile.exists());
 
     if (reportFile.exists()) {
       reportFile.delete(true, false, null);
