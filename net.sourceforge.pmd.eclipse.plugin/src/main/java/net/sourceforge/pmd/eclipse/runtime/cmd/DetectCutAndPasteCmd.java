@@ -271,16 +271,14 @@ public class DetectCutAndPasteCmd extends AbstractProjectCommand {
         return cpd;
     }
 
-	private CPD newCPD() {
-		CPDConfiguration config = new CPDConfiguration(minTileSize, language, System.getProperty("file.encoding"));
-// The following lines are needed starting with PMD 5.1.0-SNAPSHOT.
-//		CPDConfiguration config = new CPDConfiguration();
-//		config.setMinimumTileSize(minTileSize);
-//		config.setLanguage(language);
-//		config.setEncoding(System.getProperty("file.encoding"));
+    private CPD newCPD() {
+        CPDConfiguration config = new CPDConfiguration();
+        config.setMinimumTileSize(minTileSize);
+        config.setLanguage(language);
+        config.setEncoding(System.getProperty("file.encoding"));
         return new CPD(config);
-	}
-    
+    }
+
     /**
      * Renders a report using the matches of the CPD. Creates a report folder
      * and report file.
