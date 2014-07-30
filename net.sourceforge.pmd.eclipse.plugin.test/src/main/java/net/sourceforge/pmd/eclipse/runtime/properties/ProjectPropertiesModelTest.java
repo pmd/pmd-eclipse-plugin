@@ -182,7 +182,9 @@ public class ProjectPropertiesModelTest {
 
     final IPreferencesManager pmgr = PMDPlugin.getDefault().getPreferencesManager();
 
-    Assert.assertSame("A new project is not set the plugin ruleset", model.getProjectRuleSet(), pmgr.getRuleSet());
+    Assert.assertTrue("A new project is not created with the default plugin ruleset",
+            EclipseUtils.assertRuleSetEquals(model.getProjectRuleSet().getRules(), pmgr.getRuleSet().getRules(),
+            System.out));
   }
 
   /**
