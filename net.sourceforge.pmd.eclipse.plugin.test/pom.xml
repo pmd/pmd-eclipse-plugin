@@ -18,7 +18,7 @@
         <groupId>org.eclipse.tycho</groupId>
         <artifactId>tycho-surefire-plugin</artifactId>
         <configuration>
-<!--           <useUIHarness>true</useUIHarness> -->
+            <useUIHarness>true</useUIHarness>
             <testFailureIgnore>true</testFailureIgnore>
             <dependencies>
                 <dependency>
