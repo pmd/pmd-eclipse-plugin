@@ -360,6 +360,9 @@ public class ProjectPropertiesImpl implements IProjectProperties {
     private RuleSet cloneRuleSet() {
         final RuleSet clonedRuleSet = new RuleSet();
 
+        clonedRuleSet.setName(projectRuleSet.getName());
+        clonedRuleSet.setDescription(projectRuleSet.getDescription());
+
         for (Rule rule: projectRuleSet.getRules()) {
             clonedRuleSet.addRule(rule);
         }

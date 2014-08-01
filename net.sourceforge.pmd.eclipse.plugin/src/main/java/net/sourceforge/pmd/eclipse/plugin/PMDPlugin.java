@@ -48,6 +48,8 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceChangeEvent;
+import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
@@ -210,6 +212,16 @@ public class PMDPlugin extends AbstractUIPlugin {
         configureLogs(prefs);
         registerAdditionalRuleSets();
         fileChangeListenerEnabled(prefs.isCheckAfterSaveEnabled());
+
+        // if a project is deleted, remove the cached project properties
+        ResourcesPlugin.getWorkspace().addResourceChangeListener(new IResourceChangeListener() {
+            @Override
+            public void resourceChanged(IResourceChangeEvent arg0) {
+                if (arg0.getType() == IResourceChangeEvent.PRE_DELETE && arg0.getResource() instanceof IProject) {
+                    getPropertiesManager().removeProjectProperties((IProject)arg0.getResource());
+                }
+            }
+        });
 
         VERSION = context.getBundle().getHeaders().get("Bundle-Version");
 	}

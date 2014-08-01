@@ -142,6 +142,11 @@ public class ProjectPropertiesManagerImpl implements IProjectPropertiesManager {
 
     }
 
+    @Override
+    public void removeProjectProperties(IProject project) {
+        this.projectsProperties.remove(project);
+    }
+
     /**
      * Load the project rule set from the project ruleset
      *

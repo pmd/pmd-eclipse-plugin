@@ -57,4 +57,10 @@ public interface IProjectPropertiesManager {
      * @throws PropertiesException
      */
     void storeProjectProperties(IProjectProperties projectProperties) throws PropertiesException;
+
+    /**
+     * Remove a project when it is deleted.
+     * @param project the project
+     */
+    void removeProjectProperties(IProject project);
 }

@@ -417,8 +417,12 @@ public class ProjectPropertiesModelTest {
     final boolean b = model.isRuleSetStoredInProject();
     final IFile file = this.testProject.getFile(".ruleset");
     final RuleSet projectRuleSet = factory.createRuleSet(file.getLocation().toOSString());
+    RuleSet pRuleSet = model.getProjectRuleSet();
     Assert.assertTrue("the ruleset should be stored in the project", b);
-    Assert.assertEquals("The project ruleset must be equals to the one found in the project", model.getProjectRuleSet(), projectRuleSet);
+    Assert.assertTrue("The project ruleset must be equal to the one found in the project",
+            EclipseUtils.assertRuleSetEquals(pRuleSet.getRules(), projectRuleSet.getRules(), System.out));
+    // TODO: this assert does not work, as RuleSetReference doesn't implement equals
+    //Assert.assertEquals("The project ruleset must be equals to the one found in the project", pRuleSet, projectRuleSet);
   }
 
   private void dumpRuleSet(final RuleSet ruleSet) {
