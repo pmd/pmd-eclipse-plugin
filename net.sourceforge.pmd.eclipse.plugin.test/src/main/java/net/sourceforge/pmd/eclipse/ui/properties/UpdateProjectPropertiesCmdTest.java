@@ -24,7 +24,7 @@ public class UpdateProjectPropertiesCmdTest {
   @Before
   public void setUp() throws Exception {
     // 1. Create a Java project
-    this.testProject = EclipseUtils.createJavaProject("PMDTestProject2");
+    this.testProject = EclipseUtils.createJavaProject("PMDTestProject");
     Assert.assertTrue("A test project cannot be created; the tests cannot be performed.",
         this.testProject != null && this.testProject.exists() && this.testProject.isAccessible());
   }
@@ -60,6 +60,7 @@ public class UpdateProjectPropertiesCmdTest {
     RuleSet projectRuleSet = model.getProjectRuleSet();
     Assert.assertEquals("The project ruleset is not equal to the plugin ruleset", PMDPlugin.getDefault().getPreferencesManager()
         .getRuleSet().getRules(), projectRuleSet.getRules());
+    int ruleCountBefore = projectRuleSet.getRules().size();
 
     // 2. remove the first rule (keep its name for assertion)
     final RuleSet newRuleSet = new RuleSet();
@@ -78,7 +79,12 @@ public class UpdateProjectPropertiesCmdTest {
 
     // 3. test the rule has correctly been removed
     projectRuleSet = model.getProjectRuleSet();
-    Assert.assertNull("The rule has not been removed!", projectRuleSet.getRuleByName(removedRule.getName()));
+    Assert.assertEquals("Rule count should be 1 less", ruleCountBefore - 1, projectRuleSet.getRules().size());
+    for (Rule r : projectRuleSet.getRules()) {
+        if (r.getName().equals(removedRule.getName()) && r.getLanguage() == removedRule.getLanguage()) {
+            Assert.fail("The rule has not been removed!");
+        }
+    }
   }
 
 }

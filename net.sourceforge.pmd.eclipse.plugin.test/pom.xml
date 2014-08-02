@@ -19,7 +19,6 @@
         <artifactId>tycho-surefire-plugin</artifactId>
         <configuration>
             <useUIHarness>true</useUIHarness>
-            <testFailureIgnore>true</testFailureIgnore>
             <dependencies>
                 <dependency>
                     <type>eclipse-plugin</type>
