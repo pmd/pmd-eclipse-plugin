@@ -1,6 +1,8 @@
 package net.sourceforge.pmd.eclipse.ui.properties;
 
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Set;
 
 import name.herlin.command.CommandException;
 import net.sourceforge.pmd.Rule;
@@ -62,12 +64,11 @@ public class UpdateProjectPropertiesCmdTest {
         .getRuleSet().getRules(), projectRuleSet.getRules());
     int ruleCountBefore = projectRuleSet.getRules().size();
 
-    // 2. remove the first rule (keep its name for assertion)
+    // 2. remove a rule (keep its name for assertion)
     final RuleSet newRuleSet = new RuleSet();
     newRuleSet.addRuleSet(projectRuleSet);
-    final Iterator<Rule> i = newRuleSet.getRules().iterator();
-    final Rule removedRule = i.next();
-    i.remove();
+    final Rule removedRule = newRuleSet.getRuleByName("UnnecessaryParentheses");
+    newRuleSet.getRules().remove(removedRule);
 
     final UpdateProjectPropertiesCmd cmd = new UpdateProjectPropertiesCmd();
     cmd.setPmdEnabled(true);
