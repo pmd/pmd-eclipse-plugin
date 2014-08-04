@@ -287,7 +287,11 @@ class PreferencesImpl implements IPreferences {
         return rules.toString();
     }
 
-	public void setActiveRuleNames(Set<String> ruleNames) {
+    public void setInactiveRuleNames(Set<String> ruleNames) {
+        inactiveRuleNames = ruleNames;
+    }
+
+    public void setActiveRuleNames(Set<String> ruleNames) {
 		activeRuleNames = ruleNames;
 	}
 

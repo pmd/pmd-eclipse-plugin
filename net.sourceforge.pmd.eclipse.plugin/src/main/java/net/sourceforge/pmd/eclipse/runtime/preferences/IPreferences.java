@@ -69,6 +69,7 @@ public interface IPreferences {
     String ACTIVE_RENDERERS = "text";
     String ACTIVE_EXCLUSIONS = "";
     String ACTIVE_INCLUSIONS = "";
+    String INACTIVE_RULES = "";
 
     boolean GLOBAL_RULE_MANAGEMENT_DEFAULT = false;
 
@@ -94,8 +95,10 @@ public interface IPreferences {
     Set<String> getActiveRuleNames();
 
     Set<String> getInactiveRuleNames();
-    
+
     void setActiveRuleNames(Set<String> ruleNames);
+
+    void setInactiveRuleNames(Set<String> ruleNames);
     
     /**
      * Should the Project Build Path be used?
