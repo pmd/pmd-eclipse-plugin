@@ -9,6 +9,7 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
@@ -24,9 +25,18 @@ public class JavaProjectClassLoader extends URLClassLoader {
 	private Set<IJavaProject> javaProjects = new HashSet<IJavaProject>();
 	private IWorkspaceRoot workspaceRoot;
 
-	public JavaProjectClassLoader(ClassLoader parent, IJavaProject javaProject) {
+	public JavaProjectClassLoader(ClassLoader parent, IProject project) {
 		super(new URL[0], parent);
-		workspaceRoot = javaProject.getProject().getWorkspace().getRoot();
+		try {
+            if (!project.hasNature(JavaCore.NATURE_ID)) {
+                throw new IllegalArgumentException("The project " + project + " is not a java project");
+            }
+        } catch (CoreException e) {
+            throw new IllegalArgumentException("The project " + project + " is not a java project", e);
+        }
+		workspaceRoot = project.getProject().getWorkspace().getRoot();
+		
+		IJavaProject javaProject = JavaCore.create(project);
 		addURLs(javaProject, false);
 
 		// No longer need these things, drop references

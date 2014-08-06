@@ -39,15 +39,20 @@ import java.util.Set;
 
 import name.herlin.command.CommandException;
 import name.herlin.command.UnsetInputPropertiesException;
+import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.eclipse.EclipseUtils;
+import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
+import net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -56,7 +61,6 @@ import org.junit.Test;
  * @author Philippe Herlin
  * 
  */
-//@Ignore("doesn't work - workspace is closed")
 public class ReviewCmdTest {
   private IProject testProject;
 
@@ -73,7 +77,7 @@ public class ReviewCmdTest {
 
     // 2. Create a test source file inside that project
     final IFile testFile = EclipseUtils.createTestSourceFile(this.testProject);
-    final InputStream is = EclipseUtils.getResourceStream(this.testProject, "/Test.java");
+    final InputStream is = EclipseUtils.getResourceStream(this.testProject, "/src/Test.java");
     Assert.assertNotNull("Cannot find the test source file", is);
     is.close();
 
@@ -88,10 +92,9 @@ public class ReviewCmdTest {
       if (this.testProject != null) {
         if (this.testProject.exists() && this.testProject.isAccessible()) {
           EclipseUtils.removePMDNature(this.testProject);
-          //                this.testProject.refreshLocal(IResource.DEPTH_INFINITE, null);
-          //                Thread.sleep(500);
-          //                this.testProject.delete(true, true, null);
-          //                this.testProject = null;
+          this.testProject.refreshLocal(IResource.DEPTH_INFINITE, null);
+          this.testProject.delete(true, true, null);
+          this.testProject = null;
         }
       }
     }
@@ -115,6 +118,47 @@ public class ReviewCmdTest {
     // We do not test PMD, only a non-empty report is enough
     Assert.assertNotNull(markers);
     Assert.assertTrue("Report size = " + markers.size(), markers.size() > 0);
+  }
+
+  /**
+   * https://sourceforge.net/p/pmd/bugs/1145/
+   */
+  @Test
+  public void testProjectBuildPath() throws Exception {
+      IProjectProperties properties = PMDPlugin.getDefault().getPropertiesManager().loadProjectProperties(testProject);
+      Rule compareObjectsWithEquals = properties.getProjectRuleSet().getRuleByName("CompareObjectsWithEquals");
+      RuleSet projectRuleSet = new RuleSet();
+      projectRuleSet.addRule(compareObjectsWithEquals);
+      properties.setProjectRuleSet(projectRuleSet);
+
+      EclipseUtils.createTestSourceFile(testProject, "/src/MyEnum.java", "public enum MyEnum { A, B }");
+      IFile sourceFile = EclipseUtils.createTestSourceFile(testProject, "/src/Foo.java", "class Foo {\n" + 
+              "  boolean bar(MyEnum a, MyEnum b) {\n" + 
+              "    return a == b;\n" +  // line 3
+              "  }\n" + 
+              "}");
+      testProject.build(IncrementalProjectBuilder.FULL_BUILD, null);
+      testProject.refreshLocal(IResource.DEPTH_INFINITE, null);
+
+      ReviewCodeCmd cmd = new ReviewCodeCmd();
+      cmd.addResource(testProject);
+      cmd.performExecute();
+      cmd.join();
+      Map<IFile, Set<MarkerInfo2>> markers = cmd.getMarkers();
+      // with type resolution, this comparison is ok, as MyEnum is a enum
+      Assert.assertTrue("Type Resolution didn't work", markers.get(sourceFile).isEmpty());
+
+      // without type resolution, there is a violation
+      PMDPlugin.getDefault().getPreferencesManager().loadPreferences().setProjectBuildPathEnabled(false);
+      cmd = new ReviewCodeCmd();
+      cmd.addResource(testProject);
+      cmd.performExecute();
+      cmd.join();
+      markers = cmd.getMarkers();
+      // there is a violation expected without type resolution
+      Assert.assertFalse(markers.get(sourceFile).isEmpty());
+
+      PMDPlugin.getDefault().getPreferencesManager().loadPreferences().setProjectBuildPathEnabled(true);
   }
 
   /**

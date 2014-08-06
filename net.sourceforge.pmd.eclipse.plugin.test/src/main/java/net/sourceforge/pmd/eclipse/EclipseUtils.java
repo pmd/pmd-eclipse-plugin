@@ -33,6 +33,7 @@
  */
 package net.sourceforge.pmd.eclipse;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
@@ -42,7 +43,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
 
 import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.Rule;
@@ -50,6 +50,7 @@ import net.sourceforge.pmd.eclipse.runtime.PMDRuntimeConstants;
 import net.sourceforge.pmd.eclipse.runtime.builder.PMDNature;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
@@ -57,6 +58,9 @@ import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.jdt.core.IClasspathEntry;
+import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 
@@ -137,15 +141,7 @@ public class EclipseUtils {
     }
 
     if (!newProject.isOpen()) {
-      final CountDownLatch latch = new CountDownLatch(1);
-      final OpenMonitor mon = new OpenMonitor(latch);
-      newProject.open(mon);
-      try {
-        latch.await(5, TimeUnit.SECONDS);
-      }
-      catch (final InterruptedException e) {
-        e.printStackTrace();
-      }
+      newProject.open(null);
     }
 
     // 4. Make it a Java Project
@@ -166,7 +162,7 @@ public class EclipseUtils {
     final InputStream is = EclipseUtils.class.getResourceAsStream("/test.template");
 
     // 2. Copy the template inside the source directory
-    final IFile sourceFile = project.getFile("/Test.java");
+    final IFile sourceFile = project.getFile("/src/Test.java");
     if (sourceFile.exists() && sourceFile.isAccessible()) {
       sourceFile.setContents(is, true, false, null);
     }
@@ -241,6 +237,14 @@ public class EclipseUtils {
       newNatures[prevNatures.length] = JavaCore.NATURE_ID;
       description.setNatureIds(newNatures);
       project.setDescription(description, null);
+      IFolder sourceFolder = project.getFolder("/src");
+      sourceFolder.create(true, true, null);
+
+      IJavaProject javaProject = JavaCore.create(project);
+      javaProject.setRawClasspath(new IClasspathEntry[] {
+              JavaCore.newSourceEntry(sourceFolder.getFullPath()),
+              JavaCore.newContainerEntry(new Path("org.eclipse.jdt.launching.JRE_CONTAINER"))
+      }, null);
     }
   }
 
@@ -295,5 +299,26 @@ public class EclipseUtils {
 
     return found;
   }
+
+/**
+ * @param testProject
+ * @param string
+ * @param string2
+ * @return 
+ * @throws CoreException 
+ * @throws IOException 
+ */
+public static IFile createTestSourceFile(IProject testProject, String fileName, String content) throws CoreException, IOException {
+    IFile sourceFile = testProject.getFile(fileName);
+    InputStream is = new ByteArrayInputStream(content.getBytes("UTF-8"));
+    if (sourceFile.exists() && sourceFile.isAccessible()) {
+      sourceFile.setContents(is, true, false, null);
+    }
+    else {
+      sourceFile.create(is, true, null);
+    }
+    is.close();
+    return sourceFile;
+}
 
 }

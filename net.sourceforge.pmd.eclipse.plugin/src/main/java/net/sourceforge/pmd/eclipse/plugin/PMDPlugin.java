@@ -118,12 +118,16 @@ public class PMDPlugin extends AbstractUIPlugin {
 		return color;
 	}
 
-	public static void setJavaClassLoader(PMDConfiguration config, IJavaProject javaProject) {
+	public static void setJavaClassLoader(PMDConfiguration config, IProject project) {
 
 		IPreferences preferences = getDefault().loadPreferences();
-		if (preferences.isProjectBuildPathEnabled()) {
-			config.setClassLoader(new JavaProjectClassLoader(config.getClassLoader(), javaProject));
-		}
+		try {
+            if (preferences.isProjectBuildPathEnabled() && project.hasNature(JavaCore.NATURE_ID)) {
+            	config.setClassLoader(new JavaProjectClassLoader(config.getClass().getClassLoader(), project));
+            }
+        } catch (CoreException e) {
+            throw new RuntimeException(e);
+        }
 	}
 	
 	/**

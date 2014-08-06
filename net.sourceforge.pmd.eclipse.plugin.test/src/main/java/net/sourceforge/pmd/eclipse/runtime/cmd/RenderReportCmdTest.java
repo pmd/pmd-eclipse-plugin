@@ -73,7 +73,7 @@ public class RenderReportCmdTest {
 
     // 2. Create a test source file inside that project
     EclipseUtils.createTestSourceFile(this.testProject);
-    final InputStream is = EclipseUtils.getResourceStream(this.testProject, "/Test.java");
+    final InputStream is = EclipseUtils.getResourceStream(this.testProject, "/src/Test.java");
     Assert.assertNotNull("Cannot find the test source file", is);
     is.close();
 

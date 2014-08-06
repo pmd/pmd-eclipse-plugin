@@ -63,6 +63,7 @@ import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.ui.IWorkingSet;
 import org.eclipse.ui.ResourceWorkingSetFilter;
 
@@ -271,6 +272,8 @@ public class BaseVisitor {
     		    configuration().setDefaultLanguageVersion(languageVersion);
     		}
     		log.debug("discovered language: " + languageVersion);
+
+		    PMDPlugin.setJavaClassLoader(configuration(), resource.getProject());
 
     		final File sourceCodeFile = file.getRawLocation().toFile();
     		if (included && getRuleSet().applies(sourceCodeFile) && isFileInWorkingSet(file) && languageVersion != null) {
