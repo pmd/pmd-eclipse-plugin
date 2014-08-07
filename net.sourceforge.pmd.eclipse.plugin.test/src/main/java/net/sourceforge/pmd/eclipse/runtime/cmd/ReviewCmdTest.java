@@ -50,6 +50,9 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jdt.core.JavaCore;
+import org.eclipse.jdt.launching.IVMInstall;
+import org.eclipse.jdt.launching.JavaRuntime;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -130,7 +133,10 @@ public class ReviewCmdTest {
       RuleSet projectRuleSet = new RuleSet();
       projectRuleSet.addRule(compareObjectsWithEquals);
       properties.setProjectRuleSet(projectRuleSet);
+      boolean oldSetting = PMDPlugin.getDefault().getPreferencesManager().loadPreferences().isProjectBuildPathEnabled();
 
+      try {
+      PMDPlugin.getDefault().getPreferencesManager().loadPreferences().setProjectBuildPathEnabled(true);
       EclipseUtils.createTestSourceFile(testProject, "/src/MyEnum.java", "public enum MyEnum { A, B }");
       IFile sourceFile = EclipseUtils.createTestSourceFile(testProject, "/src/Foo.java", "class Foo {\n" + 
               "  boolean bar(MyEnum a, MyEnum b) {\n" + 
@@ -158,7 +164,9 @@ public class ReviewCmdTest {
       // there is a violation expected without type resolution
       Assert.assertFalse(markers.get(sourceFile).isEmpty());
 
-      PMDPlugin.getDefault().getPreferencesManager().loadPreferences().setProjectBuildPathEnabled(true);
+      } finally {
+          PMDPlugin.getDefault().getPreferencesManager().loadPreferences().setProjectBuildPathEnabled(oldSetting);
+      }
   }
 
   /**

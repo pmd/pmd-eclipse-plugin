@@ -38,6 +38,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
 import java.util.Collection;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -245,6 +246,13 @@ public class EclipseUtils {
               JavaCore.newSourceEntry(sourceFolder.getFullPath()),
               JavaCore.newContainerEntry(new Path("org.eclipse.jdt.launching.JRE_CONTAINER"))
       }, null);
+
+      @SuppressWarnings("unchecked")
+      Hashtable<String, String> javaOptions = JavaCore.getOptions();
+      javaOptions.put(JavaCore.COMPILER_COMPLIANCE, JavaCore.VERSION_1_5);
+      javaOptions.put(JavaCore.COMPILER_CODEGEN_TARGET_PLATFORM, JavaCore.VERSION_1_5);
+      javaOptions.put(JavaCore.COMPILER_SOURCE, JavaCore.VERSION_1_5);
+      javaProject.setOptions(javaOptions);
     }
   }
 
