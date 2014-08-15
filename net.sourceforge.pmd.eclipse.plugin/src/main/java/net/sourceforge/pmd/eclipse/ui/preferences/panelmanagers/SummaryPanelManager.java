@@ -66,9 +66,12 @@ public class SummaryPanelManager extends AbstractRulePanelManager {
 	}
 	
 	public void showFor(Rule rule) {
-		 		   
 		   pb.clear();
-		   
+		   if (rule == null) {
+		       pb.showOn(viewField);
+		       return;
+		   }
+
 		   pb.addHeading(StringKeys.PREF_SUMMARY_LABEL_NAME);
 		   pb.addText( rule.getName() );
 		   
