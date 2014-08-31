@@ -24,6 +24,7 @@ import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
@@ -102,8 +103,16 @@ public abstract class AbstractTreeTableManager <T extends Object> extends Abstra
 	protected void createCheckBoxColumn(Tree tree) {
 		
 		TreeColumn tc = new TreeColumn(tree, 0);
-		tc.setWidth(10);
-		tc.setResizable(false);
+
+		Image image = new Image(Display.getCurrent(), 15, 15);
+	    GC gc = new GC(image);
+	    Point textExtent = gc.textExtent("m");
+	    gc.dispose();
+	    image.dispose();
+
+	    tc.setWidth(textExtent.x * 4);
+
+		tc.setResizable(true);
 		tc.pack();
 		
         tc.addListener(SWT.Selection, new Listener() {

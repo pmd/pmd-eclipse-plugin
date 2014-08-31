@@ -13,6 +13,7 @@ Eclipse Update Site: <https://sourceforge.net/projects/pmd/files/pmd-eclipse/upd
 * Fixed Eclipse plugin don't apply global rule configuration after restart ([bug #1184](https://sourceforge.net/p/pmd/bugs/1184/))
 * Fixed "Use type resolution" does not work ([bug #1145](https://sourceforge.net/p/pmd/bugs/1145/))
 * Fixed NullPointerException when selecting/unselecting items in the Projects Properties view ([bug #1242](https://sourceforge.net/p/pmd/bugs/1242/))
+* Fixed sizing of first column in Rule Configuration ([bug #1237](https://sourceforge.net/p/pmd/bugs/1237/))
 
 
 ## 27-April-2014: 4.0.3.v20140427-0831
