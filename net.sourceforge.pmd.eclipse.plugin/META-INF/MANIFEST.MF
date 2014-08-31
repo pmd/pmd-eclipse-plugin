@@ -20,8 +20,6 @@ Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-Vendor: %plugin.provider
 Bundle-ClassPath: target/lib/ant-launcher.jar,
- target/lib/ant-testutil.jar,
- target/lib/ant.jar,
  target/lib/asm.jar,
  target/lib/castor.jar,
  target/lib/commons-io.jar,
@@ -32,7 +30,6 @@ Bundle-ClassPath: target/lib/ant-launcher.jar,
  target/lib/jaxen.jar,
  target/lib/jcommander.jar,
  target/lib/jdom.jar,
- target/lib/junit.jar,
  target/lib/log4j.jar,
  target/lib/pmd.jar,
  target/lib/rhino.jar,
