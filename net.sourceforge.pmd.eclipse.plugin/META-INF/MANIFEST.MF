@@ -19,8 +19,7 @@ Require-Bundle: org.apache.commons.logging;bundle-version="1.0.4",
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-Vendor: %plugin.provider
-Bundle-ClassPath: target/lib/ant-launcher.jar,
- target/lib/asm.jar,
+Bundle-ClassPath: target/lib/asm.jar,
  target/lib/castor.jar,
  target/lib/commons-io.jar,
  target/lib/commons-lang3.jar,
