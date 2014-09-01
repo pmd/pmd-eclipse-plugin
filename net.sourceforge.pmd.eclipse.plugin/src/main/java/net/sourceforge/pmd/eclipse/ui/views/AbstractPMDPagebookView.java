@@ -95,7 +95,7 @@ public abstract class AbstractPMDPagebookView extends PageBookView {
     }
     
     protected List<Integer> getIntegerList(String mementoId) {
-    	return memento == null ? Collections.EMPTY_LIST : memento.getIntegerList(mementoId);
+    	return memento == null ? Collections.<Integer>emptyList() : memento.getIntegerList(mementoId);
     }
     
     /* @see org.eclipse.ui.IPartListener#partBroughtToTop(org.eclipse.ui.IPartListener) */

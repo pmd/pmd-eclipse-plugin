@@ -1,5 +1,7 @@
 package net.sourceforge.pmd.eclipse.ui.views;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import net.sourceforge.pmd.RulePriority;
@@ -219,37 +221,36 @@ public class ViolationOutline extends AbstractPMDPagebookView implements ISelect
             }
 
             // we load the stuff into the new Page
-//            if (newPage != null) {
-//                List<Integer> widthList = memento.getIntegerList(COLUMN_WIDTHS);
-//                if (!widthList.isEmpty()) {
-//                    Integer[] widthArray = new Integer[3];
-//                    widthList.toArray(widthArray);
-//                    newPage.setColumnWidths(widthArray);
-//                }
-//
-//                List<Integer> sorterList = memento.getIntegerList(COLUMN_SORTER);
-//                if (!sorterList.isEmpty()) {
-//                    Integer[] sorterProps = new Integer[sorterList.size()];
-//                    sorterList.toArray(sorterProps);
-//                    newPage.setSorterProperties(sorterProps);
-//                }
-//            }
+            if (newPage != null) {
+                List<Integer> widthList = memento.getIntegerList(COLUMN_WIDTHS);
+                if (!widthList.isEmpty()) {
+                    Integer[] widthArray = new Integer[3];
+                    widthList.toArray(widthArray);
+                    newPage.setColumnWidths(widthArray);
+                }
+
+                List<Integer> sorterList = memento.getIntegerList(COLUMN_SORTER);
+                if (!sorterList.isEmpty()) {
+                    Integer[] sorterProps = new Integer[sorterList.size()];
+                    sorterList.toArray(sorterProps);
+                    newPage.setSorterProperties(sorterProps);
+                }
+            }
         }
 
         super.showPageRec(pageRec);
     }
 
 	private void storeColumnData(ViolationOutlinePageBR page) {
-		
-//		// we care about the column widths
-//		Integer[] widthArray = page.getColumnWidths();
-//		List<Integer> widthList = new ArrayList<Integer>(Arrays.asList(widthArray));
-//		memento.putList(COLUMN_WIDTHS, widthList);
-//
-//		// ... and what Element is sorted, and in which way
-//		Integer[] sorterProps = page.getSorterProperties();
-//		List<Integer> sorterList = new ArrayList<Integer>(Arrays.asList(sorterProps));
-//		memento.putList(COLUMN_SORTER, sorterList);
+		// we care about the column widths
+		Integer[] widthArray = page.getColumnWidths();
+		List<Integer> widthList = new ArrayList<Integer>(Arrays.asList(widthArray));
+		memento.putList(COLUMN_WIDTHS, widthList);
+
+		// ... and what Element is sorted, and in which way
+		Integer[] sorterProps = page.getSorterProperties();
+		List<Integer> sorterList = new ArrayList<Integer>(Arrays.asList(sorterProps));
+		memento.putList(COLUMN_SORTER, sorterList);
 	}
 
     /**

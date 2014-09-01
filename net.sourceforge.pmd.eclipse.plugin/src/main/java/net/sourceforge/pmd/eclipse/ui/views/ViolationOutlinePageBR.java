@@ -1,5 +1,7 @@
 package net.sourceforge.pmd.eclipse.ui.views;
 
+import java.util.Arrays;
+
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.ui.ItemColumnDescriptor;
 import net.sourceforge.pmd.eclipse.ui.model.FileRecord;
@@ -17,9 +19,12 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.ViewerFilter;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IFileEditorInput;
@@ -41,7 +46,7 @@ public class ViolationOutlinePageBR extends Page implements IPage, ISelectionCha
     protected int 						currentSortedColumn;
     private BasicTableManager<IMarker>	tableManager;
 
-	public static final ItemColumnDescriptor<?,IMarker>[] AvailableColumns = new ItemColumnDescriptor[] {
+	private ItemColumnDescriptor<?,IMarker>[] initialColumns = new ItemColumnDescriptor[] {
 		MarkerColumnsUI.priority,
 		MarkerColumnsUI.lineNumber,
 //		MarkerColumnsUI.done,
@@ -72,10 +77,10 @@ public class ViolationOutlinePageBR extends Page implements IPage, ISelectionCha
     
     public void createControl(Composite parent) {
     	
-    	tableManager = new BasicTableManager<IMarker>("rscViolations", PMDPlugin.getDefault().loadPreferences(), AvailableColumns);
+    	tableManager = new BasicTableManager<IMarker>("rscViolations", PMDPlugin.getDefault().loadPreferences(), initialColumns);
         tableViewer = tableManager.buildTableViewer(parent);
 
-        tableManager.setupColumns(AvailableColumns);
+        tableManager.setupColumns(initialColumns);
         tableManager.setTableMenu(violationOutline.createContextMenu(tableViewer));
 
         // create the Table
@@ -157,4 +162,50 @@ public class ViolationOutlinePageBR extends Page implements IPage, ISelectionCha
             }
     }
 
+    public Integer[] getColumnWidths() {
+        TableColumn[] columns = tableViewer.getTable().getColumns();
+        Integer[] result = new Integer[columns.length];
+        for (int i = 0; i < columns.length; i++) {
+            result[i] = columns[i].getWidth();
+        }
+        return result;
+    }
+
+    public void setColumnWidths(Integer[] widthArray) {
+        TableColumn[] columns = tableViewer.getTable().getColumns();
+        for (int i = 0; i < columns.length && i < widthArray.length && i < initialColumns.length; i++) {
+            int width = initialColumns[i].defaultWidth();
+            if (widthArray[i] != null) {
+                width = widthArray[i].intValue();
+            }
+            columns[i].setWidth(width);
+        }
+    }
+
+    /**
+     * first: column index
+     * second: ascending/descending: UP, DOWN or NONE
+     */
+    public Integer[] getSorterProperties() {
+        Table table = tableViewer.getTable();
+        int columnIndex = Arrays.asList(table.getColumns()).indexOf(table.getSortColumn());
+        int direction = table.getSortDirection();
+        return new Integer[]{columnIndex, direction};
+    }
+
+    public void setSorterProperties(Integer[] sorterProps) {
+        Table table = tableViewer.getTable();
+        TableColumn sortColumn = null;
+        int direction = SWT.NONE;
+        if (sorterProps.length == 2) {
+            if (sorterProps[0] != null && sorterProps[0].intValue() < table.getColumnCount()) {
+                sortColumn = table.getColumn(sorterProps[0].intValue());
+            }
+            if (sorterProps[1] != null) {
+                direction = sorterProps[1].intValue();
+            }
+        }
+        table.setSortColumn(sortColumn);
+        table.setSortDirection(direction);
+    }
 }
