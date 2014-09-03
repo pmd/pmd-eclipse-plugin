@@ -183,7 +183,7 @@ public class ViewMemento {
      *
      * @param type
      */
-    public void save(String type) {
+    public void save() {
         if (this.memento != null) {
             FileWriter writer = null;
             try {

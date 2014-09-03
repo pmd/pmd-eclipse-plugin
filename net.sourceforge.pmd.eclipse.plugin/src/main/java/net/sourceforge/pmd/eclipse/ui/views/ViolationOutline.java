@@ -1,7 +1,5 @@
 package net.sourceforge.pmd.eclipse.ui.views;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import net.sourceforge.pmd.RulePriority;
@@ -80,7 +78,6 @@ public class ViolationOutline extends AbstractPMDPagebookView implements ISelect
     @Override
     public void dispose() {
         save(PRIORITY_LIST, priorityFilter.getPriorityFilterList());
-       
         super.dispose();
     }
 
@@ -92,6 +89,7 @@ public class ViolationOutline extends AbstractPMDPagebookView implements ISelect
             ViolationOutlinePageBR page = new ViolationOutlinePageBR(resourceRecord, this);
             initPage(page);
             page.createControl(getPageBook());
+            loadColumnData(page);
             return new PageRec(part, page);
         }
         return null;
@@ -107,8 +105,7 @@ public class ViolationOutline extends AbstractPMDPagebookView implements ISelect
         // next Page -> different Pages look like one
         if (page != null) {
             storeColumnData(page);
-
-            memento.save(PMDUiConstants.ID_OUTLINE);
+            memento.save();
             page.dispose();
         }
 
@@ -219,39 +216,28 @@ public class ViolationOutline extends AbstractPMDPagebookView implements ISelect
             if (oldPage != null) {
                 storeColumnData(oldPage);
             }
-
             // we load the stuff into the new Page
-            if (newPage != null) {
-                List<Integer> widthList = memento.getIntegerList(COLUMN_WIDTHS);
-                if (!widthList.isEmpty()) {
-                    Integer[] widthArray = new Integer[3];
-                    widthList.toArray(widthArray);
-                    newPage.setColumnWidths(widthArray);
-                }
-
-                List<Integer> sorterList = memento.getIntegerList(COLUMN_SORTER);
-                if (!sorterList.isEmpty()) {
-                    Integer[] sorterProps = new Integer[sorterList.size()];
-                    sorterList.toArray(sorterProps);
-                    newPage.setSorterProperties(sorterProps);
-                }
-            }
+            loadColumnData(newPage);
         }
 
         super.showPageRec(pageRec);
     }
 
-	private void storeColumnData(ViolationOutlinePageBR page) {
-		// we care about the column widths
-		Integer[] widthArray = page.getColumnWidths();
-		List<Integer> widthList = new ArrayList<Integer>(Arrays.asList(widthArray));
-		memento.putList(COLUMN_WIDTHS, widthList);
+    private void storeColumnData(ViolationOutlinePageBR page) {
+        if (page != null) {
+            // we care about the column widths
+            save(COLUMN_WIDTHS, page.getColumnWidths());
+            // ... and what Element is sorted, and in which way
+            save(COLUMN_SORTER, page.getSorterProperties());
+        }
+    }
 
-		// ... and what Element is sorted, and in which way
-		Integer[] sorterProps = page.getSorterProperties();
-		List<Integer> sorterList = new ArrayList<Integer>(Arrays.asList(sorterProps));
-		memento.putList(COLUMN_SORTER, sorterList);
-	}
+    private void loadColumnData(ViolationOutlinePageBR page) {
+        if (page != null) {
+            page.setColumnWidths(getIntegerList(COLUMN_WIDTHS));
+            page.setSorterProperties(getIntegerList(COLUMN_SORTER));
+        }
+    }
 
     /**
      * @return the currently displayed Page

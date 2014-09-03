@@ -207,7 +207,7 @@ public class ViolationOverview extends ViewPart implements ISelectionProvider, I
         // ... and how we should display the Elements
         memento.putInteger(PACKAGE_SWITCH, getShowType());
 
-        memento.save(PMDUiConstants.MEMENTO_OVERVIEW_FILE);
+        memento.save();
 
         super.dispose();
     }

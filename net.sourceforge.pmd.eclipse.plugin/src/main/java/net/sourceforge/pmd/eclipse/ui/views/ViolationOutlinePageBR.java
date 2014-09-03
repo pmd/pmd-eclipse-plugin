@@ -1,6 +1,7 @@
 package net.sourceforge.pmd.eclipse.ui.views;
 
 import java.util.Arrays;
+import java.util.List;
 
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.ui.ItemColumnDescriptor;
@@ -20,9 +21,10 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ControlAdapter;
+import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.ui.IEditorInput;
@@ -43,7 +45,8 @@ public class ViolationOutlinePageBR extends Page implements IPage, ISelectionCha
     private ViolationOutline			violationOutline;
     private ViewerFilter				viewerFilter;
     private FileRecord					resource;
-    protected int 						currentSortedColumn;
+    private Integer[]                   columnWidths;
+    private Integer[]                   sorterProperties;
     private BasicTableManager<IMarker>	tableManager;
 
 	private ItemColumnDescriptor<?,IMarker>[] initialColumns = new ItemColumnDescriptor[] {
@@ -82,6 +85,21 @@ public class ViolationOutlinePageBR extends Page implements IPage, ISelectionCha
 
         tableManager.setupColumns(initialColumns);
         tableManager.setTableMenu(violationOutline.createContextMenu(tableViewer));
+
+        columnWidths = new Integer[initialColumns.length];
+        for (int i = 0; i < initialColumns.length; i++) {
+            columnWidths[i] = initialColumns[i].defaultWidth();
+            final int columnIndex = i;
+            tableViewer.getTable().getColumn(i).addControlListener(new ControlAdapter() {
+                @Override
+                public void controlResized(ControlEvent e) {
+                    columnWidths[columnIndex] = tableViewer.getTable().getColumn(columnIndex).getWidth();
+                }
+            });
+        }
+        sorterProperties = new Integer[2];
+        sorterProperties[0] = null;
+        sorterProperties[1] = SWT.NONE;
 
         // create the Table
         createActionBars();
@@ -162,21 +180,22 @@ public class ViolationOutlinePageBR extends Page implements IPage, ISelectionCha
             }
     }
 
-    public Integer[] getColumnWidths() {
-        TableColumn[] columns = tableViewer.getTable().getColumns();
-        Integer[] result = new Integer[columns.length];
-        for (int i = 0; i < columns.length; i++) {
-            result[i] = columns[i].getWidth();
-        }
-        return result;
+    public List<Integer> getColumnWidths() {
+        return Arrays.asList(columnWidths);
     }
 
-    public void setColumnWidths(Integer[] widthArray) {
+    public void setColumnWidths(List<Integer> widths) {
+        if (widths == null || widths.isEmpty())
+            return;
+        if (tableViewer.getTable().isDisposed())
+            return;
+
+        columnWidths = widths.toArray(new Integer[widths.size()]);
         TableColumn[] columns = tableViewer.getTable().getColumns();
-        for (int i = 0; i < columns.length && i < widthArray.length && i < initialColumns.length; i++) {
+        for (int i = 0; i < columns.length && i < widths.size() && i < initialColumns.length; i++) {
             int width = initialColumns[i].defaultWidth();
-            if (widthArray[i] != null) {
-                width = widthArray[i].intValue();
+            if (widths.get(i) != null) {
+                width = widths.get(i).intValue();
             }
             columns[i].setWidth(width);
         }
@@ -186,23 +205,28 @@ public class ViolationOutlinePageBR extends Page implements IPage, ISelectionCha
      * first: column index
      * second: ascending/descending: UP, DOWN or NONE
      */
-    public Integer[] getSorterProperties() {
-        Table table = tableViewer.getTable();
-        int columnIndex = Arrays.asList(table.getColumns()).indexOf(table.getSortColumn());
-        int direction = table.getSortDirection();
-        return new Integer[]{columnIndex, direction};
+    public List<Integer> getSorterProperties() {
+        return Arrays.asList(sorterProperties);
     }
 
-    public void setSorterProperties(Integer[] sorterProps) {
+    public void setSorterProperties(List<Integer> sorterProps) {
+        if (sorterProps == null || sorterProps.isEmpty())
+            return;
+
         Table table = tableViewer.getTable();
+        if (table.isDisposed()) {
+            return;
+        }
+
+        sorterProperties = sorterProps.toArray(new Integer[sorterProps.size()]);
         TableColumn sortColumn = null;
         int direction = SWT.NONE;
-        if (sorterProps.length == 2) {
-            if (sorterProps[0] != null && sorterProps[0].intValue() < table.getColumnCount()) {
-                sortColumn = table.getColumn(sorterProps[0].intValue());
+        if (sorterProps.size() == 2) {
+            if (sorterProps.get(0) != null && sorterProps.get(0).intValue() >= 0 && sorterProps.get(0).intValue() < table.getColumnCount()) {
+                sortColumn = table.getColumn(sorterProps.get(0).intValue());
             }
-            if (sorterProps[1] != null) {
-                direction = sorterProps[1].intValue();
+            if (sorterProps.get(1) != null) {
+                direction = sorterProps.get(1).intValue();
             }
         }
         table.setSortColumn(sortColumn);

@@ -134,8 +134,7 @@ public abstract class AbstractPMDPagebookView extends PageBookView {
     
     @Override
     public void dispose() {
-        memento.save(mementoFileId());
-
+        memento.save();
         super.dispose();
     }
 }
