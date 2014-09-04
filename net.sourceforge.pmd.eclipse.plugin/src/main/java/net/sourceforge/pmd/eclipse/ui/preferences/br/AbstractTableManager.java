@@ -32,6 +32,7 @@ public abstract class AbstractTableManager<T extends Object> implements SortList
 
 	private final String	widgetId;		// for saving preference values
 	protected boolean 		sortDescending;
+	protected TableColumn   sortColumn;
 	protected Object		columnSorter;	// cast to concrete type in subclass
 	protected IPreferences	preferences;
 	protected Menu 			headerMenu;	
@@ -272,7 +273,21 @@ public abstract class AbstractTableManager<T extends Object> implements SortList
 			columnSorter = accessor;
 		}
 
-		redrawTable(idFor(context), sortDescending ? SWT.DOWN : SWT.UP);
+		sortColumn = (TableColumn)context;
+		redrawTable(idFor(context), getSortDirection());
+	}
+
+	public int getSortDirection() {
+	    return sortDescending ? SWT.DOWN : SWT.UP;
+	}
+
+	public void setSortDirection(TableColumn column, Object accessor, int direction) {
+	    if (column != null && accessor != null) {
+    	    sortDescending = direction == SWT.DOWN;
+    	    sortColumn = column;
+    	    columnSorter = accessor;
+    	    redrawTable(idFor(sortColumn), direction);
+	    }
 	}
 	
 	protected abstract String idFor(Object column);

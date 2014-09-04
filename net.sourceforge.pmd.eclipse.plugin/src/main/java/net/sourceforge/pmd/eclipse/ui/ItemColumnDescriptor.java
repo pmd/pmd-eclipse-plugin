@@ -73,4 +73,8 @@ public class ItemColumnDescriptor<T extends Object, V extends Object> extends Ab
     public ValueFormatter[] formatters() {
         return formatters;
     }
+    
+    public ItemFieldAccessor<T, V> getAccessor() {
+        return accessor;
+    }
 }

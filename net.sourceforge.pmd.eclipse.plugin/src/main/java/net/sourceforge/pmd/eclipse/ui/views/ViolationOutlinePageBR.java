@@ -23,6 +23,8 @@ import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ControlAdapter;
 import org.eclipse.swt.events.ControlEvent;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Table;
@@ -94,6 +96,13 @@ public class ViolationOutlinePageBR extends Page implements IPage, ISelectionCha
                 @Override
                 public void controlResized(ControlEvent e) {
                     columnWidths[columnIndex] = tableViewer.getTable().getColumn(columnIndex).getWidth();
+                }
+            });
+            tableViewer.getTable().getColumn(i).addSelectionListener(new SelectionAdapter() {
+                @Override
+                public void widgetSelected(SelectionEvent e) {
+                    sorterProperties[0] = columnIndex;
+                    sorterProperties[1] = tableManager.getSortDirection();
                 }
             });
         }
@@ -229,7 +238,8 @@ public class ViolationOutlinePageBR extends Page implements IPage, ISelectionCha
                 direction = sorterProps.get(1).intValue();
             }
         }
-        table.setSortColumn(sortColumn);
-        table.setSortDirection(direction);
+        if (sortColumn != null) {
+            tableManager.setSortDirection(sortColumn, initialColumns[sorterProperties[0]].getAccessor(), direction);
+        }
     }
 }
