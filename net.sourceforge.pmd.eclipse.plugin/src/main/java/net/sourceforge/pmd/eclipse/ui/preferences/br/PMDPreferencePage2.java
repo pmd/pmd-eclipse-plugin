@@ -23,11 +23,7 @@ import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.SummaryPanelMana
 import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.XPathPanelManager;
 import net.sourceforge.pmd.eclipse.util.Util;
 
-import org.eclipse.core.resources.IncrementalProjectBuilder;
-import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.swt.SWT;
@@ -377,15 +373,22 @@ public class PMDPreferencePage2 extends AbstractPMDPreferencePage implements Rul
      * @param parent Composite
      */
     private void layoutControls(Composite parent) {
-        parent.setLayout(new RowLayout(SWT.VERTICAL));
+        GridLayout layout = new GridLayout(1, false);
+        layout.verticalSpacing = 10;
+        parent.setLayout(layout);
 
         Composite checkboxPanel = new Composite(parent, 0);
-        checkboxPanel.setLayout(new RowLayout(SWT.VERTICAL));
+        RowLayout checkboxPanelLayout = new RowLayout(SWT.VERTICAL);
+        checkboxPanelLayout.fill = true;
+        checkboxPanelLayout.pack = false;
+        checkboxPanel.setLayout(checkboxPanelLayout);
+        checkboxPanel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
         final Button checkButton = new Button(checkboxPanel, SWT.CHECK);
         globalRuleManagementCheckButton = checkButton;
 
         final Composite contentPanel = new Composite(parent, 0);
         contentPanel.setLayout(new FormLayout());
+        contentPanel.setLayoutData(new GridData(GridData.FILL_BOTH));
 
         checkButton.setText(SWTUtil.stringFor(StringKeys.PREF_RULESET_BUTTON_GLOBALRULEMANAGEMENT));
         checkButton.setSelection(preferences.getGlobalRuleManagement());
@@ -418,7 +421,7 @@ public class PMDPreferencePage2 extends AbstractPMDPreferencePage implements Rul
             // Re-attach to the top edge, and we use the y value of the event to determine the offset from the top
             ((FormData)sash.getLayoutData()).top = new FormAttachment(0, event.y);
 //            PreferenceUIStore.instance.tableFraction(event.y);
-            sash.getParent().layout();
+            contentPanel.layout();
           }
         });
 
