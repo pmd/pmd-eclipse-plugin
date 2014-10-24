@@ -3,6 +3,7 @@ package net.sourceforge.pmd.eclipse.search;
 import java.util.List;
 
 import net.sourceforge.pmd.lang.Language;
+import net.sourceforge.pmd.lang.LanguageRegistry;
 
 import org.eclipse.jface.dialogs.DialogPage;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -60,11 +61,11 @@ public class RuleSearchPage extends DialogPage implements ISearchPage {
 
     public void buildLanguageCombo(Composite parent) {
    	 
-    	final List<Language> languages = Language.findWithRuleSupport();
+    	final List<Language> languages = LanguageRegistry.findWithRuleSupport();
 
  		language = new Combo(parent, SWT.READ_ONLY);
 
- 		Language deflt = Language.getDefaultLanguage();
+ 		Language deflt = LanguageRegistry.getDefaultLanguage();
  		int selectionIndex = -1;
 
  		for (int i = 0; i < languages.size(); i++) {

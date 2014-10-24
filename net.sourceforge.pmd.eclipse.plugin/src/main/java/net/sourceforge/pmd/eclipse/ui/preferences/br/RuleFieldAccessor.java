@@ -136,7 +136,13 @@ public interface RuleFieldAccessor {
 
 	RuleFieldAccessor language = new BasicRuleFieldAccessor() {
         public Comparable<Language> valueFor(Rule rule) {
-            return rule.getLanguage();
+            final Language l = rule.getLanguage();
+            return new Comparable<Language>() {
+                @Override
+                public int compareTo(Language o) {
+                    return l.getName().compareTo(o.getName());
+                }
+            };
 	    }
         
         public String labelFor(Rule rule) {

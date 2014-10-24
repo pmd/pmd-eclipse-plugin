@@ -7,11 +7,12 @@ import java.util.List;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSets;
-import net.sourceforge.pmd.lang.Language;
+import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.Parser;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.java.JavaLanguageModule;
 import net.sourceforge.pmd.lang.java.ast.ParseException;
 import net.sourceforge.pmd.lang.rule.XPathRule;
 
@@ -41,7 +42,7 @@ public class XPathEvaluator {
 	}
 
 	private LanguageVersion getLanguageVersion() {
-		return Language.JAVA.getDefaultVersion();
+	    return LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getDefaultVersion();
 	}
 
 	/**

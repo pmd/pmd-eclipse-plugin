@@ -35,8 +35,6 @@
  */
 package net.sourceforge.pmd.eclipse.runtime.cmd;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -56,7 +54,8 @@ import net.sourceforge.pmd.eclipse.runtime.preferences.IPreferences;
 import net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties;
 import net.sourceforge.pmd.eclipse.runtime.properties.PropertiesException;
 import net.sourceforge.pmd.eclipse.ui.actions.RuleSetUtil;
-import net.sourceforge.pmd.lang.Language;
+import net.sourceforge.pmd.lang.LanguageRegistry;
+import net.sourceforge.pmd.lang.java.JavaLanguageModule;
 import net.sourceforge.pmd.util.StringUtil;
 
 import org.apache.log4j.Logger;
@@ -73,7 +72,6 @@ import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.core.runtime.jobs.MultiRule;
@@ -610,7 +608,7 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
     }
     
     private static boolean isSuitable(IFile file) {
-    	return isLanguageFile(file, Language.JAVA);
+    	return isLanguageFile(file, LanguageRegistry.getLanguage(JavaLanguageModule.NAME));
     }
     
     /**
@@ -636,6 +634,6 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
             count++;
             return true;
         }
-    };
+    }
 
 }

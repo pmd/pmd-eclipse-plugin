@@ -35,8 +35,9 @@ import net.sourceforge.pmd.eclipse.ui.ShapePainter;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
 import net.sourceforge.pmd.eclipse.ui.nls.StringTable;
 import net.sourceforge.pmd.eclipse.util.ResourceManager;
-import net.sourceforge.pmd.lang.Language;
+import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.lang.java.JavaLanguageModule;
 
 import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.Layout;
@@ -148,7 +149,7 @@ public class PMDPlugin extends AbstractUIPlugin {
 		
 		if (jProject.exists()) {
 			String compilerCompliance = jProject.getOption(JavaCore.COMPILER_COMPLIANCE, true);
-			return Language.JAVA.getVersion(compilerCompliance);
+			return LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion(compilerCompliance);
 		}
 		return null;
 	}

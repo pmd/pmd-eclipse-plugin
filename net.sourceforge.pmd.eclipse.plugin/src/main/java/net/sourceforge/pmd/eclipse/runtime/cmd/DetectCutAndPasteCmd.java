@@ -164,7 +164,7 @@ public class DetectCutAndPasteCmd extends AbstractProjectCommand {
      * @param language The language to set.
      */
     public void setLanguage(String theLanguage) {
-        language = new LanguageFactory().createLanguage(theLanguage);
+        language = LanguageFactory.createLanguage(theLanguage);
     }
 
     /**

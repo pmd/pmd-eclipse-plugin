@@ -51,9 +51,10 @@ import net.sourceforge.pmd.eclipse.runtime.PMDRuntimeConstants;
 import net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties;
 import net.sourceforge.pmd.eclipse.runtime.properties.PropertiesException;
 import net.sourceforge.pmd.eclipse.util.IOUtil;
-import net.sourceforge.pmd.lang.Language;
+import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.LanguageVersionDiscoverer;
+import net.sourceforge.pmd.lang.java.JavaLanguageModule;
 import net.sourceforge.pmd.util.NumericConstants;
 import net.sourceforge.pmd.util.StringUtil;
 
@@ -265,7 +266,7 @@ public class BaseVisitor {
     		LanguageVersionDiscoverer languageDiscoverer = new LanguageVersionDiscoverer();
     		LanguageVersion languageVersion = languageDiscoverer.getDefaultLanguageVersionForFile(file.getName());
     		// in case it is java, select the correct java version
-    		if (languageVersion != null && languageVersion.getLanguage() == Language.JAVA) {
+    		if (languageVersion != null && languageVersion.getLanguage() == LanguageRegistry.getLanguage(JavaLanguageModule.NAME)) {
     		    languageVersion = PMDPlugin.javaVersionFor(file.getProject());
     		}
     		if (languageVersion != null) {

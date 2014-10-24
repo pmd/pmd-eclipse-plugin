@@ -16,8 +16,9 @@
   <dependencies>
     <dependency>
         <groupId>net.sourceforge.pmd</groupId>
-        <artifactId>pmd</artifactId>
+        <artifactId>pmd-dist</artifactId> <!-- pmd-dist depends on all modules of pmd, so we'll get everything -->
         <version>${pmd.version}</version>
+        <type>pom</type>
     </dependency>
     <dependency>
         <groupId>org.codehaus.castor</groupId>

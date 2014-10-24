@@ -25,6 +25,7 @@ import net.sourceforge.pmd.eclipse.ui.preferences.br.ValueChangeListener;
 import net.sourceforge.pmd.eclipse.ui.preferences.editors.SWTUtil;
 import net.sourceforge.pmd.eclipse.ui.preferences.editors.TypeText;
 import net.sourceforge.pmd.lang.Language;
+import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.rule.XPathRule;
 import net.sourceforge.pmd.util.StringUtil;
@@ -482,11 +483,11 @@ public class RulePanelManager extends AbstractRulePanelManager {
      
 	private Combo buildLanguageCombo(Composite parent) {
 
-		final List<Language> languages = Language.findWithRuleSupport();
+		final List<Language> languages = LanguageRegistry.findWithRuleSupport();
 
 		final Combo combo = new Combo(parent, SWT.READ_ONLY);
 
-		Language deflt = Language.getDefaultLanguage();
+		Language deflt = LanguageRegistry.getDefaultLanguage();
 		int selectionIndex = -1;
 
 		for (int i = 0; i < languages.size(); i++) {
@@ -524,7 +525,7 @@ public class RulePanelManager extends AbstractRulePanelManager {
      private Language selectedLanguage() {
     	 int index = languageCombo.getSelectionIndex();
     	 if (index < 0) return null;	// should never happen!
-    	 return Language.findWithRuleSupport().get(index);
+    	 return LanguageRegistry.findWithRuleSupport().get(index);
      }
 
      private LanguageVersion selectedVersionIn(Combo versionCombo) {

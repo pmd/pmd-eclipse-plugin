@@ -48,7 +48,7 @@ import net.sourceforge.pmd.RuleSetNotFoundException;
 import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.SourceCodeProcessor;
-import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.util.datasource.DataSource;
 
 import org.junit.Assert;
@@ -112,7 +112,7 @@ public class BasicPMDTest {
 
     try {
       PMDConfiguration configuration = new PMDConfiguration();
-      configuration.setDefaultLanguageVersion(LanguageVersion.JAVA_13);
+      configuration.setDefaultLanguageVersion(LanguageRegistry.findLanguageVersionByTerseName("java 1.3"));
 
       final String sourceCode = "public class Foo {\n public void foo() {\nreturn;\n}}";
 
@@ -152,7 +152,7 @@ public class BasicPMDTest {
 
     try {
       PMDConfiguration configuration = new PMDConfiguration();
-      configuration.setDefaultLanguageVersion(LanguageVersion.JAVA_14);
+      configuration.setDefaultLanguageVersion(LanguageRegistry.findLanguageVersionByTerseName("java 1.4"));
 
       final String sourceCode = "public class Foo {\n public void foo() {\nreturn;\n}}";
 
@@ -192,7 +192,7 @@ public class BasicPMDTest {
 
     try {
       PMDConfiguration configuration = new PMDConfiguration();
-      configuration.setDefaultLanguageVersion(LanguageVersion.JAVA_15);
+      configuration.setDefaultLanguageVersion(LanguageRegistry.findLanguageVersionByTerseName("java 1.5"));
 
       final String sourceCode = "public class Foo {\n public void foo() {\nreturn;\n}}";
 

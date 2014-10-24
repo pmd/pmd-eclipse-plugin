@@ -68,7 +68,7 @@ public class RuleTableViewerSorter extends ViewerSorter {
      */
     public static final Comparator<Rule> RULE_LANGUAGE_COMPARATOR = new Comparator<Rule>() {
         public int compare(Rule r1, Rule r2) {
-        	return r1.getLanguage().compareTo(r2.getLanguage());
+            return compareStrings(r1.getLanguage().getName(), r2.getLanguage().getName());
         }
     };
 
