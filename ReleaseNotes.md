@@ -4,7 +4,7 @@ Installation instructions: <http://pmd.sourceforge.net/eclipse/>
 
 Eclipse Update Site: <https://sourceforge.net/projects/pmd/files/pmd-eclipse/update-site/>
 
-## ????: 4.0.5.v????
+## 05-November-2014: 4.0.5.v20141105-1906
 
 * Updated PMD to 5.2.1
 
