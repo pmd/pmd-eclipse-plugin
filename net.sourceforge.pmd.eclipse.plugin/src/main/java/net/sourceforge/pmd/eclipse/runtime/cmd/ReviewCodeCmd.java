@@ -185,17 +185,29 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
 
             // do we really need to do any of the rest of this if 
             // fileCount and ruleCount are both 0?
-            
-            // Appliquer les marqueurs
-            IWorkspaceRunnable action = new IWorkspaceRunnable() {
-                public void run(IProgressMonitor monitor) throws CoreException {
-                    applyMarkers();
+
+            //skip the marking processing if the markersByFile set is empty (avoids grabbing the "run" lock for nothing)
+            if (!markersByFile.isEmpty()) {
+                // Appliquer les marqueurs
+                IWorkspaceRunnable action = new IWorkspaceRunnable() {
+                    public void run(IProgressMonitor monitor) throws CoreException {
+                        applyMarkers();
+                    }
+                };
+            	
+            	 //clear the markers here.  The call to Resource.deleteMarkers will 
+                //also call the Workspace.prepareOperation so do that 
+                //outside the larger "applyMarkers" call to avoid doubly holding locks
+                //for too long
+                for (IFile file : markersByFile.keySet()) {
+                    if (isCanceled()) break;
+                    MarkerUtil.deleteAllMarkersIn(file);
                 }
-            };
-
-            final IWorkspace workspace = ResourcesPlugin.getWorkspace();
-            workspace.run(action, getSchedulingRule(), IWorkspace.AVOID_UPDATE, getMonitor());
-
+            	
+            	final IWorkspace workspace = ResourcesPlugin.getWorkspace();
+            	workspace.run(action, getSchedulingRule(), IWorkspace.AVOID_UPDATE, getMonitor());
+            }
+            
             // Switch to the PMD perspective if required
             if (openPmdPerspective) {
                 Display.getDefault().asyncExec(new Runnable() {
@@ -534,7 +546,6 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
             for (IFile file : markersByFile.keySet()) {
                 if (isCanceled()) break;
                 currentFile = file.getName();
-                MarkerUtil.deleteAllMarkersIn(file);
                 Set<MarkerInfo2> markerInfoSet = markersByFile.get(file);
                 for (MarkerInfo2 markerInfo : markerInfoSet) { 
                     markerInfo.addAsMarkerTo(file);

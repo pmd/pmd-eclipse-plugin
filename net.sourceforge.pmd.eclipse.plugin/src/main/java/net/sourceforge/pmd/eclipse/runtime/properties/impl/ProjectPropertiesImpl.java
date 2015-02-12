@@ -81,6 +81,7 @@ public class ProjectPropertiesImpl implements IProjectProperties {
     private boolean ruleSetStoredInProject;
     private String ruleSetFile;
     private RuleSet projectRuleSet;
+    private long projectRuleFileLastModified = 0;
     private IWorkingSet projectWorkingSet;
     private boolean includeDerivedFiles;
     private boolean violationsAsErrors = true;
@@ -178,6 +179,12 @@ public class ProjectPropertiesImpl implements IProjectProperties {
 
         this.needRebuild |= !this.projectRuleSet.getRules().equals(projectRuleSet.getRules());
         this.projectRuleSet = projectRuleSet;
+        if (this.ruleSetStoredInProject) {
+        	File f = getResolvedRuleSetFile();
+        	if (f != null) {
+        		projectRuleFileLastModified = f.lastModified();
+        	}
+        }
     }
 
     /**
@@ -194,8 +201,14 @@ public class ProjectPropertiesImpl implements IProjectProperties {
         log.debug("Set rule set stored in project for project " + this.project.getName() + ": " + ruleSetStoredInProject);
         this.needRebuild |= this.ruleSetStoredInProject != ruleSetStoredInProject;
         this.ruleSetStoredInProject = ruleSetStoredInProject;
-        if (this.ruleSetStoredInProject && !isRuleSetFileExist()) {
-            throw new PropertiesException("The project ruleset file cannot be found for project " + this.project.getName()); // TODO NLS
+        if (this.ruleSetStoredInProject) {
+        	if (!isRuleSetFileExist()) {
+        		throw new PropertiesException("The project ruleset file cannot be found for project " + this.project.getName()); // TODO NLS
+        	}
+        	File f = getResolvedRuleSetFile();
+        	if (f != null) {
+        		projectRuleFileLastModified = f.lastModified();
+        	}
         }
     }
 
@@ -214,8 +227,14 @@ public class ProjectPropertiesImpl implements IProjectProperties {
         log.debug("Set rule set file for project " + project.getName() + ": " + ruleSetFile);
         needRebuild |= this.ruleSetFile == null || !this.ruleSetFile.equals(ruleSetFile);
         this.ruleSetFile = ruleSetFile;
-        if (ruleSetStoredInProject && !isRuleSetFileExist()) {
-            throw new PropertiesException("The project ruleset file cannot be found for project " + project.getName()); // TODO NLS
+        if (ruleSetStoredInProject) {
+            if (!isRuleSetFileExist()) {
+                throw new PropertiesException("The project ruleset file cannot be found for project " + project.getName()); // TODO NLS
+            }
+        	File f = getResolvedRuleSetFile();
+        	if (f != null) {
+        		projectRuleFileLastModified = f.lastModified();
+        	}
         }
 	}
 
@@ -244,6 +263,12 @@ public class ProjectPropertiesImpl implements IProjectProperties {
         log.debug("Query if project " + project.getName() + " need rebuild : " + (pmdEnabled && needRebuild));
         log.debug("   PMD Enabled = " + pmdEnabled);
         log.debug("   Project need rebuild = " + needRebuild);
+        if (ruleSetStoredInProject) {
+        	File f = getResolvedRuleSetFile();
+        	if (f != null) {
+        		needRebuild |= f.lastModified() > projectRuleFileLastModified;
+        	}
+        }
         return pmdEnabled && needRebuild;
     }
 

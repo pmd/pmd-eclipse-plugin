@@ -97,6 +97,7 @@ public class ProjectPropertiesManagerImpl implements IProjectPropertiesManager {
         try {
             IProjectProperties projectProperties = this.projectsProperties.get(project);
             if (projectProperties == null) {
+            	log.debug("Creating new poject properties for " + project.getName());
                 projectProperties = new PropertiesFactoryImpl().newProjectProperties(project, this);
                 final ProjectPropertiesTO to = readProjectProperties(project);
                 fillProjectProperties(projectProperties, to);
@@ -152,12 +153,13 @@ public class ProjectPropertiesManagerImpl implements IProjectPropertiesManager {
      *
      */
     private void loadRuleSetFromProject(IProjectProperties projectProperties) throws PropertiesException {
-        if (projectProperties.isRuleSetFileExist()) {
+        if (projectProperties.isRuleSetFileExist() && projectProperties.isNeedRebuild()) {
             log.debug("Loading ruleset from project ruleset file: " + projectProperties.getRuleSetFile());
             try {
                 final RuleSetFactory factory = new RuleSetFactory();
                 final File ruleSetFile = projectProperties.getResolvedRuleSetFile();
                 projectProperties.setProjectRuleSet(factory.createRuleSets(ruleSetFile.getPath()).getAllRuleSets()[0]);
+                projectProperties.setNeedRebuild(false);
             } catch (RuleSetNotFoundException e) {
                 PMDPlugin.getDefault().logError(
                         "Project RuleSet cannot be loaded for project " + projectProperties.getProject().getName()
