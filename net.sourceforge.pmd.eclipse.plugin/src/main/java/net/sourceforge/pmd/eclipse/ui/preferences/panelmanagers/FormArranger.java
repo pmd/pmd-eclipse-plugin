@@ -140,7 +140,7 @@ public class FormArranger implements ValueChangeListener {
 		}
 
 		PropertyDescriptor<?>[] orderedDescs = valuesByDescriptor.keySet().toArray(new PropertyDescriptor[valuesByDescriptor.size()]);
-		Arrays.sort(orderedDescs, PropertyDescriptorUtil.ComparatorByOrder);
+		Arrays.sort(orderedDescs, PropertyDescriptorUtil.COMPARATOR_BY_ORDER);
 		
 		int rowCount = 0;	// count up the actual rows with widgets needed, not all have editors yet
 		for (PropertyDescriptor<?> desc: orderedDescs) {
