@@ -6,6 +6,8 @@ Eclipse Update Site: <https://sourceforge.net/projects/pmd/files/pmd-eclipse/upd
 
 ## ????: 4.0.6.v????
 
+* Some performance improvments when using a BUNCH of projects with pmd settings ([pull request #3](https://github.com/pmd/pmd-eclipse-plugin/pull/3))
+
 
 ## 05-November-2014: 4.0.5.v20141105-1906
 
