@@ -1,7 +1,10 @@
 package net.sourceforge.pmd.eclipse.ui.preferences.br;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.PropertySource;
@@ -511,13 +514,18 @@ public class PMDPreferencePage2 extends AbstractPMDPreferencePage implements Rul
 		PreferenceUIStore.instance.save();
 	}
 
-
 	private void storeActiveRules() {
 
 		List<Rule> chosenRules = tableManager.activeRules();
+		Set<String> activeRules = new HashSet<String>();
 		for (Rule rule : chosenRules) {
-			preferences.isActive(rule.getName(), true);
+		    activeRules.add(rule.getName());
 		}
+
+		// first remove all inactive rules
+		preferences.setInactiveRuleNames(new HashSet<String>());
+		// then override the active rules
+		preferences.setActiveRuleNames(activeRules);
 
 //		System.out.println("Active rules: " + preferences.getActiveRuleNames());
 	}

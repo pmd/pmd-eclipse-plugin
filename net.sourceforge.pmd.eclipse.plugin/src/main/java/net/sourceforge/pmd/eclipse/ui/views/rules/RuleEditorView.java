@@ -1,6 +1,8 @@
 package net.sourceforge.pmd.eclipse.ui.views.rules;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.PropertySource;
@@ -283,17 +285,6 @@ public class RuleEditorView extends ViewPart implements RuleSelectionListener, M
 		int i =  tabFolder.getSelectionIndex();
 		PreferenceUIStore.instance.selectedPropertyTab( i );
 		PreferenceUIStore.instance.save();
-	}
-
-
-	private void storeActiveRules() {
-
-		List<Rule> chosenRules = tableManager.activeRules();
-		for (Rule rule : chosenRules) {
-			preferences.isActive(rule.getName(), true);
-		}
-
-		System.out.println("Active rules: " + preferences.getActiveRuleNames());
 	}
 
 	/**

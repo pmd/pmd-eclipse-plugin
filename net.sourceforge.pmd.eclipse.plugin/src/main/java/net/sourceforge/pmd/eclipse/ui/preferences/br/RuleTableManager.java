@@ -6,6 +6,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -289,8 +291,12 @@ public class RuleTableManager extends AbstractTreeTableManager<Rule> implements 
 	    int removeCount = ruleSelection.removeAllFrom(ruleSet);
 	    if (removeCount == 0) return;
 
-	    removed(ruleSelection.allRules());
-	    
+	    List<Rule> removedRules = ruleSelection.allRules();
+	    for (Rule r : removedRules) {
+	        preferences.isActive(r.getName(), false);
+	    }
+        removed(removedRules);
+
         setModified();
 
         try {
@@ -298,6 +304,8 @@ public class RuleTableManager extends AbstractTreeTableManager<Rule> implements 
         } catch (Throwable t) {
             treeViewer.setSelection(null);
         }
+
+        updateCheckControls();
 	}
 	
 	/**
@@ -936,11 +944,20 @@ public class RuleTableManager extends AbstractTreeTableManager<Rule> implements 
 	}
 
 	protected void setAllItemsActive() {
-		for (Rule rule : ruleSet.getRules()) {
-			isActive(rule.getName(), true);
-		}
+	    Collection<Rule> rules = ruleSet.getRules();
+	    Rule[] rulesArray = rules.toArray(new Rule[rules.size()]);
 
-		treeViewer().setCheckedElements(ruleSet.getRules().toArray());
+	    Set<String> activeRules = new HashSet<String>();
+	    for (int i = 0; i < rulesArray.length; i++) {
+            activeRules.add(rulesArray[i].getName());
+        }
+
+        // remove first all inactive rules
+	    preferences.setInactiveRuleNames(new HashSet<String>());
+	    // then set all active rules
+	    preferences.setActiveRuleNames(activeRules);
+
+		treeViewer().setCheckedElements(rulesArray);
 
 		updateCheckControls();
 		setModified();
