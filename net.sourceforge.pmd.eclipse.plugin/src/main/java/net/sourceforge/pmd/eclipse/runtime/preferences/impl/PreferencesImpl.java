@@ -76,7 +76,6 @@ class PreferencesImpl implements IPreferences {
     private Level 				logLevel;
     private boolean             globalRuleManagement;
     private Set<String> 		activeRuleNames = new HashSet<String>();
-    private Set<String>         inactiveRuleNames = new HashSet<String>();
     private Set<String> 		activeRendererNames = new HashSet<String>();
     private Set<String> 		activeExclusionPatterns = new HashSet<String>();
     private Set<String> 		activeInclusionPatterns = new HashSet<String>();
@@ -254,20 +253,14 @@ class PreferencesImpl implements IPreferences {
 	public void isActive(String ruleName, boolean isActive) {
 		if (isActive) {
 			activeRuleNames.add(ruleName);
-			inactiveRuleNames.remove(ruleName);
 		} else {
 			activeRuleNames.remove(ruleName);
-			inactiveRuleNames.add(ruleName);
 		}
 	}
 
 	public Set<String> getActiveRuleNames() {
 		return activeRuleNames;
 	}
-
-    public Set<String> getInactiveRuleNames() {
-        return inactiveRuleNames;
-    }
 
     /**
      * Returns a comma-separated list of rules that are active by default.
@@ -285,10 +278,6 @@ class PreferencesImpl implements IPreferences {
             }
         }
         return rules.toString();
-    }
-
-    public void setInactiveRuleNames(Set<String> ruleNames) {
-        inactiveRuleNames = ruleNames;
     }
 
     public void setActiveRuleNames(Set<String> ruleNames) {
