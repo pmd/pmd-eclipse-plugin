@@ -107,7 +107,6 @@ class PreferencesManagerImpl implements IPreferencesManager {
     private static final String LOG_FILENAME                	= PMDPlugin.PLUGIN_ID + ".log_filename";
     private static final String LOG_LEVEL                   	= PMDPlugin.PLUGIN_ID + ".log_level";
     private static final String GLOBAL_RULE_MANAGEMENT          = PMDPlugin.PLUGIN_ID + ".globalRuleManagement";
-    private static final String INACTIVE_RULES                  = PMDPlugin.PLUGIN_ID + ".inactive_rules";
     private static final String ACTIVE_RULES                	= PMDPlugin.PLUGIN_ID + ".active_rules";
     private static final String ACTIVE_RENDERERS               	= PMDPlugin.PLUGIN_ID + ".active_renderers";
     private static final String ACTIVE_EXCLUSIONS              	= PMDPlugin.PLUGIN_ID + ".active_exclusions";
@@ -171,7 +170,6 @@ class PreferencesManagerImpl implements IPreferencesManager {
         loadLogFileName();
         loadLogLevel();
         loadGlobalRuleManagement();
-        loadInactiveRules();
         loadActiveRules();
         loadActiveReportRenderers();
         loadActiveExclusions();
@@ -236,7 +234,6 @@ class PreferencesManagerImpl implements IPreferencesManager {
         storeLogFileName();
         storeLogLevel();
         storeGlobalRuleManagement();
-        storeInactiveRules();
         storeActiveRules();
         storeActiveReportRenderers();
         storeActiveExclusions();
@@ -319,11 +316,6 @@ class PreferencesManagerImpl implements IPreferencesManager {
         preferences.setGlobalRuleManagement(loadPreferencesStore.getBoolean(GLOBAL_RULE_MANAGEMENT));
     }
 
-    private void loadInactiveRules() {
-        loadPreferencesStore.setDefault(INACTIVE_RULES, IPreferences.INACTIVE_RULES);
-        preferences.setInactiveRuleNames(asStringSet(loadPreferencesStore.getString(INACTIVE_RULES), ","));
-    }
-
     private void loadActiveRules() {
         loadPreferencesStore.setDefault(ACTIVE_RULES, preferences.getDefaultActiveRules());
         preferences.setActiveRuleNames(asStringSet(loadPreferencesStore.getString(ACTIVE_RULES), ","));
@@ -384,9 +376,6 @@ class PreferencesManagerImpl implements IPreferencesManager {
         storePreferencesStore.setValue(GLOBAL_RULE_MANAGEMENT, preferences.getGlobalRuleManagement());
     }
 
-    private void storeInactiveRules() {
-        storePreferencesStore.setValue(INACTIVE_RULES, asDelimitedString(preferences.getInactiveRuleNames(), ","));
-    }
     private void storeActiveRules() {
     	storePreferencesStore.setValue(ACTIVE_RULES, asDelimitedString(preferences.getActiveRuleNames(), ","));
     }

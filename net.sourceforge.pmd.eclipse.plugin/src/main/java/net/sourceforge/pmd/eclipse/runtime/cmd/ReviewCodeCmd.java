@@ -463,11 +463,19 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
     	 
          final RuleSet ruleSet = properties.getProjectRuleSet();
          IPreferences preferences = PMDPlugin.getDefault().getPreferencesManager().loadPreferences();
-         Set<String> inactiveRuleNames = preferences.getInactiveRuleNames();
+         Set<String> onlyActiveRuleNames = preferences.getActiveRuleNames();
 
          RuleSet filteredRuleSet = RuleSetUtil.newCopyOf(ruleSet);
+         int rulesBefore = filteredRuleSet.size();
          if (preferences.getGlobalRuleManagement()) {
-             RuleSetUtil.remove(filteredRuleSet, inactiveRuleNames);
+             RuleSetUtil.retainOnly(filteredRuleSet, onlyActiveRuleNames);
+             int rulesAfter = filteredRuleSet.size();
+
+             if (rulesAfter < rulesBefore) {
+                 PMDPlugin.getDefault().logWarn("Ruleset has been filtered as Global Rule Management is active. "
+                     + rulesAfter + " of " + rulesBefore + " rules are active and are used. "
+                     + (rulesBefore - rulesAfter) + " rules will be ignored.");
+             }
          }
          filteredRuleSet.addExcludePatterns(preferences.activeExclusionPatterns());
          filteredRuleSet.addIncludePatterns(preferences.activeInclusionPatterns());

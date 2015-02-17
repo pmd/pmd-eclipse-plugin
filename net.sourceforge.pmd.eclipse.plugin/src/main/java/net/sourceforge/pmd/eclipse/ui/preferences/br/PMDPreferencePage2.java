@@ -1,7 +1,6 @@
 package net.sourceforge.pmd.eclipse.ui.preferences.br;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -522,9 +521,7 @@ public class PMDPreferencePage2 extends AbstractPMDPreferencePage implements Rul
 		    activeRules.add(rule.getName());
 		}
 
-		// first remove all inactive rules
-		preferences.setInactiveRuleNames(new HashSet<String>());
-		// then override the active rules
+		// override all the active rules
 		preferences.setActiveRuleNames(activeRules);
 
 //		System.out.println("Active rules: " + preferences.getActiveRuleNames());

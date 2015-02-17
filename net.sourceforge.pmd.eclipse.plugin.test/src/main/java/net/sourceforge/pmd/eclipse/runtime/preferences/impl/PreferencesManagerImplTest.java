@@ -25,11 +25,9 @@ public class PreferencesManagerImplTest {
         IPreferences preferences = manager.loadPreferences();
         preferences.isActive(ruleName, false);
         manager.storePreferences(preferences);
-        Assert.assertFalse(preferences.getInactiveRuleNames().isEmpty());
-        Assert.assertTrue(preferences.getInactiveRuleNames().contains(ruleName));
+        Assert.assertFalse(preferences.getActiveRuleNames().contains(ruleName));
 
         preferences = manager.reloadPreferences();
-        Assert.assertFalse(preferences.getInactiveRuleNames().isEmpty());
-        Assert.assertTrue(preferences.getInactiveRuleNames().contains(ruleName));
+        Assert.assertFalse(preferences.getActiveRuleNames().contains(ruleName));
     }
 }

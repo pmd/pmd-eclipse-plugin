@@ -416,6 +416,10 @@ public class PMDPlugin extends AbstractUIPlugin {
         getLog().log(new Status(IStatus.INFO, getBundle().getSymbolicName(), 0, message, null));
     }
 
+    public void logWarn(String message) {
+        getLog().log(new Status(IStatus.WARNING, getBundle().getSymbolicName(), 0, message, null));
+    }
+
     /**
      * @return an instance of an AST writer
      */

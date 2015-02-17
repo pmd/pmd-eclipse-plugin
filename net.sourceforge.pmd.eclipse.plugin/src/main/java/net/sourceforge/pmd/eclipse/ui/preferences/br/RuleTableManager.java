@@ -952,9 +952,7 @@ public class RuleTableManager extends AbstractTreeTableManager<Rule> implements 
             activeRules.add(rulesArray[i].getName());
         }
 
-        // remove first all inactive rules
-	    preferences.setInactiveRuleNames(new HashSet<String>());
-	    // then set all active rules
+	    // set all active rules
 	    preferences.setActiveRuleNames(activeRules);
 
 		treeViewer().setCheckedElements(rulesArray);
