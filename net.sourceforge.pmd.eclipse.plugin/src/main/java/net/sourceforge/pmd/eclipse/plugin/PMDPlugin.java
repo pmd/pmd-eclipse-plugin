@@ -335,7 +335,7 @@ public class PMDPlugin extends AbstractUIPlugin {
 
             public void run() {
             	String errTitle = getStringTable().getString(StringKeys.ERROR_TITLE);
-                MessageDialog.openError(Display.getCurrent().getActiveShell(), errTitle, message + String.valueOf(t));
+                MessageDialog.openError(Display.getCurrent().getActiveShell(), errTitle, message + "\n" + String.valueOf(t));
             }
         });
     }

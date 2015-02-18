@@ -454,9 +454,9 @@ class PreferencesManagerImpl implements IPreferencesManager {
             try {
                 preferedRuleSet = factory.createRuleSet(ruleSetLocation.toOSString());
             } catch (RuntimeException e) {
-            	PMDPlugin.getDefault().logError("Runtime Exception when loading state ruleset file", e);
+            	PMDPlugin.getDefault().showError("Runtime Exception when loading stored ruleset file. Falling back to default ruleset.", e);
             } catch (RuleSetNotFoundException e) {
-            	PMDPlugin.getDefault().logError("RuleSet Not Found Exception when loading state ruleset file", e);
+            	PMDPlugin.getDefault().showError("RuleSet Not Found Exception when loading stored ruleset file. Falling back to default ruleset.", e);
 	    }
         }
 
