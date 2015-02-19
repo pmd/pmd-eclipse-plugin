@@ -44,8 +44,7 @@ Bundle-ClassPath: target/lib/asm.jar,
  target/lib/rhino.jar,
  target/lib/saxon-dom.jar,
  target/lib/saxon.jar,
- target/lib/xercesImpl.jar,
- target/lib/xml-apis.jar,
+ target/lib/xerces.jar,
  target/classes/,
  .
 Bundle-Localization: plugin

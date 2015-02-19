@@ -36,8 +36,8 @@
 
 package net.sourceforge.pmd.eclipse.ui.views.cpd2;
 
+import net.sourceforge.pmd.cpd.Mark;
 import net.sourceforge.pmd.cpd.Match;
-import net.sourceforge.pmd.cpd.TokenEntry;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
 
@@ -86,9 +86,9 @@ public class CPDViewTooltipListener2 implements Listener {
     }
 
     // open file and jump to the startline
-	private void highlight(Match match, TokenEntry entry) {
+	private void highlight(Match match, Mark entry) {
 		
-		IPath path = Path.fromOSString(entry.getTokenSrcID());
+		IPath path = Path.fromOSString(entry.getFilename());
 		IFile file = ResourcesPlugin.getWorkspace().getRoot().getFileForLocation(path);
 		if (file == null) return;
 		
@@ -117,7 +117,7 @@ public class CPDViewTooltipListener2 implements Listener {
 		return item instanceof Match ? (Match)item : null;
     }
     
-	private TokenEntry itemAt(TreeItem treeItem, Point location, GC gc) {
+	private Mark itemAt(TreeItem treeItem, Point location, GC gc) {
 
 		if (treeItem == null) return null;
 		
@@ -164,7 +164,7 @@ public class CPDViewTooltipListener2 implements Listener {
    	 	}
    	 	
         TreeItem item = tree.getItem(location);
-        TokenEntry entry = itemAt(item, location, event.gc);
+        Mark entry = itemAt(item, location, event.gc);
         if (entry == null) {
         	shell.setCursor(normalCursor);
         	return;

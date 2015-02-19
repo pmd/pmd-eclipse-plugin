@@ -40,10 +40,10 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import net.sourceforge.pmd.cpd.Mark;
 import net.sourceforge.pmd.cpd.Match;
-import net.sourceforge.pmd.cpd.TokenEntry;
-import net.sourceforge.pmd.eclipse.runtime.PMDRuntimeConstants;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
+import net.sourceforge.pmd.eclipse.runtime.PMDRuntimeConstants;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
 
 import org.eclipse.jface.viewers.TreeNode;
@@ -176,9 +176,9 @@ public class CPDView extends ViewPart implements IPropertyListener {
 
                 // create the children of the match
                 TreeNode[] children = new TreeNode[match.getMarkCount()]; // NOPMD by Sven on 02.11.06 11:28
-                Iterator<TokenEntry> entryIterator = match.getMarkSet().iterator();
+                Iterator<Mark> entryIterator = match.getMarkSet().iterator();
                 for (int j=0; entryIterator.hasNext(); j++) {
-                    final TokenEntry entry = entryIterator.next();
+                    final Mark entry = entryIterator.next();
                     children[j] = new TreeNode(entry); // NOPMD by Sven on 02.11.06 11:28
                     children[j].setParent(matchNode);
                 }

@@ -41,6 +41,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import net.sourceforge.pmd.cpd.Mark;
 import net.sourceforge.pmd.cpd.Match;
 import net.sourceforge.pmd.cpd.TokenEntry;
 
@@ -102,9 +103,9 @@ public class CPDViewLabelProvider2 extends LabelProvider implements ITableLabelP
     	 return -1;
     }
     
-    public static String pathFor(TokenEntry entry) {
+    public static String pathFor(Mark entry) {
     	
-       final IPath path = Path.fromOSString(entry.getTokenSrcID());
+       final IPath path = Path.fromOSString(entry.getFilename());
        final IResource resource = ResourcesPlugin.getWorkspace().getRoot().getContainerForLocation(path);
        if (resource != null) {
            return resource.getProjectRelativePath().removeFileExtension().toString().replace(IPath.SEPARATOR, '.');
@@ -113,10 +114,10 @@ public class CPDViewLabelProvider2 extends LabelProvider implements ITableLabelP
        }
     }
     
-    public static TokenEntry[] entriesFor(Match match) {
+    public static Mark[] entriesFor(Match match) {
 
-    	Set<TokenEntry> entrySet = match.getMarkSet();
-    	TokenEntry[] entries = new TokenEntry[entrySet.size()];
+    	Set<Mark> entrySet = match.getMarkSet();
+    	Mark[] entries = new Mark[entrySet.size()];
     	entries = entrySet.toArray(entries);
     	Arrays.sort(entries);
     	
@@ -125,24 +126,24 @@ public class CPDViewLabelProvider2 extends LabelProvider implements ITableLabelP
     
     public static String[] sourcesFor(Match match) {
     	
-    	TokenEntry[] entries = entriesFor(match);
+        Mark[] entries = entriesFor(match);
     	
     	String[] classNames = new String[entries.length];
     	
     	int i = 0;
-    	for (TokenEntry entry : entries) {
+    	for (Mark entry : entries) {
     		classNames[i++] = pathFor(entry);
     	}
     	
     	return classNames;
     }
     
-    public static Map<String, TokenEntry> entriesByClassnameFor(Match match) {
+    public static Map<String, Mark> entriesByClassnameFor(Match match) {
     	
-    	TokenEntry[] entries = entriesFor(match);
-    	Map<String, TokenEntry> entriesByName = new HashMap<String, TokenEntry>(entries.length);
+        Mark[] entries = entriesFor(match);
+    	Map<String, Mark> entriesByName = new HashMap<String, Mark>(entries.length);
     	
-    	for (TokenEntry entry : entries) {
+    	for (Mark entry : entries) {
     		entriesByName.put( pathFor(entry), entry);
     	}
     	
