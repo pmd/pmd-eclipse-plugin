@@ -20,6 +20,12 @@ You should see 6 projects:
 * net.sourceforge.pmd.eclipse.plugin.test - the (unit) tests for the plugin
 * net.sourceforge.pmd.eclipse.plugin.test.fragment - an example extension of the plugin used during the tests
 
+Debugging
+---------
+You can run eclipse with debugging enabled and connect to it via remote debugging:
+
+    eclipse -data workspace-directory -vmargs -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=8000
+
 
 Releasing and updating the official eclipse update site
 -------------------------------------------------------
