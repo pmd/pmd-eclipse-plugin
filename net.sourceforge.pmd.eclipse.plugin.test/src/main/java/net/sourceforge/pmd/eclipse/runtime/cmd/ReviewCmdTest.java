@@ -84,6 +84,9 @@ public class ReviewCmdTest {
     Assert.assertNotNull("Cannot find the test source file", is);
     is.close();
 
+    // 3. Enable PMD for the test project
+    IProjectProperties properties = PMDPlugin.getDefault().getPropertiesManager().loadProjectProperties(testProject);
+    properties.setPmdEnabled(true);
   }
 
   /**
