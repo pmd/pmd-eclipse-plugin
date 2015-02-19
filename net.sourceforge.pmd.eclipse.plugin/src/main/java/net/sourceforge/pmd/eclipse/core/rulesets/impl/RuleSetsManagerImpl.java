@@ -56,7 +56,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.exolab.castor.mapping.Mapping;
 import org.exolab.castor.mapping.MappingException;
-import org.exolab.castor.util.LocalConfiguration;
 import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.Marshaller;
 import org.exolab.castor.xml.ValidationException;
@@ -123,14 +122,14 @@ public class RuleSetsManagerImpl implements IRuleSetsManager {
         LOG.debug("Storing plug-in rulesets");
         StringWriter writer = null;
         try {
-            LocalConfiguration.getInstance().getProperties().setProperty("org.exolab.castor.indent", "true");
-
             final Mapping mapping = new Mapping(this.getClass().getClassLoader());
             final URL mappingSpecUrl = this.getClass().getResource(RULESETS_MAPPING);
             mapping.loadMapping(mappingSpecUrl);
 
             writer = new StringWriter();
-            final Marshaller marshaller = new Marshaller(writer);
+            final Marshaller marshaller = new Marshaller();
+            marshaller.setProperty("org.exolab.castor.indent", "true");
+            marshaller.setWriter(writer);
             marshaller.setMapping(mapping);
             marshaller.marshal(ruleSets);
             writer.flush();

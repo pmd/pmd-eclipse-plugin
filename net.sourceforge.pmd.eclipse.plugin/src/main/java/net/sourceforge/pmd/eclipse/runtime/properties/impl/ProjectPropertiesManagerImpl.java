@@ -67,7 +67,6 @@ import org.eclipse.ui.IWorkingSetManager;
 import org.eclipse.ui.PlatformUI;
 import org.exolab.castor.mapping.Mapping;
 import org.exolab.castor.mapping.MappingException;
-import org.exolab.castor.util.LocalConfiguration;
 import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.Marshaller;
 import org.exolab.castor.xml.Unmarshaller;
@@ -271,14 +270,14 @@ public class ProjectPropertiesManagerImpl implements IProjectPropertiesManager {
             throws PropertiesException {
     	StringWriter writer = null;
         try {
-            LocalConfiguration.getInstance().getProperties().setProperty("org.exolab.castor.indent", "true");
-
             final Mapping mapping = new Mapping(getClass().getClassLoader());
             final URL mappingSpecUrl = getClass().getResource(PROPERTIES_MAPPING);
             mapping.loadMapping(mappingSpecUrl);
 
             writer = new StringWriter();
-            final Marshaller marshaller = new Marshaller(writer);
+            final Marshaller marshaller = new Marshaller();
+            marshaller.setProperty("org.exolab.castor.indent", "true");
+            marshaller.setWriter(writer);
             marshaller.setMapping(mapping);
             marshaller.marshal(projectProperties);
             writer.flush();
