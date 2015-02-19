@@ -102,6 +102,8 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
     private int 						fileCount;
     private long 						pmdDuration;
     private String						onErrorIssue = null;
+    
+    private IProjectProperties          propertyCache = null;
 
     private static final long serialVersionUID = 1L;
 
@@ -353,11 +355,17 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
             }
         }
     }
+    
+    private IProjectProperties getProjectProperties(IProject project) throws PropertiesException, CommandException {
+    	if (propertyCache == null || !propertyCache.getProject().getName().equals(project.getName())) {
+    		propertyCache = PMDPlugin.getDefault().loadProjectProperties(project);
+    	}
+		return propertyCache;
+    }
 
     private RuleSet rulesetFrom(IResource resource) throws PropertiesException, CommandException {
-    	
     	 IProject project = resource.getProject();
-         IProjectProperties properties = PMDPlugin.getDefault().loadProjectProperties(project);
+         IProjectProperties properties = getProjectProperties(project);
          
          return filteredRuleSet(properties);	//properties.getProjectRuleSet();
     }
@@ -369,7 +377,10 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
         try {
         	
             final IProject project = resource.getProject();
-            final IProjectProperties properties = PMDPlugin.getDefault().loadProjectProperties(project);
+            final IProjectProperties properties = getProjectProperties(project);
+            if (!properties.isPmdEnabled()) {
+            	return;
+            }
             
             final RuleSet ruleSet = rulesetFrom(resource);	//properties.getProjectRuleSet();
             
@@ -490,7 +501,7 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
     	
     	 IResource resource = resourceDelta.getResource();
          final IProject project = resource.getProject();
-         final IProjectProperties properties = PMDPlugin.getDefault().loadProjectProperties(project);
+         final IProjectProperties properties = getProjectProperties(project);
          
          return filteredRuleSet(properties);	//properties.getProjectRuleSet();
     }
@@ -502,7 +513,7 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
         try {
             IResource resource = resourceDelta.getResource();
             final IProject project = resource.getProject();
-            final IProjectProperties properties = PMDPlugin.getDefault().loadProjectProperties(project);
+            final IProjectProperties properties = getProjectProperties(project);
             
             RuleSet ruleSet = rulesetFromResourceDelta();	//properties.getProjectRuleSet();
 
@@ -655,4 +666,4 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
         }
     }
 
-}
+} 
