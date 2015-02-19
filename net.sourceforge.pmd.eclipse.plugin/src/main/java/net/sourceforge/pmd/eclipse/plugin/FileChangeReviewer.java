@@ -7,6 +7,7 @@ import name.herlin.command.CommandException;
 import net.sourceforge.pmd.eclipse.runtime.builder.MarkerUtil;
 import net.sourceforge.pmd.eclipse.runtime.cmd.ReviewCodeCmd;
 
+import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceChangeEvent;
@@ -110,6 +111,7 @@ public class FileChangeReviewer implements IResourceChangeListener {
 					if (monitor.isCanceled()) return;
 					changed(itemsChanged, grandkidDelta, monitor);
 				}
+				break;
 			case IResourceDelta.ADDED :
 //				if (rsc instanceof IProject) {
 //					removed(itemsChanged, (IProject)rsc, delta.getFlags());
@@ -121,6 +123,7 @@ public class FileChangeReviewer implements IResourceChangeListener {
 					if (monitor.isCanceled()) return;
 					changed(itemsChanged, grandkidDelta, monitor);
 				}		
+				break;
 			case IResourceDelta.CHANGED :
 //				if (rsc instanceof IProject) {
 //					changed(itemsChanged, (IProject)rsc, delta.getFlags());
@@ -131,7 +134,8 @@ public class FileChangeReviewer implements IResourceChangeListener {
 				for (IResourceDelta grandkidDelta : delta.getAffectedChildren()) {
 					if (monitor.isCanceled()) return;
 					changed(itemsChanged, grandkidDelta, monitor);
-				}			
+				}
+				break;
 			default :
 				for (IResourceDelta grandkidDelta : delta.getAffectedChildren()) {
 					if (monitor.isCanceled()) return;
