@@ -10,6 +10,7 @@ Eclipse Update Site: <https://sourceforge.net/projects/pmd/files/pmd-eclipse/upd
 * Updated PMD to 5.2.3 ([pull request #4](https://github.com/pmd/pmd-eclipse-plugin/pull/4))
 * Some performance improvements when using a BUNCH of projects with pmd settings ([pull request #3](https://github.com/pmd/pmd-eclipse-plugin/pull/3))
 * Fixed global rule management persistence broken ([bug #1248](https://sourceforge.net/p/pmd/bugs/1248))
+* More PMD plugin performance updates ([pull request #5](https://github.com/pmd/pmd-eclipse-plugin/pull/5))
 
 
 ## 05-November-2014: 4.0.5.v20141105-1906
