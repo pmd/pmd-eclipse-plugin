@@ -142,6 +142,10 @@ public interface RuleFieldAccessor {
                 public int compareTo(Language o) {
                     return l.getName().compareTo(o.getName());
                 }
+                @Override
+                public String toString() {
+                    return l.getName();
+                }
             };
 	    }
         
