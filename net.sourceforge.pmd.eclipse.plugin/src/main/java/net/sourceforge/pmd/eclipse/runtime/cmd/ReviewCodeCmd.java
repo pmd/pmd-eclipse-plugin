@@ -102,6 +102,8 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
     private int fileCount;
     private long pmdDuration;
     private String onErrorIssue = null;
+    /** Whether to run the review command, even if PMD is disabled in the project settings. */
+    private boolean runAlways = false;
 
     private IProjectProperties propertyCache = null;
 
@@ -291,6 +293,10 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
         this.taskMarker = taskMarker;
     }
 
+    public void setRunAlways(boolean runAlways) {
+        this.runAlways = runAlways;
+    }
+
     /**
      * @param openPmdPerspective
      *            Tell whether the PMD perspective should be opened after
@@ -310,6 +316,7 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
         setTerminated(false);
         openPmdPerspective = false;
         onErrorIssue = null;
+        runAlways = false;
     }
 
     /**
@@ -382,7 +389,7 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
 
             final IProject project = resource.getProject();
             final IProjectProperties properties = getProjectProperties(project);
-            if (!properties.isPmdEnabled()) {
+            if (!runAlways && !properties.isPmdEnabled()) {
                 return;
             }
 

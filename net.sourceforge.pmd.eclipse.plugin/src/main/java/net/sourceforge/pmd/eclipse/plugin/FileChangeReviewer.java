@@ -13,6 +13,8 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.IResourceDelta;
+import org.eclipse.core.resources.IWorkspaceDescription;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -65,6 +67,11 @@ public class FileChangeReviewer implements IResourceChangeListener {
      * @param event
      */
     public void resourceChanged(IResourceChangeEvent event) {
+        IWorkspaceDescription workspaceSettings = ResourcesPlugin.getWorkspace().getDescription();
+        if (workspaceSettings.isAutoBuilding()) {
+            PMDPlugin.getDefault().logInformation("Not running PMD, as autoBuilding is enabled for this workspace");
+            return;
+        }
 
         Set<ResourceChange> itemsChanged = new HashSet<ResourceChange>();
 
