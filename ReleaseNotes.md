@@ -6,8 +6,10 @@ Eclipse Update Site: <https://sourceforge.net/projects/pmd/files/pmd-eclipse/upd
 
 ## ????: 4.0.7.v????
 
+* Fixed Unable to check more than one class without FullBuildEnabled ([#1352](https://sourceforge.net/p/pmd/bugs/1352/))
 * Fixed Manually checking code with PMD only works if PMD is activated for the project ([bug #1351](https://sourceforge.net/p/pmd/bugs/1351/))
 * Fixed Check code after saving runs PMD unnecessarily ([bug #1350](https://sourceforge.net/p/pmd/bugs/1350/))
+
 
 ## 01-April-2015: 4.0.6.v20150401-1945
 

@@ -401,7 +401,7 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
                 targetCount = countResourceElement(resource);
             }
             // Could add a property that lets us set the max number to analyze
-            if (properties.isFullBuildEnabled() || targetCount == 1) {
+            if (properties.isFullBuildEnabled() || isUserInitiated() || targetCount == 1) {
                 setStepCount(targetCount);
                 log.debug("Visiting resource " + resource.getName() + " : " + getStepCount());
 
@@ -536,7 +536,7 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
             // PMDEngine pmdEngine = getPmdEngineForProject(project);
             int targetCount = countDeltaElement(resourceDelta);
             // Could add a property that lets us set the max number to analyze
-            if (properties.isFullBuildEnabled() || targetCount == 1) {
+            if (properties.isFullBuildEnabled() || isUserInitiated() || targetCount == 1) {
                 setStepCount(targetCount);
                 log.debug("Visiting delta of resource " + resource.getName() + " : " + getStepCount());
 
