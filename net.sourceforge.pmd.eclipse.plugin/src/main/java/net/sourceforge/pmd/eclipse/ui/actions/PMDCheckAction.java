@@ -129,6 +129,7 @@ public class PMDCheckAction extends AbstractUIAction {
     	cmd.setTaskMarker(true);
         cmd.setOpenPmdPerspective(PMDPlugin.getDefault().loadPreferences().isPmdPerspectiveEnabled());
         cmd.setUserInitiated(true);
+        cmd.setRunAlways(true);
         cmd.performExecute();
     }
     
