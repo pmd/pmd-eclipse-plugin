@@ -94,21 +94,21 @@ import org.eclipse.ui.PlatformUI;
 public class ReviewCodeCmd extends AbstractDefaultCommand {
 
     private final List<ISchedulingRule> resources = new ArrayList<ISchedulingRule>();
-    private IResourceDelta 				resourceDelta;
+    private IResourceDelta resourceDelta;
     private Map<IFile, Set<MarkerInfo2>> markersByFile = new HashMap<IFile, Set<MarkerInfo2>>();
-    private boolean 					taskMarker;
-    private boolean 					openPmdPerspective;
-    private int 						ruleCount;
-    private int 						fileCount;
-    private long 						pmdDuration;
-    private String						onErrorIssue = null;
-    
-    private IProjectProperties          propertyCache = null;
+    private boolean taskMarker;
+    private boolean openPmdPerspective;
+    private int ruleCount;
+    private int fileCount;
+    private long pmdDuration;
+    private String onErrorIssue = null;
+
+    private IProjectProperties propertyCache = null;
 
     private static final long serialVersionUID = 1L;
 
     private static final Logger log = Logger.getLogger(ReviewCodeCmd.class);
-    
+
     /**
      * Default constructor
      */
@@ -121,53 +121,53 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
     }
 
     public Set<IFile> markedFiles() {
-    	return markersByFile.keySet();
+        return markersByFile.keySet();
     }
-    
+
     private RuleSet currentRules() {
-    	// FIXME
-    	return new RuleSet();
+        // FIXME
+        return new RuleSet();
     }
-    
+
     private Map<Rule, String> misconfiguredRulesIn(RuleSet ruleset) {
-    	
-    	RuleSet ruleSet = currentRules();
-    	
-    	Map<Rule, String> faultsByRule = new HashMap<Rule, String>();
-    	for (Rule rule : ruleSet.getRules()) {
-    		String fault = rule.dysfunctionReason();
-    		if (StringUtil.isNotEmpty(fault)) {
-    			faultsByRule.put(rule, fault);
-    		}
-    	}
-    	
-    	return faultsByRule;
+
+        RuleSet ruleSet = currentRules();
+
+        Map<Rule, String> faultsByRule = new HashMap<Rule, String>();
+        for (Rule rule : ruleSet.getRules()) {
+            String fault = rule.dysfunctionReason();
+            if (StringUtil.isNotEmpty(fault)) {
+                faultsByRule.put(rule, fault);
+            }
+        }
+
+        return faultsByRule;
     }
-    
+
     private boolean checkForMisconfiguredRules() {
-    	
-    	RuleSet ruleSet = currentRules();
-    	if (ruleSet.getRules().isEmpty()) return true;
-    	
-    	Map<Rule, String> faultsByRule = misconfiguredRulesIn(ruleSet);
-    	if (faultsByRule.isEmpty()) return true;
-    	
-    	return MessageDialog.openConfirm(
-    			Display.getDefault().getActiveShell(), 
-    			"Rule configuration problem", 
-    			"Continue anyways?"
-    			);
+
+        RuleSet ruleSet = currentRules();
+        if (ruleSet.getRules().isEmpty())
+            return true;
+
+        Map<Rule, String> faultsByRule = misconfiguredRulesIn(ruleSet);
+        if (faultsByRule.isEmpty())
+            return true;
+
+        return MessageDialog.openConfirm(Display.getDefault().getActiveShell(), "Rule configuration problem",
+                "Continue anyways?");
     }
-    
+
     /**
      * @see name.herlin.command.AbstractProcessableCommand#execute()
      */
     @Override
     public void execute() throws CommandException {
-    	
-    	boolean doReview = checkForMisconfiguredRules();
-    	if (!doReview) return;
-    	
+
+        boolean doReview = checkForMisconfiguredRules();
+        if (!doReview)
+            return;
+
         log.info("ReviewCode command starting.");
         try {
             fileCount = 0;
@@ -175,9 +175,9 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
             pmdDuration = 0;
 
             beginTask("PMD checking...", getStepCount());
-            
+
             // Lancer PMD
-            // PMDPlugin fills resources if it's a full build and 
+            // PMDPlugin fills resources if it's a full build and
             // resourcesDelta if it is incremental or auto
             if (resources.isEmpty()) {
                 processResourceDelta();
@@ -185,10 +185,11 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
                 processResources();
             }
 
-            // do we really need to do any of the rest of this if 
+            // do we really need to do any of the rest of this if
             // fileCount and ruleCount are both 0?
 
-            //skip the marking processing if the markersByFile set is empty (avoids grabbing the "run" lock for nothing)
+            // skip the marking processing if the markersByFile set is empty
+            // (avoids grabbing the "run" lock for nothing)
             if (!markersByFile.isEmpty()) {
                 // Appliquer les marqueurs
                 IWorkspaceRunnable action = new IWorkspaceRunnable() {
@@ -196,20 +197,23 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
                         applyMarkers();
                     }
                 };
-            	
-            	 //clear the markers here.  The call to Resource.deleteMarkers will 
-                //also call the Workspace.prepareOperation so do that 
-                //outside the larger "applyMarkers" call to avoid doubly holding locks
-                //for too long
+
+                // clear the markers here. The call to Resource.deleteMarkers
+                // will
+                // also call the Workspace.prepareOperation so do that
+                // outside the larger "applyMarkers" call to avoid doubly
+                // holding locks
+                // for too long
                 for (IFile file : markersByFile.keySet()) {
-                    if (isCanceled()) break;
+                    if (isCanceled())
+                        break;
                     MarkerUtil.deleteAllMarkersIn(file);
                 }
-            	
-            	final IWorkspace workspace = ResourcesPlugin.getWorkspace();
-            	workspace.run(action, getSchedulingRule(), IWorkspace.AVOID_UPDATE, getMonitor());
+
+                final IWorkspace workspace = ResourcesPlugin.getWorkspace();
+                workspace.run(action, getSchedulingRule(), IWorkspace.AVOID_UPDATE, getMonitor());
             }
-            
+
             // Switch to the PMD perspective if required
             if (openPmdPerspective) {
                 Display.getDefault().asyncExec(new Runnable() {
@@ -228,22 +232,17 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
 
             // Log performance information
             if (fileCount > 0 && ruleCount > 0) {
-                logInfo(
-                        "Review code command terminated. " + ruleCount + " rules were executed against " + fileCount
-                                + " files. Actual PMD duration is about " + pmdDuration + "ms, that is about "
-                                + (float)pmdDuration / fileCount
-                                + " ms/file, "
-                                + (float)pmdDuration / ruleCount
-                                + " ms/rule, "
-                                + (float)pmdDuration / ((long) fileCount * (long) ruleCount)
-                                + " ms/filerule"
-                                );
+                logInfo("Review code command terminated. " + ruleCount + " rules were executed against " + fileCount
+                        + " files. Actual PMD duration is about " + pmdDuration + "ms, that is about "
+                        + (float) pmdDuration / fileCount + " ms/file, " + (float) pmdDuration / ruleCount
+                        + " ms/rule, " + (float) pmdDuration / ((long) fileCount * (long) ruleCount) + " ms/filerule");
             } else {
-                logInfo("Review code command terminated. " + ruleCount + " rules were executed against " + fileCount + " files. PMD was not executed.");
+                logInfo("Review code command terminated. " + ruleCount + " rules were executed against " + fileCount
+                        + " files. PMD was not executed.");
             }
         }
-        
-        PMDPlugin.getDefault().changedFiles( markedFiles() );
+
+        PMDPlugin.getDefault().changedFiles(markedFiles());
     }
 
     /**
@@ -254,7 +253,8 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
     }
 
     /**
-     * @param resource The resource to set.
+     * @param resource
+     *            The resource to set.
      */
     public void setResources(Collection<ISchedulingRule> resources) {
         resources.clear();
@@ -264,7 +264,8 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
     /**
      * Add a resource to the list of resources to be reviewed.
      *
-     * @param resource a workbench resource
+     * @param resource
+     *            a workbench resource
      */
     public void addResource(IResource resource) {
         if (resource == null) {
@@ -275,22 +276,25 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
     }
 
     /**
-     * @param resourceDelta The resourceDelta to set.
+     * @param resourceDelta
+     *            The resourceDelta to set.
      */
     public void setResourceDelta(IResourceDelta resourceDelta) {
         this.resourceDelta = resourceDelta;
     }
 
     /**
-     * @param taskMarker The taskMarker to set.
+     * @param taskMarker
+     *            The taskMarker to set.
      */
     public void setTaskMarker(boolean taskMarker) {
         this.taskMarker = taskMarker;
     }
 
     /**
-     * @param openPmdPerspective Tell whether the PMD perspective should be
-     *            opened after processing.
+     * @param openPmdPerspective
+     *            Tell whether the PMD perspective should be opened after
+     *            processing.
      */
     public void setOpenPmdPerspective(boolean openPmdPerspective) {
         this.openPmdPerspective = openPmdPerspective;
@@ -355,68 +359,67 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
             }
         }
     }
-    
+
     private IProjectProperties getProjectProperties(IProject project) throws PropertiesException, CommandException {
-    	if (propertyCache == null || !propertyCache.getProject().getName().equals(project.getName())) {
-    		propertyCache = PMDPlugin.getDefault().loadProjectProperties(project);
-    	}
-		return propertyCache;
+        if (propertyCache == null || !propertyCache.getProject().getName().equals(project.getName())) {
+            propertyCache = PMDPlugin.getDefault().loadProjectProperties(project);
+        }
+        return propertyCache;
     }
 
     private RuleSet rulesetFrom(IResource resource) throws PropertiesException, CommandException {
-    	 IProject project = resource.getProject();
-         IProjectProperties properties = getProjectProperties(project);
-         
-         return filteredRuleSet(properties);	//properties.getProjectRuleSet();
+        IProject project = resource.getProject();
+        IProjectProperties properties = getProjectProperties(project);
+
+        return filteredRuleSet(properties); // properties.getProjectRuleSet();
     }
-    
+
     /**
      * Review a single resource
      */
     private void processResource(IResource resource) throws CommandException {
         try {
-        	
+
             final IProject project = resource.getProject();
             final IProjectProperties properties = getProjectProperties(project);
             if (!properties.isPmdEnabled()) {
-            	return;
+                return;
             }
-            
-            final RuleSet ruleSet = rulesetFrom(resource);	//properties.getProjectRuleSet();
-            
-        //    final PMDEngine pmdEngine = getPmdEngineForProject(project);
+
+            final RuleSet ruleSet = rulesetFrom(resource); // properties.getProjectRuleSet();
+
+            // final PMDEngine pmdEngine = getPmdEngineForProject(project);
             int targetCount = 0;
             if (resource.exists()) {
                 targetCount = countResourceElement(resource);
             }
-            // Could add a property that lets us set the max number to analyze 
-            if (properties.isFullBuildEnabled() || targetCount == 1){
-	            setStepCount(targetCount);
-	            log.debug("Visiting resource " + resource.getName() + " : " + getStepCount());
-	
-	            if (resource.exists()) {
-    	            final ResourceVisitor visitor = new ResourceVisitor();
-    	            visitor.setMonitor(getMonitor());
-    	            visitor.setRuleSet(ruleSet);
-    	     //       visitor.setPmdEngine(pmdEngine);
-    	            visitor.setAccumulator(markersByFile);
-    	            visitor.setUseTaskMarker(taskMarker);
-    	            visitor.setProjectProperties(properties);
-    	            resource.accept(visitor);
+            // Could add a property that lets us set the max number to analyze
+            if (properties.isFullBuildEnabled() || targetCount == 1) {
+                setStepCount(targetCount);
+                log.debug("Visiting resource " + resource.getName() + " : " + getStepCount());
 
-    	            ruleCount = ruleSet.getRules().size();
-    	            fileCount += visitor.getProcessedFilesCount();
-    	            pmdDuration += visitor.getActualPmdDuration();
-	            } else {
-	                log.debug("Skipping resource " + resource.getName() + " because it doesn't exist.");
-	            }
+                if (resource.exists()) {
+                    final ResourceVisitor visitor = new ResourceVisitor();
+                    visitor.setMonitor(getMonitor());
+                    visitor.setRuleSet(ruleSet);
+                    // visitor.setPmdEngine(pmdEngine);
+                    visitor.setAccumulator(markersByFile);
+                    visitor.setUseTaskMarker(taskMarker);
+                    visitor.setProjectProperties(properties);
+                    resource.accept(visitor);
+
+                    ruleCount = ruleSet.getRules().size();
+                    fileCount += visitor.getProcessedFilesCount();
+                    pmdDuration += visitor.getActualPmdDuration();
+                } else {
+                    log.debug("Skipping resource " + resource.getName() + " because it doesn't exist.");
+                }
             } else {
-            	log.debug("Skipping resource "+ resource.getName() 
-            			+ " because of fullBuildEnabled flag");
+                log.debug("Skipping resource " + resource.getName() + " because of fullBuildEnabled flag");
             }
 
-            worked(1);		// TODO - temp fix?  BR
-            
+            worked(1); // TODO - temp fix? BR
+
         } catch (PropertiesException e) {
             throw new CommandException(e);
         } catch (CoreException e) {
@@ -432,7 +435,7 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
             // Only for Java projects
             if (!project.hasNature(JavaCore.NATURE_ID)) {
                 log.debug("Skipping non-Java natured project " + project.getName());
-            	return;
+                return;
             }
             setStepCount(countResourceElement(project));
             log.debug("Visiting  project " + project.getName() + " : " + getStepCount());
@@ -443,9 +446,12 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
             for (IClasspathEntry entrie : entries) {
                 if (entrie.getEntryKind() == IClasspathEntry.CPE_SOURCE) {
 
-                    // phherlin note: this code is ugly but I don't how to do otherwise.
-                    // The IWorkspaceRoot getContainerLocation(IPath) always return null.
-                    // Catching the IllegalArgumentException on getFolder is the only way I found
+                    // phherlin note: this code is ugly but I don't how to do
+                    // otherwise.
+                    // The IWorkspaceRoot getContainerLocation(IPath) always
+                    // return null.
+                    // Catching the IllegalArgumentException on getFolder is the
+                    // only way I found
                     // to know if the entry is a folder or a project !
                     IContainer sourceContainer = null;
                     try {
@@ -454,7 +460,8 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
                         sourceContainer = root.getProject(entrie.getPath().toString());
                     }
                     if (sourceContainer == null) {
-                        log.warn("Source container " + entrie.getPath() + " for project " + project.getName() + " is not valid");
+                        log.warn("Source container " + entrie.getPath() + " for project " + project.getName()
+                                + " is not valid");
                     } else {
                         processResource(sourceContainer);
                     }
@@ -465,47 +472,49 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
             throw new CommandException(e);
         }
     }
-    
+
     private void taskScope(int activeRuleCount, int totalRuleCount) {
-    	setTaskName("Checking with " + Integer.toString(activeRuleCount) + " out of " + Integer.toString(totalRuleCount) + " rules");
+        setTaskName("Checking with " + Integer.toString(activeRuleCount) + " out of "
+                + Integer.toString(totalRuleCount) + " rules");
     }
 
     private RuleSet filteredRuleSet(IProjectProperties properties) throws CommandException, PropertiesException {
-    	 
-         final RuleSet ruleSet = properties.getProjectRuleSet();
-         IPreferences preferences = PMDPlugin.getDefault().getPreferencesManager().loadPreferences();
-         Set<String> onlyActiveRuleNames = preferences.getActiveRuleNames();
 
-         RuleSet filteredRuleSet = RuleSetUtil.newCopyOf(ruleSet);
-         int rulesBefore = filteredRuleSet.size();
-         if (preferences.getGlobalRuleManagement()) {
-             RuleSetUtil.retainOnly(filteredRuleSet, onlyActiveRuleNames);
-             int rulesAfter = filteredRuleSet.size();
+        final RuleSet ruleSet = properties.getProjectRuleSet();
+        IPreferences preferences = PMDPlugin.getDefault().getPreferencesManager().loadPreferences();
+        Set<String> onlyActiveRuleNames = preferences.getActiveRuleNames();
 
-             if (rulesAfter < rulesBefore) {
-                 PMDPlugin.getDefault().logWarn("Ruleset has been filtered as Global Rule Management is active. "
-                     + rulesAfter + " of " + rulesBefore + " rules are active and are used. "
-                     + (rulesBefore - rulesAfter) + " rules will be ignored.");
-             }
-         }
-         filteredRuleSet.addExcludePatterns(preferences.activeExclusionPatterns());
-         filteredRuleSet.addIncludePatterns(preferences.activeInclusionPatterns());
-         filteredRuleSet.addExcludePatterns(properties.getBuildPathExcludePatterns());
-         filteredRuleSet.addIncludePatterns(properties.getBuildPathIncludePatterns());
+        RuleSet filteredRuleSet = RuleSetUtil.newCopyOf(ruleSet);
+        int rulesBefore = filteredRuleSet.size();
+        if (preferences.getGlobalRuleManagement()) {
+            RuleSetUtil.retainOnly(filteredRuleSet, onlyActiveRuleNames);
+            int rulesAfter = filteredRuleSet.size();
 
-         taskScope(filteredRuleSet.getRules().size(), ruleSet.getRules().size());
-         return filteredRuleSet;
+            if (rulesAfter < rulesBefore) {
+                PMDPlugin.getDefault().logWarn(
+                        "Ruleset has been filtered as Global Rule Management is active. " + rulesAfter + " of "
+                                + rulesBefore + " rules are active and are used. " + (rulesBefore - rulesAfter)
+                                + " rules will be ignored.");
+            }
+        }
+        filteredRuleSet.addExcludePatterns(preferences.activeExclusionPatterns());
+        filteredRuleSet.addIncludePatterns(preferences.activeInclusionPatterns());
+        filteredRuleSet.addExcludePatterns(properties.getBuildPathExcludePatterns());
+        filteredRuleSet.addIncludePatterns(properties.getBuildPathIncludePatterns());
+
+        taskScope(filteredRuleSet.getRules().size(), ruleSet.getRules().size());
+        return filteredRuleSet;
     }
-    
-    private RuleSet rulesetFromResourceDelta() throws PropertiesException, CommandException{
-    	
-    	 IResource resource = resourceDelta.getResource();
-         final IProject project = resource.getProject();
-         final IProjectProperties properties = getProjectProperties(project);
-         
-         return filteredRuleSet(properties);	//properties.getProjectRuleSet();
+
+    private RuleSet rulesetFromResourceDelta() throws PropertiesException, CommandException {
+
+        IResource resource = resourceDelta.getResource();
+        final IProject project = resource.getProject();
+        final IProjectProperties properties = getProjectProperties(project);
+
+        return filteredRuleSet(properties); // properties.getProjectRuleSet();
     }
-    
+
     /**
      * Review a resource delta
      */
@@ -514,31 +523,30 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
             IResource resource = resourceDelta.getResource();
             final IProject project = resource.getProject();
             final IProjectProperties properties = getProjectProperties(project);
-            
-            RuleSet ruleSet = rulesetFromResourceDelta();	//properties.getProjectRuleSet();
 
-   //         PMDEngine pmdEngine = getPmdEngineForProject(project);
+            RuleSet ruleSet = rulesetFromResourceDelta(); // properties.getProjectRuleSet();
+
+            // PMDEngine pmdEngine = getPmdEngineForProject(project);
             int targetCount = countDeltaElement(resourceDelta);
-            // Could add a property that lets us set the max number to analyze 
-            if (properties.isFullBuildEnabled() || targetCount == 1){
-	            setStepCount(targetCount);
-	            log.debug("Visiting delta of resource " + resource.getName() + " : " + getStepCount());
-	
-	            DeltaVisitor visitor = new DeltaVisitor();
-	            visitor.setMonitor(getMonitor());
-	            visitor.setRuleSet(ruleSet);
-	//            visitor.setPmdEngine(pmdEngine);
-	            visitor.setAccumulator(markersByFile);
-	            visitor.setUseTaskMarker(taskMarker);
-	            visitor.setProjectProperties(properties);
-	            resourceDelta.accept(visitor);
-	
-	            ruleCount = ruleSet.getRules().size();
-	            fileCount += visitor.getProcessedFilesCount();
-	            pmdDuration += visitor.getActualPmdDuration();
+            // Could add a property that lets us set the max number to analyze
+            if (properties.isFullBuildEnabled() || targetCount == 1) {
+                setStepCount(targetCount);
+                log.debug("Visiting delta of resource " + resource.getName() + " : " + getStepCount());
+
+                DeltaVisitor visitor = new DeltaVisitor();
+                visitor.setMonitor(getMonitor());
+                visitor.setRuleSet(ruleSet);
+                // visitor.setPmdEngine(pmdEngine);
+                visitor.setAccumulator(markersByFile);
+                visitor.setUseTaskMarker(taskMarker);
+                visitor.setProjectProperties(properties);
+                resourceDelta.accept(visitor);
+
+                ruleCount = ruleSet.getRules().size();
+                fileCount += visitor.getProcessedFilesCount();
+                pmdDuration += visitor.getActualPmdDuration();
             } else {
-            	log.debug("Skipping resource "+ resource.getName() 
-            			+ " because of fullBuildEnabled flag");
+                log.debug("Skipping resource " + resource.getName() + " because of fullBuildEnabled flag");
             }
 
         } catch (PropertiesException e) {
@@ -547,7 +555,7 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
             throw new CommandException(e);
         }
     }
-    
+
     /**
      * Apply PMD markers after the review
      *
@@ -558,15 +566,16 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
         final Timer timer = new Timer();
 
         String currentFile = ""; // for logging
-       
+
         beginTask("PMD Applying markers", markersByFile.size());
-        
+
         try {
             for (IFile file : markersByFile.keySet()) {
-                if (isCanceled()) break;
+                if (isCanceled())
+                    break;
                 currentFile = file.getName();
                 Set<MarkerInfo2> markerInfoSet = markersByFile.get(file);
-                for (MarkerInfo2 markerInfo : markerInfoSet) { 
+                for (MarkerInfo2 markerInfo : markerInfoSet) {
                     markerInfo.addAsMarkerTo(file);
                     violationCount++;
                 }
@@ -575,7 +584,7 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
             }
         } catch (CoreException e) {
             log.warn("CoreException when setting marker for file " + currentFile + " : " + e.getMessage()); // TODO:
-                                                                                                                    // NLS
+                                                                                                            // NLS
         } finally {
             timer.stop();
             int count = markersByFile.size();
@@ -587,15 +596,16 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
     /**
      * Count the number of sub-resources of a resource
      *
-     * @param resource a project
+     * @param resource
+     *            a project
      * @return the element count
      */
     private int countResourceElement(IResource resource) {
-    	
-    	if (resource instanceof IFile) {
-    		return isSuitable((IFile)resource) ? 1 : 0;
-    	}
-    	
+
+        if (resource instanceof IFile) {
+            return isSuitable((IFile) resource) ? 1 : 0;
+        }
+
         final CountVisitor visitor = new CountVisitor();
 
         try {
@@ -610,7 +620,8 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
     /**
      * Count the number of sub-resources of a delta
      *
-     * @param delta a resource delta
+     * @param delta
+     *            a resource delta
      * @return the element count
      */
     private int countDeltaElement(IResourceDelta delta) {
@@ -636,11 +647,11 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
         final IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
         window.getActivePage().setPerspective(reg.findPerspectiveWithId(PMDRuntimeConstants.ID_PERSPECTIVE));
     }
-    
+
     private static boolean isSuitable(IFile file) {
-    	return isLanguageFile(file, LanguageRegistry.getLanguage(JavaLanguageModule.NAME));
+        return isLanguageFile(file, LanguageRegistry.getLanguage(JavaLanguageModule.NAME));
     }
-    
+
     /**
      * Private inner class to count the number of resources or delta elements
      */
@@ -666,4 +677,4 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
         }
     }
 
-} 
+}

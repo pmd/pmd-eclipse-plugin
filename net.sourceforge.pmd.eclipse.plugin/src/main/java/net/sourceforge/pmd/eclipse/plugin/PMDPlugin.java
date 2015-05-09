@@ -79,80 +79,76 @@ import org.osgi.framework.BundleContext;
  */
 public class PMDPlugin extends AbstractUIPlugin {
 
-	private static File pluginFolder;
+    private static File pluginFolder;
 
-	private FileChangeReviewer changeReviewer;
-	
-	private Map<RGB, Color> coloursByRGB = new HashMap<RGB, Color>();
+    private FileChangeReviewer changeReviewer;
 
-	public static final String PLUGIN_ID = "net.sourceforge.pmd.eclipse.plugin";
+    private Map<RGB, Color> coloursByRGB = new HashMap<RGB, Color>();
 
-	private static Map<IProject, IJavaProject> JavaProjectsByIProject = new HashMap<IProject, IJavaProject>();
-	
-	// The shared instance
-	private static PMDPlugin plugin;
+    public static final String PLUGIN_ID = "net.sourceforge.pmd.eclipse.plugin";
 
-	public static String VERSION = "unknown";
+    private static Map<IProject, IJavaProject> JavaProjectsByIProject = new HashMap<IProject, IJavaProject>();
 
-	private static final Integer[] priorityValues = new Integer[] {
-        Integer.valueOf(1),
-        Integer.valueOf(2),
-        Integer.valueOf(3),
-        Integer.valueOf(4),
-        Integer.valueOf(5)
-	    };
-    
-	/**
-	 * The constructor
-	 */
-	public PMDPlugin() {
-	}
-	
-	public Color colorFor(RGB rgb) {
-		
-		Color color = coloursByRGB.get(rgb);
-		if (color != null) return color;
-		
-		color = new Color(null, rgb.red, rgb.green, rgb.blue);
-		coloursByRGB.put( rgb, color );
-		
-		return color;
-	}
+    // The shared instance
+    private static PMDPlugin plugin;
 
-	public static void setJavaClassLoader(PMDConfiguration config, IProject project) {
+    public static String VERSION = "unknown";
 
-		IPreferences preferences = getDefault().loadPreferences();
-		try {
+    private static final Integer[] priorityValues = new Integer[] { Integer.valueOf(1), Integer.valueOf(2),
+            Integer.valueOf(3), Integer.valueOf(4), Integer.valueOf(5) };
+
+    /**
+     * The constructor
+     */
+    public PMDPlugin() {
+    }
+
+    public Color colorFor(RGB rgb) {
+
+        Color color = coloursByRGB.get(rgb);
+        if (color != null)
+            return color;
+
+        color = new Color(null, rgb.red, rgb.green, rgb.blue);
+        coloursByRGB.put(rgb, color);
+
+        return color;
+    }
+
+    public static void setJavaClassLoader(PMDConfiguration config, IProject project) {
+
+        IPreferences preferences = getDefault().loadPreferences();
+        try {
             if (preferences.isProjectBuildPathEnabled() && project.hasNature(JavaCore.NATURE_ID)) {
-            	config.setClassLoader(new JavaProjectClassLoader(config.getClass().getClassLoader(), project));
+                config.setClassLoader(new JavaProjectClassLoader(config.getClass().getClassLoader(), project));
             }
         } catch (CoreException e) {
             throw new RuntimeException(e);
         }
-	}
-	
-	/**
-	 * Return the Java language version for the resources found within the specified
-	 * project or null if it isn't a Java project or a Java version we don't support 
-	 * yet.
-	 * 
-	 * @param project
-	 * @return
-	 */
-	public static LanguageVersion javaVersionFor(IProject project) {
+    }
 
-		IJavaProject jProject = JavaProjectsByIProject.get(project);
-		if (jProject == null) {
-			jProject = JavaCore.create(project);
-			JavaProjectsByIProject.put(project, jProject);
-		}
-		
-		if (jProject.exists()) {
-			String compilerCompliance = jProject.getOption(JavaCore.COMPILER_COMPLIANCE, true);
-			return LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion(compilerCompliance);
-		}
-		return null;
-	}
+    /**
+     * Return the Java language version for the resources found within the
+     * specified project or null if it isn't a Java project or a Java version we
+     * don't support yet.
+     * 
+     * @param project
+     * @return
+     */
+    public static LanguageVersion javaVersionFor(IProject project) {
+
+        IJavaProject jProject = JavaProjectsByIProject.get(project);
+        if (jProject == null) {
+            jProject = JavaCore.create(project);
+            JavaProjectsByIProject.put(project, jProject);
+        }
+
+        if (jProject.exists()) {
+            String compilerCompliance = jProject.getOption(JavaCore.COMPILER_COMPLIANCE, true);
+            return LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion(compilerCompliance);
+        }
+        return null;
+    }
 
     public static IClasspathEntry buildSourceClassPathEntryFor(IProject project) {
         IJavaProject jProject = JavaProjectsByIProject.get(project);
@@ -176,44 +172,48 @@ public class PMDPlugin extends AbstractUIPlugin {
         return null;
     }
 
-	private void disposeResources() {
-		
-		disposeAll(coloursByRGB.values());
-	}
-	
-	public static void disposeAll(Collection<Color> colors) {
-		for (Color color : colors) color.dispose();
-	}
-	
-	public static File getPluginFolder() {
+    private void disposeResources() {
 
-		if (pluginFolder == null) {
-			URL url = Platform.getBundle(PLUGIN_ID).getEntry("/");
-			try {
-				url = FileLocator.resolve(url);
-			}
-			catch(IOException ex) {
-				ex.printStackTrace();
-			}
-			pluginFolder = new File(url.getPath());
-		}
+        disposeAll(coloursByRGB.values());
+    }
 
-		return pluginFolder;
-	}
-	
-	/*
-	 * (non-Javadoc)
-	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework.BundleContext)
-	 */
-	public void start(BundleContext context) throws Exception {
-		super.start(context);
-		plugin = this;
-		
-		// this needs to be executed before the preferences are loaded, because the standard
-		// rulesets are needed for the default active rules.
-		registerStandardRuleSets();
+    public static void disposeAll(Collection<Color> colors) {
+        for (Color color : colors)
+            color.dispose();
+    }
 
-		IPreferences prefs = loadPreferences();
+    public static File getPluginFolder() {
+
+        if (pluginFolder == null) {
+            URL url = Platform.getBundle(PLUGIN_ID).getEntry("/");
+            try {
+                url = FileLocator.resolve(url);
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+            pluginFolder = new File(url.getPath());
+        }
+
+        return pluginFolder;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework.BundleContext
+     * )
+     */
+    public void start(BundleContext context) throws Exception {
+        super.start(context);
+        plugin = this;
+
+        // this needs to be executed before the preferences are loaded, because
+        // the standard
+        // rulesets are needed for the default active rules.
+        registerStandardRuleSets();
+
+        IPreferences prefs = loadPreferences();
         configureLogs(prefs);
         registerAdditionalRuleSets();
         fileChangeListenerEnabled(prefs.isCheckAfterSaveEnabled());
@@ -223,67 +223,72 @@ public class PMDPlugin extends AbstractUIPlugin {
             @Override
             public void resourceChanged(IResourceChangeEvent arg0) {
                 if (arg0.getType() == IResourceChangeEvent.PRE_DELETE && arg0.getResource() instanceof IProject) {
-                    getPropertiesManager().removeProjectProperties((IProject)arg0.getResource());
+                    getPropertiesManager().removeProjectProperties((IProject) arg0.getResource());
                 }
             }
         });
 
         VERSION = context.getBundle().getHeaders().get("Bundle-Version");
-	}
-		
-	public void fileChangeListenerEnabled(boolean flag) {
-		
-		IWorkspace workspace = ResourcesPlugin.getWorkspace();
-		
-		if (flag) {	
-			if (changeReviewer == null) changeReviewer = new FileChangeReviewer();
-			workspace.addResourceChangeListener(changeReviewer);
-			} else {
-				if (changeReviewer != null) {
-					workspace.removeResourceChangeListener(changeReviewer);
-					changeReviewer = null;
-					}
-			}
-	}
-	
-	/*
-	 * (non-Javadoc)
-	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework.BundleContext)
-	 */
-	public void stop(BundleContext context) throws Exception {
-		
-		fileChangeListenerEnabled(false);
-		
-		plugin = null;
-		disposeResources();
-		ShapePainter.disposeAll();
-		ResourceManager.dispose();
-		super.stop(context);
-	}
+    }
 
-	/**
-	 * Returns the shared instance
-	 *
-	 * @return the shared instance
-	 */
-	public static PMDPlugin getDefault() {
-		return plugin;
-	}
+    public void fileChangeListenerEnabled(boolean flag) {
+
+        IWorkspace workspace = ResourcesPlugin.getWorkspace();
+
+        if (flag) {
+            if (changeReviewer == null)
+                changeReviewer = new FileChangeReviewer();
+            workspace.addResourceChangeListener(changeReviewer);
+        } else {
+            if (changeReviewer != null) {
+                workspace.removeResourceChangeListener(changeReviewer);
+                changeReviewer = null;
+            }
+        }
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework.BundleContext
+     * )
+     */
+    public void stop(BundleContext context) throws Exception {
+
+        fileChangeListenerEnabled(false);
+
+        plugin = null;
+        disposeResources();
+        ShapePainter.disposeAll();
+        ResourceManager.dispose();
+        super.stop(context);
+    }
+
+    /**
+     * Returns the shared instance
+     *
+     * @return the shared instance
+     */
+    public static PMDPlugin getDefault() {
+        return plugin;
+    }
 
     private static final Logger log = Logger.getLogger(PMDPlugin.class);
 
     private StringTable stringTable; // NOPMD by Herlin on 11/10/06 00:22
-  
-	/**
-	 * Returns an image descriptor for the image file at the given
-	 * plug-in relative path.
-	 *
-	 * @param path the path
-	 * @return the image descriptor
-	 */
-	public static ImageDescriptor getImageDescriptor(String path) {
-		return AbstractUIPlugin.imageDescriptorFromPlugin("net.sourceforge.pmd.eclipse.plugin", path);
-	}
+
+    /**
+     * Returns an image descriptor for the image file at the given plug-in
+     * relative path.
+     *
+     * @param path
+     *            the path
+     * @return the image descriptor
+     */
+    public static ImageDescriptor getImageDescriptor(String path) {
+        return AbstractUIPlugin.imageDescriptorFromPlugin("net.sourceforge.pmd.eclipse.plugin", path);
+    }
 
     /**
      * Get an image corresponding to the severity
@@ -334,8 +339,9 @@ public class PMDPlugin extends AbstractUIPlugin {
         Display.getDefault().syncExec(new Runnable() {
 
             public void run() {
-            	String errTitle = getStringTable().getString(StringKeys.ERROR_TITLE);
-                MessageDialog.openError(Display.getCurrent().getActiveShell(), errTitle, message + "\n" + String.valueOf(t));
+                String errTitle = getStringTable().getString(StringKeys.ERROR_TITLE);
+                MessageDialog.openError(Display.getCurrent().getActiveShell(), errTitle,
+                        message + "\n" + String.valueOf(t));
             }
         });
     }
@@ -348,12 +354,12 @@ public class PMDPlugin extends AbstractUIPlugin {
         Display.getDefault().syncExec(new Runnable() {
 
             public void run() {
-            	String errTitle = getStringTable().getString(StringKeys.ERROR_TITLE);
+                String errTitle = getStringTable().getString(StringKeys.ERROR_TITLE);
                 MessageDialog.openError(Display.getCurrent().getActiveShell(), errTitle, message);
             }
         });
     }
-    
+
     /**
      * @return an instance of the string table
      */
@@ -400,7 +406,8 @@ public class PMDPlugin extends AbstractUIPlugin {
     }
 
     /**
-     * @param project a workspace project
+     * @param project
+     *            a workspace project
      * @return the PMD properties for that project
      */
     public IProjectProperties loadProjectProperties(IProject project) throws PropertiesException {
@@ -487,9 +494,12 @@ public class PMDPlugin extends AbstractUIPlugin {
     /**
      * Logs inside the Eclipse environment
      *
-     * @param severity the severity of the log (IStatus code)
-     * @param message the message to log
-     * @param t a possible throwable, may be null
+     * @param severity
+     *            the severity of the log (IStatus code)
+     * @param message
+     *            the message to log
+     * @param t
+     *            a possible throwable, may be null
      */
     public final void log(final int severity, final String message, final Throwable t) {
         final Bundle bundle = getBundle();
@@ -497,7 +507,8 @@ public class PMDPlugin extends AbstractUIPlugin {
             getLog().log(new Status(severity, bundle.getSymbolicName(), 0, message, t));
         }
 
-        // TODO : when bundle is not created yet (ie at startup), we cannot log ; find a way to log.
+        // TODO : when bundle is not created yet (ie at startup), we cannot log
+        // ; find a way to log.
     }
 
     /**
@@ -512,10 +523,10 @@ public class PMDPlugin extends AbstractUIPlugin {
             final IRuleSetManager manager = getRuleSetManager();
             RuleSet ruleSet;
             while (iterator.hasNext()) {
-            	ruleSet = iterator.next();
-            	manager.registerRuleSet(ruleSet);
-            	manager.registerDefaultRuleSet(ruleSet);
-            	}
+                ruleSet = iterator.next();
+                manager.registerRuleSet(ruleSet);
+                manager.registerDefaultRuleSet(ruleSet);
+            }
         } catch (RuleSetNotFoundException e) {
             log(IStatus.WARNING, "Problem getting all registered PMD RuleSets", e);
         }
@@ -534,92 +545,94 @@ public class PMDPlugin extends AbstractUIPlugin {
             log(IStatus.ERROR, "Error when processing RuleSets extensions", e);
         }
     }
-    
-    public RuleLabelDecorator ruleLabelDecorator() {
-    	IDecoratorManager mgr = getWorkbench().getDecoratorManager();
-    															// TODO don't use a raw string...urgh
-    	return (RuleLabelDecorator) mgr.getBaseLabelProvider("net.sourceforge.pmd.eclipse.plugin.RuleLabelDecorator");
-    }
-    
-    public void changedFiles(Collection<IFile> changedFiles) {
-    	
-    	RuleLabelDecorator rld = ruleLabelDecorator();
-    	if (rld == null) return;
-    	
-    	Collection<IResource> withParents = new HashSet<IResource>(changedFiles.size() * 2);
-    	withParents.addAll(changedFiles);
-    	for (IFile file : changedFiles) {
-    		IResource parent = file.getParent();
-    		while (parent != null) {
-    			withParents.add(parent);
-    			parent = parent.getParent();
-    		}
-    	}
-    	
-    	rld.changed( withParents );
-    }
-	
-	private void addFilesTo(IResource resource, Collection<IResource> allKids) {
-		
-		if (resource instanceof IFile) {
-			allKids.add(resource);
-			return;
-		}
-		
-		if (resource instanceof IFolder) {
-			IFolder folder = (IFolder)resource;
-			IResource[] kids = null;
-			try {
-				kids = folder.members();
-			} catch (CoreException e) {
-				e.printStackTrace();
-			}
-			addKids(allKids, kids);	
-			
-			allKids.add(folder);
-			return;
-		}
-		
-		if (resource instanceof IProject) {
-			IProject project = (IProject)resource;
-			IResource[] kids = null;
-			try {
-				kids = project.members();
-			} catch (CoreException e) {
-				e.printStackTrace();
-			}
-			addKids(allKids, kids);	
-			allKids.add(project);
-			return;
-		}
-	}
 
-	private void addKids(Collection<IResource> allKids, IResource[] kids) {
-		
-		if (kids == null) return;
-		
-		for (IResource irc : kids) {
-			if (irc instanceof IFile) {
-				allKids.add(irc);
-				continue;
-			}
-			if (irc instanceof IFolder) {
-				addFilesTo(irc, allKids);
-			}
-		}
-	}
-	
-	public void removedMarkersIn(IResource resource) {
-		
-		RuleLabelDecorator decorator = ruleLabelDecorator();
-		if (decorator == null) return;
-		
-		Collection<IResource> changes = new ArrayList<IResource>();
-		
-		addFilesTo(resource, changes);
-		
-		decorator.changed(changes);
-	}
+    public RuleLabelDecorator ruleLabelDecorator() {
+        IDecoratorManager mgr = getWorkbench().getDecoratorManager();
+        // TODO don't use a raw string...urgh
+        return (RuleLabelDecorator) mgr.getBaseLabelProvider("net.sourceforge.pmd.eclipse.plugin.RuleLabelDecorator");
+    }
+
+    public void changedFiles(Collection<IFile> changedFiles) {
+
+        RuleLabelDecorator rld = ruleLabelDecorator();
+        if (rld == null)
+            return;
+
+        Collection<IResource> withParents = new HashSet<IResource>(changedFiles.size() * 2);
+        withParents.addAll(changedFiles);
+        for (IFile file : changedFiles) {
+            IResource parent = file.getParent();
+            while (parent != null) {
+                withParents.add(parent);
+                parent = parent.getParent();
+            }
+        }
+
+        rld.changed(withParents);
+    }
+
+    private void addFilesTo(IResource resource, Collection<IResource> allKids) {
+
+        if (resource instanceof IFile) {
+            allKids.add(resource);
+            return;
+        }
+
+        if (resource instanceof IFolder) {
+            IFolder folder = (IFolder) resource;
+            IResource[] kids = null;
+            try {
+                kids = folder.members();
+            } catch (CoreException e) {
+                e.printStackTrace();
+            }
+            addKids(allKids, kids);
+
+            allKids.add(folder);
+            return;
+        }
+
+        if (resource instanceof IProject) {
+            IProject project = (IProject) resource;
+            IResource[] kids = null;
+            try {
+                kids = project.members();
+            } catch (CoreException e) {
+                e.printStackTrace();
+            }
+            addKids(allKids, kids);
+            allKids.add(project);
+            return;
+        }
+    }
+
+    private void addKids(Collection<IResource> allKids, IResource[] kids) {
+
+        if (kids == null)
+            return;
+
+        for (IResource irc : kids) {
+            if (irc instanceof IFile) {
+                allKids.add(irc);
+                continue;
+            }
+            if (irc instanceof IFolder) {
+                addFilesTo(irc, allKids);
+            }
+        }
+    }
+
+    public void removedMarkersIn(IResource resource) {
+
+        RuleLabelDecorator decorator = ruleLabelDecorator();
+        if (decorator == null)
+            return;
+
+        Collection<IResource> changes = new ArrayList<IResource>();
+
+        addFilesTo(resource, changes);
+
+        decorator.changed(changes);
+    }
 
 }
-
