@@ -1,14 +1,41 @@
-PMD Eclipse Plugin
-==================
+# PMD Eclipse Plugin
 
-Compilation
------------
+Release Notes: <https://github.com/pmd/pmd-eclipse-plugin/blob/master/ReleaseNotes.md>
+
+## How to contribute
+
+You can contribute by testing the latest version, creating bug reports, or even forking
+the repository on github and create pull requests. Any contributions are welcome!
+
+
+### Testing the latest version
+The latest version of the plugin can be found on sourceforge. Use the following
+Update Site URL in order to install the latest SNAPSHOT version into your eclipse:
+
+<https://sourceforge.net/projects/pmd/files/pmd-eclipse/update-site-latest/>
+
+### Bug Reports
+Please file any bug reports in the bug tracker at sourceforge:
+
+<https://sourceforge.net/p/pmd/bugs/>
+
+### GitHub Repository
+
+Just fork the the GitHub Repository pmd/pmd-eclipse-plugin and create a pull request.
+
+<https://github.com/pmd/pmd-eclipse-plugin/>
+
+To get started, see also the next section.
+
+
+## Short Developer's Guide
+
+### Compilation
 Simply run `mvn clean install`. The plugin's update site will be generated in
 `net.sourceforge.pmd.eclipse.p2updatesite/target/repository`. You can use this directory as
 an update site to install the new plugin version directly into your Eclipse.
 
-Importing the projects in Eclipse
----------------------------------
+### Importing the projects in Eclipse
 Make sure you have the Maven Integration (m2e - http://eclipse.org/m2e/) installed. Then you can
 import *Existing Maven Projects*.
 You should see 6 projects:
@@ -20,15 +47,13 @@ You should see 6 projects:
 * net.sourceforge.pmd.eclipse.plugin.test - the (unit) tests for the plugin
 * net.sourceforge.pmd.eclipse.plugin.test.fragment - an example extension of the plugin used during the tests
 
-Debugging
----------
+### Debugging
 You can run eclipse with debugging enabled and connect to it via remote debugging:
 
     eclipse -data workspace-directory -vmargs -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=8000
 
 
-Releasing and updating the official eclipse update site
--------------------------------------------------------
+### Releasing and updating the official eclipse update site
 
     # Pick a release BUILDQUALIFIER (e.g. v20130420-0001) and update versions
     E.g. version is: "4.0.0" and BUILDQUALIFIER is "v20130420-0001".
@@ -97,17 +122,14 @@ You can use the following template:
 
 
 
-
-Updating the used PMD version
------------------------------
+### Updating the used PMD version
 The parent pom contains the property `pmd.version`. This is used inside the plugin module, to resolve the dependencies.
 In order to change the PMD version, change this property and rebuild (`mvn clean package`). In case PMD has some
 changed (added/removed) transitive dependencies, you'll need to update `n.s.p.e.plugin/META-INF/MANIEFEST.MF` as well.
 All transitive dependencies are copied into the folder `n.s.p.e.plugin/target/lib` during the build.
 
 
-Useful References
------------------
+## Useful References
 
 * <http://wiki.eclipse.org/Equinox/p2/Publisher>
 * <http://wiki.eclipse.org/Equinox_p2_Repository_Mirroring>
