@@ -35,6 +35,9 @@
  */
 package net.sourceforge.pmd.eclipse.runtime.properties.impl;
 
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlType;
+
 /**
  * This class is a simple data bean to help serialize project properties. Is
  * used by the ProjectPropertiesTO to handle project selected rules. This
@@ -43,6 +46,7 @@ package net.sourceforge.pmd.eclipse.runtime.properties.impl;
  * @author Philippe Herlin
  *  
  */
+@XmlType(propOrder = {"name", "ruleSetName"})
 public class RuleSpecTO {
     private String name;
     private String ruleSetName;
@@ -72,6 +76,7 @@ public class RuleSpecTO {
     /**
      * @return name a rule name
      */
+    @XmlElement(name = "name")
     public String getName() {
         return name;
     }
@@ -89,6 +94,7 @@ public class RuleSpecTO {
     /**
      * @return ruleSetName the name of ruleset the rule come from
      */
+    @XmlElement(name = "ruleset")
     public String getRuleSetName() {
         return ruleSetName;
     }

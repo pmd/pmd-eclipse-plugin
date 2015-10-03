@@ -21,8 +21,6 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-Vendor: %plugin.provider
 Bundle-ClassPath: target/lib/aopalliance.jar,
  target/lib/asm.jar,
- target/lib/castor-core.jar,
- target/lib/castor-xml.jar,
  target/lib/commons-collections.jar,
  target/lib/commons-io.jar,
  target/lib/commons-lang.jar,

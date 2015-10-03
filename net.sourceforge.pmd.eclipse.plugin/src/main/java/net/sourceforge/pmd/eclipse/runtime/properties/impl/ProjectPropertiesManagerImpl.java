@@ -38,16 +38,21 @@ package net.sourceforge.pmd.eclipse.runtime.properties.impl;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
+import javax.xml.bind.DataBindingException;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBElement;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import javax.xml.transform.Source;
+import javax.xml.transform.stream.StreamSource;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSet;
@@ -58,7 +63,6 @@ import net.sourceforge.pmd.eclipse.runtime.builder.PMDNature;
 import net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties;
 import net.sourceforge.pmd.eclipse.runtime.properties.IProjectPropertiesManager;
 import net.sourceforge.pmd.eclipse.runtime.properties.PropertiesException;
-import net.sourceforge.pmd.eclipse.util.IOUtil;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
@@ -67,12 +71,6 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ui.IWorkingSetManager;
 import org.eclipse.ui.PlatformUI;
-import org.exolab.castor.mapping.Mapping;
-import org.exolab.castor.mapping.MappingException;
-import org.exolab.castor.xml.MarshalException;
-import org.exolab.castor.xml.Marshaller;
-import org.exolab.castor.xml.Unmarshaller;
-import org.exolab.castor.xml.ValidationException;
 
 /**
  * This class manages the persistence of the ProjectProperies information structure
@@ -84,10 +82,18 @@ public class ProjectPropertiesManagerImpl implements IProjectPropertiesManager {
     private static final Logger log = Logger.getLogger(ProjectPropertiesManagerImpl.class);
 
     private static final String PROPERTIES_FILE = ".pmd";
-    private static final String PROPERTIES_MAPPING = "/net/sourceforge/pmd/eclipse/runtime/properties/impl/mapping.xml";
 
     private final Map<IProject, IProjectProperties> projectsProperties = new HashMap<IProject, IProjectProperties>();
 
+    private static final JAXBContext JAXB_CONTEXT = initJaxbContext();
+
+    private static JAXBContext initJaxbContext() {
+        try {
+            return JAXBContext.newInstance(ProjectPropertiesTO.class);
+        } catch (JAXBException e) {
+            throw new RuntimeException(e);
+        }
+    }
     /**
      * Load a project properties
      *
@@ -169,32 +175,16 @@ public class ProjectPropertiesManagerImpl implements IProjectPropertiesManager {
         }
     }
 
-    public ProjectPropertiesTO convertProjectPropertiesFromString(String properties)
-        throws PropertiesException {
-        ProjectPropertiesTO projectProperties = null;
-        Reader reader = null;
+    public ProjectPropertiesTO convertProjectPropertiesFromString(String properties) {
         try {
-            final Mapping mapping = new Mapping(this.getClass().getClassLoader());
-            final URL mappingSpecUrl = this.getClass().getResource(PROPERTIES_MAPPING);
-            mapping.loadMapping(mappingSpecUrl);
-
-            reader = new StringReader(properties);
-            final Unmarshaller unmarshaller = new Unmarshaller(mapping);
-            projectProperties = (ProjectPropertiesTO) unmarshaller.unmarshal(reader);
-        } catch (MarshalException e) {
-            throw new PropertiesException(e);
-        } catch (ValidationException e) {
-            throw new PropertiesException(e);
-        } catch (IOException e) {
-            throw new PropertiesException(e);
-        } catch (MappingException e) {
-            throw new PropertiesException(e);
-        } finally {
-            IOUtil.closeQuietly(reader);
+            Source source = new StreamSource(new StringReader(properties));
+            JAXBElement<ProjectPropertiesTO> element = JAXB_CONTEXT.createUnmarshaller().unmarshal(source, ProjectPropertiesTO.class);
+            return element.getValue();
+        } catch (JAXBException e) {
+            throw new DataBindingException(e);
         }
-
-        return projectProperties;
     }
+
     /**
      * Read a project properties from properties file
      *
@@ -273,34 +263,21 @@ public class ProjectPropertiesManagerImpl implements IProjectPropertiesManager {
         projectProperties.setProjectRuleSet(ruleSet);
     }
 
-    public String convertProjectPropertiesToString(ProjectPropertiesTO projectProperties)
-            throws PropertiesException {
-        StringWriter writer = null;
+    public String convertProjectPropertiesToString(ProjectPropertiesTO projectProperties) {
         try {
-            final Mapping mapping = new Mapping(getClass().getClassLoader());
-            final URL mappingSpecUrl = getClass().getResource(PROPERTIES_MAPPING);
-            mapping.loadMapping(mappingSpecUrl);
+            Marshaller marshaller = JAXB_CONTEXT.createMarshaller();
+            marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+            marshaller.setProperty(Marshaller.JAXB_ENCODING, "UTF-8");
+            marshaller.setProperty(Marshaller.JAXB_FRAGMENT, true);
 
-            writer = new StringWriter();
-            final Marshaller marshaller = new Marshaller();
-            marshaller.setProperty("org.exolab.castor.indent", "true");
-            marshaller.setWriter(writer);
-            marshaller.setMapping(mapping);
-            marshaller.marshal(projectProperties);
-            writer.flush();
+            StringWriter writer = new StringWriter();
+            writer.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
+            marshaller.marshal(projectProperties, writer);
+            writer.write("\n");
 
             return writer.toString();
-
-        } catch (MarshalException e) {
-            throw new PropertiesException(e);
-        } catch (ValidationException e) {
-            throw new PropertiesException(e);
-        } catch (IOException e) {
-            throw new PropertiesException(e);
-        } catch (MappingException e) {
-            throw new PropertiesException(e);
-        } finally {
-            IOUtil.closeQuietly(writer);
+        } catch (JAXBException e) {
+            throw new DataBindingException(e);
         }
     }
 

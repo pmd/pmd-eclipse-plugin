@@ -35,6 +35,13 @@
  */
 package net.sourceforge.pmd.eclipse.runtime.properties.impl;
 
+import javax.xml.bind.annotation.XmlAccessOrder;
+import javax.xml.bind.annotation.XmlAccessorOrder;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
+
 
 /**
  * This class is a simple data bean to let simply serialize project properties
@@ -43,6 +50,9 @@ package net.sourceforge.pmd.eclipse.runtime.properties.impl;
  * @author Philippe Herlin
  *
  */
+@XmlRootElement(name = "pmd")
+@XmlType(propOrder = {"workingSetName", "ruleSetStoredInProject", "ruleSetFile", "excludePatterns",
+        "includePatterns", "rules", "includeDerivedFiles", "violationsAsErrors", "fullBuildEnabled"})
 public class ProjectPropertiesTO {
     private RuleSpecTO[] rules;
     private String[] excludePatterns;
@@ -59,6 +69,8 @@ public class ProjectPropertiesTO {
      * @return rules an array of RuleSpecTO objects that keep information of rules
      * selected for the current project
      */
+    @XmlElementWrapper(name = "rules")
+    @XmlElement(name = "rule")
     public RuleSpecTO[] getRules() {
         return rules;
     }
@@ -76,6 +88,8 @@ public class ProjectPropertiesTO {
      * @return an array of String objects for exclude patterns
      * for the current project.
      */
+    @XmlElementWrapper(name = "excludePatterns")
+    @XmlElement(name = "excludePattern")
     public String[] getExcludePatterns() {
 		return excludePatterns;
 	}
@@ -93,6 +107,8 @@ public class ProjectPropertiesTO {
      * @return an array of String objects for include patterns
      * for the current project.
      */
+	@XmlElementWrapper(name = "includePatterns")
+	@XmlElement(name = "includePattern")
 	public String[] getIncludePatterns() {
 		return includePatterns;
 	}
@@ -110,6 +126,7 @@ public class ProjectPropertiesTO {
      * @return ruleSetStoredInProject tells whether the project use a ruleset
      * stored in the project or the global plugin ruleset.
      */
+    @XmlElement(name = "useProjectRuleSet")
     public boolean isRuleSetStoredInProject() {
         return ruleSetStoredInProject;
     }
@@ -126,6 +143,7 @@ public class ProjectPropertiesTO {
     /**
      * @return Returns the rule set file.
      */
+    @XmlElement(name = "ruleSetFile")
     public String getRuleSetFile() {
     	return ruleSetFile;
     }
@@ -140,6 +158,7 @@ public class ProjectPropertiesTO {
     /**
      * @return workingSetName the name of the project workingSet
      */
+    @XmlElement(name = "workingSet")
     public String getWorkingSetName() {
         return workingSetName;
     }
@@ -155,6 +174,7 @@ public class ProjectPropertiesTO {
     /**
      * @return Returns the includeDerivedFiles.
      */
+    @XmlElement(name = "includeDerivedFiles")
     public boolean isIncludeDerivedFiles() {
         return this.includeDerivedFiles;
     }
@@ -166,6 +186,7 @@ public class ProjectPropertiesTO {
         this.includeDerivedFiles = includeDerivedFiles;
     }
 
+    @XmlElement(name = "violationsAsErrors")
     public boolean isViolationsAsErrors() {
         return violationsAsErrors;
     }
@@ -186,6 +207,7 @@ public class ProjectPropertiesTO {
      * syntactic sugar for accessing this field
 	 * @return true if we should run at full build
 	 */
+	@XmlElement(name = "fullBuildEnabled")
 	public boolean isFullBuildEnabled() {
 		return fullBuildEnabled;
 	}
