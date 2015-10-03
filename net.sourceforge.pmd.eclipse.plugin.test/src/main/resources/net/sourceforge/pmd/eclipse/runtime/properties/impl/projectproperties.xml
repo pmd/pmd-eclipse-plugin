@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pmd>
+    <workingSet>workingsetname</workingSet>
+    <useProjectRuleSet>true</useProjectRuleSet>
+    <ruleSetFile>rulesetfile</ruleSetFile>
+    <excludePatterns>
+        <excludePattern>.project</excludePattern>
+    </excludePatterns>
+    <includePatterns>
+        <includePattern>*.java</includePattern>
+    </includePatterns>
+    <rules>
+        <rule>
+            <name>JumbledIncrementer</name>
+            <ruleset>java-basic</ruleset>
+        </rule>
+        <rule>
+            <name>ForLoopShouldBeWhileLoop</name>
+            <ruleset>java-basic</ruleset>
+        </rule>
+    </rules>
+    <includeDerivedFiles>false</includeDerivedFiles>
+    <violationsAsErrors>false</violationsAsErrors>
+    <fullBuildEnabled>true</fullBuildEnabled>
+</pmd>

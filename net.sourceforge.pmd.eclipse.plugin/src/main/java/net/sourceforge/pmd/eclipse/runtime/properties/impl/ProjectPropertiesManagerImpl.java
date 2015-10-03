@@ -40,6 +40,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.io.StringReader;
 import java.io.StringWriter;
 import java.net.URL;
 import java.util.ArrayList;
@@ -59,6 +60,7 @@ import net.sourceforge.pmd.eclipse.runtime.properties.IProjectPropertiesManager;
 import net.sourceforge.pmd.eclipse.runtime.properties.PropertiesException;
 import net.sourceforge.pmd.eclipse.util.IOUtil;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -167,12 +169,8 @@ public class ProjectPropertiesManagerImpl implements IProjectPropertiesManager {
         }
     }
 
-    /**
-     * Read a project properties from properties file
-     *
-     * @param project a project
-     */
-    private ProjectPropertiesTO readProjectProperties(final IProject project) throws PropertiesException {
+    public ProjectPropertiesTO convertProjectPropertiesFromString(String properties)
+        throws PropertiesException {
         ProjectPropertiesTO projectProperties = null;
         Reader reader = null;
         try {
@@ -180,13 +178,9 @@ public class ProjectPropertiesManagerImpl implements IProjectPropertiesManager {
             final URL mappingSpecUrl = this.getClass().getResource(PROPERTIES_MAPPING);
             mapping.loadMapping(mappingSpecUrl);
 
-            final IFile propertiesFile = project.getFile(PROPERTIES_FILE);
-            if (propertiesFile.exists() && propertiesFile.isAccessible()) {
-                reader = new InputStreamReader(propertiesFile.getContents());
-                final Unmarshaller unmarshaller = new Unmarshaller(mapping);
-                projectProperties = (ProjectPropertiesTO) unmarshaller.unmarshal(reader);
-                reader.close();
-            }
+            reader = new StringReader(properties);
+            final Unmarshaller unmarshaller = new Unmarshaller(mapping);
+            projectProperties = (ProjectPropertiesTO) unmarshaller.unmarshal(reader);
         } catch (MarshalException e) {
             throw new PropertiesException(e);
         } catch (ValidationException e) {
@@ -195,13 +189,34 @@ public class ProjectPropertiesManagerImpl implements IProjectPropertiesManager {
             throw new PropertiesException(e);
         } catch (MappingException e) {
             throw new PropertiesException(e);
-        } catch (CoreException e) {
-            throw new PropertiesException(e);
         } finally {
-        	IOUtil.closeQuietly(reader);
+            IOUtil.closeQuietly(reader);
         }
 
         return projectProperties;
+    }
+    /**
+     * Read a project properties from properties file
+     *
+     * @param project a project
+     */
+    private ProjectPropertiesTO readProjectProperties(final IProject project) throws PropertiesException {
+        ProjectPropertiesTO projectProperties = null;
+        try {
+
+            final IFile propertiesFile = project.getFile(PROPERTIES_FILE);
+            if (propertiesFile.exists() && propertiesFile.isAccessible()) {
+                String properties = IOUtils.toString(propertiesFile.getContents());
+                projectProperties = convertProjectPropertiesFromString(properties);
+            }
+
+            return projectProperties;
+
+        } catch (IOException e) {
+            throw new PropertiesException(e);
+        } catch (CoreException e) {
+            throw new PropertiesException(e);
+        }
     }
 
     /**
@@ -258,17 +273,9 @@ public class ProjectPropertiesManagerImpl implements IProjectPropertiesManager {
         projectProperties.setProjectRuleSet(ruleSet);
     }
 
-    /**
-     * Save project properties
-     *
-     * @param project a project
-     * @param projectProperties the project properties to save
-     * @param monitor a progress monitor
-     * @throws DAOException
-     */
-    private void writeProjectProperties(final IProject project, final ProjectPropertiesTO projectProperties)
+    public String convertProjectPropertiesToString(ProjectPropertiesTO projectProperties)
             throws PropertiesException {
-    	StringWriter writer = null;
+        StringWriter writer = null;
         try {
             final Mapping mapping = new Mapping(getClass().getClassLoader());
             final URL mappingSpecUrl = getClass().getResource(PROPERTIES_MAPPING);
@@ -282,12 +289,8 @@ public class ProjectPropertiesManagerImpl implements IProjectPropertiesManager {
             marshaller.marshal(projectProperties);
             writer.flush();
 
-            final IFile propertiesFile = project.getFile(PROPERTIES_FILE);
-            if (propertiesFile.exists() && propertiesFile.isAccessible()) {
-                propertiesFile.setContents(new ByteArrayInputStream(writer.toString().getBytes()), false, false, null);
-            } else {
-                propertiesFile.create(new ByteArrayInputStream(writer.toString().getBytes()), false, null);
-            }
+            return writer.toString();
+
         } catch (MarshalException e) {
             throw new PropertiesException(e);
         } catch (ValidationException e) {
@@ -296,10 +299,32 @@ public class ProjectPropertiesManagerImpl implements IProjectPropertiesManager {
             throw new PropertiesException(e);
         } catch (MappingException e) {
             throw new PropertiesException(e);
+        } finally {
+            IOUtil.closeQuietly(writer);
+        }
+    }
+
+    /**
+     * Save project properties
+     *
+     * @param project a project
+     * @param projectProperties the project properties to save
+     * @param monitor a progress monitor
+     * @throws DAOException
+     */
+    private void writeProjectProperties(final IProject project, final ProjectPropertiesTO projectProperties)
+            throws PropertiesException {
+        try {
+            String writer = convertProjectPropertiesToString(projectProperties);
+
+            final IFile propertiesFile = project.getFile(PROPERTIES_FILE);
+            if (propertiesFile.exists() && propertiesFile.isAccessible()) {
+                propertiesFile.setContents(new ByteArrayInputStream(writer.getBytes()), false, false, null);
+            } else {
+                propertiesFile.create(new ByteArrayInputStream(writer.getBytes()), false, null);
+            }
         } catch (CoreException e) {
             throw new PropertiesException(e);
-        } finally {
-        	IOUtil.closeQuietly(writer);
         }
     }
 

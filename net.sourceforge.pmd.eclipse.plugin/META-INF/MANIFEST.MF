@@ -109,6 +109,7 @@ Export-Package: name.herlin.command,
  net.sourceforge.pmd.eclipse.runtime.cmd,
  net.sourceforge.pmd.eclipse.runtime.preferences,
  net.sourceforge.pmd.eclipse.runtime.properties;uses:="org.eclipse.ui,org.eclipse.core.resources,net.sourceforge.pmd",
+ net.sourceforge.pmd.eclipse.runtime.properties.impl;x-internal:=true,
  net.sourceforge.pmd.eclipse.runtime.writer;uses:="net.sourceforge.pmd.lang.java.ast,net.sourceforge.pmd",
  net.sourceforge.pmd.eclipse.ui,
  net.sourceforge.pmd.eclipse.ui.actions;
@@ -158,4 +159,5 @@ Export-Package: name.herlin.command,
  net.sourceforge.pmd.renderers,
  net.sourceforge.pmd.util;uses:="net.sourceforge.pmd.lang.java.ast",
  net.sourceforge.pmd.util.datasource,
+ org.apache.commons.io;x-internal:=true,
  org.apache.log4j;uses:="org.apache.log4j.helpers,org.apache.log4j.or,org.apache.log4j.spi"
