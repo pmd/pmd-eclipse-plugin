@@ -8,6 +8,14 @@ Eclipse Update Site: <https://sourceforge.net/projects/pmd/files/pmd-eclipse/upd
 
 *   Updated PMD to 5.3.4
 
+**API Changes**:
+
+*   The package `net.sourceforge.pmd.eclipse.core.rulesets` including sub-packages has been removed from the plugin.
+    It won't export these package anymore. The purpose of this package was probably to provide a way of serializing
+    and deserializing rulesets. As only the writer has been implemented and the reader was missing, it's not useful.
+    If you need to read/write rulesets, use the core PMD functionality provided by `net.sourceforge.pmd.RuleSetWriter`.
+    In order to read it back, use `net.sourceforge.pmd.RuleSetFactory`.
+
 
 ## 22-May-2015: 4.0.7.v20150522-1709
 
