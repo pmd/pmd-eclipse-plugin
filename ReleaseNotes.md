@@ -6,6 +6,8 @@ Eclipse Update Site: <https://sourceforge.net/projects/pmd/files/pmd-eclipse/upd
 
 ## ????: 4.0.8.v????
 
+*   Updated PMD to 5.3.4
+
 
 ## 22-May-2015: 4.0.7.v20150522-1709
 
