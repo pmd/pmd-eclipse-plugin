@@ -54,8 +54,6 @@ import net.sourceforge.pmd.eclipse.runtime.preferences.IPreferences;
 import net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties;
 import net.sourceforge.pmd.eclipse.runtime.properties.PropertiesException;
 import net.sourceforge.pmd.eclipse.ui.actions.RuleSetUtil;
-import net.sourceforge.pmd.lang.LanguageRegistry;
-import net.sourceforge.pmd.lang.java.JavaLanguageModule;
 import net.sourceforge.pmd.util.StringUtil;
 
 import org.apache.log4j.Logger;
@@ -104,6 +102,11 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
     private String onErrorIssue = null;
     /** Whether to run the review command, even if PMD is disabled in the project settings. */
     private boolean runAlways = false;
+    /**
+     * Maximum count of changed resources, that are considered to be not a full build.
+     * If more than these resources are changed, PMD will only be executed, if full build option is enabled.
+     */
+    private static final int MAXIMUM_RESOURCE_COUNT = 5;
 
     private IProjectProperties propertyCache = null;
 
@@ -401,7 +404,7 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
                 targetCount = countResourceElement(resource);
             }
             // Could add a property that lets us set the max number to analyze
-            if (properties.isFullBuildEnabled() || isUserInitiated() || targetCount == 1) {
+            if (properties.isFullBuildEnabled() || isUserInitiated() || targetCount <= MAXIMUM_RESOURCE_COUNT) {
                 setStepCount(targetCount);
                 log.debug("Visiting resource " + resource.getName() + " : " + getStepCount());
 
@@ -422,7 +425,10 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
                     log.debug("Skipping resource " + resource.getName() + " because it doesn't exist.");
                 }
             } else {
-                log.debug("Skipping resource " + resource.getName() + " because of fullBuildEnabled flag");
+                String message = "Skipping resource " + resource.getName() + " because of fullBuildEnabled flag and "
+                        + "targetCount is " + targetCount + ". This is more than " + MAXIMUM_RESOURCE_COUNT + "."
+                        + " If you want to execute PMD, please check \"Full build enabled\" in the project settings";
+                PMDPlugin.getDefault().logInformation(message);
             }
 
             worked(1); // TODO - temp fix? BR
@@ -536,7 +542,7 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
             // PMDEngine pmdEngine = getPmdEngineForProject(project);
             int targetCount = countDeltaElement(resourceDelta);
             // Could add a property that lets us set the max number to analyze
-            if (properties.isFullBuildEnabled() || isUserInitiated() || targetCount == 1) {
+            if (properties.isFullBuildEnabled() || isUserInitiated() || targetCount <= MAXIMUM_RESOURCE_COUNT) {
                 setStepCount(targetCount);
                 log.debug("Visiting delta of resource " + resource.getName() + " : " + getStepCount());
 
@@ -553,7 +559,11 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
                 fileCount += visitor.getProcessedFilesCount();
                 pmdDuration += visitor.getActualPmdDuration();
             } else {
-                log.debug("Skipping resource " + resource.getName() + " because of fullBuildEnabled flag");
+                String message = "Skipping resourceDelta " + resource.getName() + " because of fullBuildEnabled flag and "
+                        + "targetCount is " + targetCount + ". This is more than " + MAXIMUM_RESOURCE_COUNT + "."
+                        + " If you want to execute PMD, please check \"Full build enabled\" in the project settings";
+                PMDPlugin.getDefault().logInformation(message);
+                log.debug(message);
             }
 
         } catch (PropertiesException e) {
@@ -610,7 +620,7 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
     private int countResourceElement(IResource resource) {
 
         if (resource instanceof IFile) {
-            return isSuitable((IFile) resource) ? 1 : 0;
+            return 1;
         }
 
         final CountVisitor visitor = new CountVisitor();
@@ -637,7 +647,7 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
         try {
             delta.accept(visitor);
         } catch (CoreException e) {
-            logError("Exception counting elemnts in a delta selection", e);
+            logError("Exception counting elements in a delta selection", e);
         }
 
         return visitor.count;
@@ -655,32 +665,23 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
         window.getActivePage().setPerspective(reg.findPerspectiveWithId(PMDRuntimeConstants.ID_PERSPECTIVE));
     }
 
-    private static boolean isSuitable(IFile file) {
-        return isLanguageFile(file, LanguageRegistry.getLanguage(JavaLanguageModule.NAME));
-    }
-
     /**
-     * Private inner class to count the number of resources or delta elements
+     * Private inner class to count the number of resources or delta elements.
+     * Only files are counted.
      */
     private final class CountVisitor implements IResourceVisitor, IResourceDeltaVisitor {
         public int count = 0;
 
         public boolean visit(IResource resource) {
-            boolean fVisitChildren = true;
-            count++;
-
-            if (resource instanceof IFile && isSuitable((IFile) resource)) {
-
-                fVisitChildren = false;
+            if (resource instanceof IFile) {
+                count++;
             }
-
-            return fVisitChildren;
+            return true;
         }
 
-        // @PMD:REVIEWED:UnusedFormalParameter: by Herlin on 10/05/05 23:46
         public boolean visit(IResourceDelta delta) {
-            count++;
-            return true;
+            IResource resource = delta.getResource();
+            return visit(resource);
         }
     }
 

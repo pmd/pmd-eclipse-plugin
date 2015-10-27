@@ -69,7 +69,7 @@ public class FileChangeReviewer implements IResourceChangeListener {
     public void resourceChanged(IResourceChangeEvent event) {
         IWorkspaceDescription workspaceSettings = ResourcesPlugin.getWorkspace().getDescription();
         if (workspaceSettings.isAutoBuilding()) {
-            PMDPlugin.getDefault().logInformation("Not running PMD, as autoBuilding is enabled for this workspace");
+            PMDPlugin.getDefault().logInformation("Not running PMD via FileChangeReviewer, as autoBuilding is enabled for this workspace");
             return;
         }
 
