@@ -123,7 +123,7 @@ public class ReviewAction extends AbstractViolationSelectionAction {
 
                     monitorWorked();
 
-                    file.setContents(new ByteArrayInputStream(sourceCode.getBytes()), false, true, getMonitor());
+                    file.setContents(new ByteArrayInputStream(sourceCode.getBytes(file.getCharset())), false, true, getMonitor());
 
                     monitorWorked();
                 } else {
@@ -287,7 +287,8 @@ public class ReviewAction extends AbstractViolationSelectionAction {
 
     public static String readFile(IFile file) throws IOException, CoreException {
         InputStream contents = file.getContents(true);
-        InputStreamReader reader = new InputStreamReader(contents);
+        String charset = file.getCharset();
+        InputStreamReader reader = new InputStreamReader(contents, charset);
 
         try {
             char[] buffer = new char[4096];
