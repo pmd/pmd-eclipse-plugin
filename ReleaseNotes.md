@@ -4,7 +4,7 @@ Installation instructions: <http://pmd.sourceforge.net/eclipse/>
 
 Eclipse Update Site: <https://sourceforge.net/projects/pmd/files/pmd-eclipse/update-site/>
 
-## ????: 4.0.8.v????
+## 04-December-2015: 4.0.8.v20151204-2156
 
 *   Updated PMD to 5.3.6
 *   Fixed PMD-Plugin does not work if run with IBM JDK 1.7.0 ([bug #1419](https://sourceforge.net/p/pmd/bugs/1419/))
