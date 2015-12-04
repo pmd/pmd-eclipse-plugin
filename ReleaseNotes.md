@@ -6,7 +6,7 @@ Eclipse Update Site: <https://sourceforge.net/projects/pmd/files/pmd-eclipse/upd
 
 ## ????: 4.0.8.v????
 
-*   Updated PMD to 5.3.5
+*   Updated PMD to 5.3.6
 *   Fixed PMD-Plugin does not work if run with IBM JDK 1.7.0 ([bug #1419](https://sourceforge.net/p/pmd/bugs/1419/))
 *   Fixed PMD Eclipse is not executed if "Full build" is not enabled ([bug #1435](https://sourceforge.net/p/pmd/bugs/1435/))
 *   Fixed PMD is changing encoding of source code ([bug #1386](https://sourceforge.net/p/pmd/bugs/1386/))
