@@ -134,19 +134,58 @@ public interface RuleFieldAccessor {
 		}
 	};
 
+    public static class ComparableLanguage implements Language, Comparable<Language> {
+        private final Language theLanguage;
+        public ComparableLanguage(Language theLanguage) {
+            this.theLanguage = theLanguage;
+        }
+        @Override
+        public int compareTo(Language o) {
+            return theLanguage.getName().compareTo(o.getName());
+        }
+        public int hashCode() {
+            return theLanguage.getName().hashCode();
+        }
+        public boolean equals(Object o) {
+            if (o == null) return false;
+            if (!(o instanceof Language)) return false;
+            return theLanguage.getName().equals(((Language)o).getName());
+        }
+        public String getName() {
+            return theLanguage.getName();
+        }
+        public String getShortName() {
+            return theLanguage.getShortName();
+        }
+        public String getTerseName() {
+            return theLanguage.getTerseName();
+        }
+        public List<String> getExtensions() {
+            return theLanguage.getExtensions();
+        }
+        public boolean hasExtension(String extension) {
+            return theLanguage.hasExtension(extension);
+        }
+        public Class<?> getRuleChainVisitorClass() {
+            return theLanguage.getRuleChainVisitorClass();
+        }
+        public List<LanguageVersion> getVersions() {
+            return theLanguage.getVersions();
+        }
+        public boolean hasVersion(String version) {
+            return theLanguage.hasVersion(version);
+        }
+        public LanguageVersion getVersion(String version) {
+            return theLanguage.getVersion(version);
+        }
+        public LanguageVersion getDefaultVersion() {
+            return theLanguage.getDefaultVersion();
+        }
+    }
+
 	RuleFieldAccessor language = new BasicRuleFieldAccessor() {
         public Comparable<Language> valueFor(Rule rule) {
-            final Language l = rule.getLanguage();
-            return new Comparable<Language>() {
-                @Override
-                public int compareTo(Language o) {
-                    return l.getName().compareTo(o.getName());
-                }
-                @Override
-                public String toString() {
-                    return l.getName();
-                }
-            };
+            return new ComparableLanguage(rule.getLanguage());
 	    }
         
         public String labelFor(Rule rule) {
