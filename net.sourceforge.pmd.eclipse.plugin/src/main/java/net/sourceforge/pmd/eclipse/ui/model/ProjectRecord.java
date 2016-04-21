@@ -44,6 +44,7 @@ import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceVisitor;
@@ -123,7 +124,7 @@ public class ProjectRecord extends AbstractPMDRecord {
      */
     @Override
     protected final AbstractPMDRecord[] createChildren() {
-        final Set<PackageRecord> packages = new HashSet<PackageRecord>();
+        final Set<AbstractPMDRecord> packages = new HashSet<AbstractPMDRecord>();
         try {
             // search for Packages
             project.accept(new IResourceVisitor() {
@@ -132,10 +133,12 @@ public class ProjectRecord extends AbstractPMDRecord {
                     boolean visitChildren = false;
                     switch (resource.getType()) {
                     case IResource.FOLDER:
+                    	IFolder folder = (IFolder) resource;
                         IJavaElement javaMember = JavaCore.create(resource);
 
                         if (javaMember == null) {
-                            visitChildren = true;
+                        	packages.addAll(createPackagesFromFolderRoot(folder));
+                            visitChildren = false;
                         } else {
                             if (javaMember instanceof IPackageFragmentRoot) {
                                 // if the Element is the Root of all Packages
@@ -202,6 +205,23 @@ public class ProjectRecord extends AbstractPMDRecord {
         }
 
         return packages;
+    }
+
+    protected final Set<FolderRecord> createPackagesFromFolderRoot(IFolder rootFolder) {
+        final Set<FolderRecord> folder = new HashSet<FolderRecord>();
+
+        try {
+			for (IResource resource : rootFolder.members()) {
+			    if (resource instanceof IFolder) {
+			        folder.add(new FolderRecord((IFolder) resource, this)); // NOPMD
+			    }
+			}
+		}
+		catch (CoreException e) {
+			e.printStackTrace();
+		}
+
+        return folder;
     }
 
     /**

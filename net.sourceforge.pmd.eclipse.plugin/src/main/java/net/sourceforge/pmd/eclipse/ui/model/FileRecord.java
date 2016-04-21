@@ -73,7 +73,7 @@ public class FileRecord extends AbstractPMDRecord {
     
     private AbstractPMDRecord[] children;
     private final IResource resource;
-    private final PackageRecord parent;
+    private final AbstractPMDRecord parent;
     private int numberOfLOC;
     private int numberOfMethods;
     
@@ -83,7 +83,7 @@ public class FileRecord extends AbstractPMDRecord {
      * @param javaResource the given File
      */
     public FileRecord(IResource javaResource) {
-        this(javaResource, null);
+        this(javaResource, (PackageRecord) null);
     }
 
     public long getTimestamp() {
@@ -104,6 +104,26 @@ public class FileRecord extends AbstractPMDRecord {
         }
 
         this.resource = javaResource;
+        this.parent = record;
+        this.numberOfLOC = 0;
+        this.numberOfMethods = 0;
+        this.children = createChildren();
+    }
+    
+    /**
+     * Constructor (for use with the Model)
+     *
+     * @param javaResource
+     * @param record
+     */
+    public FileRecord(IResource resource, FolderRecord record) {
+        super();
+
+        if (resource == null) {
+            throw new IllegalArgumentException("resource cannot be null");
+        }
+
+        this.resource = resource;
         this.parent = record;
         this.numberOfLOC = 0;
         this.numberOfMethods = 0;
