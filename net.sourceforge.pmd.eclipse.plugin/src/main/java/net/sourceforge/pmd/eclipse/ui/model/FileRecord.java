@@ -83,11 +83,17 @@ public class FileRecord extends AbstractPMDRecord {
      * @param javaResource the given File
      */
     public FileRecord(IResource javaResource) {
-        this(javaResource, (PackageRecord) null);
-    }
+    	super();
+    	
+    	if (javaResource == null) {
+            throw new IllegalArgumentException("javaResource cannot be null");
+        }
 
-    public long getTimestamp() {
-    	return resource.getLocalTimeStamp();
+        this.resource = javaResource;
+        this.parent = null;
+        this.numberOfLOC = 0;
+        this.numberOfMethods = 0;
+        this.children = createChildren();
     }
     
     /**
@@ -128,6 +134,10 @@ public class FileRecord extends AbstractPMDRecord {
         this.numberOfLOC = 0;
         this.numberOfMethods = 0;
         this.children = createChildren();
+    }
+
+    public long getTimestamp() {
+    	return resource.getLocalTimeStamp();
     }
 
     /**

@@ -46,6 +46,7 @@ import net.sourceforge.pmd.eclipse.ui.model.FileRecord;
 import net.sourceforge.pmd.eclipse.ui.model.FileToMarkerRecord;
 import net.sourceforge.pmd.eclipse.ui.model.MarkerRecord;
 import net.sourceforge.pmd.eclipse.ui.model.PackageRecord;
+import net.sourceforge.pmd.eclipse.ui.model.FolderRecord;
 import net.sourceforge.pmd.eclipse.ui.model.ProjectRecord;
 import net.sourceforge.pmd.eclipse.ui.model.RootRecord;
 import net.sourceforge.pmd.eclipse.util.Util;
@@ -116,6 +117,8 @@ public class ViolationOverviewContentProvider implements ITreeContentProvider, I
             return getChildrenOfRoot();
         } else if (parentElement instanceof PackageRecord) {
             return getChildrenOfPackage((PackageRecord)parentElement);
+        } else if (parentElement instanceof FolderRecord) {
+                return getChildrenOfFolder((FolderRecord)parentElement);
         } else if (parentElement instanceof FileRecord) {
             return getChildrenOfFile((FileRecord)parentElement);
         } else if (parentElement instanceof MarkerRecord) {
@@ -152,7 +155,14 @@ public class ViolationOverviewContentProvider implements ITreeContentProvider, I
      * @return children as array
      */
     private Object[] getChildrenOfPackage(PackageRecord record) {
-   
+    	return getChildrenOfPackageOrFolder(record);
+    }
+
+    private Object[] getChildrenOfFolder(FolderRecord record) {
+    	return getChildrenOfPackageOrFolder(record);
+    }
+
+    private Object[] getChildrenOfPackageOrFolder(AbstractPMDRecord record) {
         if (violationView.getShowType() == ViolationOverview.SHOW_MARKERS_FILES) {
             Map<String, AbstractPMDRecord> markers = new HashMap<String, AbstractPMDRecord>();
             List<AbstractPMDRecord> files = record.getChildrenAsList();

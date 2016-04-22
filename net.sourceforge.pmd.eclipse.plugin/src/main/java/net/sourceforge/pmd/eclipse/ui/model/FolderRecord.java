@@ -41,8 +41,6 @@ import java.util.List;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jdt.core.IJavaElement;
-import org.eclipse.jdt.core.JavaModelException;
 
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
@@ -89,13 +87,7 @@ public class FolderRecord extends AbstractPMDRecord {
      */
     @Override
     public IResource getResource() {
-        IResource resource = null;
-        try {
-            resource = ((IJavaElement) folder).getCorrespondingResource();
-        } catch (JavaModelException jme) {
-            PMDPlugin.getDefault().logError(StringKeys.ERROR_JAVAMODEL_EXCEPTION + this.toString(), jme);
-        }
-        return resource;
+        return (IResource) folder;
     }
 
     /**
