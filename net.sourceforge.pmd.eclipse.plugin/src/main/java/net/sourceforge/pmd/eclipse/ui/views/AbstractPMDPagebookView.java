@@ -3,10 +3,6 @@ package net.sourceforge.pmd.eclipse.ui.views;
 import java.util.Collections;
 import java.util.List;
 
-import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
-import net.sourceforge.pmd.eclipse.runtime.cmd.AbstractDefaultCommand;
-import net.sourceforge.pmd.eclipse.ui.model.FileRecord;
-
 import org.eclipse.core.resources.IFile;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
@@ -19,6 +15,9 @@ import org.eclipse.ui.part.IPage;
 import org.eclipse.ui.part.MessagePage;
 import org.eclipse.ui.part.PageBook;
 import org.eclipse.ui.part.PageBookView;
+
+import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
+import net.sourceforge.pmd.eclipse.ui.model.FileRecord;
 
 /**
  * 
@@ -35,7 +34,7 @@ public abstract class AbstractPMDPagebookView extends PageBookView {
             IEditorInput input = ((IEditorPart) part).getEditorInput();
             if (input != null && input instanceof IFileEditorInput) {
                 IFile file = ((IFileEditorInput) input).getFile();
-                return AbstractDefaultCommand.isJavaFile(file) ? new FileRecord(file) : null; 
+                return new FileRecord(file); 
             	}
     		}
        return null;
@@ -67,9 +66,7 @@ public abstract class AbstractPMDPagebookView extends PageBookView {
             IEditorInput input = ((IEditorPart) part).getEditorInput();
             if (input != null && input instanceof IFileEditorInput) {
                 IFile file = ((IFileEditorInput) input).getFile();                
-                return AbstractDefaultCommand.isJavaFile(file) ?
-                    new FileRecord(file) : 
-                    null;
+                return new FileRecord(file);
             }
         } else {
             // We also want to get the editors when it's not active
