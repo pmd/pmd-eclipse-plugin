@@ -123,7 +123,7 @@ public class CPDViewTooltipListener2 implements Listener {
 		
 		Object item = ((TreeNode) treeItem.getData()).getValue();
 
-		String[] names = null;
+		String[] names;
 		if (item instanceof Match) {
 			names = CPDViewLabelProvider2.sourcesFor((Match) item);
 		} else {

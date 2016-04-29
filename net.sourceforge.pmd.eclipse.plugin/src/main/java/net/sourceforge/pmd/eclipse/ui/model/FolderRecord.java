@@ -129,7 +129,7 @@ public class FolderRecord extends AbstractPMDRecord {
     @Override
     public AbstractPMDRecord addResource(IResource resource) {
         //final ICompilationUnit unit = this.packageFragment.getCompilationUnit(resource.getName());
-        FileRecord file = null;
+        FileRecord file;
 
         // TODO This should be more question of whether PMD is interested in the File!
         // we want the File to be a java-File

@@ -131,7 +131,7 @@ public class SWTUtil {
     public static String[] i18lLabelsIn(Object[][] items, int columnIndex) {
 
         String[] labels = labelsIn(items, columnIndex);
-        String xlation = null;
+        String xlation;
 
         for (int i=0; i<labels.length; i++) {
         	xlation = stringFor(labels[i]);

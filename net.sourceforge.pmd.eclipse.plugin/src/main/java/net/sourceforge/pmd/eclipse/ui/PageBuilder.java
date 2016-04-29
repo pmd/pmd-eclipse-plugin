@@ -164,7 +164,7 @@ public class PageBuilder {
 		
 		List<StyleRange> ranges = new ArrayList<StyleRange>();
 		
-		int[] span = null;
+		int[] span;
 		
 		for (int i=0; i<headingSpans.size(); i++) {
 			span = headingSpans.get(i);
@@ -178,7 +178,7 @@ public class PageBuilder {
 			}
 		
 		String crStr = Character.toString(CR);
-		StyleRange sr = null;
+		StyleRange sr;
 		
 		for (int i=0; i<codeSpans.size(); i++) {
 			span = codeSpans.get(i);

@@ -139,7 +139,7 @@ public class ProjectRecord extends AbstractPMDRecord {
             project.accept(new IResourceVisitor() {
 
                 public boolean visit(IResource resource) throws CoreException {
-                    boolean visitChildren = false;
+                    boolean visitChildren;
                     switch (resource.getType()) {
 	                    case IResource.FOLDER:
 	                        visitChildren = (ProjectRecord.this.isJavaProject) ? visitAsPackages(resource) : visitAsFolders(resource);

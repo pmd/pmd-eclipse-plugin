@@ -84,7 +84,7 @@ public class DescriptionPanelManager extends AbstractRulePanelManager {
 
         initializeOn(parent);
 
-        GridData gridData = new GridData(GridData.FILL_HORIZONTAL);
+        GridData gridData;
 
         Composite panel = new Composite(parent, 0);
         GridLayout layout = new GridLayout(3, false);

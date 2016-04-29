@@ -329,7 +329,7 @@ public class Util {
 
 	            public void addPainterFor(final Tree tree, final int columnIndex, final RuleFieldAccessor getter, Map<Integer, List<Listener>> paintListeners) {
 	                
-	                final Display display = tree.getDisplay();
+//	                final Display display = tree.getDisplay();
 
 //	                   tree.addListener(SWT.EraseItem, new Listener() {
 //	                        public void handleEvent(Event event) {

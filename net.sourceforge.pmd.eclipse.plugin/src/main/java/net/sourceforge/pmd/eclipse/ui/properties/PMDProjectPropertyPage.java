@@ -201,9 +201,7 @@ public class PMDProjectPropertyPage extends PropertyPage {
 	
 	            data = new GridData(SWT.FILL, SWT.NONE, true, false);
 	            ruleSetFileText.setLayoutData(data);
-	            
-	            Button localRulesButton =  buildLocalRulesButton(ruleSetPanel);
-	            
+
 	            final Composite ruleTablePanel = new Composite(ruleSourceGroup, SWT.NONE);
 	            gridLayout = new GridLayout(2, false);
 	            ruleTablePanel.setLayout(gridLayout);

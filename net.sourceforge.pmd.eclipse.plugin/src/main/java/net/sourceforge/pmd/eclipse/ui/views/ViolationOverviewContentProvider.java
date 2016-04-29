@@ -296,7 +296,7 @@ public class ViolationOverviewContentProvider implements ITreeContentProvider, I
         // or if the Source of Input changes
 
         // we remove an existing ResourceChangeListener
-        IWorkspaceRoot workspaceRoot = null;
+        IWorkspaceRoot workspaceRoot;
         if (root != null) {
             LOG.debug("remove current listener");
             workspaceRoot = (IWorkspaceRoot) root.getResource();

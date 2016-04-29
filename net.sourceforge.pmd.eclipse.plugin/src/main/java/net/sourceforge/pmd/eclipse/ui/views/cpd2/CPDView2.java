@@ -227,8 +227,8 @@ public class CPDView2 extends ViewPart implements IPropertyListener {
     private void paintName(GC gc, int x, int y, String name, int rightEdge, int descent, int cellWidth) {
 
     	String[] parts = partsOf(name);
-    	int packageWidth = 0;
-    	int classWidth = 0;
+    	int packageWidth;
+    	int classWidth;
 
     	int[] widths = nameWidthsByName.get(name);
 
@@ -268,7 +268,7 @@ public class CPDView2 extends ViewPart implements IPropertyListener {
 
       			Object item = ((TreeNode)event.item.getData()).getValue();
       			
-      			String[] names = null;
+      			String[] names;
       			if (item instanceof Match) {
       				names = CPDViewLabelProvider2.sourcesFor((Match)item);
       				} else {

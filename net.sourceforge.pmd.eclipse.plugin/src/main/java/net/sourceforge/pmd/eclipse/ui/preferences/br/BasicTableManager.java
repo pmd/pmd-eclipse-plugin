@@ -45,7 +45,7 @@ public class BasicTableManager <T extends Object> extends AbstractTableManager<T
 	public static int columnIndexAt(TableItem item, int xPosition) {
 
 		TableColumn[] cols = item.getParent().getColumns();
-		Rectangle bounds = null;
+		Rectangle bounds;
 
 		for(int i = 0; i < cols.length; i++){
 			bounds = item.getBounds(i);
@@ -178,7 +178,7 @@ public class BasicTableManager <T extends Object> extends AbstractTableManager<T
 		Table table = tableViewer.getTable();
 		
 		for (int i=0; i<columnDescs.length; i++) {
-			TableColumn tc = columnDescs[i].buildTableColumn(table, this);
+			columnDescs[i].buildTableColumn(table, this);
 		}
 
 		tableViewer.setLabelProvider( new BasicTableLabelProvider(columnDescs) );

@@ -217,7 +217,7 @@ public class ViolationOverviewLabelProvider extends AbstractViolationLabelProvid
      * @return
      */
     private String getViolationsPerKLOC(AbstractPMDRecord element) {
-        String result = "";
+        String result;
         int vioCount = violationView.getNumberOfFilteredViolations(element);
         int loc = violationView.getLOC(element);
 
@@ -245,7 +245,7 @@ public class ViolationOverviewLabelProvider extends AbstractViolationLabelProvid
      * @return
      */
     private String getViolationsPerMethod(AbstractPMDRecord element) {
-        String result = "";
+        String result;
         final int vioCount2 = violationView.getNumberOfFilteredViolations(element);
         final int numMethods = violationView.getNumberOfMethods(element);
 

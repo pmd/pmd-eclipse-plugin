@@ -188,7 +188,7 @@ public class ReviewAction extends AbstractViolationSelectionAction {
      * Renvoie la position dans le code source du début de la ligne du marqueur
      */
     private static int getMarkerLineStart(String sourceCode, int lineNumber) {
-        int lineStart = 0;
+        int lineStart;
         int currentLine = 1;
         for (lineStart = 0; lineStart < sourceCode.length(); lineStart++) {
             if (currentLine == lineNumber) {

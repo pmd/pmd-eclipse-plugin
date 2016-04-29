@@ -161,7 +161,7 @@ public class CPDCheckProjectAction extends AbstractUIAction {
      * @return file name
      */
     private String createFileName(String rendererKey) {
-        String fileName = null;
+        String fileName;
         if (XML_KEY.equals(rendererKey)) {
             fileName = PMDRuntimeConstants.XML_CPDREPORT_NAME;
         } else if (CSV_KEY.equals(rendererKey)) {
