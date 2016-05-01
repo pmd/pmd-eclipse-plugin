@@ -38,7 +38,7 @@ public class MethodPicker extends Composite {
         super(parent, SWT.None);
 
         unwantedPrefixes = theUnwantedPrefixes == null ?
-            StringUtil.EMPTY_STRINGS : theUnwantedPrefixes;
+            StringUtil.getEmptyStrings() : theUnwantedPrefixes;
 
         GridLayout layout = new GridLayout(2, true);
         layout.verticalSpacing = 0;     layout.horizontalSpacing = 0;

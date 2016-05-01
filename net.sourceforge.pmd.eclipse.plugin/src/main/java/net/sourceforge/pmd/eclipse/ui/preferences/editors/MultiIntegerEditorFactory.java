@@ -53,15 +53,14 @@ public class MultiIntegerEditorFactory extends AbstractMultiValueEditorFactory {
 
         List<Integer> ints = new ArrayList<Integer>(numberStrings.length);
 
-        Integer intrg;
 
         for (String numString : numberStrings) {
             try {
-                intrg = Integer.parseInt(numString);
+                Integer intrg = Integer.parseInt(numString);
+                ints.add(intrg);
             } catch (Exception e) {
                // just eat it for now
             }
-            if (intrg != null) ints.add(intrg);
         }
         return ints.toArray(new Integer[ints.size()]);
     }

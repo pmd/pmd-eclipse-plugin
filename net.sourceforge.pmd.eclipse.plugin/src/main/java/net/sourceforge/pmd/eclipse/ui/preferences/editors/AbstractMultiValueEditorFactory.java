@@ -250,7 +250,7 @@ public abstract class AbstractMultiValueEditorFactory extends AbstractEditorFact
 
         String values = textWidget.getText().trim();
 
-        if (StringUtil.isEmpty(values)) return StringUtil.EMPTY_STRINGS;
+        if (StringUtil.isEmpty(values)) return StringUtil.getEmptyStrings();
 
         String[] valueSet = values.split(delimiter);
         List<String> valueList = new ArrayList<String>(valueSet.length);

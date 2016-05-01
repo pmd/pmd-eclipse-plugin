@@ -68,7 +68,7 @@ public class FilterManager {
 	}
 
 	public String[] names() {
-		if (rulesByFilterName == null) return StringUtil.EMPTY_STRINGS;
+		if (rulesByFilterName == null) return StringUtil.getEmptyStrings();
 		return rulesByFilterName.keySet().toArray(new String[rulesByFilterName.size()]);
 	}
 	
