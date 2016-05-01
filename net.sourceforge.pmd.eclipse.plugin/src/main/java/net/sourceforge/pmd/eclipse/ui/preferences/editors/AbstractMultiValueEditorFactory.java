@@ -137,7 +137,7 @@ public abstract class AbstractMultiValueEditorFactory extends AbstractEditorFact
 
         final List<Control> newControls = new ArrayList<Control>();
 
-        int i=0;
+        int i;
         Object[] values = (Object[])valueFor(source, desc);
         for (i=0; i<values.length; i++) {
             final Label number = new Label(parent, SWT.NONE);

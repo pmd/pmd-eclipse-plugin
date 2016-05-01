@@ -336,7 +336,7 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
     private ISchedulingRule getSchedulingRule() {
         final IWorkspace workspace = ResourcesPlugin.getWorkspace();
         final IResourceRuleFactory ruleFactory = workspace.getRuleFactory();
-        ISchedulingRule rule = null;
+        ISchedulingRule rule;
 
         if (resources.isEmpty()) {
             rule = ruleFactory.markerRule(resourceDelta.getResource().getProject());

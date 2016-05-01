@@ -389,7 +389,7 @@ public class BaseVisitor {
 //        final int maxViolationsPerFilePerRule = preferences.getMaxViolationsPerFilePerRule();
         Map<Rule, Integer> violationsByRule = new HashMap<Rule, Integer>();
 
-        Rule rule = null;
+        Rule rule;
         while (iter.hasNext()) {
             RuleViolation violation = iter.next();
             rule = violation.getRule();

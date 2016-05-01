@@ -53,7 +53,7 @@ public class MultiIntegerEditorFactory extends AbstractMultiValueEditorFactory {
 
         List<Integer> ints = new ArrayList<Integer>(numberStrings.length);
 
-        Integer intrg = null;
+        Integer intrg;
 
         for (String numString : numberStrings) {
             try {

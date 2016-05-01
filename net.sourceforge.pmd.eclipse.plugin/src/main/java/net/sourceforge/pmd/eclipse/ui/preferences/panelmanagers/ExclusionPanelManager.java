@@ -141,7 +141,7 @@ public class ExclusionPanelManager extends AbstractRulePanelManager {
 
 		colourManager = ColourManager.managerFor(parent.getDisplay());
 
-		GridData gridData = new GridData(GridData.FILL_HORIZONTAL);
+		GridData gridData;
 
 		Composite panel = new Composite(parent, 0);
 	    GridLayout layout = new GridLayout(2, false);

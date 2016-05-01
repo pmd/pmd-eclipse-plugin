@@ -102,7 +102,7 @@ public class TextColumnDescriptor extends SimpleColumnDescriptor {
                         
                         GC gc = event.gc;
 	                        
-                        int imgOffset = 0;
+                        int imgOffset;
                         
                         Rule rule = (Rule)value;
                         gc.setFont( fontFor(tree, rule) );	

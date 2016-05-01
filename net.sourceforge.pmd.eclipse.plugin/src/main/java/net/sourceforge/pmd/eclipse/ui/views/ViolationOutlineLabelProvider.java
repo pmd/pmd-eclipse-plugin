@@ -18,7 +18,7 @@ public class ViolationOutlineLabelProvider extends AbstractViolationLabelProvide
 
     /* @see org.eclipse.jface.viewers.ITableLabelProvider#getColumnImage(java.lang.Object, int) */
     public Image getColumnImage(Object element, int columnIndex) {
-        IMarker marker = null;
+        IMarker marker;
         if (element instanceof IMarker)
             marker = (IMarker) element;
         else
@@ -40,7 +40,7 @@ public class ViolationOutlineLabelProvider extends AbstractViolationLabelProvide
 
     /* @see org.eclipse.jface.viewers.ITableLabelProvider#getColumnText(java.lang.Object, int) */
     public String getColumnText(Object element, int columnIndex) {
-        IMarker marker = null;
+        IMarker marker;
         if (element instanceof IMarker)
             marker = (IMarker) element;
         else

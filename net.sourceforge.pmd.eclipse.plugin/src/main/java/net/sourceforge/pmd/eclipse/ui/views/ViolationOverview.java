@@ -286,7 +286,7 @@ public class ViolationOverview extends ViewPart implements ISelectionProvider, I
     private ViewerSorter getViewerSorter(int columnNr) {
         final TreeColumn column = this.treeViewer.getTree().getColumn(columnNr);
         final int sortOrder = this.columnSortOrder[columnNr];
-        ViewerSorter viewerSorter = null;
+        ViewerSorter viewerSorter;
 
         switch (columnNr) {
 
@@ -669,8 +669,8 @@ public class ViolationOverview extends ViewPart implements ISelectionProvider, I
         return new TableColumnSorter(column, sortOrder) {
             @Override
             public int compare(Viewer viewer, Object e1, Object e2) {
-                AbstractPMDRecord project1 = null;
-                AbstractPMDRecord project2 = null;
+                AbstractPMDRecord project1;
+                AbstractPMDRecord project2;
                 int result = 0;
                 if (e1 instanceof PackageRecord && e2 instanceof PackageRecord) {
                     project1 = ((PackageRecord) e1).getParent();
@@ -771,7 +771,7 @@ public class ViolationOverview extends ViewPart implements ISelectionProvider, I
      * @return lines of code
      */
     public int getLOC(AbstractPMDRecord element) {
-        int loc = 0;
+        int loc;
         if (element instanceof MarkerRecord && getShowType() == SHOW_MARKERS_FILES) {
             loc = element.getParent().getParent().getLOC();
         } else {
@@ -786,7 +786,7 @@ public class ViolationOverview extends ViewPart implements ISelectionProvider, I
      * @return number of methods
      */
     public int getNumberOfMethods(AbstractPMDRecord element) {
-        int numberOfMethods = 0;
+        int numberOfMethods;
         if (element instanceof MarkerRecord && getShowType() == SHOW_MARKERS_FILES) {
             numberOfMethods = element.getParent().getParent().getNumberOfMethods();
         } else {

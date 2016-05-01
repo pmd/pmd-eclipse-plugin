@@ -245,7 +245,7 @@ public abstract class AbstractTreeTableManager <T extends Object> extends Abstra
 	public static int columnIndexAt(TreeItem item, int xPosition) {
 
 		TreeColumn[] cols = item.getParent().getColumns();
-		Rectangle bounds = null;
+		Rectangle bounds;
 
 		for(int i = 0; i < cols.length; i++){
 			bounds = item.getBounds(i);

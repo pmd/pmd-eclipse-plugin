@@ -483,8 +483,6 @@ public class DataflowGraphTable extends Composite implements PaintListener {
 		g.setBackground(bgColor);
 		g.fillRectangle(xPos, 1, width-1, height);
 
-		if (formerColor == null)
-			formerColor = bgColor;
 		g.setBackground(bgColor);
 	}
 
@@ -589,8 +587,8 @@ public class DataflowGraphTable extends Composite implements PaintListener {
 		for (int i=0; i<tableData.size(); i++) {
 			List<DataflowGraphTableData> rowData = tableData.get(i);
 			int xPos = 0;
-			int width = 0;
-			int height = 0;
+			int width;
+			int height;
 			for (int j=0; j<numCols; j++) {
 				DataflowGraphTableData data = rowData.get(j);
 
