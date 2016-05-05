@@ -13,14 +13,6 @@ import net.sourceforge.pmd.RuleSet;
  */
 public interface RuleSetFieldAccessor {
 
-	Comparable<?> valueFor(RuleSet ruleSet);
-
-//	Comparable<?> valueFor(RuleSetCollection collection);
-	
-//	Set<Comparable<?>> uniqueValuesFor(RuleSetCollection collection);
-	
-	String labelFor(RuleSet ruleSet);
-
 	RuleSetFieldAccessor name = new BasicRuleSetFieldAccessor() {
 		public Comparable<String> valueFor(RuleSet ruleSet) {
 			return ruleSet.getName();
@@ -56,4 +48,13 @@ public interface RuleSetFieldAccessor {
 			return ruleSet.getExcludePatterns().size();
 		}
 	};
+
+	Comparable<?> valueFor(RuleSet ruleSet);
+
+//	Comparable<?> valueFor(RuleSetCollection collection);
+
+//	Set<Comparable<?>> uniqueValuesFor(RuleSetCollection collection);
+
+	String labelFor(RuleSet ruleSet);
+
 }

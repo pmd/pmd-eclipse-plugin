@@ -43,7 +43,17 @@ public abstract class AbstractTableManager<T extends Object> implements SortList
 	private final Set<ColumnDescriptor>	hiddenColumns = new HashSet<ColumnDescriptor>();
 
 	protected static PMDPlugin plugin = PMDPlugin.getDefault();
-	
+
+	public AbstractTableManager(String theWidgetId, IPreferences thePreferences, ColumnDescriptor[] theColumns) {
+		super();
+
+		widgetId = theWidgetId;
+		preferences = thePreferences;
+		availableColumns = theColumns;
+
+		loadHiddenColumns();
+	}
+
 	   protected static class WidthChangeThread extends Thread {
 	        private final int startWidth;
 	        private final int endWidth;
@@ -103,17 +113,7 @@ public abstract class AbstractTableManager<T extends Object> implements SortList
  			public Object getData(String key) { return column.getData(key); }
 		};
 	}
-	
-	public AbstractTableManager(String theWidgetId, IPreferences thePreferences, ColumnDescriptor[] theColumns) {
-		super();
 
-		widgetId = theWidgetId;
-		preferences = thePreferences;
-		availableColumns = theColumns;
-		
-		loadHiddenColumns();
-	}
-	
 	protected abstract ColumnWidthAdapter columnAdapterFor(ColumnDescriptor desc);
 	
 	protected void setupMenusFor(final Control control) {

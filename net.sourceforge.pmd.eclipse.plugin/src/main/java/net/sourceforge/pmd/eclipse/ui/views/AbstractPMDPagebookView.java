@@ -26,7 +26,10 @@ import net.sourceforge.pmd.eclipse.ui.model.FileRecord;
 public abstract class AbstractPMDPagebookView extends PageBookView {
 
     protected ViewMemento memento;
-	
+
+    protected AbstractPMDPagebookView() {
+    }
+
     public static FileRecord tryForFileRecordFrom(IWorkbenchPart part) {
     	
     	if (part instanceof IEditorPart) {
@@ -39,9 +42,6 @@ public abstract class AbstractPMDPagebookView extends PageBookView {
     		}
        return null;
     }
-    
-	protected AbstractPMDPagebookView() {
-	}
 
     protected abstract String pageMessageId();
     

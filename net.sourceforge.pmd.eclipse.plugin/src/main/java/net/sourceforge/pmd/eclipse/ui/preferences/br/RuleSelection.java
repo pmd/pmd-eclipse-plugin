@@ -35,12 +35,12 @@ public class RuleSelection implements RuleCollection {
     public RuleSelection(Rule soleRule) {
     	this(new Object[] {soleRule} );
     }
-    
-    public boolean isEmpty() { return ruleItems == null || ruleItems.length == 0; }
-    
+
     public RuleSelection(Object[] theRuleItems) {
         ruleItems = theRuleItems;
     }
+
+	public boolean isEmpty() { return ruleItems == null || ruleItems.length == 0; }
 
     public void soleRule(Rule theRule) {
     	ruleItems = new Object[] { theRule };

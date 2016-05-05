@@ -62,17 +62,6 @@ public class NewPropertyDialog extends TitleAreaDialog implements SizeChangeList
     private static final Class<?>[] validEditorTypes = new Class[] { String.class, Integer.class, Boolean.class, Class.class, Method.class };
     private static final Class<?> defaultEditorType = validEditorTypes[0];     // first one
 
-    public static Map<Class<?>, EditorFactory> withOnly(Map<Class<?>, EditorFactory> factoriesByType, Class<?>[] legalTypeKeys) {
-        Map<Class<?>, EditorFactory> results = new HashMap<Class<?>, EditorFactory>(legalTypeKeys.length);
-
-        for (Class<?> type : legalTypeKeys) {
-            if (factoriesByType.containsKey(type)) {
-                results.put(type, factoriesByType.get(type));
-            }
-        }
-        return results;
-    }
-
     /**
      * Constructor for RuleDialog.  Supply a working descriptor with name & description values we expect the user to change.
      *
@@ -97,6 +86,17 @@ public class NewPropertyDialog extends TitleAreaDialog implements SizeChangeList
         this(parent, theEditorFactoriesByValueType, theRule, theChangeListener);
 
         descriptor = theDescriptor;
+    }
+
+    public static Map<Class<?>, EditorFactory> withOnly(Map<Class<?>, EditorFactory> factoriesByType, Class<?>[] legalTypeKeys) {
+        Map<Class<?>, EditorFactory> results = new HashMap<Class<?>, EditorFactory>(legalTypeKeys.length);
+
+        for (Class<?> type : legalTypeKeys) {
+            if (factoriesByType.containsKey(type)) {
+                results.put(type, factoriesByType.get(type));
+            }
+        }
+        return results;
     }
 
     public boolean close() {

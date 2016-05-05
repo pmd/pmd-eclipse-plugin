@@ -23,7 +23,11 @@ import org.eclipse.jface.viewers.TableViewer;
 public class DisableRuleAction extends AbstractViolationSelectionAction {
 
 	private final IPreferences preferences = PMDPlugin.getDefault().loadPreferences();
-    
+
+    public DisableRuleAction(TableViewer viewer) {
+        super(viewer);
+    }
+
     public static void disableRulesFor(Collection<Rule> rules, IPreferences preferences) {
     	
            for (Rule rule : rules) {
@@ -44,10 +48,6 @@ public class DisableRuleAction extends AbstractViolationSelectionAction {
          
          System.out.println("Violations deleted: " + deletions);
     }
-    
-	public DisableRuleAction(TableViewer viewer) {
-		super(viewer);
-	}
 
 	protected String textId() { return StringKeys.VIEW_ACTION_DISABLE_RULE; }
  	

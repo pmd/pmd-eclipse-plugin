@@ -77,6 +77,14 @@ public class RulePanelManager extends AbstractRulePanelManager {
     
     public static final String ID = "rule";
 
+	// TODO move to RuleSet class
+	public static final Comparator<RuleSet> byNameComparator = new Comparator<RuleSet>() {
+
+		public int compare(RuleSet rsA, RuleSet rsB) {
+			return rsA.getName().compareTo(rsB.getName());
+		};
+	};
+
 	public RulePanelManager(String theTitle, EditorUsageMode theMode, ValueChangeListener theListener, RuleTarget theRuleSource) {
 		this(ID, theTitle, theMode, theListener, theRuleSource);
 	}
@@ -390,14 +398,6 @@ public class RulePanelManager extends AbstractRulePanelManager {
 
          return nameField;
      }
-
-    // TODO move to RuleSet class
-    public static final Comparator<RuleSet> byNameComparator = new Comparator<RuleSet>() {
-
-    	public int compare(RuleSet rsA, RuleSet rsB) {
-    		return rsA.getName().compareTo(rsB.getName());
-    	};
-    };
 
      private Combo buildRuleSetNameField(Composite parent) {
 

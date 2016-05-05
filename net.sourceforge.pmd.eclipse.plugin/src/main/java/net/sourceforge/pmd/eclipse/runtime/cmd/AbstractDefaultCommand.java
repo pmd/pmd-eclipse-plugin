@@ -63,6 +63,11 @@ public abstract class AbstractDefaultCommand extends AbstractProcessableCommand 
     private int stepCount;
     private boolean userInitiated;
 
+    protected AbstractDefaultCommand(String theName, String theDescription) {
+        name = theName;
+        description = theDescription;
+    }
+
 //    private static final Logger log = Logger.getLogger(AbstractDefaultCommand.class);
     
     public static void logInfo(String message) {
@@ -72,12 +77,7 @@ public abstract class AbstractDefaultCommand extends AbstractProcessableCommand 
     public static void logError(String message, Throwable error) {
     	PMDPlugin.getDefault().logError(message, error);
     }
-    
-    protected AbstractDefaultCommand(String theName, String theDescription) {
-    	name = theName;
-    	description = theDescription;
-    }
-    
+
     /**
      * 
      * @param file

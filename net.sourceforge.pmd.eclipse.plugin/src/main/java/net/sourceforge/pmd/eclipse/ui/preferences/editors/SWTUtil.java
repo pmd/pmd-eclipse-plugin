@@ -21,11 +21,11 @@ import org.eclipse.swt.widgets.Listener;
  */
 public class SWTUtil {
 
-	private SWTUtil() {}
-
 	private static PMDPlugin plugin = PMDPlugin.getDefault();
 
 	private static final String TOOLTIP_SUFFIX = ".tooltip";
+
+	private SWTUtil() {}
 
     public static void logInfo(String message) {
     	plugin.logInformation(message);

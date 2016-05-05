@@ -61,6 +61,10 @@ public abstract class AbstractTreeTableManager <T extends Object> extends Abstra
 		
 	private Map<Integer, List<Listener>> paintListeners = new HashMap<Integer, List<Listener>>();
 
+	public AbstractTreeTableManager(String theWidgetId, IPreferences thePreferences, ColumnDescriptor[] theColumns) {
+		super(theWidgetId, thePreferences, theColumns);
+	}
+
 	protected static ColumnWidthAdapter adapterFor(final TreeColumn column) {
 		return new ColumnWidthAdapter() {
 			public int width() { return column.getWidth();	}
@@ -70,11 +74,7 @@ public abstract class AbstractTreeTableManager <T extends Object> extends Abstra
  			public Object getData(String key) { return column.getData(key); }
 			};
 	}
-		
-	public AbstractTreeTableManager(String theWidgetId, IPreferences thePreferences, ColumnDescriptor[] theColumns) {
-		super(theWidgetId, thePreferences, theColumns);
-	}
-	
+
 	public Tree getControl() {
 		return treeViewer.getTree();
 	}

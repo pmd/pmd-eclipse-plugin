@@ -44,7 +44,11 @@ public class PreferenceUIStore {
 	private static final boolean defaultSortUp = false;
 		
 	public static final PreferenceUIStore instance = new PreferenceUIStore();
-	
+
+	private PreferenceUIStore() {
+		initialize();
+	}
+
 	private static String defaultHiddenColumnIds() {
 		 Set<String> colNames = new HashSet<String>(defaultHiddenColumns.length);
 		 for (RuleColumnDescriptor rcDesc : defaultHiddenColumns) {
@@ -53,10 +57,6 @@ public class PreferenceUIStore {
 		 return SWTUtil.asString(colNames, stringSeparator);
 	}
 	
-	private PreferenceUIStore() { 
-		initialize();
-	}
-		
 	private void initialize() {
 		
         IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();

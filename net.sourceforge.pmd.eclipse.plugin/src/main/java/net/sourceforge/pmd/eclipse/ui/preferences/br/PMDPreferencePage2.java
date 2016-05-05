@@ -88,7 +88,11 @@ public class PMDPreferencePage2 extends AbstractPMDPreferencePage implements Rul
         { RuleTableColumns.filterViolationRegex,	StringKeys.PREF_RULESET_GROUPING_REGEX },
 		{ null, 								  	StringKeys.PREF_RULESET_GROUPING_NONE }
 		};
-	
+
+	public PMDPreferencePage2() {
+
+	}
+
 	public static RulePropertyManager[] buildPropertyManagersOn(TabFolder folder, ValueChangeListener listener) {
 		
 		return new RulePropertyManager[] {
@@ -102,11 +106,7 @@ public class PMDPreferencePage2 extends AbstractPMDPreferencePage implements Rul
 //			    buildExampleTab(folder,     6, SWTUtil.stringFor(StringKeys.PREF_RULESET_TAB_EXAMPLES), listener),
 			    };
 	}
-	
-	public PMDPreferencePage2() {
 
-	}
-	
 	protected String descriptionId() {
 		return StringKeys.PREF_RULESET_TITLE;
 	}

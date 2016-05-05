@@ -23,15 +23,15 @@ public class ColourManager {
 	private final Map<RGB, Color> coloursByRGB = new HashMap<RGB, Color>();
 	
 	private static ColourManager instance;
-	
+
+	private ColourManager(Display theDisplay) {
+		display = theDisplay;
+	}
+
 	public static ColourManager managerFor(Display display) {
 	    
 	    if (instance == null) instance = new ColourManager(display);
 	    return instance;
-	}
-	
-	private ColourManager(Display theDisplay) {
-		display = theDisplay;
 	}
 
 	public Color colourFor(RGB colourFractions) {

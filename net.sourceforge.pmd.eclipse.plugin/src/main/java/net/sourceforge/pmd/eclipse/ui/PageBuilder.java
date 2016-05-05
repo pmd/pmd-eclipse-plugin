@@ -52,26 +52,26 @@ public class PageBuilder {
 			return sr1.start - sr2.start;
 		}
 	};
-	
+
+	public PageBuilder(int textIndent, int headingColorIndex, FontBuilder codeFontBuilder) {
+		buffer = new StringBuilder(500);
+		indentDepth = textIndent;
+
+		Display display = Display.getCurrent();
+		headingColor = display.getSystemColor(headingColorIndex);
+		codeStyle = codeFontBuilder.style(display);
+
+		SyntaxData syntax = SyntaxManager.getSyntaxData("java");
+		codeStyleExtractor = new StyleExtractor(syntax);
+	}
+
 	public static StyleRange[] sort(List<StyleRange> ranges) {
-		
+
 		StyleRange[] styles = ranges.toArray(new StyleRange[ranges.size()]);
 		Arrays.sort(styles, StyleComparator);
 		return styles;
 	}
-	
-	public PageBuilder(int textIndent, int headingColorIndex, FontBuilder codeFontBuilder) {
-		buffer = new StringBuilder(500);
-		indentDepth = textIndent;
-		
-		Display display = Display.getCurrent();		
-		headingColor = display.getSystemColor(headingColorIndex);
-		codeStyle = codeFontBuilder.style(display);
-		
-		SyntaxData syntax = SyntaxManager.getSyntaxData("java");
-		codeStyleExtractor = new StyleExtractor(syntax);
-	}
-	
+
 	public void indentDepth(int aDepth) { indentDepth = aDepth; }
 	public int indentDepth() { return indentDepth; }
 	
@@ -178,7 +178,7 @@ public class PageBuilder {
 			}
 		
 		String crStr = Character.toString(CR);
-		StyleRange sr;
+		StyleRange sr'';
 		
 		for (int i=0; i<codeSpans.size(); i++) {
 			span = codeSpans.get(i);

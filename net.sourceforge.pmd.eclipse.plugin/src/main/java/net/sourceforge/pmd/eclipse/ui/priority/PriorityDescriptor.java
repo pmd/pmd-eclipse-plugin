@@ -31,7 +31,24 @@ public class PriorityDescriptor implements Cloneable {
 	private static final RGB ProtoTransparentColour = new RGB(1,1,1);	// almost full black, unlikely to be used
 	
 	private static final char DELIMITER = '_';
-	
+
+	public PriorityDescriptor(RulePriority thePriority, String theLabelKey, String theFilterTextKey, String theIconId, Shape theShape, RGB theColor, int theSize) {
+		this(thePriority, theLabelKey, theFilterTextKey, theIconId, new ShapeDescriptor(theShape, theColor, theSize));
+	}
+
+	private PriorityDescriptor(RulePriority thePriority) {
+		priority = thePriority;
+	}
+
+	public PriorityDescriptor(RulePriority thePriority, String theLabelKey, String theFilterTextKey, String theIconId, ShapeDescriptor theShape) {
+		priority = thePriority;
+		label = AbstractPMDAction.getString(theLabelKey);
+		description = "--";		// TODO
+		filterText = AbstractPMDAction.getString(theFilterTextKey);
+		iconId = theIconId;
+		shape = theShape;
+	}
+
 	public static PriorityDescriptor from(String text) {
 		
 		String[] values = text.split(Character.toString(DELIMITER));
@@ -50,7 +67,7 @@ public class PriorityDescriptor implements Cloneable {
 				Integer.parseInt(values[6])
 				);
 	}
-	
+
 	private static Shape shapeFrom(String id) {
 		int num = Integer.parseInt(id);
 		for (Shape shape : EnumSet.allOf(Shape.class)) {
@@ -73,23 +90,6 @@ public class PriorityDescriptor implements Cloneable {
 		sb.append(rgb.red).append(',');
 		sb.append(rgb.green).append(',');
 		sb.append(rgb.blue);
-	}
-	
-	public PriorityDescriptor(RulePriority thePriority, String theLabelKey, String theFilterTextKey, String theIconId, ShapeDescriptor theShape) {
-		priority = thePriority;
-		label = AbstractPMDAction.getString(theLabelKey);
-		description = "--";		// TODO
-		filterText = AbstractPMDAction.getString(theFilterTextKey);
-		iconId = theIconId;
-		shape = theShape;
-	}
-	
-	public PriorityDescriptor(RulePriority thePriority, String theLabelKey, String theFilterTextKey, String theIconId, Shape theShape, RGB theColor, int theSize) {
-		this(thePriority, theLabelKey, theFilterTextKey, theIconId, new ShapeDescriptor(theShape, theColor, theSize));
-	}
-	
-	private PriorityDescriptor(RulePriority thePriority) {
-		priority = thePriority;
 	}
 
 	public String storeString() {

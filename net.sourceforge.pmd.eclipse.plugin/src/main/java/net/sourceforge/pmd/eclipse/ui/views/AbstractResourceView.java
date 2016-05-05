@@ -21,12 +21,12 @@ import org.eclipse.ui.IWorkbenchPart;
  */
 public abstract class AbstractResourceView extends AbstractPMDPagebookView implements IResourceChangeListener {
 
+    protected AbstractResourceView() {
+    }
+
 	protected static boolean getBoolUIPref(String prefId) { return pStore().getBoolean(prefId); }
 	
 	protected static IPreferenceStore pStore() { return PMDPlugin.getDefault().getPreferenceStore(); }
-	
-	protected AbstractResourceView() {
-	}
 
 	protected abstract AbstractStructureInspectorPage getCurrentViewPage();
 	

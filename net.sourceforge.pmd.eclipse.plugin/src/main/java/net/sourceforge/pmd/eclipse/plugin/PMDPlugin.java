@@ -97,6 +97,17 @@ public class PMDPlugin extends AbstractUIPlugin {
     private static final Integer[] priorityValues = new Integer[] { Integer.valueOf(1), Integer.valueOf(2),
             Integer.valueOf(3), Integer.valueOf(4), Integer.valueOf(5) };
 
+    private static final Logger log = Logger.getLogger(PMDPlugin.class);
+
+    private StringTable stringTable; // NOPMD by Herlin on 11/10/06 00:22
+
+    public static final String ROOT_LOG_ID = "net.sourceforge.pmd";
+    private static final String PMD_ECLIPSE_APPENDER_NAME = "PMDEclipseAppender";
+    private IPreferencesFactory preferencesFactory = new PreferencesFactoryImpl();
+    private IPropertiesFactory propertiesFactory = new PropertiesFactoryImpl();
+
+    private final IRuleSetManager ruleSetManager = new RuleSetManagerImpl(); // NOPMD:SingularField
+
     /**
      * The constructor
      */
@@ -274,10 +285,6 @@ public class PMDPlugin extends AbstractUIPlugin {
         return plugin;
     }
 
-    private static final Logger log = Logger.getLogger(PMDPlugin.class);
-
-    private StringTable stringTable; // NOPMD by Herlin on 11/10/06 00:22
-
     /**
      * Returns an image descriptor for the image file at the given plug-in
      * relative path.
@@ -379,11 +386,6 @@ public class PMDPlugin extends AbstractUIPlugin {
         return priorityValues;
     }
 
-    public static final String ROOT_LOG_ID = "net.sourceforge.pmd";
-    private static final String PMD_ECLIPSE_APPENDER_NAME = "PMDEclipseAppender";
-    private IPreferencesFactory preferencesFactory = new PreferencesFactoryImpl();
-    private IPropertiesFactory propertiesFactory = new PropertiesFactoryImpl();
-
     /**
      * Load the PMD plugin preferences
      */
@@ -481,8 +483,6 @@ public class PMDPlugin extends AbstractUIPlugin {
             logError("IO Exception when configuring logging.", e);
         }
     }
-
-    private final IRuleSetManager ruleSetManager = new RuleSetManagerImpl(); // NOPMD:SingularField
 
     /**
      * @return the ruleset manager instance
