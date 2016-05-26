@@ -222,6 +222,7 @@ public class RenderReportsCmd extends AbstractProjectCommand {
 
         IMarker[] markers = MarkerUtil.findAllMarkers(project);
         RuleSet ruleSet = PMDPlugin.getDefault().getPreferencesManager().getRuleSet();
+        boolean isJavaProject = project.hasNature(JavaCore.NATURE_ID);
         
         for (IMarker marker : markers) {
             String ruleName = marker.getAttribute(PMDRuntimeConstants.KEY_MARKERATT_RULENAME, "");
@@ -229,7 +230,7 @@ public class RenderReportsCmd extends AbstractProjectCommand {
 
             FakeRuleViolation ruleViolation = createViolation(marker, rule);
 
-            if (marker.getResource() instanceof IFile) {
+            if (isJavaProject && marker.getResource() instanceof IFile) {
             	classAndPackageFrom(marker, ruleViolation);
             }
 
