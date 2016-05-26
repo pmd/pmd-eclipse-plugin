@@ -27,12 +27,12 @@ public class ASTView extends AbstractResourceView {
 	
 	private static final String ShowImports = "ASTView.showImports";
 	private static final String ShowComments = "ASTView.showComments";
-	
-	static boolean showImports() { return getBoolUIPref(ShowImports); }
-	static boolean showComments() { return getBoolUIPref(ShowComments); }
-	
+
 	public ASTView() {
 	}
+
+	static boolean showImports() { return getBoolUIPref(ShowImports); }
+	static boolean showComments() { return getBoolUIPref(ShowComments); }
 
     protected String pageMessageId() { return StringKeys.VIEW_AST_DEFAULT_TEXT; }
 

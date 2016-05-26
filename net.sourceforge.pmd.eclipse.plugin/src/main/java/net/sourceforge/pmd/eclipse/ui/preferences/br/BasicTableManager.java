@@ -36,7 +36,13 @@ import org.eclipse.swt.widgets.TableItem;
 public class BasicTableManager <T extends Object> extends AbstractTableManager<T> {
 
 	protected TableViewer tableViewer;
-	
+
+	private static final int DefaultTableStyle = SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL | SWT.MULTI | SWT.FULL_SELECTION;
+
+	public BasicTableManager(String theWidgetId, IPreferences thePreferences, ColumnDescriptor[] theColumns) {
+		super(theWidgetId, thePreferences, theColumns);
+	}
+
 //	public interface Predicate0 {
 //		boolean value();
 //	}
@@ -54,12 +60,6 @@ public class BasicTableManager <T extends Object> extends AbstractTableManager<T
 			}
 		}
 		return -1;
-	}
-	
-	private static final int DefaultTableStyle = SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL | SWT.MULTI | SWT.FULL_SELECTION;
-	
-	public BasicTableManager(String theWidgetId, IPreferences thePreferences, ColumnDescriptor[] theColumns) {
-		super(theWidgetId, thePreferences, theColumns);
 	}
 
 //	public void setStyle(int columnNo, Predicate0 predicate, TextStyle ifTrue, TextStyle ifFalse) {

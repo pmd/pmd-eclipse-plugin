@@ -11,10 +11,10 @@ import net.sourceforge.pmd.util.StringUtil;
 
 public class CommentUtil {
 
-	private CommentUtil() {}
-	
 	private static final String CR = "\n";
-	
+
+	private CommentUtil() {}
+
 	public static String wordAfter(String text, int position) {
 		
 		if (position >= text.length()) return null;

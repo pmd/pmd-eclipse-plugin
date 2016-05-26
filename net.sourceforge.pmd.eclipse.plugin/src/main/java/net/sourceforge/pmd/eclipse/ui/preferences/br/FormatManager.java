@@ -14,9 +14,9 @@ import net.sourceforge.pmd.lang.LanguageVersion;
  */
 public class FormatManager {
 
+    private static final Map<Class<?>, ValueFormatter> formattersByType = new HashMap<Class<?>, ValueFormatter>();
+
 	private FormatManager() {}
-	
-	private static final Map<Class<?>, ValueFormatter> formattersByType = new HashMap<Class<?>, ValueFormatter>();
 
 	static {   // used to render property values in short form in main table
 	    formattersByType.put(String.class,      ValueFormatter.StringFormatter);

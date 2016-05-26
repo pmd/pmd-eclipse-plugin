@@ -73,7 +73,16 @@ public class ASTViewPage extends AbstractStructureInspectorPage {
 		HiddenNodeTypes = new HashSet<Class<?>>();
 		HiddenNodeTypes.add(ASTImportDeclaration.class);
 	}
-	
+
+	/**
+	 *
+	 * @param part
+	 * @param record the FileRecord
+	 */
+	public ASTViewPage(IWorkbenchPart part, FileRecord record) {
+		super(part, record);
+	}
+
 	public TreeViewer astViewer() {
 		return astViewer;
 	}
@@ -87,16 +96,7 @@ public class ASTViewPage extends AbstractStructureInspectorPage {
 		contentProvider.includeComments(flag); 
 		astViewer.refresh(); 
 	}
-	
-	/**
-	 *
-	 * @param part
-	 * @param record the FileRecord
-	 */
-	public ASTViewPage(IWorkbenchPart part, FileRecord record) {
-		super(part, record);
-	}
-	
+
 	/**
 	 * TODO use an adjustable Sash to separate the two sections
 	 * TODO add an XPath version combo widget

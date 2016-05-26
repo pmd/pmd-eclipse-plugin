@@ -31,10 +31,7 @@ public class ASTContentProvider implements ITreeContentProvider {
 			return a.getBeginLine() - b.getBeginLine();
 		}
 	};
-	
-	public void includeImports(boolean flag) { includeImports = flag; }
-	public void includeComments(boolean flag) { includeComments = flag; }
-	
+
 	public ASTContentProvider(boolean includeImportsFlag, boolean includeCommentsFlag) {
 		this(Collections.EMPTY_SET);
 		
@@ -45,6 +42,9 @@ public class ASTContentProvider implements ITreeContentProvider {
 	public ASTContentProvider(Set<Class<?>> theHiddenNodeTypes) {
 	//	hiddenNodeTypes = theHiddenNodeTypes;
 	}
+
+	public void includeImports(boolean flag) { includeImports = flag; }
+	public void includeComments(boolean flag) { includeComments = flag; }
 
 	public void dispose() {	}
 

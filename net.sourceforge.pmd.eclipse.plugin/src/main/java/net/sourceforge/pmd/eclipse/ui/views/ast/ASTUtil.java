@@ -25,14 +25,14 @@ import net.sourceforge.pmd.lang.java.ast.AbstractJavaAccessNode;
  */
 public class ASTUtil {
 
-	private ASTUtil() {}
-	
 	public static final Comparator<ASTMethodDeclaration> MethodComparator = new Comparator<ASTMethodDeclaration>() {
 		public int compare(ASTMethodDeclaration m1, ASTMethodDeclaration m2) {
 			return m1.getMethodName().compareTo(m2.getMethodName());
 		}
 	};
-	
+
+	private ASTUtil() {}
+
 	public static String getAnnotationLabel(ASTAnnotation annotation) {
 		
 		AbstractNode name = annotation.getFirstChildOfType(ASTName.class);

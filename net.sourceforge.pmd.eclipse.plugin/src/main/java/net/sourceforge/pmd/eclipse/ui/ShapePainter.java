@@ -19,10 +19,10 @@ import org.eclipse.swt.widgets.Display;
  */
 public class ShapePainter {
 
-	private ShapePainter() {}
-
 	/** Provides a simple cache for the images. */
 	private static Map<String, Image> shapes = new HashMap<String, Image>();
+
+	private ShapePainter() {}
 
 	/**
 	 * Creates an image initialized with the transparent colour with the shape drawn within.

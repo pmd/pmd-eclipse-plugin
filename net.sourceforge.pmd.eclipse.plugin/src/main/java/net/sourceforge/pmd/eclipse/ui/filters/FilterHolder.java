@@ -16,7 +16,27 @@ class FilterHolder {
 	public boolean	isInclude;
 	
 	public static final FilterHolder[] EMPTY_HOLDERS = new FilterHolder[0];
-	
+
+	public static final Accessor ExcludeAccessor = new BasicAccessor() {
+		public boolean boolValueFor(FilterHolder fh) { return !fh.isInclude; }
+	};
+
+	public static final Accessor IncludeAccessor = new BasicAccessor() {
+		public boolean boolValueFor(FilterHolder fh) { return fh.isInclude; }
+	};
+
+	public static final Accessor PMDAccessor = new BasicAccessor() {
+		public boolean boolValueFor(FilterHolder fh) { return fh.forPMD; }
+	};
+
+	public static final Accessor CPDAccessor = new BasicAccessor() {
+		public boolean boolValueFor(FilterHolder fh) { return fh.forCPD; }
+	};
+
+	public static final Accessor PatternAccessor = new BasicAccessor() {
+		public String textValueFor(FilterHolder fh) { return fh.pattern; }
+	};
+
 	public FilterHolder(String thePattern, boolean pmdFlag, boolean cpdFlag, boolean isIncludeFlag) {
 		pattern = thePattern;
 		forPMD = pmdFlag;
@@ -28,27 +48,7 @@ class FilterHolder {
 		boolean boolValueFor(FilterHolder fh);
 		String textValueFor(FilterHolder fh);
 	}
-	
-	public static final Accessor ExcludeAccessor = new BasicAccessor() {
-		public boolean boolValueFor(FilterHolder fh) { return !fh.isInclude; }
-	};
-	
-	public static final Accessor IncludeAccessor = new BasicAccessor() {
-		public boolean boolValueFor(FilterHolder fh) { return fh.isInclude; }
-	};
-	
-	public static final Accessor PMDAccessor = new BasicAccessor() {
-		public boolean boolValueFor(FilterHolder fh) { return fh.forPMD; }
-	};
-	
-	public static final Accessor CPDAccessor = new BasicAccessor() {
-		public boolean boolValueFor(FilterHolder fh) { return fh.forCPD; }
-	};
-	
-	public static final Accessor PatternAccessor = new BasicAccessor() {
-		public String textValueFor(FilterHolder fh) { return fh.pattern; }
-	};
-	
+
 	public static Boolean boolValueOf(Collection<FilterHolder> holders, Accessor boolAccessor) {
 		Set<Boolean> values = new HashSet<Boolean>();
 		for (FilterHolder fh : holders) values.add(boolAccessor.boolValueFor(fh));

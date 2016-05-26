@@ -69,14 +69,7 @@ public class RuleSetSelectionDialog extends Dialog {
     private final RuleSet[] ruleSets;
     private final String[] ruleSetNames;
     private final RuleColumnDescriptor[] columns;
-    
-    private static String labelFor(RuleSet rs) {
-    	
-    	Collection<Rule> rules = rs.getRules();
-    	String lang = rules.iterator().next().getLanguage().getShortName();
-    	return lang + " - " + rs.getName() + "  (" + rules.size() + ")";
-    }
-    
+
     /**
      * Constructor for RuleSetSelectionDialog.
      * @param parentdlgArea
@@ -110,6 +103,13 @@ public class RuleSetSelectionDialog extends Dialog {
             }
             index++;
         }
+    }
+
+    private static String labelFor(RuleSet rs) {
+
+        Collection<Rule> rules = rs.getRules();
+        String lang = rules.iterator().next().getLanguage().getShortName();
+        return lang + " - " + rs.getName() + "  (" + rules.size() + ")";
     }
 
     protected void configureShell(Shell shell) {

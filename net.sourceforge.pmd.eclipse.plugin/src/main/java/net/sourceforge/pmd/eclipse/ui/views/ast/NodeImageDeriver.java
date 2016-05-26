@@ -21,25 +21,7 @@ import net.sourceforge.pmd.lang.java.ast.Comment;
  * @author Brian Remedios
  */
 public class NodeImageDeriver {
-	
-	public final Class<?> target;
-	
-	public NodeImageDeriver(Class<?> theASTClass) {
-		target = theASTClass;
-	}
-	
-	public String deriveFrom(Node node) {
-		return null;	// failed to implement!
-	}
 
-	private static void dumpComments(ASTCompilationUnit node) {
-		
-		for (Comment comment : node.getComments()) {
-			System.out.println(comment.getClass().getName());
-			System.out.println(comment.getImage());
-		}
-	}
-	
 	private static NodeImageDeriver compilationUnitDeriver = new NodeImageDeriver(ASTCompilationUnit.class) {
 		public String deriveFrom(Node node) {
 			dumpComments((ASTCompilationUnit)node);
@@ -90,7 +72,25 @@ public class NodeImageDeriver {
 		};
 	
 	private static final Map<Class<?>, NodeImageDeriver>DeriversByType = new HashMap<Class<?>, NodeImageDeriver>(NodeImageDeriver.AllDerivers.length);
-	
+
+	public final Class<?> target;
+
+	public NodeImageDeriver(Class<?> theASTClass) {
+		target = theASTClass;
+	}
+
+	public String deriveFrom(Node node) {
+		return null;	// failed to implement!
+	}
+
+	private static void dumpComments(ASTCompilationUnit node) {
+
+		for (Comment comment : node.getComments()) {
+			System.out.println(comment.getClass().getName());
+			System.out.println(comment.getImage());
+		}
+	}
+
 	static {
 		for (NodeImageDeriver deriver : NodeImageDeriver.AllDerivers) {
 			DeriversByType.put(deriver.target, deriver);

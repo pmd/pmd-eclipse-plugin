@@ -12,7 +12,9 @@ public class IndexedString implements Comparable<IndexedString>{
 
 	public final String string;
 	public final List<int[]> indexSpans;
-	
+
+	public static final IndexedString Empty = new IndexedString("");
+
 	public IndexedString(String theString) {
 		this(theString, Collections.EMPTY_LIST);
 	}
@@ -30,6 +32,5 @@ public class IndexedString implements Comparable<IndexedString>{
 				other.string.compareTo(string) : 
 				deltaLength;
 	}
-	
-	public static final IndexedString Empty = new IndexedString("");
+
 }

@@ -50,7 +50,21 @@ public class FormArranger implements ValueChangeListener {
 	private Control[][]                         widgets;
 
     private Map<PropertyDescriptor<?>, Control[]> controlsByProperty;
-    
+
+	/**
+	 * Constructor for FormArranger.
+	 * @param theParent Composite
+	 * @param factories Map<Class,EditorFactory>
+	 */
+	public FormArranger(Composite theParent, Map<Class<?>, EditorFactory> factories, ValueChangeListener listener, SizeChangeListener sizeListener) {
+		parent = theParent;
+		editorFactoriesByValueType = factories;
+		changeListener = chain(listener, this);
+		sizeChangeListener = sizeListener;
+
+		controlsByProperty = new HashMap<PropertyDescriptor<?>, Control[]>();
+	}
+
     /**
      * Echo the change to the second listener after notifying the primary one
      * 
@@ -72,20 +86,6 @@ public class FormArranger implements ValueChangeListener {
 			}    		
     	};
     }
-    
-	/**
-	 * Constructor for FormArranger.
-	 * @param theParent Composite
-	 * @param factories Map<Class,EditorFactory>
-	 */
-	public FormArranger(Composite theParent, Map<Class<?>, EditorFactory> factories, ValueChangeListener listener, SizeChangeListener sizeListener) {
-		parent = theParent;
-		editorFactoriesByValueType = factories;
-		changeListener = chain(listener, this);
-		sizeChangeListener = sizeListener;
-
-        controlsByProperty = new HashMap<PropertyDescriptor<?>, Control[]>();
-	}
 
     protected void register(PropertyDescriptor<?> property, Control[] controls) {
     	controlsByProperty.put(property, controls);

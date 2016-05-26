@@ -31,18 +31,6 @@ public interface RuleFieldAccessor {
 	String[] ruleTypeDFlow	= new String[] { "D", "Dataflow" };
 	String[] ruleTypeTypeRes= new String[] { "T", "Type resolving" };
 
-	/**
-	 * @param rule Rule
-	 * @return Comparable
-	 */
-	Comparable<?> valueFor(Rule rule);
-
-	Comparable<?> valueFor(RuleCollection collection);
-	
-	Set<Comparable<?>> uniqueValuesFor(RuleCollection collection);
-	
-	String labelFor(Rule rule);
-		
 	RuleFieldAccessor since = new BasicRuleFieldAccessor() {
 		public Comparable<String> valueFor(Rule rule) {
 			return rule.getSince();
@@ -173,4 +161,17 @@ public interface RuleFieldAccessor {
 			return RuleUtil.modifiedPropertiesIn(rule).size();
 		}
 	};
+
+	/**
+	 * @param rule Rule
+	 * @return Comparable
+	 */
+	Comparable<?> valueFor(Rule rule);
+
+	Comparable<?> valueFor(RuleCollection collection);
+
+	Set<Comparable<?>> uniqueValuesFor(RuleCollection collection);
+
+	String labelFor(Rule rule);
+
 }

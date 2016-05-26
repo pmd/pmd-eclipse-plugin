@@ -18,10 +18,6 @@ import net.sourceforge.pmd.util.ClassUtil;
  */
 public interface ValueFormatter {
 
-    String format(Object value);
-    
-    void format(Object value, StringBuilder target);
-        
     ValueFormatter StringFormatter = new BasicValueFormatter(null) {
         public void format(Object value, StringBuilder target) {
             target.append(value == null ? "" : value);
@@ -137,6 +133,11 @@ public interface ValueFormatter {
            return new Date((Long)value).toString();
         }
     };
-    
+
     ValueFormatter[] TimeFormatters = new ValueFormatter[] { DateFromLongFormatter };
+
+    String format(Object value);
+
+    void format(Object value, StringBuilder target);
+
 }

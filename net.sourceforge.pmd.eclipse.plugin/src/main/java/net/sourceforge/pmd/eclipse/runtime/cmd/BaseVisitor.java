@@ -87,12 +87,7 @@ public class BaseVisitor {
     protected RuleSet hiddenRules;
 
     private PMDConfiguration configuration;
-    
-    
-    protected PMDConfiguration configuration() {
-    	if (configuration == null) configuration = new PMDConfiguration();
-    	return configuration;
-    }
+
     /**
      * The constructor is protected to avoid illegal instantiation
      *
@@ -101,6 +96,11 @@ public class BaseVisitor {
         super();
 
         hiddenRules = new RuleSet();
+    }
+
+    protected PMDConfiguration configuration() {
+        if (configuration == null) configuration = new PMDConfiguration();
+        return configuration;
     }
 
     /**
