@@ -11,6 +11,7 @@ Eclipse Update Site: <https://sourceforge.net/projects/pmd/files/pmd-eclipse/upd
 *   squid:S1854 - Dead stores should be removed ([pull request #17](https://github.com/pmd/pmd-eclipse-plugin/pull/17))
 *   squid:S1213 - The members of an interface declaration or class should appear in a pre-defined order ([pull request #18](https://github.com/pmd/pmd-eclipse-plugin/pull/18))
 *   Fixed Executing Rule.start() ([bug #974](https://sourceforge.net/p/pmd/bugs/974/))
+*   Fixed Check Code doesn't work from project root in non-java projects ([bug #1474](https://sourceforge.net/p/pmd/bugs/1474/))
 *   Fixed Not Able to enable PMD for Apex in Eclipse ([bug #1483](https://sourceforge.net/p/pmd/bugs/1483/))
 
 

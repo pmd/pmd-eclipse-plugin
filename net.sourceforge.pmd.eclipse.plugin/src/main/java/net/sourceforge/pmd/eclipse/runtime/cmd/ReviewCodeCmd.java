@@ -257,6 +257,10 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
         return markersByFile;
     }
 
+    public int getFileCount() {
+        return fileCount;
+    }
+
     /**
      * @param resource
      *            The resource to set.
@@ -445,44 +449,47 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
      */
     private void processProject(IProject project) throws CommandException {
         try {
-            // Only for Java projects
-            if (!project.hasNature(JavaCore.NATURE_ID)) {
-                log.debug("Skipping non-Java natured project " + project.getName());
-                return;
-            }
             setStepCount(countResourceElement(project));
             log.debug("Visiting  project " + project.getName() + " : " + getStepCount());
 
-            final IJavaProject javaProject = JavaCore.create(project);
-            final IClasspathEntry[] entries = javaProject.getRawClasspath();
-            final IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-            for (IClasspathEntry entrie : entries) {
-                if (entrie.getEntryKind() == IClasspathEntry.CPE_SOURCE) {
-
-                    // phherlin note: this code is ugly but I don't how to do
-                    // otherwise.
-                    // The IWorkspaceRoot getContainerLocation(IPath) always
-                    // return null.
-                    // Catching the IllegalArgumentException on getFolder is the
-                    // only way I found
-                    // to know if the entry is a folder or a project !
-                    IContainer sourceContainer = null;
-                    try {
-                        sourceContainer = root.getFolder(entrie.getPath());
-                    } catch (IllegalArgumentException e) {
-                        sourceContainer = root.getProject(entrie.getPath().toString());
-                    }
-                    if (sourceContainer == null) {
-                        log.warn("Source container " + entrie.getPath() + " for project " + project.getName()
-                                + " is not valid");
-                    } else {
-                        processResource(sourceContainer);
-                    }
-                }
+            if (project.hasNature(JavaCore.NATURE_ID)) {
+                processJavaProject(project);
+            } else {
+                processResource(project);
             }
 
         } catch (CoreException e) {
             throw new CommandException(e);
+        }
+    }
+
+    private void processJavaProject(IProject project) throws CoreException, CommandException {
+        final IJavaProject javaProject = JavaCore.create(project);
+        final IClasspathEntry[] entries = javaProject.getRawClasspath();
+        final IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
+        for (IClasspathEntry entrie : entries) {
+            if (entrie.getEntryKind() == IClasspathEntry.CPE_SOURCE) {
+
+                // phherlin note: this code is ugly but I don't how to do
+                // otherwise.
+                // The IWorkspaceRoot getContainerLocation(IPath) always
+                // return null.
+                // Catching the IllegalArgumentException on getFolder is the
+                // only way I found
+                // to know if the entry is a folder or a project !
+                IContainer sourceContainer = null;
+                try {
+                    sourceContainer = root.getFolder(entrie.getPath());
+                } catch (IllegalArgumentException e) {
+                    sourceContainer = root.getProject(entrie.getPath().toString());
+                }
+                if (sourceContainer == null) {
+                    log.warn("Source container " + entrie.getPath() + " for project " + project.getName()
+                            + " is not valid");
+                } else {
+                    processResource(sourceContainer);
+                }
+            }
         }
     }
 
