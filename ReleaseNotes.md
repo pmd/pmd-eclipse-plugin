@@ -10,6 +10,7 @@ Eclipse Update Site: <https://sourceforge.net/projects/pmd/files/pmd-eclipse/upd
 *   Fixed Violation Overview + Outline don't work for Non-Java Rule violations ([issue #13](https://github.com/pmd/pmd-eclipse-plugin/issues/13), [pull request #14](https://github.com/pmd/pmd-eclipse-plugin/pull/14))
 *   squid:S1854 - Dead stores should be removed ([pull request #17](https://github.com/pmd/pmd-eclipse-plugin/pull/17))
 *   squid:S1213 - The members of an interface declaration or class should appear in a pre-defined order ([pull request #18](https://github.com/pmd/pmd-eclipse-plugin/pull/18))
+*   Fixed Executing Rule.start() ([bug #974](https://sourceforge.net/p/pmd/bugs/974/))
 
 
 ## 04-December-2015: 4.0.8.v20151204-2156

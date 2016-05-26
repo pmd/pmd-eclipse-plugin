@@ -28,6 +28,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -36,13 +38,25 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
 
+import org.apache.log4j.Logger;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IMarker;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.ui.IWorkingSet;
+import org.eclipse.ui.ResourceWorkingSetFilter;
+
 import name.herlin.command.Timer;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.PMDException;
+import net.sourceforge.pmd.Report.ProcessingError;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSet;
+import net.sourceforge.pmd.RuleSetFactory;
+import net.sourceforge.pmd.RuleSetNotFoundException;
 import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.SourceCodeProcessor;
@@ -55,18 +69,11 @@ import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.LanguageVersionDiscoverer;
 import net.sourceforge.pmd.lang.java.JavaLanguageModule;
+import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.util.NumericConstants;
 import net.sourceforge.pmd.util.StringUtil;
-
-import org.apache.log4j.Logger;
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IMarker;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.jdt.core.IJavaProject;
-import org.eclipse.ui.IWorkingSet;
-import org.eclipse.ui.ResourceWorkingSetFilter;
+import net.sourceforge.pmd.util.datasource.DataSource;
+import net.sourceforge.pmd.util.datasource.ReaderDataSource;
 
 /**
  * Factor some useful features for visitors
@@ -290,11 +297,31 @@ public class BaseVisitor {
     			//                    getPmdEngine().processFile(input, getRuleSet(), context);
     			//                    getPmdEngine().processFile(sourceCodeFile, getRuleSet(), context);
 
-    			RuleSets rSets = new RuleSets(getRuleSet());
-    			new SourceCodeProcessor(configuration()).processSourceCode(input, rSets, context);
+    			DataSource dataSource = new ReaderDataSource(input, file.getName());
+    			RuleSetFactory ruleSetFactory = new RuleSetFactory() {
+    			    @Override
+    			    public synchronized RuleSets createRuleSets(String referenceString)
+    			            throws RuleSetNotFoundException {
+    			        return new RuleSets(getRuleSet());
+    			    }
+    			};
+    			configuration().setThreads(0); // need to disable multi threading, as the ruleset is not recreated and shared between threads...
+    			// but as we anyway have only one file to process, it won't hurt here.
+    			PMD.processFiles(configuration(), ruleSetFactory, Arrays.asList(dataSource), context, Collections.<Renderer>emptyList());
 
     			timer.stop();
     			pmdDuration += timer.getDuration();
+
+    			if (context.getReport().hasErrors()) {
+    			    StringBuilder message = new StringBuilder("There were processing errors!\n");
+    			    Iterator<ProcessingError> errors = context.getReport().errors();
+                    while (errors.hasNext()) {
+    			        ProcessingError error = errors.next();
+                        message.append(error.getFile()).append(": ").append(error.getMsg()).append("\n");
+    			    }
+    			    PMDPlugin.getDefault().logWarn(message.toString());
+    			    throw new PMDException(message.toString());
+    			}
 
     			updateMarkers(file, context, isUseTaskMarker());
 
@@ -312,6 +339,8 @@ public class BaseVisitor {
     		log.error("IO exception visiting " + file.getName(), e); // TODO: 		// complete message
     	} catch (PropertiesException e) {
     		log.error("Properties exception visiting " + file.getName(), e); // TODO:	// complete message
+    	} catch (IllegalArgumentException e) {
+    	    log.error("Illegal argument", e);
     	} finally {
     		IOUtil.closeQuietly(input);
     	}
