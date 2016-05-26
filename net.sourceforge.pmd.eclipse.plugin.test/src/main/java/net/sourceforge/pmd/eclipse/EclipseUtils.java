@@ -129,26 +129,31 @@ public class EclipseUtils {
    * @return newProject a new project resource handle
    */
   public static IProject createJavaProject(final String projectName) throws CoreException {
-
-    // 1. Get the project from the workspace
-    final IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-    final IProject newProject = root.getProject(projectName);
-    final IProjectDescription description = newProject.getWorkspace().newProjectDescription(projectName);
-
-    // 2. Create a project if it does not already exist
-    if (!newProject.exists()) {
-      description.setLocation(null);
-      newProject.create(description, null);
-    }
-
-    if (!newProject.isOpen()) {
-      newProject.open(null);
-    }
+    final IProject newProject = createProject(projectName);
 
     // 4. Make it a Java Project
     addJavaNature(newProject);
 
     return newProject;
+  }
+
+  public static IProject createProject(final String projectName) throws CoreException {
+      // 1. Get the project from the workspace
+      final IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
+      final IProject newProject = root.getProject(projectName);
+      final IProjectDescription description = newProject.getWorkspace().newProjectDescription(projectName);
+
+      // 2. Create a project if it does not already exist
+      if (!newProject.exists()) {
+        description.setLocation(null);
+        newProject.create(description, null);
+      }
+
+      if (!newProject.isOpen()) {
+        newProject.open(null);
+      }
+
+      return newProject;
   }
 
   /**

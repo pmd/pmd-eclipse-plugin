@@ -160,9 +160,6 @@
       <builder
             id="net.sourceforge.pmd.eclipse.plugin.pmdBuilder">
       </builder>
-      <requires-nature
-            id="org.eclipse.jdt.core.javanature">
-      </requires-nature>
    </extension>
    <extension
          point="org.eclipse.ui.keywords">
