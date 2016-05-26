@@ -178,7 +178,7 @@ public class PageBuilder {
 			}
 		
 		String crStr = Character.toString(CR);
-		StyleRange sr'';
+		StyleRange sr;
 		
 		for (int i=0; i<codeSpans.size(); i++) {
 			span = codeSpans.get(i);
