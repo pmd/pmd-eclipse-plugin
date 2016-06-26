@@ -37,7 +37,8 @@
                 <stripVersion>true</stripVersion>
                 <prependGroupId>false</prependGroupId>
                 <outputDirectory>${project.build.directory}/lib</outputDirectory>
-                <excludeGroupIds>p2.eclipse-plugin</excludeGroupIds>
+                <!-- exclude the apex (transitive) dependencies - we use the shaded version instead -->
+                <excludeGroupIds>p2.eclipse-plugin,apex</excludeGroupIds>
                 <excludeArtifactIds>net.sourceforge.pmd.eclipse.plugin,net.sourceforge.pmd.eclipse.plugin.source</excludeArtifactIds>
                 <useRepositoryLayout>false</useRepositoryLayout>
             </configuration>

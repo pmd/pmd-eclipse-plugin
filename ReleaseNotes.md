@@ -6,6 +6,8 @@ Eclipse Update Site: <https://sourceforge.net/projects/pmd/files/pmd-eclipse/upd
 
 ## ????: 4.0.10.v????
 
+*   Fix classpath errors due to multiple version on asm being on the classpath.
+    See also [bug #1492](https://sourceforge.net/p/pmd/bugs/1492/).
 
 ## 25-June-2016: 4.0.9.v20160625-2101
 
