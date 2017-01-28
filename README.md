@@ -15,9 +15,9 @@ Update Site URL in order to install the latest SNAPSHOT version into your eclips
 <https://sourceforge.net/projects/pmd/files/pmd-eclipse/update-site-latest/>
 
 ### Bug Reports
-Please file any bug reports in the bug tracker at sourceforge:
+Please file any bug reports in the bug tracker at github:
 
-<https://sourceforge.net/p/pmd/bugs/>
+<https://github.com/pmd/pmd-eclipse-plugin/issues>
 
 ### GitHub Repository
 
