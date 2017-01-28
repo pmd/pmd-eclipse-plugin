@@ -27,6 +27,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -47,11 +48,13 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ui.IWorkingSet;
 import org.eclipse.ui.ResourceWorkingSetFilter;
 
-import name.herlin.command.Timer;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.PMDException;
+import net.sourceforge.pmd.PropertyDescriptor;
+import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Report.ProcessingError;
+import net.sourceforge.pmd.Report.RuleConfigurationError;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSet;
@@ -59,7 +62,6 @@ import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetNotFoundException;
 import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.SourceCodeProcessor;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.runtime.PMDRuntimeConstants;
 import net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties;
@@ -69,11 +71,14 @@ import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.LanguageVersionDiscoverer;
 import net.sourceforge.pmd.lang.java.JavaLanguageModule;
+import net.sourceforge.pmd.renderers.AbstractRenderer;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.util.NumericConstants;
 import net.sourceforge.pmd.util.StringUtil;
 import net.sourceforge.pmd.util.datasource.DataSource;
 import net.sourceforge.pmd.util.datasource.ReaderDataSource;
+
+import name.herlin.command.Timer;
 
 /**
  * Factor some useful features for visitors
@@ -307,12 +312,56 @@ public class BaseVisitor {
     			};
     			configuration().setThreads(0); // need to disable multi threading, as the ruleset is not recreated and shared between threads...
     			// but as we anyway have only one file to process, it won't hurt here.
-    			PMD.processFiles(configuration(), ruleSetFactory, Arrays.asList(dataSource), context, Collections.<Renderer>emptyList());
+    			log.debug("PMD running on file " + file.getName());
+    			final Report collectingReport = new Report();
+    			Renderer collectingRenderer = new AbstractRenderer("collectingRenderer", "Renderer that collect violations") {
+                    @Override
+                    public void startFileAnalysis(DataSource dataSource) {
+                        // TODO Auto-generated method stub
+                        
+                    }
+                    
+                    @Override
+                    public void start() throws IOException {
+                        // TODO Auto-generated method stub
+                        
+                    }
+                    
+                    @Override
+                    public void renderFileReport(Report report) throws IOException {
+                        for (RuleViolation v : report) {
+                            collectingReport.addRuleViolation(v);
+                        }
+                        for (Iterator<ProcessingError> it = report.errors(); it.hasNext(); ) {
+                            collectingReport.addError(it.next());
+                        }
+                        for (Iterator<RuleConfigurationError> it = report.configErrors(); it.hasNext(); ) {
+                            collectingReport.addConfigError(it.next());
+                        }
+                    }
+                    
+                    @Override
+                    public void end() throws IOException {
+                        // TODO Auto-generated method stub
+                        
+                    }
+                    
+                    @Override
+                    public String defaultFileExtension() {
+                        // TODO Auto-generated method stub
+                        return null;
+                    }
+                };
+    			
+    			PMD.processFiles(configuration(), ruleSetFactory, Arrays.asList(dataSource), context, Arrays.asList(collectingRenderer));
+    			log.debug("PMD run finished.");
 
     			timer.stop();
     			pmdDuration += timer.getDuration();
 
-    			if (context.getReport().hasErrors()) {
+    			log.debug("PMD found " + collectingReport.size() + " violations for file " + file.getName());
+
+    			if (collectingReport.hasErrors()) {
     			    StringBuilder message = new StringBuilder("There were processing errors!\n");
     			    Iterator<ProcessingError> errors = context.getReport().errors();
                     while (errors.hasNext()) {
@@ -323,7 +372,7 @@ public class BaseVisitor {
     			    throw new PMDException(message.toString());
     			}
 
-    			updateMarkers(file, context, isUseTaskMarker());
+    			updateMarkers(file, collectingReport.iterator(), isUseTaskMarker());
 
     			worked(1);
     			fileCount++;
@@ -406,21 +455,20 @@ public class BaseVisitor {
         }
     }
 
-    private void updateMarkers(IFile file, RuleContext context, boolean fTask)
+    private void updateMarkers(IFile file, Iterator<RuleViolation> violations, boolean fTask)
             throws CoreException, PropertiesException {
     	
         Map<IFile, Set<MarkerInfo2>> accumulator = getAccumulator();
         Set<MarkerInfo2> markerSet = new HashSet<MarkerInfo2>();
         List<Review> reviewsList = findReviewedViolations(file);
         Review review = new Review();
-        Iterator<RuleViolation> iter = context.getReport().iterator();
 //        final IPreferences preferences = PMDPlugin.getDefault().loadPreferences();
 //        final int maxViolationsPerFilePerRule = preferences.getMaxViolationsPerFilePerRule();
         Map<Rule, Integer> violationsByRule = new HashMap<Rule, Integer>();
 
         Rule rule;
-        while (iter.hasNext()) {
-            RuleViolation violation = iter.next();
+        while (violations.hasNext()) {
+            RuleViolation violation = violations.next();
             rule = violation.getRule();
             review.ruleName = rule.getName();
             review.lineNumber = violation.getBeginLine();
