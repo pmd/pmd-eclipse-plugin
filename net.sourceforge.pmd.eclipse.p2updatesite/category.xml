@@ -6,7 +6,7 @@
 
     <feature url="features/net.sourceforge.pmd.eclipse_4.0.5.v20141105-1906.jar"
         id="net.sourceforge.pmd.eclipse"
-        version="4.0.11.v20170128-2103">
+        version="4.0.12.qualifier">
         <category name="pmdForEclipse4"/>
     </feature>
 
