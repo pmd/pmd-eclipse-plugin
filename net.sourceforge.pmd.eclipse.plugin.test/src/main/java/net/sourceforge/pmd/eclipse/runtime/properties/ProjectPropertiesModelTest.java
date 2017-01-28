@@ -33,8 +33,18 @@
  */
 package net.sourceforge.pmd.eclipse.runtime.properties;
 
-import java.util.Iterator;
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 import java.util.Set;
+
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.ui.IWorkingSet;
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSet;
@@ -45,15 +55,6 @@ import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.runtime.builder.PMDNature;
 import net.sourceforge.pmd.eclipse.runtime.preferences.IPreferencesManager;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
-
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.ui.IWorkingSet;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
 
 /**
  * Test the project properties model.
@@ -186,10 +187,12 @@ public class ProjectPropertiesModelTest {
     final IProjectProperties model = mgr.loadProjectProperties(this.testProject);
 
     final IPreferencesManager pmgr = PMDPlugin.getDefault().getPreferencesManager();
+    ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
+    PrintStream out = new PrintStream(byteStream);
 
     Assert.assertTrue("A new project is not created with the default plugin ruleset",
             EclipseUtils.assertRuleSetEquals(model.getProjectRuleSet().getRules(), pmgr.getRuleSet().getRules(),
-            System.out));
+            out));
   }
 
   /**
