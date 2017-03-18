@@ -55,6 +55,20 @@ You can run eclipse with debugging enabled and connect to it via remote debuggin
 
 ### Releasing and updating the official eclipse update site
 
+From now on, we use [bintray](https://bintray.com) for hosting the eclipse update site.
+There is a nice [blog post by Lorenzo Bettini]()http://www.lorenzobettini.it/2016/02/publish-an-eclipse-p2-composite-repository-on-bintray/, which explains how it is done. There is also an [example repository](https://github.com/LorenzoBettini/p2composite-bintray-example] on github.
+
+
+Have a look at the `net.sourceforge.pmd.eclipse.p2updatesite` module, there you see
+
+*   a profile `release-composite` which enables the steps
+*   the ant script `bintray.ant` which is used to upload and download the site
+*   the ant script `packaging-p2composite.ant` which is used to modify the metadata of the
+    p2 repo locally before uploading
+
+
+#### Old approach
+
     # Pick a release BUILDQUALIFIER (e.g. v20130420-0001) and update versions
     E.g. version is: "4.0.0" and BUILDQUALIFIER is "v20130420-0001".
     The complete version of the plugin will be "4.0.0.v20130420-0001
