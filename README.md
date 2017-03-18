@@ -2,6 +2,8 @@
 
 Release Notes: <https://github.com/pmd/pmd-eclipse-plugin/blob/master/ReleaseNotes.md>
 
+Eclipse Update Site: <https://dl.bintray.com/pmd/pmd-eclipse-plugin/updates/>
+
 ## How to contribute
 
 You can contribute by testing the latest version, creating bug reports, or even forking
