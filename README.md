@@ -11,10 +11,13 @@ the repository on github and create pull requests. Any contributions are welcome
 
 
 ### Testing the latest version
-The latest version of the plugin can be found on sourceforge. Use the following
-Update Site URL in order to install the latest SNAPSHOT version into your eclipse:
+Simply build the plugin locally using maven:
 
-<https://sourceforge.net/projects/pmd/files/pmd-eclipse/update-site-latest/>
+    mvn clean package
+
+You'll find the zipped update site in the folder `net.sourceforge.pmd.eclipse.p2updatesite/target/`. Point eclipse to the zip file in this folder as an update-site and install the
+latest SNAPSHOT version.
+
 
 ### Bug Reports
 Please file any bug reports in the bug tracker at github:
@@ -68,73 +71,82 @@ Have a look at the `net.sourceforge.pmd.eclipse.p2updatesite` module, there you 
 *   the ant script `packaging-p2composite.ant` which is used to modify the metadata of the
     p2 repo locally before uploading
 
+#### Script
 
-#### Old approach
-
-    # Pick a release BUILDQUALIFIER (e.g. v20130420-0001) and update versions
-    E.g. version is: "4.0.0" and BUILDQUALIFIER is "v20130420-0001".
-    The complete version of the plugin will be "4.0.0.v20130420-0001
+    # Pick a release BUILDQUALIFIER (e.g. v20170401-0001) and update versions
+    # E.g. version is: "4.0.13" and BUILDQUALIFIER is "v20170401-0001".
+    # The complete version of the plugin will be "4.0.13.v20170401-0001
     export BUILDQUALIFIER=$(date -u +v%Y%m%d-%H%M) && echo $BUILDQUALIFIER
     
     # Pick the version of the new release and the next development version
-    export VERSION=4.0.0
-    export NEXT=4.0.1
+    export VERSION=4.0.13
+    export NEXT=4.0.14
     
-    # Define the location of the local copy of the update site
-    export UPDATE_SITE_MIRROR=/location/of/local/update-site/
-    
-    # Define your sourceforge login
-    export SFUSER=sf-user
-    
-    # First get a copy of the current update site
-    rsync -avhP $SFUSER@web.sourceforge.net:/home/frs/project/pmd/pmd-eclipse/update-site/ $UPDATE_SITE_MIRROR
-    # Create a release branch
-    git branch pmd-eclipse-plugin-rb-$VERSION
-    # Update master branch to the next -SNAPSHOT version.
-    mvn -Dtycho.mode=maven org.eclipse.tycho:tycho-versions-plugin:set-version -DnewVersion=$NEXT-SNAPSHOT
-    # Update versions in n.s.p.e.p2updatesite/category.xml
-    sed -i -e "s/$VERSION.qualifier/$NEXT.qualifier/" net.sourceforge.pmd.eclipse.p2updatesite/category.xml
-    
-    # Update the ReleaseNotes with the release date and version and add a next version entry
-    vim ReleaseNotes.md
-    # Commit and push
-    git commit -a -m "Prepare next pmd-eclipse-plugin development version $NEXT-SNAPSHOT"
-    git push origin master
-    
-    # Checkout the release branch
-    git checkout pmd-eclipse-plugin-rb-$VERSION
-    # update versions with the BUILDQUALIFIER
+    echo Update the ReleaseNotes with the release date and version:
+    echo 
+    echo "## $(date -u +%d-%B-%Y): $VERSION.$BUILDQUALIFIER"
+    echo
+    echo
+    echo "Press enter to continue..."
+    read
     mvn -Dtycho.mode=maven org.eclipse.tycho:tycho-versions-plugin:set-version -DnewVersion=$VERSION.$BUILDQUALIFIER
-    # Update versions in n.s.p.e.p2updatesite/category.xml
     sed -i -e "s/$VERSION.qualifier/$VERSION.$BUILDQUALIFIER/" net.sourceforge.pmd.eclipse.p2updatesite/category.xml
-    # Update the ReleaseNotes with the release date and version
-    vim ReleaseNotes.md
-    # Commit and tag
     git commit -a -m "Prepare release pmd-eclipse-plugin $VERSION.$BUILDQUALIFIER"
     git tag $VERSION.$BUILDQUALIFIER
-    # Build the plugin
-    mvn clean install -Ppublish-to-update-site -Declipse.updatesite.path=$UPDATE_SITE_MIRROR
-
-    # Test the new update site with eclipse - it should contain the new version
-    # If everything is fine, push the local changes
-    git push origin master
-    git push origin tag $VERSION.$BUILDQUALIFIER
-    # upload the official update site
-    rsync -avhP $UPDATE_SITE_MIRROR $SFUSER@web.sourceforge.net:/home/frs/project/pmd/pmd-eclipse/update-site/
-    # Cleanup the release branch which was only needed during the release process
+    echo "Create (temporary) release branch"
+    git branch pmd-eclipse-plugin-rb-$VERSION
+    
+    echo
+    echo Update the ReleaseNotes and add a next version entry:
+    echo "## ????: $NEXT.v????"
+    echo
+    echo
+    echo Press enter...
+    read
+    
+    echo "Updating version in master to next"
+    mvn -Dtycho.mode=maven org.eclipse.tycho:tycho-versions-plugin:set-version -DnewVersion=$NEXT-SNAPSHOT
+    sed -i -e "s/$VERSION.$BUILDQUALIFIER/$NEXT.qualifier/" net.sourceforge.pmd.eclipse.p2updatesite/category.xml
+    git commit -a -m "Prepare next pmd-eclipse-plugin development version $NEXT-SNAPSHOT"
+    
+    echo Checkout the release branch and build the plugin
+    git checkout pmd-eclipse-plugin-rb-$VERSION
+    
+    mvn clean package
+    
+    echo
+    echo "Please test now!!!"
+    echo
+    echo Update-Site: file://`pwd`/net.sourceforge.pmd.eclipse.p2updatesite/target/net.sourceforge.pmd.eclipse.p2updatesite-$VERSION.$BUILDQUALIFIER.zip
+    echo
+    read
+    
+    echo
+    echo "Publishing now..."
+    echo "Make sure, you have properties bintray.user and bintray.apikey set in ~/.m2/settings.xml..."
+    mvn clean install -Prelease-composite
+    echo
+    
+    echo
+    echo "Pushing"
     git checkout master
     git branch -D pmd-eclipse-plugin-rb-$VERSION
+    git push origin master
+    git push origin tag $VERSION.$BUILDQUALIFIER
+    
+    echo Done.
 
-Finally announce the new plugin version in the news section of SF: <https://sourceforge.net/p/pmd/news/>.
+Also, don't forget to create a [News](https://sourceforge.net/p/pmd/news/) and
+upload the zipped update site to [GitHub Releases](https://github.com/pmd/pmd-eclipse-plugin/releases).
+
 You can use the following template:
 
     PMD for Eclipse $VERSION.$BUILDQUALIFIER released
     
     A new PMD for Eclipse plugin version has been released.
-    It is available via the update site: <https://sourceforge.net/projects/pmd/files/pmd-eclipse/update-site/>
+    It is available via the update site: <https://dl.bintray.com/pmd/pmd-eclipse-plugin/updates/>
     
     * Release Notes: <https://github.com/pmd/pmd-eclipse-plugin/blob/$VERSION.$BUILDQUALIFIER/ReleaseNotes.md>
-
 
 
 
