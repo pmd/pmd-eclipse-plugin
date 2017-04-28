@@ -5,16 +5,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Collections;
 import java.util.Comparator;
-
-import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.RuleSet;
-import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
-import net.sourceforge.pmd.eclipse.plugin.UISettings;
-import net.sourceforge.pmd.eclipse.runtime.writer.IRuleSetWriter;
-import net.sourceforge.pmd.eclipse.runtime.writer.WriterException;
-import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
-import net.sourceforge.pmd.util.designer.Designer;
 
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -50,6 +42,16 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
+
+import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.RuleSet;
+import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
+import net.sourceforge.pmd.eclipse.plugin.UISettings;
+import net.sourceforge.pmd.eclipse.runtime.writer.IRuleSetWriter;
+import net.sourceforge.pmd.eclipse.runtime.writer.WriterException;
+import net.sourceforge.pmd.eclipse.ui.actions.RuleSetUtil;
+import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
+import net.sourceforge.pmd.util.designer.Designer;
 
 /**
  * This page is used to modify preferences only. They
@@ -481,7 +483,7 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 				int result = dialog.open();
 				if (result == RuleDialog.OK) {
 					Rule addedRule = dialog.getRule();
-					ruleSet.addRule(addedRule);
+					ruleSet = RuleSetUtil.addRule(ruleSet, addedRule);
 					setModified(true);
 					try {
 						refresh();
@@ -519,12 +521,12 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 					try {
 						RuleSet selectedRules = dialog.checkedRules();
 						if (dialog.isImportByReference()) {
-							ruleSet.addRuleSetByReference(selectedRules, false);
+						    ruleSet = RuleSetUtil.addRuleSetByReference(ruleSet, selectedRules, false);
 						} else {
 							// Set pmd-eclipse as new RuleSet name and add the Rule
 							for (Rule rule: selectedRules.getRules()) {
 								rule.setRuleSetName("pmd-eclipse");
-								ruleSet.addRule(rule);
+								ruleSet = RuleSetUtil.addRule(ruleSet, rule);
 							}
 						}
 						setModified(true);
@@ -575,8 +577,7 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 						}
 
 						if (flContinue) {
-							ruleSet.setName(getFileNameWithoutExtension(file.getName()));
-							ruleSet.setDescription(input.getValue());
+						    ruleSet = RuleSetUtil.setNameDescription(ruleSet, getFileNameWithoutExtension(file.getName()), input.getValue());
 							OutputStream out = new FileOutputStream(fileName);
 							IRuleSetWriter writer = PMDPlugin.getDefault().getRuleSetWriter();
 							writer.write(out, ruleSet);
@@ -753,7 +754,7 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 		button.addSelectionListener(new SelectionAdapter() {
 			@Override
             public void widgetSelected(SelectionEvent event) {
-				ruleSet.addExcludePattern(".*/PATTERN/.*");
+			    ruleSet = RuleSetUtil.addExcludePatterns(ruleSet, Collections.singleton(".*/PATTERN/.*"));
 				setModified(true);
 				excludePatternTableViewer.refresh();
 			}
@@ -771,7 +772,7 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 		button.addSelectionListener(new SelectionAdapter() {
 			@Override
             public void widgetSelected(SelectionEvent event) {
-				ruleSet.addIncludePattern(".*/PATTERN/.*");
+			    ruleSet = RuleSetUtil.addIncludePatterns(ruleSet, Collections.singleton(".*/PATTERN/.*"));
 				setModified(true);
 				includePatternTableViewer.refresh();
 			}
@@ -779,21 +780,12 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 		return button;
 	}
 
-	private static String asCleanString(String original) {
-		return original == null ? "" : original.trim();
-	}
-
 	/**
 	 * Populate the rule table
 	 */
 	private void populateRuleTable() {
 		RuleSet defaultRuleSet = PMDPlugin.getDefault().getPreferencesManager().getRuleSet();
-		ruleSet = new RuleSet();
-		ruleSet.addRuleSet(defaultRuleSet);
-		ruleSet.setName(defaultRuleSet.getName());
-		ruleSet.setDescription(asCleanString(defaultRuleSet.getDescription()));
-		ruleSet.addExcludePatterns(defaultRuleSet.getExcludePatterns());
-		ruleSet.addIncludePatterns(defaultRuleSet.getIncludePatterns());
+		ruleSet = RuleSetUtil.newCopyOf(defaultRuleSet);
 		ruleTableViewer.setInput(ruleSet);
 	}
 

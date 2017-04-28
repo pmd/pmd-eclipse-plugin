@@ -35,8 +35,9 @@
  */
 package net.sourceforge.pmd.eclipse.core.impl;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.eclipse.core.IRuleSetManager;
@@ -49,13 +50,13 @@ import net.sourceforge.pmd.eclipse.core.IRuleSetManager;
  */
 public class RuleSetManagerImpl implements IRuleSetManager {
     
-    private final Set<RuleSet> ruleSets = new HashSet<RuleSet>();
-    private final Set<RuleSet> defaultRuleSets = new HashSet<RuleSet>();
+    private final List<RuleSet> ruleSets = new ArrayList<RuleSet>();
+    private final List<RuleSet> defaultRuleSets = new ArrayList<RuleSet>();
 
     /**
      * @see net.sourceforge.pmd.eclipse.core.IRuleSetManager#getRegisteredRuleSets()
      */
-    public Set<RuleSet> getRegisteredRuleSets() {
+    public Collection<RuleSet> getRegisteredRuleSets() {
         return ruleSets;
     }
 
@@ -64,8 +65,9 @@ public class RuleSetManagerImpl implements IRuleSetManager {
      */
     public void registerRuleSet(RuleSet ruleSet) {
         checkForNull(ruleSet);
-
-        ruleSets.add(ruleSet);
+        if (!ruleSets.contains(ruleSet)) {
+            ruleSets.add(ruleSet);
+        }
     }
 
     /**
@@ -80,7 +82,7 @@ public class RuleSetManagerImpl implements IRuleSetManager {
     /**
      * @see net.sourceforge.pmd.eclipse.core.IRuleSetManager#getDefaultRuleSets()
      */
-    public Set<RuleSet> getDefaultRuleSets() {
+    public Collection<RuleSet> getDefaultRuleSets() {
         return defaultRuleSets;
     }
 
@@ -90,7 +92,9 @@ public class RuleSetManagerImpl implements IRuleSetManager {
     public void registerDefaultRuleSet(RuleSet ruleSet) {
         checkForNull(ruleSet);
 
-        defaultRuleSets.add(ruleSet);
+        if (!defaultRuleSets.contains(ruleSet)) {
+            defaultRuleSets.add(ruleSet);
+        }
     }
 
     /**

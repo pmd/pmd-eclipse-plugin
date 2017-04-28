@@ -6,23 +6,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import net.sourceforge.pmd.PMDConfiguration;
-import net.sourceforge.pmd.PMDException;
-import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.RuleSet;
-import net.sourceforge.pmd.RuleSets;
-import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.SourceCodeProcessor;
-import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
-import net.sourceforge.pmd.eclipse.ui.model.FileRecord;
-import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
-import net.sourceforge.pmd.eclipse.ui.views.ast.ASTUtil;
-import net.sourceforge.pmd.lang.dfa.DFAGraphMethod;
-import net.sourceforge.pmd.lang.dfa.DFAGraphRule;
-import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
-import net.sourceforge.pmd.lang.java.dfa.JavaDFAGraphRule;
-import net.sourceforge.pmd.util.StringUtil;
-
 import org.eclipse.core.resources.IResource;
 import org.eclipse.jface.resource.ColorRegistry;
 import org.eclipse.jface.resource.JFaceResources;
@@ -46,6 +29,24 @@ import org.eclipse.ui.part.Page;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.eclipse.ui.themes.ITheme;
 import org.eclipse.ui.themes.IThemeManager;
+
+import net.sourceforge.pmd.PMDConfiguration;
+import net.sourceforge.pmd.PMDException;
+import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.RuleSet;
+import net.sourceforge.pmd.RuleSets;
+import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.SourceCodeProcessor;
+import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
+import net.sourceforge.pmd.eclipse.ui.actions.RuleSetUtil;
+import net.sourceforge.pmd.eclipse.ui.model.FileRecord;
+import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
+import net.sourceforge.pmd.eclipse.ui.views.ast.ASTUtil;
+import net.sourceforge.pmd.lang.dfa.DFAGraphMethod;
+import net.sourceforge.pmd.lang.dfa.DFAGraphRule;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
+import net.sourceforge.pmd.lang.java.dfa.JavaDFAGraphRule;
+import net.sourceforge.pmd.util.StringUtil;
 
 /**
  * 
@@ -299,8 +300,7 @@ public abstract class AbstractStructureInspectorPage extends Page implements IPr
 		// PMD needs this Resource as a String
 		try {
 			DFAGraphRule dfaGraphRule = new JavaDFAGraphRule();
-			RuleSet rs = new RuleSet();
-			rs.addRule(dfaGraphRule);
+			RuleSet rs = RuleSetUtil.newSingle(dfaGraphRule);
 	
 			RuleContext ctx = new RuleContext();
 			ctx.setSourceCodeFilename("[scratchpad]");

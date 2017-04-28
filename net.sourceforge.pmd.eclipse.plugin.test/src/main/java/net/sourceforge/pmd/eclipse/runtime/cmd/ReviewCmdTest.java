@@ -37,26 +37,25 @@ import java.io.InputStream;
 import java.util.Map;
 import java.util.Set;
 
-import name.herlin.command.CommandException;
-import name.herlin.command.UnsetInputPropertiesException;
-import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.RuleSet;
-import net.sourceforge.pmd.eclipse.EclipseUtils;
-import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
-import net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties;
-
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jdt.core.JavaCore;
-import org.eclipse.jdt.launching.IVMInstall;
-import org.eclipse.jdt.launching.JavaRuntime;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+
+import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.RuleSet;
+import net.sourceforge.pmd.eclipse.EclipseUtils;
+import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
+import net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties;
+import net.sourceforge.pmd.eclipse.ui.actions.RuleSetUtil;
+
+import name.herlin.command.CommandException;
+import name.herlin.command.UnsetInputPropertiesException;
 
 /**
  * This tests the PMD Processor command
@@ -133,8 +132,7 @@ public class ReviewCmdTest {
   public void testProjectBuildPath() throws Exception {
       IProjectProperties properties = PMDPlugin.getDefault().getPropertiesManager().loadProjectProperties(testProject);
       Rule compareObjectsWithEquals = properties.getProjectRuleSet().getRuleByName("CompareObjectsWithEquals");
-      RuleSet projectRuleSet = new RuleSet();
-      projectRuleSet.addRule(compareObjectsWithEquals);
+      RuleSet projectRuleSet = RuleSetUtil.newSingle(compareObjectsWithEquals);
       properties.setProjectRuleSet(projectRuleSet);
       boolean oldSetting = PMDPlugin.getDefault().getPreferencesManager().loadPreferences().isProjectBuildPathEnabled();
 

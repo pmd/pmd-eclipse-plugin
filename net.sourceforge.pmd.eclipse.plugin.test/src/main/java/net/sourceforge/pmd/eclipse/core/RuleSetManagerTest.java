@@ -33,12 +33,13 @@
  */
 package net.sourceforge.pmd.eclipse.core;
 
-import net.sourceforge.pmd.RuleSet;
-import net.sourceforge.pmd.eclipse.core.impl.RuleSetManagerImpl;
-
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+
+import net.sourceforge.pmd.RuleSet;
+import net.sourceforge.pmd.eclipse.core.impl.RuleSetManagerImpl;
+import net.sourceforge.pmd.eclipse.ui.actions.RuleSetUtil;
 
 /**
  * Test the ruleset manager.
@@ -63,7 +64,7 @@ public class RuleSetManagerTest {
    */
   @Test
   public void testDuplicateRegister() {
-    final RuleSet ruleSet = new RuleSet();
+    final RuleSet ruleSet = RuleSetUtil.newEmpty();
     this.ruleSetManager.registerRuleSet(ruleSet);
     this.ruleSetManager.registerRuleSet(ruleSet);
     Assert.assertEquals("Only one rule set should have been registered", 1, this.ruleSetManager.getRegisteredRuleSets().size());
@@ -75,7 +76,7 @@ public class RuleSetManagerTest {
    */
   @Test
   public void testDuplicateRegisterDefault() {
-    final RuleSet ruleSet = new RuleSet();
+    final RuleSet ruleSet = RuleSetUtil.newEmpty();
     this.ruleSetManager.registerDefaultRuleSet(ruleSet);
     this.ruleSetManager.registerDefaultRuleSet(ruleSet);
     Assert.assertEquals("Only one rule set should have been registered", 1, this.ruleSetManager.getDefaultRuleSets().size());
@@ -87,7 +88,7 @@ public class RuleSetManagerTest {
    */
   @Test
   public void testDuplicateUnregister() {
-    final RuleSet ruleSet = new RuleSet();
+    final RuleSet ruleSet = RuleSetUtil.newEmpty();
     this.ruleSetManager.registerRuleSet(ruleSet);
 
     this.ruleSetManager.unregisterRuleSet(ruleSet);
@@ -101,7 +102,7 @@ public class RuleSetManagerTest {
    */
   @Test
   public void testDuplicateUnregisterDefault() {
-    final RuleSet ruleSet = new RuleSet();
+    final RuleSet ruleSet = RuleSetUtil.newEmpty();
     this.ruleSetManager.registerRuleSet(ruleSet);
 
     this.ruleSetManager.unregisterDefaultRuleSet(ruleSet);
@@ -115,7 +116,7 @@ public class RuleSetManagerTest {
    */
   @Test
   public void testRegisterDefaultRuleSet() {
-    final RuleSet ruleSet = new RuleSet();
+    final RuleSet ruleSet = RuleSetUtil.newEmpty();
     this.ruleSetManager.registerDefaultRuleSet(ruleSet);
     Assert.assertEquals("Default RuleSet not registrered!", 1, this.ruleSetManager.getDefaultRuleSets().size());
   }
@@ -156,7 +157,7 @@ public class RuleSetManagerTest {
    */
   @Test
   public void testRegisterRuleSet() {
-    final RuleSet ruleSet = new RuleSet();
+    final RuleSet ruleSet = RuleSetUtil.newEmpty();
     this.ruleSetManager.registerRuleSet(ruleSet);
     Assert.assertEquals("RuleSet not registrered!", 1, this.ruleSetManager.getRegisteredRuleSets().size());
   }
@@ -167,7 +168,7 @@ public class RuleSetManagerTest {
    */
   @Test
   public void testUnregisterDefaultRuleSet() {
-    final RuleSet ruleSet = new RuleSet();
+    final RuleSet ruleSet = RuleSetUtil.newEmpty();
     this.ruleSetManager.registerDefaultRuleSet(ruleSet);
     Assert.assertEquals("Default RuleSet not registered!", 1, this.ruleSetManager.getDefaultRuleSets().size());
 
@@ -211,7 +212,7 @@ public class RuleSetManagerTest {
    */
   @Test
   public void testUnregisterRuleSet() {
-    final RuleSet ruleSet = new RuleSet();
+    final RuleSet ruleSet = RuleSetUtil.newEmpty();
     this.ruleSetManager.registerRuleSet(ruleSet);
     Assert.assertEquals("RuleSet not registered!", 1, this.ruleSetManager.getRegisteredRuleSets().size());
 

@@ -50,6 +50,7 @@ import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.SourceCodeProcessor;
 import net.sourceforge.pmd.eclipse.runtime.PMDRuntimeConstants;
+import net.sourceforge.pmd.eclipse.ui.actions.RuleSetUtil;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
@@ -122,8 +123,7 @@ public class ReviewResourceForRuleCommand extends AbstractDefaultCommand {
         beginTask("PMD checking for rule: " + rule.getName(), 1);
 
         if (file != null) {
-            RuleSet ruleSet = new RuleSet();
-            ruleSet.addRule(rule);
+            RuleSet ruleSet = RuleSetUtil.newSingle(rule);
   //          final PMDEngine pmdEngine = getPmdEngineForProject(project);
             File sourceCodeFile = file.getFullPath().toFile();
             if (ruleSet.applies(sourceCodeFile)) {

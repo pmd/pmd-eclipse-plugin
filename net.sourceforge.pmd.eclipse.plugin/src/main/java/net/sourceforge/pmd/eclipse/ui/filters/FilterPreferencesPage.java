@@ -7,20 +7,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import net.sourceforge.pmd.PropertyDescriptor;
-import net.sourceforge.pmd.PropertySource;
-import net.sourceforge.pmd.RuleSet;
-import net.sourceforge.pmd.eclipse.runtime.preferences.IPreferencesManager;
-import net.sourceforge.pmd.eclipse.ui.BasicTableLabelProvider;
-import net.sourceforge.pmd.eclipse.ui.PMDUiConstants;
-import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
-import net.sourceforge.pmd.eclipse.ui.preferences.br.AbstractPMDPreferencePage;
-import net.sourceforge.pmd.eclipse.ui.preferences.br.BasicTableManager;
-import net.sourceforge.pmd.eclipse.ui.preferences.br.RuleSelection;
-import net.sourceforge.pmd.eclipse.ui.preferences.br.SizeChangeListener;
-import net.sourceforge.pmd.eclipse.ui.preferences.br.ValueChangeListener;
-import net.sourceforge.pmd.eclipse.util.ResourceManager;
-
 import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
@@ -46,6 +32,21 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
+
+import net.sourceforge.pmd.PropertyDescriptor;
+import net.sourceforge.pmd.PropertySource;
+import net.sourceforge.pmd.RuleSet;
+import net.sourceforge.pmd.eclipse.runtime.preferences.IPreferencesManager;
+import net.sourceforge.pmd.eclipse.ui.BasicTableLabelProvider;
+import net.sourceforge.pmd.eclipse.ui.PMDUiConstants;
+import net.sourceforge.pmd.eclipse.ui.actions.RuleSetUtil;
+import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
+import net.sourceforge.pmd.eclipse.ui.preferences.br.AbstractPMDPreferencePage;
+import net.sourceforge.pmd.eclipse.ui.preferences.br.BasicTableManager;
+import net.sourceforge.pmd.eclipse.ui.preferences.br.RuleSelection;
+import net.sourceforge.pmd.eclipse.ui.preferences.br.SizeChangeListener;
+import net.sourceforge.pmd.eclipse.ui.preferences.br.ValueChangeListener;
+import net.sourceforge.pmd.eclipse.util.ResourceManager;
 
 /**
  * The available report formats and their properties.
@@ -568,10 +569,10 @@ public class FilterPreferencesPage extends AbstractPMDPreferencePage implements 
 		
 		IPreferencesManager ipMgr = plugin.getPreferencesManager();
 	    RuleSet ruleSet = ipMgr.getRuleSet();
-	    ruleSet.setExcludePatterns( tableFilters(false) );
-	    ruleSet.setIncludePatterns( tableFilters(true) );
+	    ruleSet = RuleSetUtil.setExcludePatterns(ruleSet, tableFilters(false));
+	    ruleSet = RuleSetUtil.setIncludePatterns(ruleSet, tableFilters(true));
 		ipMgr.setRuleSet(ruleSet);
-		
+
 		Set<FilterHolder> filters = currentCheckedFilters();
 		preferences.activeExclusionPatterns( patternsIn(filters, false) );
 		preferences.activeInclusionPatterns( patternsIn(filters, true) );

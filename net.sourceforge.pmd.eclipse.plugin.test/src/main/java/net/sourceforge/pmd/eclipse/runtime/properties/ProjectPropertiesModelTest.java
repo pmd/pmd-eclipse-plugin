@@ -35,7 +35,8 @@ package net.sourceforge.pmd.eclipse.runtime.properties;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
-import java.util.Set;
+import java.util.Collection;
+import java.util.Iterator;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -54,6 +55,7 @@ import net.sourceforge.pmd.eclipse.EclipseUtils;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.runtime.builder.PMDNature;
 import net.sourceforge.pmd.eclipse.runtime.preferences.IPreferencesManager;
+import net.sourceforge.pmd.eclipse.ui.actions.RuleSetUtil;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 
 /**
@@ -79,11 +81,23 @@ public class ProjectPropertiesModelTest {
 
     // 2. Keep the plugin ruleset
     this.initialPluginRuleSet = PMDPlugin.getDefault().getPreferencesManager().getRuleSet();
-    this.initialPluginRuleSet.getRules().clear();
-    final Set<RuleSet> defaultRuleSets = PMDPlugin.getDefault().getRuleSetManager().getDefaultRuleSets();
+    this.initialPluginRuleSet = RuleSetUtil.clearRules(this.initialPluginRuleSet);
+    final Collection<RuleSet> defaultRuleSets = PMDPlugin.getDefault().getRuleSetManager().getDefaultRuleSets();
+    Assert.assertEquals(0, this.initialPluginRuleSet.getRules().size());
+    int ruleCount = 0;
     for (final RuleSet ruleSet : defaultRuleSets) {
-      this.initialPluginRuleSet.addRuleSet(ruleSet);
+        int countBefore = this.initialPluginRuleSet.getRules().size();
+        int expectedCount = countBefore + ruleSet.getRules().size();
+        ruleCount = ruleCount + ruleSet.getRules().size();
+        this.initialPluginRuleSet = RuleSetUtil.addRules(this.initialPluginRuleSet, ruleSet.getRules());
+        Assert.assertEquals(expectedCount, this.initialPluginRuleSet.getRules().size());
     }
+    Assert.assertEquals(ruleCount, this.initialPluginRuleSet.getRules().size());
+    RuleSet cloned = RuleSetUtil.newCopyOf(this.initialPluginRuleSet);
+    Assert.assertEquals(cloned.getRules(), this.initialPluginRuleSet.getRules());
+
+    PMDPlugin.getDefault().getPreferencesManager().setRuleSet(this.initialPluginRuleSet);
+    
   }
 
   /**
@@ -103,35 +117,56 @@ public class ProjectPropertiesModelTest {
     PMDPlugin.getDefault().getPreferencesManager().setRuleSet(this.initialPluginRuleSet);
   }
 
+  public static void compareTwoRuleSets(RuleSet ruleSet1, RuleSet ruleSet2) {
+      if (!ruleSet1.getRules().equals(ruleSet2.getRules())) {
+          System.out.println("###################################################");
+          System.out.println("RuleSet1: " + ruleSet1 + " RuleSet2: " + ruleSet2);
+          Iterator<Rule> it1 = ruleSet1.getRules().iterator();
+          Iterator<Rule> it2 = ruleSet2.getRules().iterator();
+          for (int i = 0; i < ruleSet2.getRules().size(); i++) {
+              Rule pluginRule = it1.next();
+              Rule projectRule = it2.next();
+              
+              if (pluginRule != projectRule) {
+                  System.out.println("i=" + i + ": pluginRule=" + pluginRule + " projectRule=" + projectRule);
+                  System.out.println("plugin: " + pluginRule.getName() + " (" + pluginRule.getLanguage() + ")");
+                  System.out.println("project: " + projectRule.getName() + " (" + projectRule.getLanguage() + ")");
+              }
+          }
+          System.out.println("###################################################");
+      }
+  }
+
   /**
    * Bug: when a user deselect a project rule it is not saved
    */
   @Test
   public void testBug() throws PropertiesException, RuleSetNotFoundException, CoreException {
-    final RuleSetFactory factory = new RuleSetFactory();
-
     // First ensure that the plugin initial ruleset is equal to the project
     // ruleset
     final IProjectPropertiesManager mgr = PMDPlugin.getDefault().getPropertiesManager();
     final IProjectProperties model = mgr.loadProjectProperties(this.testProject);
 
     RuleSet projectRuleSet = model.getProjectRuleSet();
+    Assert.assertEquals(this.initialPluginRuleSet.getRules().size(), projectRuleSet.getRules().size());
+    compareTwoRuleSets(initialPluginRuleSet, projectRuleSet);
     Assert.assertEquals("The project ruleset is not equal to the plugin ruleset", this.initialPluginRuleSet.getRules(),
         projectRuleSet.getRules());
     int ruleCountBefore = projectRuleSet.getRules().size();
 
     // 2. remove a rule (keep its name for assertion)
-    final RuleSet newRuleSet = new RuleSet();
-    newRuleSet.addRuleSet(projectRuleSet);
+    RuleSet newRuleSet = RuleSetUtil.newEmpty();
+    newRuleSet = RuleSetUtil.addRules(newRuleSet, projectRuleSet.getRules());
     final Rule removedRule = newRuleSet.getRuleByName("UnnecessaryParentheses");
-    newRuleSet.getRules().remove(removedRule);
+    newRuleSet = RuleSetUtil.removeRule(newRuleSet, removedRule);
+    Assert.assertEquals("No rule has been removed - test problem", newRuleSet.getRules().size(), ruleCountBefore - 1);
 
     model.setProjectRuleSet(newRuleSet);
     model.sync();
 
     // 3. test the rule has correctly been removed
     projectRuleSet = model.getProjectRuleSet();
-    Assert.assertEquals("The rule count should be 1 less", ruleCountBefore - 1, projectRuleSet.getRules().size());
+    Assert.assertEquals("The rule count should 1 less", ruleCountBefore - 1, projectRuleSet.getRules().size());
     for (Rule r : projectRuleSet.getRules()) {
         if (r.getName().equals(removedRule.getName()) && r.getLanguage() == removedRule.getLanguage()) {
             Assert.fail("The rule has not been removed!");
@@ -275,10 +310,9 @@ public class ProjectPropertiesModelTest {
       }
     };
 
-    final RuleSet newRuleSet = new RuleSet();
-    newRuleSet.setName("foo");
-    newRuleSet.addRuleSet(this.initialPluginRuleSet);
-    newRuleSet.addRule(myRule);
+    RuleSet newRuleSet = RuleSetUtil.newEmpty("foo", "bar");
+    newRuleSet = RuleSetUtil.addRules(newRuleSet, this.initialPluginRuleSet.getRules());
+    newRuleSet = RuleSetUtil.addRule(newRuleSet, myRule);
     PMDPlugin.getDefault().getPreferencesManager().setRuleSet(newRuleSet);
 
     // Test that the project rule set should still be the same as the plugin
@@ -363,11 +397,8 @@ public class ProjectPropertiesModelTest {
     model.setPmdEnabled(true);
 
     final RuleSet pmdRuleSet = PMDPlugin.getDefault().getPreferencesManager().getRuleSet();
-    final RuleSet fooRuleSet = new RuleSet();
-
     final Rule rule1 = pmdRuleSet.getRuleByName("EmptyCatchBlock");
-
-    fooRuleSet.addRule(rule1);
+    final RuleSet fooRuleSet = RuleSetUtil.newSingle(rule1);
 
     model.setProjectRuleSet(fooRuleSet);
     Assert.assertTrue(model.isNeedRebuild());

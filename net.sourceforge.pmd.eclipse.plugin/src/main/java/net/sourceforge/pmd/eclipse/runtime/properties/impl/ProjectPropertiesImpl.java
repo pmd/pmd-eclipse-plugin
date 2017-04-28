@@ -42,17 +42,6 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
-import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.RuleSet;
-import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
-import net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties;
-import net.sourceforge.pmd.eclipse.runtime.properties.IProjectPropertiesManager;
-import net.sourceforge.pmd.eclipse.runtime.properties.PropertiesException;
-import net.sourceforge.pmd.eclipse.runtime.writer.IRuleSetWriter;
-import net.sourceforge.pmd.eclipse.runtime.writer.WriterException;
-import net.sourceforge.pmd.eclipse.util.IOUtil;
-import net.sourceforge.pmd.util.StringUtil;
-
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -62,6 +51,17 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.ui.IWorkingSet;
+
+import net.sourceforge.pmd.RuleSet;
+import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
+import net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties;
+import net.sourceforge.pmd.eclipse.runtime.properties.IProjectPropertiesManager;
+import net.sourceforge.pmd.eclipse.runtime.properties.PropertiesException;
+import net.sourceforge.pmd.eclipse.runtime.writer.IRuleSetWriter;
+import net.sourceforge.pmd.eclipse.runtime.writer.WriterException;
+import net.sourceforge.pmd.eclipse.ui.actions.RuleSetUtil;
+import net.sourceforge.pmd.eclipse.util.IOUtil;
+import net.sourceforge.pmd.util.StringUtil;
 
 /**
  * Implementation of a project properties information structure
@@ -165,7 +165,7 @@ public class ProjectPropertiesImpl implements IProjectProperties {
      * @see net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties#getProjectRuleSet()
      */
     public RuleSet getProjectRuleSet() throws PropertiesException {
-        return cloneRuleSet();
+        return RuleSetUtil.newCopyOf(projectRuleSet);
     }
 
     /**
@@ -376,25 +376,6 @@ public class ProjectPropertiesImpl implements IProjectProperties {
     public void sync() throws PropertiesException {
         log.info("Commit properties for project " + project.getName());
         projectPropertiesManager.storeProjectProperties(this);
-    }
-
-    /**
-     * Clone the PMD ruleset.
-     * @return a pmd ruleSetClone.
-     */
-    private RuleSet cloneRuleSet() {
-        final RuleSet clonedRuleSet = new RuleSet();
-
-        clonedRuleSet.setName(projectRuleSet.getName());
-        clonedRuleSet.setDescription(projectRuleSet.getDescription());
-
-        for (Rule rule: projectRuleSet.getRules()) {
-            clonedRuleSet.addRule(rule);
-        }
-        clonedRuleSet.addExcludePatterns(projectRuleSet.getExcludePatterns());
-        clonedRuleSet.addIncludePatterns(projectRuleSet.getIncludePatterns());
-
-        return clonedRuleSet;
     }
 
     /**

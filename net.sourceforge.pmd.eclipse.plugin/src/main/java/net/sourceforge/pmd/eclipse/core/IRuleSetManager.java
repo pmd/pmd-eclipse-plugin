@@ -35,7 +35,7 @@
  */
 package net.sourceforge.pmd.eclipse.core;
 
-import java.util.Set;
+import java.util.Collection;
 
 import net.sourceforge.pmd.RuleSet;
 
@@ -61,7 +61,7 @@ public interface IRuleSetManager {
     /**
      * @return a set of registered ruleset; this can be empty but never null
      */
-    Set<RuleSet> getRegisteredRuleSets();
+    Collection<RuleSet> getRegisteredRuleSets();
 
     /**
      * Register a rule set for the default set
@@ -78,5 +78,5 @@ public interface IRuleSetManager {
     /**
      * @return the plugin default ruleset set
      */
-    Set<RuleSet> getDefaultRuleSets();
+    Collection<RuleSet> getDefaultRuleSets();
 }

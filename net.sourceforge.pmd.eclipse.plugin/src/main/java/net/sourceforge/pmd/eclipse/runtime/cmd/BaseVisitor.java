@@ -27,10 +27,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -51,7 +49,6 @@ import org.eclipse.ui.ResourceWorkingSetFilter;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.PMDException;
-import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Report.ProcessingError;
 import net.sourceforge.pmd.Report.RuleConfigurationError;
@@ -71,6 +68,7 @@ import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.LanguageVersionDiscoverer;
 import net.sourceforge.pmd.lang.java.JavaLanguageModule;
+import net.sourceforge.pmd.processor.MonoThreadProcessor;
 import net.sourceforge.pmd.renderers.AbstractRenderer;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.util.NumericConstants;
@@ -96,7 +94,6 @@ public class BaseVisitor {
     private int fileCount;
     private long pmdDuration;
     private IProjectProperties projectProperties;
-    protected RuleSet hiddenRules;
 
     private PMDConfiguration configuration;
 
@@ -106,8 +103,6 @@ public class BaseVisitor {
      */
     protected BaseVisitor() {
         super();
-
-        hiddenRules = new RuleSet();
     }
 
     protected PMDConfiguration configuration() {
@@ -226,7 +221,6 @@ public class BaseVisitor {
      *            The ruleSet to set.
      */
     public void setRuleSet(final RuleSet ruleSet) {
-        ruleSet.addRuleSet(hiddenRules);
         this.ruleSet = ruleSet;
     }
 
@@ -353,7 +347,8 @@ public class BaseVisitor {
                     }
                 };
     			
-    			PMD.processFiles(configuration(), ruleSetFactory, Arrays.asList(dataSource), context, Arrays.asList(collectingRenderer));
+    			//PMD.processFiles(configuration(), ruleSetFactory, Arrays.asList(dataSource), context, Arrays.asList(collectingRenderer));
+                new MonoThreadProcessor(configuration()).processFiles(ruleSetFactory, Arrays.asList(dataSource), context, Arrays.asList(collectingRenderer));
     			log.debug("PMD run finished.");
 
     			timer.stop();

@@ -1,10 +1,11 @@
 package net.sourceforge.pmd.eclipse.ui.properties;
 
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
+import org.eclipse.core.resources.IProject;
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
 
-import name.herlin.command.CommandException;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;
@@ -13,12 +14,9 @@ import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties;
 import net.sourceforge.pmd.eclipse.runtime.properties.IProjectPropertiesManager;
 import net.sourceforge.pmd.eclipse.runtime.properties.PropertiesException;
+import net.sourceforge.pmd.eclipse.ui.actions.RuleSetUtil;
 
-import org.eclipse.core.resources.IProject;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import name.herlin.command.CommandException;
 
 public class UpdateProjectPropertiesCmdTest {
   private IProject testProject;
@@ -65,10 +63,10 @@ public class UpdateProjectPropertiesCmdTest {
     int ruleCountBefore = projectRuleSet.getRules().size();
 
     // 2. remove a rule (keep its name for assertion)
-    final RuleSet newRuleSet = new RuleSet();
-    newRuleSet.addRuleSet(projectRuleSet);
+    RuleSet newRuleSet = RuleSetUtil.newEmpty();
+    newRuleSet = RuleSetUtil.addRules(newRuleSet, projectRuleSet.getRules());
     final Rule removedRule = newRuleSet.getRuleByName("UnnecessaryParentheses");
-    newRuleSet.getRules().remove(removedRule);
+    newRuleSet = RuleSetUtil.removeRule(newRuleSet, removedRule);
 
     final UpdateProjectPropertiesCmd cmd = new UpdateProjectPropertiesCmd();
     cmd.setPmdEnabled(true);

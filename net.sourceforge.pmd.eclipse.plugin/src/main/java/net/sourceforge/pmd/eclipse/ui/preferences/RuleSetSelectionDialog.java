@@ -5,20 +5,8 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
-
-import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.RuleSet;
-import net.sourceforge.pmd.RuleSetFactory;
-import net.sourceforge.pmd.RuleSetNotFoundException;
-import net.sourceforge.pmd.RuleSets;
-import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
-import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
-import net.sourceforge.pmd.eclipse.ui.preferences.br.RuleColumnDescriptor;
-import net.sourceforge.pmd.eclipse.ui.preferences.br.RuleLabelProvider;
-import net.sourceforge.pmd.util.StringUtil;
 
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
@@ -42,6 +30,18 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
+
+import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.RuleSet;
+import net.sourceforge.pmd.RuleSetFactory;
+import net.sourceforge.pmd.RuleSetNotFoundException;
+import net.sourceforge.pmd.RuleSets;
+import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
+import net.sourceforge.pmd.eclipse.ui.actions.RuleSetUtil;
+import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
+import net.sourceforge.pmd.eclipse.ui.preferences.br.RuleColumnDescriptor;
+import net.sourceforge.pmd.eclipse.ui.preferences.br.RuleLabelProvider;
+import net.sourceforge.pmd.util.StringUtil;
 
 /**
  * Implements a dialog for the user to select a rule set to import
@@ -83,7 +83,7 @@ public class RuleSetSelectionDialog extends Dialog {
         
         setShellStyle(getShellStyle() | SWT.RESIZE );
         
-        Set<RuleSet> registeredRuleSets = PMDPlugin.getDefault().getRuleSetManager().getRegisteredRuleSets();
+        Collection<RuleSet> registeredRuleSets = PMDPlugin.getDefault().getRuleSetManager().getRegisteredRuleSets();
         SortedSet<RuleSet> sortedRuleSets = new TreeSet<RuleSet>(new Comparator<RuleSet>() {
             public int compare(RuleSet ruleSet1, RuleSet ruleSet2) {
                 return labelFor(ruleSet1).compareToIgnoreCase(labelFor(ruleSet2));
@@ -346,16 +346,17 @@ public class RuleSetSelectionDialog extends Dialog {
      * @return
      */
     private RuleSet getSelectedRules() {
-    	
-    	RuleSet rs = new RuleSet();
-    	rs.setFileName( selectedRuleSet.getFileName() );
-    	rs.addExcludePatterns( selectedRuleSet.getExcludePatterns() );
-    	rs.addIncludePatterns( selectedRuleSet.getIncludePatterns() );
-    	
+    	RuleSet rs = RuleSetUtil.newEmpty();
+    	rs = RuleSetUtil.setFileName(rs, selectedRuleSet.getFileName());
+    	rs = RuleSetUtil.addExcludePatterns(rs, selectedRuleSet.getExcludePatterns());
+    	rs = RuleSetUtil.addIncludePatterns(rs, selectedRuleSet.getIncludePatterns());
+
+    	Collection<Rule> rules = new ArrayList<Rule>();
     	for (Object rul : ruleTable.getCheckedElements()) {
-    		rs.addRule((Rule) rul);
+    		rules.add((Rule) rul);
     	}
-    	
+    	rs = RuleSetUtil.addRules(rs, rules);
+
     	return rs;
     }
     

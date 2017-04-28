@@ -42,11 +42,23 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.preference.PreferenceStore;
+import org.eclipse.swt.graphics.RGB;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RulePriority;
@@ -63,20 +75,11 @@ import net.sourceforge.pmd.eclipse.runtime.properties.PropertiesException;
 import net.sourceforge.pmd.eclipse.runtime.writer.IRuleSetWriter;
 import net.sourceforge.pmd.eclipse.runtime.writer.WriterException;
 import net.sourceforge.pmd.eclipse.ui.Shape;
+import net.sourceforge.pmd.eclipse.ui.actions.RuleSetUtil;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
 import net.sourceforge.pmd.eclipse.ui.priority.PriorityDescriptor;
 import net.sourceforge.pmd.eclipse.util.IOUtil;
 import net.sourceforge.pmd.util.StringUtil;
-
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IWorkspaceRoot;
-import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.jface.preference.PreferenceStore;
-import org.eclipse.swt.graphics.RGB;
 
 /**
  * This class implements the preferences management services
@@ -444,7 +447,7 @@ class PreferencesManagerImpl implements IPreferencesManager {
      * Get rule set from state location
      */
     private RuleSet getRuleSetFromStateLocation() {
-        RuleSet preferedRuleSet = null;
+        RuleSet preferredRuleSet = null;
         RuleSetFactory factory = new RuleSetFactory();
 
         // First find the ruleset file in the state location
@@ -452,7 +455,7 @@ class PreferencesManagerImpl implements IPreferencesManager {
         File ruleSetFile = new File(ruleSetLocation.toOSString());
         if (ruleSetFile.exists()) {
             try {
-                preferedRuleSet = factory.createRuleSet(ruleSetLocation.toOSString());
+                preferredRuleSet = factory.createRuleSet(ruleSetLocation.toOSString());
             } catch (RuntimeException e) {
             	PMDPlugin.getDefault().showError("Runtime Exception when loading stored ruleset file. Falling back to default ruleset.", e);
             } catch (RuleSetNotFoundException e) {
@@ -461,26 +464,24 @@ class PreferencesManagerImpl implements IPreferencesManager {
         }
 
         // Finally, build a default ruleset
-        if (preferedRuleSet == null) {
-            preferedRuleSet = new RuleSet();
-            preferedRuleSet.setName("pmd-eclipse");
-            preferedRuleSet.setDescription("PMD Plugin preferences rule set");
+        if (preferredRuleSet == null) {
+            preferredRuleSet = RuleSetUtil.newEmpty("pmd-eclipse", "PMD Plugin preferences rule set");
 
             IRuleSetManager ruleSetManager = PMDPlugin.getDefault().getRuleSetManager();
             for (RuleSet ruleSet: ruleSetManager.getDefaultRuleSets()) {
-                preferedRuleSet.addRuleSetByReference(ruleSet, false);
+                preferredRuleSet = RuleSetUtil.addRuleSetByReference(preferredRuleSet, ruleSet, false);
             }
         }
 
-        return preferedRuleSet;
+        return preferredRuleSet;
 
     }
 
     /**
      * Find if rules has been added
      */
-    private Set<Rule> getNewRules(RuleSet newRuleSet) {
-        Set<Rule> addedRules = new HashSet<Rule>();
+    private Collection<Rule> getNewRules(RuleSet newRuleSet) {
+        List<Rule> addedRules = new ArrayList<Rule>();
         for (Rule rule: newRuleSet.getRules()) {
             if (this.ruleSet.getRuleByName(rule.getName()) == null) {
                 addedRules.add(rule);
@@ -494,11 +495,7 @@ class PreferencesManagerImpl implements IPreferencesManager {
      * Add new rules to already configured projects, and update the exclude/include patterns
      */
     private void updateConfiguredProjects(RuleSet updatedRuleSet) {
-    	log.debug("Updating configured projects");
-        RuleSet addedRuleSet = new RuleSet();
-        for (Rule rule: getNewRules(updatedRuleSet)) {
-            addedRuleSet.addRule(rule);
-        }
+        log.debug("Updating configured projects");
 
         IProject[] projects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
 
@@ -509,9 +506,9 @@ class PreferencesManagerImpl implements IPreferencesManager {
                     IProjectProperties properties = PMDPlugin.getDefault().loadProjectProperties(project);
                     RuleSet projectRuleSet = properties.getProjectRuleSet();
                     if (projectRuleSet != null) {
-                        projectRuleSet.addRuleSet(addedRuleSet);
-                        projectRuleSet.setExcludePatterns(new ArrayList<String>(updatedRuleSet.getExcludePatterns()));
-                        projectRuleSet.setIncludePatterns(new ArrayList<String>(updatedRuleSet.getIncludePatterns()));
+                        projectRuleSet = RuleSetUtil.addRules(projectRuleSet, getNewRules(updatedRuleSet));
+                        projectRuleSet = RuleSetUtil.setExcludePatterns(projectRuleSet, updatedRuleSet.getExcludePatterns());
+                        projectRuleSet = RuleSetUtil.setIncludePatterns(projectRuleSet, updatedRuleSet.getIncludePatterns());
                         properties.setProjectRuleSet(projectRuleSet);
                         properties.sync();
                     }

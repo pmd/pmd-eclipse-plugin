@@ -12,28 +12,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import net.sourceforge.pmd.PropertyDescriptor;
-import net.sourceforge.pmd.PropertySource;
-import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.RuleSet;
-import net.sourceforge.pmd.eclipse.runtime.preferences.IPreferences;
-import net.sourceforge.pmd.eclipse.runtime.preferences.impl.PreferenceUIStore;
-import net.sourceforge.pmd.eclipse.runtime.writer.IRuleSetWriter;
-import net.sourceforge.pmd.eclipse.runtime.writer.WriterException;
-import net.sourceforge.pmd.eclipse.ui.ColumnDescriptor;
-import net.sourceforge.pmd.eclipse.ui.PMDUiConstants;
-import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
-import net.sourceforge.pmd.eclipse.ui.preferences.RuleDupeChecker;
-import net.sourceforge.pmd.eclipse.ui.preferences.RuleSetSelectionDialog;
-import net.sourceforge.pmd.eclipse.ui.preferences.editors.SWTUtil;
-import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.CreateRuleWizard;
-import net.sourceforge.pmd.eclipse.util.IOUtil;
-import net.sourceforge.pmd.eclipse.util.ResourceManager;
-import net.sourceforge.pmd.eclipse.util.Util;
-import net.sourceforge.pmd.util.FileUtil;
-import net.sourceforge.pmd.util.StringUtil;
-import net.sourceforge.pmd.util.designer.Designer;
-
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ICheckStateProvider;
@@ -62,6 +40,29 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.swt.widgets.TreeItem;
+
+import net.sourceforge.pmd.PropertyDescriptor;
+import net.sourceforge.pmd.PropertySource;
+import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.RuleSet;
+import net.sourceforge.pmd.eclipse.runtime.preferences.IPreferences;
+import net.sourceforge.pmd.eclipse.runtime.preferences.impl.PreferenceUIStore;
+import net.sourceforge.pmd.eclipse.runtime.writer.IRuleSetWriter;
+import net.sourceforge.pmd.eclipse.runtime.writer.WriterException;
+import net.sourceforge.pmd.eclipse.ui.ColumnDescriptor;
+import net.sourceforge.pmd.eclipse.ui.PMDUiConstants;
+import net.sourceforge.pmd.eclipse.ui.actions.RuleSetUtil;
+import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
+import net.sourceforge.pmd.eclipse.ui.preferences.RuleDupeChecker;
+import net.sourceforge.pmd.eclipse.ui.preferences.RuleSetSelectionDialog;
+import net.sourceforge.pmd.eclipse.ui.preferences.editors.SWTUtil;
+import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.CreateRuleWizard;
+import net.sourceforge.pmd.eclipse.util.IOUtil;
+import net.sourceforge.pmd.eclipse.util.ResourceManager;
+import net.sourceforge.pmd.eclipse.util.Util;
+import net.sourceforge.pmd.util.FileUtil;
+import net.sourceforge.pmd.util.StringUtil;
+import net.sourceforge.pmd.util.designer.Designer;
 
 /**
  * Instantiates and manages a tree table widget holding all the rules in a ruleset.
@@ -250,7 +251,7 @@ public class RuleTableManager extends AbstractTreeTableManager<Rule> implements 
 			if (result != Window.OK) return;
 			
 			Rule addedRule = wiz.rule();
-			ruleSet.addRule(addedRule);
+			ruleSet = RuleSetUtil.addRule(ruleSet, addedRule);
 			
 			added(addedRule);
 			
@@ -346,17 +347,9 @@ public class RuleTableManager extends AbstractTreeTableManager<Rule> implements 
 	
 	private RuleSet ruleSelectionAsRuleSet() {
 
-		RuleSet rs = new RuleSet();
-		rs.setName( ruleSet.getName() );
-		rs.setDescription( ruleSet.getDescription() );
-		rs.setFileName( ruleSet.getFileName());
-		rs.addExcludePatterns( ruleSet.getExcludePatterns() );
-		rs.addIncludePatterns( ruleSet.getIncludePatterns() );
-
-		for (Rule rule : ruleSelection.allRules()) {
-			rs.addRule(rule);
-		}		
-		
+		RuleSet rs = RuleSetUtil.newCopyOf(ruleSet);
+		rs = RuleSetUtil.clearRules(ruleSet);
+		rs = RuleSetUtil.addRules(rs, ruleSelection.allRules());
 		return rs;
 	}
 	
@@ -388,8 +381,7 @@ public class RuleTableManager extends AbstractTreeTableManager<Rule> implements 
 		if (flContinue) {
 			OutputStream out = null;
 			try {
-				ruleSet.setName(FileUtil.getFileNameWithoutExtension(file.getName()));
-				ruleSet.setDescription(input.getValue());
+			    ruleSet = RuleSetUtil.setNameDescription(ruleSet, FileUtil.getFileNameWithoutExtension(file.getName()), input.getValue());
 				out = new FileOutputStream(fileName);
 				IRuleSetWriter writer = plugin.getRuleSetWriter();
 				writer.write(out, ruleSet);
@@ -470,27 +462,26 @@ public class RuleTableManager extends AbstractTreeTableManager<Rule> implements 
 		
 		while (iter.hasNext()) {
 			Rule rule = iter.next();
-			ruleSet.addRule(rule);
+			ruleSet = RuleSetUtil.addRule(ruleSet, rule);
 			rule.setRuleSetName(ruleSet.getName());
 			added(rule);			
 			}
-		
-		ruleSet.addIncludePatterns( incomingRuleSet.getIncludePatterns() );
-		ruleSet.addExcludePatterns( incomingRuleSet.getExcludePatterns() );
+
+		ruleSet = RuleSetUtil.addExcludePatterns(ruleSet, incomingRuleSet.getExcludePatterns());
+		ruleSet = RuleSetUtil.addIncludePatterns(ruleSet, incomingRuleSet.getIncludePatterns());
 	}
 	
 	private void doImport(RuleSet selectedRuleSet, boolean doByReference) {
 		
 		try {			
 			if (doByReference) {
-				RuleSet filteredRS = new RuleSet();
-				filteredRS.setFileName(selectedRuleSet.getFileName());
-				for (Rule rule : selectedRuleSet.getRules()) {
-					filteredRS.addRule(rule);
-				}
-				ruleSet.addRuleSetByReference(filteredRS, false);
-				ruleSet.addIncludePatterns(selectedRuleSet.getIncludePatterns());
-				ruleSet.addExcludePatterns(selectedRuleSet.getExcludePatterns());
+				RuleSet filteredRS = RuleSetUtil.newEmpty();
+				filteredRS = RuleSetUtil.setFileName(filteredRS, selectedRuleSet.getFileName());
+				filteredRS = RuleSetUtil.addRules(filteredRS, selectedRuleSet.getRules());
+
+				ruleSet = RuleSetUtil.addRuleSetByReference(ruleSet, filteredRS, false);
+				ruleSet = RuleSetUtil.addExcludePatterns(ruleSet, selectedRuleSet.getExcludePatterns());
+				ruleSet = RuleSetUtil.addIncludePatterns(ruleSet, selectedRuleSet.getIncludePatterns());
 			} else {
 				add(selectedRuleSet);
 			}

@@ -33,16 +33,16 @@
  */
 package net.sourceforge.pmd.eclipse.core.ext;
 
+import java.util.Collection;
 import java.util.Iterator;
-import java.util.Set;
+
+import org.junit.Assert;
+import org.junit.Test;
 
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetNotFoundException;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
-
-import org.junit.Assert;
-import org.junit.Test;
 
 /**
  * Test the ruleset extension
@@ -59,7 +59,7 @@ public class RuleSetsExtensionProcessorTest {
    */
   @Test
   public void testAdditionalDefaultRuleSetsRegistered() throws RuleSetNotFoundException {
-    final Set<RuleSet> registeredRuleSets = PMDPlugin.getDefault().getRuleSetManager().getDefaultRuleSets();
+    final Collection<RuleSet> registeredRuleSets = PMDPlugin.getDefault().getRuleSetManager().getDefaultRuleSets();
     Assert.assertFalse("No registered default rulesets!", registeredRuleSets.isEmpty());
 
     final RuleSetFactory factory = new RuleSetFactory();
@@ -77,7 +77,7 @@ public class RuleSetsExtensionProcessorTest {
    */
   @Test
   public void testAdditionalRuleSetsRegistered() throws RuleSetNotFoundException {
-    final Set<RuleSet> registeredRuleSets = PMDPlugin.getDefault().getRuleSetManager().getRegisteredRuleSets();
+    final Collection<RuleSet> registeredRuleSets = PMDPlugin.getDefault().getRuleSetManager().getRegisteredRuleSets();
     Assert.assertFalse("No registered rulesets!", registeredRuleSets.isEmpty());
 
     final RuleSetFactory factory = new RuleSetFactory();
@@ -95,7 +95,7 @@ public class RuleSetsExtensionProcessorTest {
    * @param set
    * @return true if OK
    */
-  private boolean ruleSetRegistered(final RuleSet ruleSet, final Set<RuleSet> set) {
+  private boolean ruleSetRegistered(final RuleSet ruleSet, final Collection<RuleSet> set) {
     boolean registered = false;
 
     final Iterator<RuleSet> i = set.iterator();

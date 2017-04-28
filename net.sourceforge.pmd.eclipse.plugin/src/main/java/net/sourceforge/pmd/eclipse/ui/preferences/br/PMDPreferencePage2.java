@@ -5,26 +5,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import net.sourceforge.pmd.PropertyDescriptor;
-import net.sourceforge.pmd.PropertySource;
-import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.RuleSet;
-import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
-import net.sourceforge.pmd.eclipse.runtime.preferences.impl.PreferenceUIStore;
-import net.sourceforge.pmd.eclipse.ui.ModifyListener;
-import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
-import net.sourceforge.pmd.eclipse.ui.preferences.editors.SWTUtil;
-import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.DescriptionPanelManager;
-import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.EditorUsageMode;
-import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.ExamplePanelManager;
-import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.ExclusionPanelManager;
-import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.PerRulePropertyPanelManager;
-import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.RulePanelManager;
-import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.RulePropertyManager;
-import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.SummaryPanelManager;
-import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.XPathPanelManager;
-import net.sourceforge.pmd.eclipse.util.Util;
-
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
@@ -46,6 +26,26 @@ import org.eclipse.swt.widgets.Sash;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Tree;
+
+import net.sourceforge.pmd.PropertyDescriptor;
+import net.sourceforge.pmd.PropertySource;
+import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.RuleSet;
+import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
+import net.sourceforge.pmd.eclipse.runtime.preferences.impl.PreferenceUIStore;
+import net.sourceforge.pmd.eclipse.ui.ModifyListener;
+import net.sourceforge.pmd.eclipse.ui.actions.RuleSetUtil;
+import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
+import net.sourceforge.pmd.eclipse.ui.preferences.editors.SWTUtil;
+import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.DescriptionPanelManager;
+import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.EditorUsageMode;
+import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.ExamplePanelManager;
+import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.ExclusionPanelManager;
+import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.PerRulePropertyPanelManager;
+import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.RulePanelManager;
+import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.RulePropertyManager;
+import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.SummaryPanelManager;
+import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.XPathPanelManager;
 
 /**
  * 
@@ -484,12 +484,7 @@ public class PMDPreferencePage2 extends AbstractPMDPreferencePage implements Rul
 	private void populateRuleset() {
 
 	    RuleSet defaultRuleSet = plugin.getPreferencesManager().getRuleSet();
-        RuleSet ruleSet = new RuleSet();
-        ruleSet.addRuleSet(defaultRuleSet);
-        ruleSet.setName(defaultRuleSet.getName());
-        ruleSet.setDescription(Util.asCleanString(defaultRuleSet.getDescription()));
-        ruleSet.addExcludePatterns(defaultRuleSet.getExcludePatterns());
-        ruleSet.addIncludePatterns(defaultRuleSet.getIncludePatterns());
+        RuleSet ruleSet = RuleSetUtil.newCopyOf(defaultRuleSet);
 
         tableManager.useRuleSet(ruleSet);
 	}

@@ -43,19 +43,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import name.herlin.command.CommandException;
-import name.herlin.command.Timer;
-import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.RuleSet;
-import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
-import net.sourceforge.pmd.eclipse.runtime.PMDRuntimeConstants;
-import net.sourceforge.pmd.eclipse.runtime.builder.MarkerUtil;
-import net.sourceforge.pmd.eclipse.runtime.preferences.IPreferences;
-import net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties;
-import net.sourceforge.pmd.eclipse.runtime.properties.PropertiesException;
-import net.sourceforge.pmd.eclipse.ui.actions.RuleSetUtil;
-import net.sourceforge.pmd.util.StringUtil;
-
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
@@ -82,6 +69,20 @@ import org.eclipse.ui.IPerspectiveRegistry;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
+
+import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.RuleSet;
+import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
+import net.sourceforge.pmd.eclipse.runtime.PMDRuntimeConstants;
+import net.sourceforge.pmd.eclipse.runtime.builder.MarkerUtil;
+import net.sourceforge.pmd.eclipse.runtime.preferences.IPreferences;
+import net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties;
+import net.sourceforge.pmd.eclipse.runtime.properties.PropertiesException;
+import net.sourceforge.pmd.eclipse.ui.actions.RuleSetUtil;
+import net.sourceforge.pmd.util.StringUtil;
+
+import name.herlin.command.CommandException;
+import name.herlin.command.Timer;
 
 /**
  * This command executes the PMD engine on a specified resource
@@ -131,7 +132,7 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
 
     private RuleSet currentRules() {
         // FIXME
-        return new RuleSet();
+        return RuleSetUtil.newEmpty();
     }
 
     private Map<Rule, String> misconfiguredRulesIn(RuleSet ruleset) {
@@ -504,10 +505,17 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
         IPreferences preferences = PMDPlugin.getDefault().getPreferencesManager().loadPreferences();
         Set<String> onlyActiveRuleNames = preferences.getActiveRuleNames();
 
+        int rulesBefore = ruleSet.size();
         RuleSet filteredRuleSet = RuleSetUtil.newCopyOf(ruleSet);
-        int rulesBefore = filteredRuleSet.size();
         if (preferences.getGlobalRuleManagement()) {
-            RuleSetUtil.retainOnly(filteredRuleSet, onlyActiveRuleNames);
+            // TODO: active rules are not language aware... filter by rule name...
+            List<Rule> rulesToKeep = new ArrayList<Rule>();
+            for (Rule rule : filteredRuleSet.getRules()) {
+                if (onlyActiveRuleNames.contains(rule.getName())) {
+                    rulesToKeep.add(rule);
+                }
+            }
+            filteredRuleSet = RuleSetUtil.retainOnly(filteredRuleSet, rulesToKeep);
             int rulesAfter = filteredRuleSet.size();
 
             if (rulesAfter < rulesBefore) {
@@ -517,10 +525,8 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
                                 + " rules will be ignored.");
             }
         }
-        filteredRuleSet.addExcludePatterns(preferences.activeExclusionPatterns());
-        filteredRuleSet.addIncludePatterns(preferences.activeInclusionPatterns());
-        filteredRuleSet.addExcludePatterns(properties.getBuildPathExcludePatterns());
-        filteredRuleSet.addIncludePatterns(properties.getBuildPathIncludePatterns());
+        filteredRuleSet = RuleSetUtil.addExcludePatterns(filteredRuleSet, preferences.activeExclusionPatterns(), properties.getBuildPathExcludePatterns());
+        filteredRuleSet = RuleSetUtil.addIncludePatterns(filteredRuleSet, preferences.activeInclusionPatterns(), properties.getBuildPathIncludePatterns());
 
         taskScope(filteredRuleSet.getRules().size(), ruleSet.getRules().size());
         return filteredRuleSet;

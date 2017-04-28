@@ -7,6 +7,7 @@ import java.util.List;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSets;
+import net.sourceforge.pmd.eclipse.ui.actions.RuleSetUtil;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
@@ -72,8 +73,7 @@ public class XPathEvaluator {
 		xpathRule.setProperty(XPathRule.XPATH_DESCRIPTOR, xpathQuery);
 		xpathRule.setProperty(XPathRule.VERSION_DESCRIPTOR, xpathVersion);
 
-		RuleSet ruleSet = new RuleSet();
-		ruleSet.addRule(xpathRule);
+		RuleSet ruleSet = RuleSetUtil.newSingle(xpathRule);
 
 		RuleSets ruleSets = new RuleSets(ruleSet);
 

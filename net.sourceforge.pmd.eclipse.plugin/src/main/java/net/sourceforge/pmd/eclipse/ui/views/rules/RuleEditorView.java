@@ -1,28 +1,5 @@
 package net.sourceforge.pmd.eclipse.ui.views.rules;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import net.sourceforge.pmd.PropertyDescriptor;
-import net.sourceforge.pmd.PropertySource;
-import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.RuleSet;
-import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
-import net.sourceforge.pmd.eclipse.runtime.preferences.IPreferences;
-import net.sourceforge.pmd.eclipse.runtime.preferences.impl.PreferenceUIStore;
-import net.sourceforge.pmd.eclipse.ui.ModifyListener;
-import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
-import net.sourceforge.pmd.eclipse.ui.preferences.br.PMDPreferencePage2;
-import net.sourceforge.pmd.eclipse.ui.preferences.br.RuleColumnDescriptor;
-import net.sourceforge.pmd.eclipse.ui.preferences.br.RuleSelection;
-import net.sourceforge.pmd.eclipse.ui.preferences.br.RuleSelectionListener;
-import net.sourceforge.pmd.eclipse.ui.preferences.br.RuleTableManager;
-import net.sourceforge.pmd.eclipse.ui.preferences.br.ValueChangeListener;
-import net.sourceforge.pmd.eclipse.ui.preferences.br.ValueResetHandler;
-import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.RulePropertyManager;
-import net.sourceforge.pmd.eclipse.util.Util;
-
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -36,6 +13,25 @@ import org.eclipse.swt.widgets.Sash;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.part.ViewPart;
+
+import net.sourceforge.pmd.PropertyDescriptor;
+import net.sourceforge.pmd.PropertySource;
+import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.RuleSet;
+import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
+import net.sourceforge.pmd.eclipse.runtime.preferences.IPreferences;
+import net.sourceforge.pmd.eclipse.runtime.preferences.impl.PreferenceUIStore;
+import net.sourceforge.pmd.eclipse.ui.ModifyListener;
+import net.sourceforge.pmd.eclipse.ui.actions.RuleSetUtil;
+import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
+import net.sourceforge.pmd.eclipse.ui.preferences.br.PMDPreferencePage2;
+import net.sourceforge.pmd.eclipse.ui.preferences.br.RuleColumnDescriptor;
+import net.sourceforge.pmd.eclipse.ui.preferences.br.RuleSelection;
+import net.sourceforge.pmd.eclipse.ui.preferences.br.RuleSelectionListener;
+import net.sourceforge.pmd.eclipse.ui.preferences.br.RuleTableManager;
+import net.sourceforge.pmd.eclipse.ui.preferences.br.ValueChangeListener;
+import net.sourceforge.pmd.eclipse.ui.preferences.br.ValueResetHandler;
+import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.RulePropertyManager;
 
 /**
  * @deprecated  - temporary (don't add code here, demo/testing view only)
@@ -237,13 +233,7 @@ public class RuleEditorView extends ViewPart implements RuleSelectionListener, M
 	private void populateRuleset() {
 
 	    RuleSet defaultRuleSet = plugin.getPreferencesManager().getRuleSet();
-        RuleSet ruleSet = new RuleSet();
-        ruleSet.addRuleSet(defaultRuleSet);
-        ruleSet.setName(defaultRuleSet.getName());
-        ruleSet.setDescription(Util.asCleanString(defaultRuleSet.getDescription()));
-        ruleSet.addExcludePatterns(defaultRuleSet.getExcludePatterns());
-        ruleSet.addIncludePatterns(defaultRuleSet.getIncludePatterns());
-
+        RuleSet ruleSet = RuleSetUtil.newCopyOf(defaultRuleSet);
         tableManager.useRuleSet(ruleSet);
 	}
 

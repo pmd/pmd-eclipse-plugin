@@ -39,17 +39,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 
-import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.RuleSet;
-import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
-import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
-import net.sourceforge.pmd.eclipse.ui.preferences.PMDPreferencePage;
-import net.sourceforge.pmd.eclipse.ui.preferences.RuleLabelProvider;
-import net.sourceforge.pmd.eclipse.ui.preferences.RuleSetContentProvider;
-import net.sourceforge.pmd.eclipse.ui.preferences.RuleTableViewerSorter;
-import net.sourceforge.pmd.eclipse.ui.preferences.editors.SWTUtil;
-import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.SummaryPanelManager;
-
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -74,6 +63,18 @@ import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkingSet;
 import org.eclipse.ui.dialogs.PropertyPage;
+
+import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.RuleSet;
+import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
+import net.sourceforge.pmd.eclipse.ui.actions.RuleSetUtil;
+import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
+import net.sourceforge.pmd.eclipse.ui.preferences.PMDPreferencePage;
+import net.sourceforge.pmd.eclipse.ui.preferences.RuleLabelProvider;
+import net.sourceforge.pmd.eclipse.ui.preferences.RuleSetContentProvider;
+import net.sourceforge.pmd.eclipse.ui.preferences.RuleTableViewerSorter;
+import net.sourceforge.pmd.eclipse.ui.preferences.editors.SWTUtil;
+import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.SummaryPanelManager;
 
 /**
  * Property page to enable or disable PMD on a project
@@ -562,20 +563,20 @@ public class PMDProjectPropertyPage extends PropertyPage {
      * @return a RuleSet object from the selected table item
      */
     private RuleSet getProjectRuleSet() {
-        final RuleSet ruleSet = new RuleSet();
+        RuleSet ruleSet = RuleSetUtil.newEmpty();
         final TableItem[] rulesList = this.availableRulesTableViewer.getTable().getItems();
 
         for (TableItem element2 : rulesList) {
             if (element2.getChecked()) {
                 final Rule rule = (Rule) element2.getData();
-                ruleSet.addRule(rule);
+                ruleSet = RuleSetUtil.addRule(ruleSet, rule);
 //                log.debug("Adding rule " + rule.getName() + " in the project ruleset");
             }
         }
 
         final RuleSet activeRuleSet = model.getProjectRuleSet();
-        ruleSet.addExcludePatterns(activeRuleSet.getExcludePatterns());
-        ruleSet.addIncludePatterns(activeRuleSet.getIncludePatterns());
+        ruleSet = RuleSetUtil.addExcludePatterns(ruleSet, activeRuleSet.getExcludePatterns());
+        ruleSet = RuleSetUtil.addIncludePatterns(ruleSet, activeRuleSet.getIncludePatterns());
 
         return ruleSet;
     }
