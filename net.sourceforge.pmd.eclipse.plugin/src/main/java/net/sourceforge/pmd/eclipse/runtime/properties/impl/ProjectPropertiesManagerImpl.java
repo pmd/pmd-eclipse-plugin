@@ -250,10 +250,10 @@ public class ProjectPropertiesManagerImpl implements IProjectPropertiesManager {
         int n = rules==null?0:rules.length;
         List<Rule> rulesToAdd = new ArrayList<Rule>();
         for (int i = 0; i < n; i++) {
-            try {
-                final Rule rule = pluginRuleSet.getRuleByName(rules[i].getName());
+            final Rule rule = pluginRuleSet.getRuleByName(rules[i].getName());
+            if (rule != null) {
                 rulesToAdd.add(rule);
-            } catch (RuntimeException e) {
+            } else {
                 log.debug("The rule " + rules[i].getName() + " cannot be found. ignore.");
             }
         }
