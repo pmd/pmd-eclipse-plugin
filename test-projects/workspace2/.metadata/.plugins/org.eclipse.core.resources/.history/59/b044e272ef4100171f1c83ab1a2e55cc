@@ -1,0 +1,13 @@
+package project1;
+
+import java.math.BigDecimal;
+
+public class TestViolation {
+
+	// here a PMD violation is expected:
+	// Rule: java-basic / AvoidDecimalLiteralsInBigDecimalConstructor
+	// Avoid creating BigDecimal with a decimal (float/double) literal. Use a String literal.
+	BigDecimal big = new BigDecimal(0.1); 
+
+	BigDecimal big2 = new BigDecimal(0.2);
+}

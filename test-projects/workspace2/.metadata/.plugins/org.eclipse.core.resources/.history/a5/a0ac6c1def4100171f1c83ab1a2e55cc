@@ -1,0 +1,9 @@
+package project1;
+
+import java.math.BigDecimal;
+
+public class TestViolation {
+
+	BigDecimal big = new BigDecimal(0.1);
+
+}

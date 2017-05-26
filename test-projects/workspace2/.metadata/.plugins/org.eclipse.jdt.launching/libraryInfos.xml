@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<libraryInfos>
+<libraryInfo home="/home/andreas/programs/jdk1.8.0_131" version="1.8.0_131">
+<bootpath>
+<entry path="/home/andreas/programs/jdk1.8.0_131/jre/lib/resources.jar"/>
+<entry path="/home/andreas/programs/jdk1.8.0_131/jre/lib/rt.jar"/>
+<entry path="/home/andreas/programs/jdk1.8.0_131/jre/lib/sunrsasign.jar"/>
+<entry path="/home/andreas/programs/jdk1.8.0_131/jre/lib/jsse.jar"/>
+<entry path="/home/andreas/programs/jdk1.8.0_131/jre/lib/jce.jar"/>
+<entry path="/home/andreas/programs/jdk1.8.0_131/jre/lib/charsets.jar"/>
+<entry path="/home/andreas/programs/jdk1.8.0_131/jre/lib/jfr.jar"/>
+<entry path="/home/andreas/programs/jdk1.8.0_131/jre/classes"/>
+</bootpath>
+<extensionDirs>
+<entry path="/home/andreas/programs/jdk1.8.0_131/jre/lib/ext"/>
+<entry path="/usr/java/packages/lib/ext"/>
+</extensionDirs>
+<endorsedDirs>
+<entry path="/home/andreas/programs/jdk1.8.0_131/jre/lib/endorsed"/>
+</endorsedDirs>
+</libraryInfo>
+<libraryInfo home="/home/andreas/programs/jdk1.8.0_131/jre" version="1.8.0_131">
+<bootpath>
+<entry path="/home/andreas/programs/jdk1.8.0_131/jre/lib/resources.jar"/>
+<entry path="/home/andreas/programs/jdk1.8.0_131/jre/lib/rt.jar"/>
+<entry path="/home/andreas/programs/jdk1.8.0_131/jre/lib/sunrsasign.jar"/>
+<entry path="/home/andreas/programs/jdk1.8.0_131/jre/lib/jsse.jar"/>
+<entry path="/home/andreas/programs/jdk1.8.0_131/jre/lib/jce.jar"/>
+<entry path="/home/andreas/programs/jdk1.8.0_131/jre/lib/charsets.jar"/>
+<entry path="/home/andreas/programs/jdk1.8.0_131/jre/lib/jfr.jar"/>
+<entry path="/home/andreas/programs/jdk1.8.0_131/jre/classes"/>
+</bootpath>
+<extensionDirs>
+<entry path="/home/andreas/programs/jdk1.8.0_131/jre/lib/ext"/>
+<entry path="/usr/java/packages/lib/ext"/>
+</extensionDirs>
+<endorsedDirs>
+<entry path="/home/andreas/programs/jdk1.8.0_131/jre/lib/endorsed"/>
+</endorsedDirs>
+</libraryInfo>
+</libraryInfos>

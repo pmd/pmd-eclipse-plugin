@@ -1,0 +1,10 @@
+package project1;
+
+import java.math.BigDecimal;
+
+public class TestViolation {
+
+	// here a PMD violation is expected:
+	BigDecimal big = new BigDecimal(0.1); 
+
+}
