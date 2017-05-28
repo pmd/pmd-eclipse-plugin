@@ -15,7 +15,7 @@ before_install:
   - "mkdir -p $HOME/.m2"
   - "cp .travis/travis-settings.xml $HOME/.m2/settings.xml"
   - "mkdir -p $HOME/.ssh"
-  - "openssl aes-256-cbc -K $encrypted_4ffa600c8269_key -iv $encrypted_4ffa600c8269_iv -in .travis/id_rsa.enc -out .ssh/id_rsa -d"
+  - "openssl aes-256-cbc -K $encrypted_4ffa600c8269_key -iv $encrypted_4ffa600c8269_iv -in .travis/id_rsa.enc -out $HOME/.ssh/id_rsa -d"
   - "chmod 600 $HOME/.ssh/id_rsa"
 install: true
 before_script:
