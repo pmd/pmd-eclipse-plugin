@@ -465,7 +465,7 @@ class PreferencesManagerImpl implements IPreferencesManager {
 
         // Finally, build a default ruleset
         if (preferredRuleSet == null) {
-            preferredRuleSet = RuleSetUtil.newEmpty("pmd-eclipse", "PMD Plugin preferences rule set");
+            preferredRuleSet = RuleSetUtil.newEmpty(RuleSetUtil.DEFAULT_RULESET_NAME, RuleSetUtil.DEFAULT_RULESET_DESCRIPTION);
 
             IRuleSetManager ruleSetManager = PMDPlugin.getDefault().getRuleSetManager();
             for (RuleSet ruleSet: ruleSetManager.getDefaultRuleSets()) {

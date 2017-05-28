@@ -155,7 +155,7 @@ public class ProjectPropertiesModelTest {
     int ruleCountBefore = projectRuleSet.getRules().size();
 
     // 2. remove a rule (keep its name for assertion)
-    RuleSet newRuleSet = RuleSetUtil.newEmpty();
+    RuleSet newRuleSet = RuleSetUtil.newEmpty("test-ruleset", "RuleSet for unit testing");
     newRuleSet = RuleSetUtil.addRules(newRuleSet, projectRuleSet.getRules());
     final Rule removedRule = newRuleSet.getRuleByName("UnnecessaryParentheses");
     newRuleSet = RuleSetUtil.removeRule(newRuleSet, removedRule);

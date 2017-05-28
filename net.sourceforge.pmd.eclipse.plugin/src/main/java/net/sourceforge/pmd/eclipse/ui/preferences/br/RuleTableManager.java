@@ -475,7 +475,7 @@ public class RuleTableManager extends AbstractTreeTableManager<Rule> implements 
 		
 		try {			
 			if (doByReference) {
-				RuleSet filteredRS = RuleSetUtil.newEmpty();
+				RuleSet filteredRS = RuleSetUtil.newEmpty(RuleSetUtil.DEFAULT_RULESET_NAME, RuleSetUtil.DEFAULT_RULESET_DESCRIPTION);
 				filteredRS = RuleSetUtil.setFileName(filteredRS, selectedRuleSet.getFileName());
 				filteredRS = RuleSetUtil.addRules(filteredRS, selectedRuleSet.getRules());
 

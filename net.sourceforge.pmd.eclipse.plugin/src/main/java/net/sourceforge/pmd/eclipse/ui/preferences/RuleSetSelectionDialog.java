@@ -346,7 +346,7 @@ public class RuleSetSelectionDialog extends Dialog {
      * @return
      */
     private RuleSet getSelectedRules() {
-    	RuleSet rs = RuleSetUtil.newEmpty();
+    	RuleSet rs = RuleSetUtil.newEmpty(RuleSetUtil.DEFAULT_RULESET_NAME, RuleSetUtil.DEFAULT_RULESET_DESCRIPTION);
     	rs = RuleSetUtil.setFileName(rs, selectedRuleSet.getFileName());
     	rs = RuleSetUtil.addExcludePatterns(rs, selectedRuleSet.getExcludePatterns());
     	rs = RuleSetUtil.addIncludePatterns(rs, selectedRuleSet.getIncludePatterns());

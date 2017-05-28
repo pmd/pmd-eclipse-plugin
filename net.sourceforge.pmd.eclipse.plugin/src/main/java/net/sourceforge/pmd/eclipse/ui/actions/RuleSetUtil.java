@@ -26,6 +26,9 @@ public class RuleSetUtil {
 	    return factory.createRuleSetCopy(original);
 	}
 
+	public static final String DEFAULT_RULESET_NAME = "pmd-eclipse";
+	public static final String DEFAULT_RULESET_DESCRIPTION = "PMD Plugin preferences rule set";
+
 	/**
 	 * This should not really work but the ruleset hands out its 
 	 * internal container....oops!  :)
@@ -49,13 +52,6 @@ public class RuleSetUtil {
         List<Rule> wantedRules = new ArrayList<Rule>(ruleSet.getRules());
         wantedRules.remove(removedRule);
         return retainOnly(ruleSet, wantedRules);
-    }
-
-    public static RuleSet newEmpty() {
-        RuleSetFactory factory = new RuleSetFactory();
-        Set<String> emptySet = Collections.emptySet();
-        Set<Rule> emptyRules = Collections.emptySet();
-        return factory.createNewRuleSet(null, null, null, emptySet, emptySet, emptyRules);
     }
 
     public static RuleSet addExcludePatterns(RuleSet ruleSet, Collection<String> activeExclusionPatterns,

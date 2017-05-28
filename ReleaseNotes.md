@@ -6,6 +6,8 @@ Eclipse Update Site: <https://sourceforge.net/projects/pmd/files/pmd-eclipse/upd
 
 ## ????: 4.0.14.v????
 
+*   Fixed NPE while creating ruleset due to hashcode ([issue #23](https://github.com/pmd/pmd-eclipse-plugin/issues/23))
+
 
 ## 29-April-2017: 4.0.13.v20170429-1921
 

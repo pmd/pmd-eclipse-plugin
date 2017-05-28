@@ -490,7 +490,7 @@ public class PMDPropertyPage extends PropertyPage {
      * @return a RuleSet object from the selected table item
      */
     private RuleSet getProjectRuleSet() {
-        RuleSet ruleSet = RuleSetUtil.newEmpty();
+        RuleSet ruleSet = RuleSetUtil.newEmpty(RuleSetUtil.DEFAULT_RULESET_NAME, RuleSetUtil.DEFAULT_RULESET_DESCRIPTION);
         final TableItem[] rulesList = this.availableRulesTableViewer.getTable().getItems();
 
         for (TableItem element2 : rulesList) {

@@ -258,7 +258,7 @@ public class ProjectPropertiesManagerImpl implements IProjectPropertiesManager {
             }
         }
 
-        RuleSet ruleSet = RuleSetUtil.newEmpty();
+        RuleSet ruleSet = RuleSetUtil.newEmpty(RuleSetUtil.DEFAULT_RULESET_NAME, RuleSetUtil.DEFAULT_RULESET_DESCRIPTION);
         ruleSet = RuleSetUtil.addRules(ruleSet, rulesToAdd);
         ruleSet = RuleSetUtil.setExcludePatterns(ruleSet, pluginRuleSet.getExcludePatterns());
         ruleSet = RuleSetUtil.setIncludePatterns(ruleSet, pluginRuleSet.getIncludePatterns());

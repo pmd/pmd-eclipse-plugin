@@ -132,7 +132,7 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
 
     private RuleSet currentRules() {
         // FIXME
-        return RuleSetUtil.newEmpty();
+        return RuleSetUtil.newEmpty(RuleSetUtil.DEFAULT_RULESET_NAME, RuleSetUtil.DEFAULT_RULESET_DESCRIPTION);
     }
 
     private Map<Rule, String> misconfiguredRulesIn(RuleSet ruleset) {
