@@ -4,7 +4,7 @@ Installation instructions: <http://pmd.sourceforge.net/eclipse/>
 
 Eclipse Update Site: <https://dl.bintray.com/pmd/pmd-eclipse-plugin/updates/>
 
-## ????: 4.0.14.v????
+## 28-May-2017: 4.0.14.v20170528-1456
 
 *   Fixed Add travis build ([issue #21](https://github.com/pmd/pmd-eclipse-plugin/issues/21))
 *   Fixed NPE while creating ruleset due to hashcode ([issue #23](https://github.com/pmd/pmd-eclipse-plugin/issues/23))

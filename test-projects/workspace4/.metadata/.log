@@ -1,14 +1,34 @@
-!SESSION 2017-05-26 12:03:28.449 -----------------------------------------------
-eclipse.buildId=4.6.3.M20170301-0400
-java.version=1.8.0_131
-java.vendor=Oracle Corporation
-BootLoader constants: OS=linux, ARCH=x86_64, WS=gtk, NL=de_DE
-Framework arguments:  -product org.eclipse.epp.package.java.product
-Command-line arguments:  -os linux -ws gtk -arch x86_64 -product org.eclipse.epp.package.java.product
 
-!ENTRY org.eclipse.oomph.setup.ui 1 0 2017-05-26 12:03:45.417
-!MESSAGE Setup tasks were performed during startup updating 18 preferences. See '/home/andreas/PMD/source/pmd-eclipse-plugin/test-projects/eclipse-java-neon/eclipse/configuration/org.eclipse.oomph.setup/setup.log' for details
-!SESSION 2017-05-26 12:09:07.418 -----------------------------------------------
+!ENTRY org.eclipse.core.jobs 4 2 2017-05-28 13:04:45.684
+!MESSAGE An internal error occurred during: "Updating Maven Project".
+!STACK 0
+java.lang.NoSuchMethodError: net.sourceforge.pmd.RuleSet: method <init>()V not found
+	at com.basistech.m2e.code.quality.pmd.EclipsePmdProjectConfigurator.createPmdRuleSet(EclipsePmdProjectConfigurator.java:223)
+	at com.basistech.m2e.code.quality.pmd.EclipsePmdProjectConfigurator.createOrUpdateEclipsePmdConfiguration(EclipsePmdProjectConfigurator.java:190)
+	at com.basistech.m2e.code.quality.pmd.EclipsePmdProjectConfigurator.handleProjectConfigurationChange(EclipsePmdProjectConfigurator.java:109)
+	at com.basistech.m2e.code.quality.shared.AbstractMavenPluginProjectConfigurator.mavenProjectChanged(AbstractMavenPluginProjectConfigurator.java:181)
+	at org.eclipse.m2e.core.internal.project.ProjectConfigurationManager.mavenProjectChanged(ProjectConfigurationManager.java:1000)
+	at org.eclipse.m2e.core.internal.project.registry.ProjectRegistryManager.notifyProjectChangeListeners(ProjectRegistryManager.java:783)
+	at org.eclipse.m2e.core.internal.project.registry.ProjectRegistryManager.applyMutableProjectRegistry(ProjectRegistryManager.java:930)
+	at org.eclipse.m2e.core.internal.project.registry.ProjectRegistryManager.refresh(ProjectRegistryManager.java:300)
+	at org.eclipse.m2e.core.internal.project.ProjectConfigurationManager.updateProjectConfiguration0(ProjectConfigurationManager.java:398)
+	at org.eclipse.m2e.core.internal.project.ProjectConfigurationManager$2.call(ProjectConfigurationManager.java:345)
+	at org.eclipse.m2e.core.internal.project.ProjectConfigurationManager$2.call(ProjectConfigurationManager.java:1)
+	at org.eclipse.m2e.core.internal.embedder.MavenExecutionContext.executeBare(MavenExecutionContext.java:176)
+	at org.eclipse.m2e.core.internal.embedder.MavenExecutionContext.execute(MavenExecutionContext.java:151)
+	at org.eclipse.m2e.core.internal.embedder.MavenExecutionContext.execute(MavenExecutionContext.java:99)
+	at org.eclipse.m2e.core.internal.embedder.MavenImpl.execute(MavenImpl.java:1351)
+	at org.eclipse.m2e.core.internal.project.ProjectConfigurationManager.updateProjectConfiguration(ProjectConfigurationManager.java:342)
+	at org.eclipse.m2e.core.ui.internal.UpdateMavenProjectJob.runInWorkspace(UpdateMavenProjectJob.java:77)
+	at org.eclipse.core.internal.resources.InternalWorkspaceJob.run(InternalWorkspaceJob.java:39)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:55)
+
+!ENTRY org.eclipse.m2e.logback.appender 2 0 2017-05-28 13:04:46.188
+!MESSAGE Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!
+
+!ENTRY org.eclipse.m2e.logback.appender 2 0 2017-05-28 13:04:46.206
+!MESSAGE Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!
+!SESSION 2017-05-28 16:51:07.265 -----------------------------------------------
 eclipse.buildId=4.6.3.M20170301-0400
 java.version=1.8.0_131
 java.vendor=Oracle Corporation
@@ -16,92 +36,102 @@ BootLoader constants: OS=linux, ARCH=x86_64, WS=gtk, NL=de_DE
 Framework arguments:  -product org.eclipse.epp.package.java.product
 Command-line arguments:  -data file:/home/andreas/PMD/source/pmd-eclipse-plugin/test-projects/workspace4/ -os linux -ws gtk -arch x86_64 -product org.eclipse.epp.package.java.product
 
-!ENTRY org.eclipse.m2e.logback.appender 2 0 2017-05-26 12:10:26.419
-!MESSAGE Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!
-
-!ENTRY org.eclipse.m2e.logback.appender 2 0 2017-05-26 12:10:26.431
-!MESSAGE Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!
-
-!ENTRY org.eclipse.m2e.logback.appender 2 0 2017-05-26 12:10:36.321
-!MESSAGE Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!
-
-!ENTRY org.eclipse.m2e.logback.appender 2 0 2017-05-26 12:10:36.328
-!MESSAGE Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!
-
-!ENTRY org.eclipse.m2e.logback.appender 2 0 2017-05-26 12:10:37.355
-!MESSAGE Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!
-
-!ENTRY org.eclipse.m2e.logback.appender 2 0 2017-05-26 12:10:37.358
-!MESSAGE Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!
-
-!ENTRY org.eclipse.m2e.logback.appender 2 0 2017-05-26 12:10:53.469
-!MESSAGE Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!
-
-!ENTRY org.eclipse.m2e.logback.appender 2 0 2017-05-26 12:10:53.471
-!MESSAGE Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!
-
-!ENTRY org.eclipse.core.resources 4 2 2017-05-26 12:11:44.879
-!MESSAGE Problems occurred when invoking code from plug-in: "org.eclipse.core.resources".
+!ENTRY org.eclipse.jdt.core 4 4 2017-05-28 16:51:49.227
+!MESSAGE Exception while reading /project1/.classpath
 !STACK 0
-java.lang.NoSuchMethodError: net.sourceforge.pmd.RuleSet: method <init>()V not found
-	at com.basistech.m2e.code.quality.pmd.EclipsePmdProjectConfigurator.createPmdRuleSet(EclipsePmdProjectConfigurator.java:223)
-	at com.basistech.m2e.code.quality.pmd.EclipsePmdProjectConfigurator.createOrUpdateEclipsePmdConfiguration(EclipsePmdProjectConfigurator.java:190)
-	at com.basistech.m2e.code.quality.pmd.EclipsePmdProjectConfigurator.handleProjectConfigurationChange(EclipsePmdProjectConfigurator.java:109)
-	at com.basistech.m2e.code.quality.shared.AbstractMavenPluginProjectConfigurator.mavenProjectChanged(AbstractMavenPluginProjectConfigurator.java:181)
-	at org.eclipse.m2e.core.internal.project.ProjectConfigurationManager.mavenProjectChanged(ProjectConfigurationManager.java:1000)
-	at org.eclipse.m2e.core.internal.project.registry.ProjectRegistryManager.notifyProjectChangeListeners(ProjectRegistryManager.java:783)
-	at org.eclipse.m2e.core.internal.project.registry.ProjectRegistryManager.applyMutableProjectRegistry(ProjectRegistryManager.java:930)
-	at org.eclipse.m2e.core.internal.project.registry.ProjectRegistryManager.refresh(ProjectRegistryManager.java:300)
-	at org.eclipse.m2e.core.internal.builder.MavenBuilder$BuildMethod.getProjectFacade(MavenBuilder.java:154)
-	at org.eclipse.m2e.core.internal.builder.MavenBuilder$BuildMethod$1.call(MavenBuilder.java:89)
+java.io.IOException: Bad format
+	at org.eclipse.jdt.internal.core.JavaProject.decodeClasspath(JavaProject.java:916)
+	at org.eclipse.jdt.internal.core.JavaProject.readFileEntriesWithException(JavaProject.java:2498)
+	at org.eclipse.jdt.internal.core.JavaProject.readFileEntries(JavaProject.java:2508)
+	at org.eclipse.jdt.internal.core.JavaProject.writeFileEntries(JavaProject.java:2896)
+	at org.eclipse.jdt.internal.core.JavaModelManager$PerProjectInfo.writeAndCacheClasspath(JavaModelManager.java:1436)
+	at org.eclipse.jdt.internal.core.JavaModelManager$PerProjectInfo.writeAndCacheClasspath(JavaModelManager.java:1448)
+	at org.eclipse.jdt.internal.core.SetClasspathOperation.executeOperation(SetClasspathOperation.java:77)
+	at org.eclipse.jdt.internal.core.JavaModelOperation.run(JavaModelOperation.java:724)
+	at org.eclipse.core.internal.resources.Workspace.run(Workspace.java:2240)
+	at org.eclipse.core.internal.resources.Workspace.run(Workspace.java:2267)
+	at org.eclipse.jdt.internal.core.JavaModelOperation.runOperation(JavaModelOperation.java:795)
+	at org.eclipse.jdt.internal.core.JavaProject.setRawClasspath(JavaProject.java:3097)
+	at org.eclipse.jdt.internal.core.JavaProject.setRawClasspath(JavaProject.java:3059)
+	at org.eclipse.jdt.internal.core.JavaProject.setRawClasspath(JavaProject.java:3071)
+	at org.eclipse.m2e.jdt.internal.AbstractJavaProjectConfigurator.configure(AbstractJavaProjectConfigurator.java:147)
+	at org.eclipse.m2e.core.project.configurator.AbstractLifecycleMapping.configure(AbstractLifecycleMapping.java:120)
+	at org.eclipse.m2e.core.internal.project.ProjectConfigurationManager$3.call(ProjectConfigurationManager.java:501)
+	at org.eclipse.m2e.core.internal.project.ProjectConfigurationManager$3.call(ProjectConfigurationManager.java:1)
+	at org.eclipse.m2e.core.internal.embedder.MavenExecutionContext.executeBare(MavenExecutionContext.java:176)
+	at org.eclipse.m2e.core.internal.embedder.MavenExecutionContext.execute(MavenExecutionContext.java:151)
+	at org.eclipse.m2e.core.internal.project.ProjectConfigurationManager.updateProjectConfiguration(ProjectConfigurationManager.java:494)
+	at org.eclipse.m2e.core.internal.project.ProjectConfigurationManager.updateProjectConfiguration0(ProjectConfigurationManager.java:432)
+	at org.eclipse.m2e.core.internal.project.ProjectConfigurationManager$2.call(ProjectConfigurationManager.java:345)
+	at org.eclipse.m2e.core.internal.project.ProjectConfigurationManager$2.call(ProjectConfigurationManager.java:1)
 	at org.eclipse.m2e.core.internal.embedder.MavenExecutionContext.executeBare(MavenExecutionContext.java:176)
 	at org.eclipse.m2e.core.internal.embedder.MavenExecutionContext.execute(MavenExecutionContext.java:151)
 	at org.eclipse.m2e.core.internal.embedder.MavenExecutionContext.execute(MavenExecutionContext.java:99)
-	at org.eclipse.m2e.core.internal.builder.MavenBuilder$BuildMethod.execute(MavenBuilder.java:86)
-	at org.eclipse.m2e.core.internal.builder.MavenBuilder.build(MavenBuilder.java:200)
-	at org.eclipse.core.internal.events.BuildManager$2.run(BuildManager.java:735)
-	at org.eclipse.core.runtime.SafeRunner.run(SafeRunner.java:42)
-	at org.eclipse.core.internal.events.BuildManager.basicBuild(BuildManager.java:206)
-	at org.eclipse.core.internal.events.BuildManager.basicBuild(BuildManager.java:246)
-	at org.eclipse.core.internal.events.BuildManager$1.run(BuildManager.java:301)
-	at org.eclipse.core.runtime.SafeRunner.run(SafeRunner.java:42)
-	at org.eclipse.core.internal.events.BuildManager.basicBuild(BuildManager.java:304)
-	at org.eclipse.core.internal.events.BuildManager.basicBuildLoop(BuildManager.java:360)
-	at org.eclipse.core.internal.events.BuildManager.build(BuildManager.java:383)
-	at org.eclipse.core.internal.events.AutoBuildJob.doBuild(AutoBuildJob.java:144)
-	at org.eclipse.core.internal.events.AutoBuildJob.run(AutoBuildJob.java:235)
+	at org.eclipse.m2e.core.internal.embedder.MavenImpl.execute(MavenImpl.java:1351)
+	at org.eclipse.m2e.core.internal.project.ProjectConfigurationManager.updateProjectConfiguration(ProjectConfigurationManager.java:342)
+	at org.eclipse.m2e.core.ui.internal.UpdateMavenProjectJob.runInWorkspace(UpdateMavenProjectJob.java:77)
+	at org.eclipse.core.internal.resources.InternalWorkspaceJob.run(InternalWorkspaceJob.java:39)
 	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:55)
 
-!ENTRY org.eclipse.core.resources 4 75 2017-05-26 12:11:44.916
-!MESSAGE Errors occurred during the build.
-!SUBENTRY 1 org.eclipse.m2e.core 4 75 2017-05-26 12:11:44.916
-!MESSAGE Errors running builder 'Maven Project Builder' on project 'project1'.
-!STACK 0
-java.lang.NoSuchMethodError: net.sourceforge.pmd.RuleSet: method <init>()V not found
-	at com.basistech.m2e.code.quality.pmd.EclipsePmdProjectConfigurator.createPmdRuleSet(EclipsePmdProjectConfigurator.java:223)
-	at com.basistech.m2e.code.quality.pmd.EclipsePmdProjectConfigurator.createOrUpdateEclipsePmdConfiguration(EclipsePmdProjectConfigurator.java:190)
-	at com.basistech.m2e.code.quality.pmd.EclipsePmdProjectConfigurator.handleProjectConfigurationChange(EclipsePmdProjectConfigurator.java:109)
-	at com.basistech.m2e.code.quality.shared.AbstractMavenPluginProjectConfigurator.mavenProjectChanged(AbstractMavenPluginProjectConfigurator.java:181)
-	at org.eclipse.m2e.core.internal.project.ProjectConfigurationManager.mavenProjectChanged(ProjectConfigurationManager.java:1000)
-	at org.eclipse.m2e.core.internal.project.registry.ProjectRegistryManager.notifyProjectChangeListeners(ProjectRegistryManager.java:783)
-	at org.eclipse.m2e.core.internal.project.registry.ProjectRegistryManager.applyMutableProjectRegistry(ProjectRegistryManager.java:930)
-	at org.eclipse.m2e.core.internal.project.registry.ProjectRegistryManager.refresh(ProjectRegistryManager.java:300)
-	at org.eclipse.m2e.core.internal.builder.MavenBuilder$BuildMethod.getProjectFacade(MavenBuilder.java:154)
-	at org.eclipse.m2e.core.internal.builder.MavenBuilder$BuildMethod$1.call(MavenBuilder.java:89)
-	at org.eclipse.m2e.core.internal.embedder.MavenExecutionContext.executeBare(MavenExecutionContext.java:176)
-	at org.eclipse.m2e.core.internal.embedder.MavenExecutionContext.execute(MavenExecutionContext.java:151)
-	at org.eclipse.m2e.core.internal.embedder.MavenExecutionContext.execute(MavenExecutionContext.java:99)
-	at org.eclipse.m2e.core.internal.builder.MavenBuilder$BuildMethod.execute(MavenBuilder.java:86)
-	at org.eclipse.m2e.core.internal.builder.MavenBuilder.build(MavenBuilder.java:200)
-	at org.eclipse.core.internal.events.BuildManager$2.run(BuildManager.java:735)
-	at org.eclipse.core.runtime.SafeRunner.run(SafeRunner.java:42)
-	at org.eclipse.core.internal.events.BuildManager.basicBuild(BuildManager.java:206)
-	at org.eclipse.core.internal.events.BuildManager.basicBuild(BuildManager.java:246)
-	at org.eclipse.core.internal.events.BuildManager$1.run(BuildManager.java:301)
-	at org.eclipse.core.runtime.SafeRunner.run(SafeRunner.java:42)
-	at org.eclipse.core.internal.events.BuildManager.basicBuild(BuildManager.java:304)
-	at org.eclipse.core.internal.events.BuildManager.basicBuildLoop(BuildManager.java:360)
-	at org.eclipse.core.internal.events.BuildManager.build(BuildManager.java:383)
-	at org.eclipse.core.internal.events.AutoBuildJob.doBuild(AutoBuildJob.java:144)
-	at org.eclipse.core.internal.events.AutoBuildJob.run(AutoBuildJob.java:235)
-	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:55)
+!ENTRY net.sourceforge.pmd.eclipse.plugin 2 0 2017-05-28 16:51:50.089
+!MESSAGE Ruleset has been filtered as Global Rule Management is active. 24 of 34 rules are active and are used. 10 rules will be ignored.
+
+!ENTRY org.eclipse.m2e.logback.appender 2 0 2017-05-28 16:51:50.221
+!MESSAGE Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!
+
+!ENTRY org.eclipse.m2e.logback.appender 2 0 2017-05-28 16:51:50.237
+!MESSAGE Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!
+
+!ENTRY net.sourceforge.pmd.eclipse.plugin 2 0 2017-05-28 16:51:50.483
+!MESSAGE Ruleset has been filtered as Global Rule Management is active. 24 of 34 rules are active and are used. 10 rules will be ignored.
+
+!ENTRY net.sourceforge.pmd.eclipse.plugin 2 0 2017-05-28 16:51:50.484
+!MESSAGE Ruleset has been filtered as Global Rule Management is active. 24 of 34 rules are active and are used. 10 rules will be ignored.
+
+!ENTRY net.sourceforge.pmd.eclipse.plugin 2 0 2017-05-28 16:51:50.486
+!MESSAGE Ruleset has been filtered as Global Rule Management is active. 24 of 34 rules are active and are used. 10 rules will be ignored.
+
+!ENTRY net.sourceforge.pmd.eclipse.plugin 1 0 2017-05-28 16:51:50.488
+!MESSAGE 1 markers applied on 1 files in 0ms.
+
+!ENTRY net.sourceforge.pmd.eclipse.plugin 1 0 2017-05-28 16:51:50.502
+!MESSAGE Review code command terminated. 24 rules were executed against 1 files. Actual PMD duration is about 322ms, that is about 322.0 ms/file, 13.416667 ms/rule, 13.416667 ms/filerule
+
+!ENTRY net.sourceforge.pmd.eclipse.plugin 1 0 2017-05-28 16:51:50.502
+!MESSAGE Command ReviewCode excecuted in 421ms
+
+!ENTRY net.sourceforge.pmd.eclipse.plugin 2 0 2017-05-28 16:52:37.338
+!MESSAGE Ruleset has been filtered as Global Rule Management is active. 24 of 34 rules are active and are used. 10 rules will be ignored.
+
+!ENTRY org.eclipse.m2e.logback.appender 2 0 2017-05-28 16:52:37.370
+!MESSAGE Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!
+
+!ENTRY org.eclipse.m2e.logback.appender 2 0 2017-05-28 16:52:37.381
+!MESSAGE Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!
+
+!ENTRY net.sourceforge.pmd.eclipse.plugin 1 0 2017-05-28 16:52:37.416
+!MESSAGE 1 markers applied on 2 files in 1ms.
+
+!ENTRY net.sourceforge.pmd.eclipse.plugin 1 0 2017-05-28 16:52:37.417
+!MESSAGE Review code command terminated. 24 rules were executed against 1 files. Actual PMD duration is about 43ms, that is about 43.0 ms/file, 1.7916666 ms/rule, 1.7916666 ms/filerule
+
+!ENTRY net.sourceforge.pmd.eclipse.plugin 1 0 2017-05-28 16:52:37.418
+!MESSAGE Command ReviewCode excecuted in 92ms
+
+!ENTRY net.sourceforge.pmd.eclipse.plugin 2 0 2017-05-28 16:53:02.541
+!MESSAGE Ruleset has been filtered as Global Rule Management is active. 24 of 34 rules are active and are used. 10 rules will be ignored.
+
+!ENTRY org.eclipse.m2e.logback.appender 2 0 2017-05-28 16:53:02.561
+!MESSAGE Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!
+
+!ENTRY org.eclipse.m2e.logback.appender 2 0 2017-05-28 16:53:02.573
+!MESSAGE Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!
+
+!ENTRY net.sourceforge.pmd.eclipse.plugin 1 0 2017-05-28 16:53:02.585
+!MESSAGE 1 markers applied on 2 files in 1ms.
+
+!ENTRY net.sourceforge.pmd.eclipse.plugin 1 0 2017-05-28 16:53:02.594
+!MESSAGE Review code command terminated. 24 rules were executed against 1 files. Actual PMD duration is about 34ms, that is about 34.0 ms/file, 1.4166666 ms/rule, 1.4166666 ms/filerule
+
+!ENTRY net.sourceforge.pmd.eclipse.plugin 1 0 2017-05-28 16:53:02.595
+!MESSAGE Command ReviewCode excecuted in 58ms
