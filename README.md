@@ -1,5 +1,7 @@
 # PMD Eclipse Plugin
 
+[![Build Status](https://travis-ci.org/pmd/pmd-eclipse-plugin.svg?branch=master)](https://travis-ci.org/pmd/pmd-eclipse-plugin)
+
 Release Notes: <https://github.com/pmd/pmd-eclipse-plugin/blob/master/ReleaseNotes.md>
 
 Eclipse Update Site: <https://dl.bintray.com/pmd/pmd-eclipse-plugin/updates/>
