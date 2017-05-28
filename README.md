@@ -95,8 +95,8 @@ The release happens in two phases:
     export BUILDQUALIFIER=$(date -u +v%Y%m%d-%H%M) && echo $BUILDQUALIFIER
     
     # Pick the version of the new release and the next development version
-    export VERSION=4.0.13
-    export NEXT=4.0.14
+    export VERSION=4.0.15
+    export NEXT=4.0.16
     
     echo Update the ReleaseNotes with the release date and version:
     echo 
@@ -128,7 +128,7 @@ The release happens in two phases:
     echo Checkout the release branch and build the plugin
     git checkout pmd-eclipse-plugin-rb-$VERSION
     
-    mvn clean package
+    mvn clean verify
     
     echo
     echo "Please test now!!!"
