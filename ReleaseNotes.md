@@ -6,6 +6,7 @@ Eclipse Update Site: <https://dl.bintray.com/pmd/pmd-eclipse-plugin/updates/>
 
 ## ????: 4.0.14.v????
 
+*   Fixed Add travis build ([issue #21](https://github.com/pmd/pmd-eclipse-plugin/issues/21))
 *   Fixed NPE while creating ruleset due to hashcode ([issue #23](https://github.com/pmd/pmd-eclipse-plugin/issues/23))
 
 
