@@ -13,13 +13,14 @@ the repository on github and create pull requests. Any contributions are welcome
 ### Testing the latest version
 Simply build the plugin locally using maven:
 
-    mvn clean package
+    ./mvnw clean verify
 
 You'll find the zipped update site in the folder `net.sourceforge.pmd.eclipse.p2updatesite/target/`. Point eclipse to the zip file in this folder as an update-site and install the
 latest SNAPSHOT version.
 
 
 ### Bug Reports
+
 Please file any bug reports in the bug tracker at github:
 
 <https://github.com/pmd/pmd-eclipse-plugin/issues>
@@ -36,7 +37,7 @@ To get started, see also the next section.
 ## Short Developer's Guide
 
 ### Compilation
-Simply run `mvn clean install`. The plugin's update site will be generated in
+Simply run `./mvn clean verify`. The plugin's update site will be generated in
 `net.sourceforge.pmd.eclipse.p2updatesite/target/repository`. You can use this directory as
 an update site to install the new plugin version directly into your Eclipse.
 
