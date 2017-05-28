@@ -74,6 +74,19 @@ Have a look at the `net.sourceforge.pmd.eclipse.p2updatesite` module, there you 
 *   the ant script `packaging-p2composite.ant` which is used to modify the metadata of the
     p2 repo locally before uploading
 
+The release happens in two phases:
+
+1.  Update the repository locally to prepare the new version:
+    *   Update the changelog
+    *   Update the versions
+    *   Create a tag
+    *   Update the changelog for the next version
+    *   Update the versions
+2.  Push the changes and the tag. The [travis build](https://travis-ci.org/pmd/pmd-eclipse-plugin) will
+    then publish the new version on [bintray](https://dl.bintray.com/pmd/pmd-eclipse-plugin/) and
+    [github releases](https://github.com/pmd/pmd-eclipse-plugin/releases)
+
+
 #### Script
 
     # Pick a release BUILDQUALIFIER (e.g. v20170401-0001) and update versions
@@ -126,12 +139,6 @@ Have a look at the `net.sourceforge.pmd.eclipse.p2updatesite` module, there you 
     
     echo
     echo "Publishing now..."
-    echo "Make sure, you have properties bintray.user and bintray.apikey set in ~/.m2/settings.xml..."
-    mvn clean install -Prelease-composite
-    echo
-    
-    echo
-    echo "Pushing"
     git checkout master
     git branch -D pmd-eclipse-plugin-rb-$VERSION
     git push origin master
@@ -140,7 +147,8 @@ Have a look at the `net.sourceforge.pmd.eclipse.p2updatesite` module, there you 
     echo Done.
 
 Also, don't forget to create a [News](https://sourceforge.net/p/pmd/news/) and
-upload the zipped update site to [GitHub Releases](https://github.com/pmd/pmd-eclipse-plugin/releases).
+verify, that the zipped update site has been uploaded to
+[GitHub Releases](https://github.com/pmd/pmd-eclipse-plugin/releases).
 
 You can use the following template:
 
