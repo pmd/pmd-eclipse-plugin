@@ -2,7 +2,7 @@
 
 Installation instructions: <http://pmd.sourceforge.net/eclipse/>
 
-Eclipse Update Site: <https://sourceforge.net/projects/pmd/files/pmd-eclipse/update-site/>
+Eclipse Update Site: <https://dl.bintray.com/pmd/pmd-eclipse-plugin/updates/>
 
 ## ????: 4.0.14.v????
 
