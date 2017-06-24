@@ -7,3 +7,28 @@
 
 !ENTRY net.sourceforge.pmd.eclipse.plugin 1 0 2017-05-28 11:11:53.732
 !MESSAGE Command ReviewCode excecuted in 35ms
+!SESSION 2017-05-28 17:04:36.840 -----------------------------------------------
+eclipse.buildId=4.6.3.M20170301-0400
+java.version=1.8.0_131
+java.vendor=Oracle Corporation
+BootLoader constants: OS=linux, ARCH=x86_64, WS=gtk, NL=de_DE
+Framework arguments:  -product org.eclipse.epp.package.java.product
+Command-line arguments:  -data file:/home/andreas/PMD/source/pmd-eclipse-plugin/test-projects/workspace1/ -os linux -ws gtk -arch x86_64 -product org.eclipse.epp.package.java.product
+
+!ENTRY net.sourceforge.pmd.eclipse.plugin 1 0 2017-05-28 17:05:09.539
+!MESSAGE 1 markers applied on 1 files in 0ms.
+
+!ENTRY net.sourceforge.pmd.eclipse.plugin 1 0 2017-05-28 17:05:09.556
+!MESSAGE Review code command terminated. 24 rules were executed against 1 files. Actual PMD duration is about 260ms, that is about 260.0 ms/file, 10.833333 ms/rule, 10.833333 ms/filerule
+
+!ENTRY net.sourceforge.pmd.eclipse.plugin 1 0 2017-05-28 17:05:09.566
+!MESSAGE Command ReviewCode excecuted in 1661ms
+
+!ENTRY net.sourceforge.pmd.eclipse.plugin 1 0 2017-05-28 17:05:16.035
+!MESSAGE 1 markers applied on 2 files in 0ms.
+
+!ENTRY net.sourceforge.pmd.eclipse.plugin 1 0 2017-05-28 17:05:16.037
+!MESSAGE Review code command terminated. 24 rules were executed against 1 files. Actual PMD duration is about 11ms, that is about 11.0 ms/file, 0.45833334 ms/rule, 0.45833334 ms/filerule
+
+!ENTRY net.sourceforge.pmd.eclipse.plugin 1 0 2017-05-28 17:05:16.037
+!MESSAGE Command ReviewCode excecuted in 35ms
