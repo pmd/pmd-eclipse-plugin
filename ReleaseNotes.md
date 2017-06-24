@@ -6,7 +6,7 @@ Eclipse Update Site: <https://dl.bintray.com/pmd/pmd-eclipse-plugin/updates/>
 
 ## ????: 4.0.15.v????
 
-*   Updated PMD to 5.7.0
+*   Updated PMD to 5.8.0
 
 
 ## 28-May-2017: 4.0.14.v20170528-1456
