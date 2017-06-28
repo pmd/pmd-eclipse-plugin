@@ -145,7 +145,7 @@ public class XPathPanelManager extends AbstractRulePanelManager {
             public void widgetSelected(SelectionEvent e) {
                 Rule rule = soleRule();
                 int selectionIdx = xpathVersionField.getSelectionIndex();
-                Object newValue = ep.choices()[selectionIdx][1];
+                String newValue = (String) ep.choices()[selectionIdx][1];
                 if (newValue.equals(rule.getProperty(ep))) return;
 
                 rule.setProperty(ep, newValue);
