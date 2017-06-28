@@ -238,7 +238,7 @@ public class PMDPlugin extends AbstractUIPlugin {
             }
         });
 
-        VERSION = context.getBundle().getHeaders().get((Object) "Bundle-Version");
+        VERSION = context.getBundle().getHeaders().get("Bundle-Version");
     }
 
     public void fileChangeListenerEnabled(boolean flag) {
