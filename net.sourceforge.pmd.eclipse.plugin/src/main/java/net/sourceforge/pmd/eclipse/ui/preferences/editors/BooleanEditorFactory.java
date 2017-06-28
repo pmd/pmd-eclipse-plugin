@@ -1,12 +1,5 @@
 package net.sourceforge.pmd.eclipse.ui.preferences.editors;
 
-import net.sourceforge.pmd.PropertyDescriptor;
-import net.sourceforge.pmd.PropertySource;
-import net.sourceforge.pmd.eclipse.ui.preferences.br.SizeChangeListener;
-import net.sourceforge.pmd.eclipse.ui.preferences.br.ValueChangeListener;
-import net.sourceforge.pmd.lang.rule.properties.BooleanProperty;
-import net.sourceforge.pmd.lang.rule.properties.PropertyDescriptorWrapper;
-
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -14,62 +7,63 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 
+import net.sourceforge.pmd.PropertyDescriptor;
+import net.sourceforge.pmd.PropertySource;
+import net.sourceforge.pmd.eclipse.ui.preferences.br.SizeChangeListener;
+import net.sourceforge.pmd.eclipse.ui.preferences.br.ValueChangeListener;
+import net.sourceforge.pmd.lang.rule.properties.BooleanProperty;
+
 /**
  * @author Brian Remedios
  */
-public class BooleanEditorFactory extends AbstractEditorFactory {
+public class BooleanEditorFactory extends AbstractEditorFactory<Boolean> {
 
-	public static final BooleanEditorFactory instance = new BooleanEditorFactory();
+    public static final BooleanEditorFactory instance = new BooleanEditorFactory();
 
 
-	private BooleanEditorFactory() { }
+    private BooleanEditorFactory() { }
 
-    public PropertyDescriptor<?> createDescriptor(String name, String description, Control[] otherData) {
+
+    public PropertyDescriptor<Boolean> createDescriptor(String name, String description, Control[] otherData) {
 
         return new BooleanProperty(
-                name,
-                description,
-                otherData == null ? Boolean.FALSE : valueFrom(otherData[1]),
-                0
-                );
+            name,
+            description,
+            otherData == null ? false : valueFrom(otherData[1]),
+            0
+        );
     }
 
-    private static BooleanProperty booleanPropertyFrom(PropertyDescriptor<?> desc) {
-
-        if (desc instanceof PropertyDescriptorWrapper<?>) {
-           return (BooleanProperty) ((PropertyDescriptorWrapper<?>)desc).getPropertyDescriptor();
-           } else {
-            return (BooleanProperty)desc;
-         }
-    }
 
     protected Boolean valueFrom(Control valueControl) {
-        return ((Button)valueControl).getSelection() ? Boolean.TRUE : Boolean.FALSE;
+        return ((Button) valueControl).getSelection();
     }
 
-   public Control newEditorOn(Composite parent, final PropertyDescriptor<?> desc, final PropertySource source, final ValueChangeListener listener, SizeChangeListener sizeListener) {
 
-       final Button butt =  new Button(parent, SWT.CHECK);
-       butt.setText("");
+    public Control newEditorOn(Composite parent, final PropertyDescriptor<Boolean> desc, final PropertySource source,
+                               final ValueChangeListener listener, SizeChangeListener sizeListener) {
 
-       final BooleanProperty bp = booleanPropertyFrom(desc);   // TODO - do I really have to do this?
+        final Button butt = new Button(parent, SWT.CHECK);
+        butt.setText("");
 
-       boolean set = ((Boolean)valueFor(source, desc)).booleanValue();
-       butt.setSelection(set);
+        boolean set = valueFor(source, desc);
+        butt.setSelection(set);
 
-       SelectionAdapter sa = new SelectionAdapter() {
-           public void widgetSelected(SelectionEvent event) {
-               boolean selected = butt.getSelection();
-               if (selected == (((Boolean)valueFor(source, bp))).booleanValue()) return;
+        SelectionAdapter sa = new SelectionAdapter() {
+            public void widgetSelected(SelectionEvent event) {
+                boolean selected = butt.getSelection();
+                if (selected == valueFor(source, desc)) {
+                    return;
+                }
 
-               source.setProperty(bp, Boolean.valueOf(selected));
-               listener.changed(source, desc, Boolean.valueOf(selected));
-               adjustRendering(source, desc, butt);
-               }
-       };
-       
-       butt.addSelectionListener(sa);
+                source.setProperty(desc, selected);
+                listener.changed(source, desc, selected);
+                adjustRendering(source, desc, butt);
+            }
+        };
 
-      return butt;
-      }
+        butt.addSelectionListener(sa);
+
+        return butt;
+    }
 }

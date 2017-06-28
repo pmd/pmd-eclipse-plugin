@@ -29,7 +29,7 @@ public class MultiMethodEditorFactory extends AbstractMultiValueEditorFactory {
 
 	private MultiMethodEditorFactory() { }
 
-    public PropertyDescriptor<?> createDescriptor(String name, String optionalDescription, Control[] otherData) {
+    public PropertyDescriptor<List<Method>> createDescriptor(String name, String optionalDescription, Control[] otherData) {
         return new MethodMultiProperty(name, "Method value " + name, new Method[] {MethodEditorFactory.stringLength}, new String[] { "java.lang" }, 0.0f);
     }
 
@@ -105,8 +105,8 @@ public class MultiMethodEditorFactory extends AbstractMultiValueEditorFactory {
         textWidget.setEditable(false);
     }
 
-    protected void update(PropertySource source, PropertyDescriptor<?> desc, List<Object> newValues) {
-    	source.setProperty((MethodMultiProperty)desc, newValues.toArray(new Method[newValues.size()]));
+    protected void update(PropertySource source, PropertyDescriptor<?> desc, List<Method> newValues) {
+    	source.setProperty((MethodMultiProperty)desc, newValues);
     }
 
     @Override
