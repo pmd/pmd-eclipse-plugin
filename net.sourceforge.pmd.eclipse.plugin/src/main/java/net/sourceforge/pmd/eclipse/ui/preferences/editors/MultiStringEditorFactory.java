@@ -37,7 +37,8 @@ public class MultiStringEditorFactory extends AbstractMultiValueEditorFactory<St
     }
 
 
-    protected Control addWidget(Composite parent, Object value, PropertyDescriptor<List<String>> desc,
+    @Override
+    protected Control addWidget(Composite parent, String value, PropertyDescriptor<List<String>> desc,
                                 PropertySource source) {
         Text textWidget = new Text(parent, SWT.SINGLE | SWT.BORDER);
         setValue(textWidget, value);
@@ -45,8 +46,9 @@ public class MultiStringEditorFactory extends AbstractMultiValueEditorFactory<St
     }
 
 
-    protected void setValue(Control widget, Object value) {
-        ((Text) widget).setText(value == null ? "" : value.toString());
+    @Override
+    protected void setValue(Control widget, String value) {
+        ((Text) widget).setText(value == null ? "" : value);
     }
 
 
@@ -104,7 +106,7 @@ public class MultiStringEditorFactory extends AbstractMultiValueEditorFactory<St
     }
 
 
-    protected Object valueFrom(Control valueControl) {    // not necessary for this type
+    protected List<String> valueFrom(Control valueControl) {    // not necessary for this type
         return null;
     }
 }

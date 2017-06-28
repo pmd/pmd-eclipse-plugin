@@ -77,7 +77,7 @@ public class IntegerEditorFactory extends AbstractNumericEditorFactory<Integer> 
     }
 
 
-    public static Spinner newSpinner(Composite parent, NumericPropertyDescriptor<Integer> desc, Object valueIn) {
+    public static Spinner newSpinner(Composite parent, NumericPropertyDescriptor<?> desc, Object valueIn) {
 
         Spinner spinner = newSpinnerFor(parent, 0);
 

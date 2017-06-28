@@ -74,7 +74,7 @@ public class MultiIntegerEditorFactory extends AbstractMultiValueEditorFactory<I
     }
 
 
-    protected Control addWidget(Composite parent, Object value, PropertyDescriptor<List<Integer>> desc,
+    protected Control addWidget(Composite parent, Integer value, PropertyDescriptor<List<Integer>> desc,
                                 PropertySource source) {
 
         NumericPropertyDescriptor<List<Integer>> ip = numericPropertyFrom(desc);   // TODO - do I really have to do this?
@@ -92,22 +92,22 @@ public class MultiIntegerEditorFactory extends AbstractMultiValueEditorFactory<I
     }
 
 
-    protected void setValue(Control widget, Object valueIn) {
-
+    protected void setValue(Control widget, Integer valueIn) {
         Spinner spinner = (Spinner) widget;
-        int value = valueIn == null ? spinner.getMinimum() : ((Number) valueIn).intValue();
+        int value = valueIn == null ? spinner.getMinimum() : valueIn;
         spinner.setSelection(value);
     }
 
 
-    protected void configure(final Text textWidget, final PropertyDescriptor<?> desc, final PropertySource source, final ValueChangeListener listener) {
+    protected void configure(final Text textWidget, final PropertyDescriptor<List<Integer>> desc,
+                             final PropertySource source, final ValueChangeListener listener) {
 
         final IntegerMultiProperty imp = (IntegerMultiProperty) numericPropertyFrom(desc);
 
         textWidget.addListener(SWT.FocusOut, new Listener() {
             public void handleEvent(Event event) {
-                Integer[] newValue = currentIntegers(textWidget);
-                Integer[] existingValue = (Integer[]) valueFor(source, imp);
+                List<Integer> newValue = currentIntegers(textWidget);
+                List<Integer> existingValue = valueFor(source, imp);
                 if (CollectionUtil.areSemanticEquals(existingValue, newValue)) {
                     return;
                 }
@@ -120,23 +120,18 @@ public class MultiIntegerEditorFactory extends AbstractMultiValueEditorFactory<I
     }
 
 
-    protected void update(PropertySource source, PropertyDescriptor<?> desc, List<Object> newValues) {
-        source.setProperty((IntegerMultiProperty) desc, newValues.toArray(new Integer[newValues.size()]));
+    protected void update(PropertySource source, PropertyDescriptor<List<Integer>> desc, List<Integer> newValues) {
+        source.setProperty(desc, newValues);
     }
 
 
     @Override
-    protected Object addValueIn(Control widget, PropertyDescriptor<?> desc, PropertySource source) {
+    protected Integer addValueIn(Control widget, PropertyDescriptor<List<Integer>> desc, PropertySource source) {
 
-        Integer newValue = Integer.valueOf(((Spinner) widget).getSelection());
+        Integer newValue = ((Spinner) widget).getSelection();
 
-        Integer[] currentValues = (Integer[]) valueFor(source, desc);
-        Integer[] newValues = CollectionUtil.addWithoutDuplicates(currentValues, newValue);
-        if (currentValues.length == newValues.length) {
-            return null;
-        }
-
-        source.setProperty((IntegerMultiProperty) desc, newValues);
-        return newValue;
+        List<Integer> currentValues = valueFor(source, desc);
+        int nAdded = CollectionUtil.addWithoutDuplicates(Collections.singleton(newValue), currentValues);
+        return nAdded == 0 ? null : newValue;
     }
 }

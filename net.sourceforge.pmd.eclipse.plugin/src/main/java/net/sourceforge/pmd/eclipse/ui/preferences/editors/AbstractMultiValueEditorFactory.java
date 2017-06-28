@@ -59,7 +59,7 @@ public abstract class AbstractMultiValueEditorFactory<T> extends AbstractEditorF
     protected abstract void configure(Text text, PropertyDescriptor<List<T>> desc, PropertySource source, ValueChangeListener listener);
 
 
-    protected abstract void setValue(Control widget, Object value);
+    protected abstract void setValue(Control widget, T value);
 
 
     protected abstract void update(PropertySource source, PropertyDescriptor<List<T>> desc, List<T> newValues);
@@ -68,7 +68,7 @@ public abstract class AbstractMultiValueEditorFactory<T> extends AbstractEditorF
     protected abstract T addValueIn(Control widget, PropertyDescriptor<List<T>> desc, PropertySource source);
 
 
-    protected abstract Control addWidget(Composite parent, Object value, PropertyDescriptor<List<T>> desc, PropertySource source);
+    protected abstract Control addWidget(Composite parent, T value, PropertyDescriptor<List<T>> desc, PropertySource source);
 
 
     public Control newEditorOn(final Composite parent, final PropertyDescriptor<List<T>> desc,
