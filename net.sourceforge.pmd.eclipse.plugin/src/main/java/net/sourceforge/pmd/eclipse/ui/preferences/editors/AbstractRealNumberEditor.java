@@ -20,7 +20,7 @@ public abstract class AbstractRealNumberEditor<T extends Number> extends Abstrac
     }
 
 
-    protected Spinner newSpinnerFor(Composite parent, PropertySource source,
+    protected final Spinner newSpinnerFor(Composite parent, PropertySource source,
                                     NumericPropertyDescriptor<T> numDesc) {
 
         Spinner spinner = newSpinnerFor(parent, digits);

@@ -17,7 +17,6 @@ import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.PropertySource;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.ValueChangeListener;
 import net.sourceforge.pmd.lang.rule.properties.IntegerMultiProperty;
-import net.sourceforge.pmd.lang.rule.properties.wrappers.PropertyDescriptorWrapper;
 import net.sourceforge.pmd.util.CollectionUtil;
 import net.sourceforge.pmd.util.NumericConstants;
 
@@ -76,19 +75,7 @@ public class MultiIntegerEditorFactory extends AbstractMultiValueEditorFactory<I
 
     protected Control addWidget(Composite parent, Integer value, PropertyDescriptor<List<Integer>> desc,
                                 PropertySource source) {
-
-        NumericPropertyDescriptor<List<Integer>> ip = numericPropertyFrom(desc);   // TODO - do I really have to do this?
-        return IntegerEditorFactory.newSpinner(parent, ip, value);
-    }
-
-
-    private static NumericPropertyDescriptor<List<Integer>> numericPropertyFrom(PropertyDescriptor<List<Integer>> desc) {
-
-        if (desc instanceof PropertyDescriptorWrapper<?>) {
-            return (NumericPropertyDescriptor<List<Integer>>) ((PropertyDescriptorWrapper<List<Integer>>) desc).getPropertyDescriptor();
-        } else {
-            return (NumericPropertyDescriptor<List<Integer>>) desc;
-        }
+        return IntegerEditorFactory.newSpinner(parent, (NumericPropertyDescriptor<List<Integer>>) desc, value);
     }
 
 
@@ -102,17 +89,15 @@ public class MultiIntegerEditorFactory extends AbstractMultiValueEditorFactory<I
     protected void configure(final Text textWidget, final PropertyDescriptor<List<Integer>> desc,
                              final PropertySource source, final ValueChangeListener listener) {
 
-        final IntegerMultiProperty imp = (IntegerMultiProperty) numericPropertyFrom(desc);
-
         textWidget.addListener(SWT.FocusOut, new Listener() {
             public void handleEvent(Event event) {
                 List<Integer> newValue = currentIntegers(textWidget);
-                List<Integer> existingValue = valueFor(source, imp);
+                List<Integer> existingValue = valueFor(source, desc);
                 if (CollectionUtil.areSemanticEquals(existingValue, newValue)) {
                     return;
                 }
 
-                source.setProperty(imp, newValue);
+                source.setProperty(desc, newValue);
                 fillWidget(textWidget, desc, source);   // display the accepted values
                 listener.changed(source, desc, newValue);
             }

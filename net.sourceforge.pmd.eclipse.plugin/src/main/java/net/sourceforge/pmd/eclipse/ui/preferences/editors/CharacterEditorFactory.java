@@ -74,7 +74,6 @@ public class CharacterEditorFactory extends AbstractEditorFactory<Character> {
      *
      * @param textWidget Text
      * @param desc       PropertyDescriptor<?>
-     * @param rule       Rule
      */
     protected void fillWidget(Text textWidget, PropertyDescriptor<Character> desc, PropertySource source) {
         Character val = valueFor(source, desc);

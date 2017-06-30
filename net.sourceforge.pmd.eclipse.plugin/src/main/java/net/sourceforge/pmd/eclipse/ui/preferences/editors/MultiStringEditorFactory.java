@@ -14,7 +14,6 @@ import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.PropertySource;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.ValueChangeListener;
 import net.sourceforge.pmd.lang.rule.properties.StringMultiProperty;
-import net.sourceforge.pmd.lang.rule.properties.wrappers.PropertyDescriptorWrapper;
 import net.sourceforge.pmd.util.CollectionUtil;
 import net.sourceforge.pmd.util.StringUtil;
 
@@ -55,17 +54,16 @@ public class MultiStringEditorFactory extends AbstractMultiValueEditorFactory<St
     protected void configure(final Text textWidget, final PropertyDescriptor<List<String>> desc,
                              final PropertySource source, final ValueChangeListener listener) {
 
-        final StringMultiProperty smp = multiStringPropertyFrom(desc);
 
         Listener widgetListener = new Listener() {
             public void handleEvent(Event event) {
                 List<String> newValues = textWidgetValues(textWidget);
-                List<String> existingValues = valueFor(source, smp);
+                List<String> existingValues = valueFor(source, desc);
                 if (CollectionUtil.areSemanticEquals(existingValues, newValues)) {
                     return;
                 }
 
-                source.setProperty(smp, newValues);
+                source.setProperty(desc, newValues);
                 fillWidget(textWidget, desc, source);    // reload with latest scrubbed values
                 listener.changed(source, desc, newValues);
             }
@@ -73,16 +71,6 @@ public class MultiStringEditorFactory extends AbstractMultiValueEditorFactory<St
 
         textWidget.addListener(SWT.FocusOut, widgetListener);
         // textWidget.addListener(SWT.DefaultSelection, widgetListener);
-    }
-
-
-    private static StringMultiProperty multiStringPropertyFrom(PropertyDescriptor<List<String>> desc) {
-
-        if (desc instanceof PropertyDescriptorWrapper<?>) {
-            return (StringMultiProperty) ((PropertyDescriptorWrapper<?>) desc).getPropertyDescriptor();
-        } else {
-            return (StringMultiProperty) desc;
-        }
     }
 
 
@@ -109,4 +97,6 @@ public class MultiStringEditorFactory extends AbstractMultiValueEditorFactory<St
     protected List<String> valueFrom(Control valueControl) {    // not necessary for this type
         return null;
     }
+
+
 }

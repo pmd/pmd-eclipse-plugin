@@ -7,12 +7,12 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 
+import net.sourceforge.pmd.EnumeratedPropertyDescriptor;
 import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.PropertySource;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.SizeChangeListener;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.ValueChangeListener;
 import net.sourceforge.pmd.lang.rule.properties.EnumeratedProperty;
-import net.sourceforge.pmd.lang.rule.properties.wrappers.PropertyDescriptorWrapper;
 
 /**
  * @author Brian Remedios
@@ -42,7 +42,7 @@ public class EnumerationEditorFactory extends AbstractEditorFactory<Object> {
 
         final Combo combo = new Combo(parent, SWT.READ_ONLY);
 
-        final EnumeratedProperty<Object> ep = enumerationPropertyFrom(desc);
+        final EnumeratedPropertyDescriptor<Object, Object> ep = (EnumeratedPropertyDescriptor<Object, Object>) desc;
         Object value = valueFor(source, desc);
         combo.setItems(SWTUtil.labelsIn(ep.choices(), 0));
         int selectionIdx = indexOf(value, ep.choices());
@@ -65,16 +65,6 @@ public class EnumerationEditorFactory extends AbstractEditorFactory<Object> {
         });
 
         return combo;
-    }
-
-
-    private static EnumeratedProperty<Object> enumerationPropertyFrom(PropertyDescriptor<Object> desc) {
-
-        if (desc instanceof PropertyDescriptorWrapper<?>) {
-            return (EnumeratedProperty<Object>) ((PropertyDescriptorWrapper<Object>) desc).getPropertyDescriptor();
-        } else {
-            return (EnumeratedProperty<Object>) desc;
-        }
     }
 
 

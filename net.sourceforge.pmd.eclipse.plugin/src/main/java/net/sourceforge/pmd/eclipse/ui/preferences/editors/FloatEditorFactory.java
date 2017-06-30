@@ -6,12 +6,12 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Spinner;
 
+import net.sourceforge.pmd.NumericPropertyDescriptor;
 import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.PropertySource;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.SizeChangeListener;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.ValueChangeListener;
 import net.sourceforge.pmd.lang.rule.properties.FloatProperty;
-import net.sourceforge.pmd.lang.rule.properties.wrappers.PropertyDescriptorWrapper;
 
 /**
  * @author Brian Remedios
@@ -46,18 +46,17 @@ public class FloatEditorFactory extends AbstractRealNumberEditor<Float> {
     public Control newEditorOn(Composite parent, final PropertyDescriptor<Float> desc, final PropertySource source,
                                final ValueChangeListener listener, SizeChangeListener sizeListener) {
 
-        final FloatProperty fp = floatPropertyFrom(desc);
-        final Spinner spinner = newSpinnerFor(parent, source, fp);
+        final Spinner spinner = newSpinnerFor(parent, source, (NumericPropertyDescriptor<Float>) desc);
 
         spinner.addModifyListener(new ModifyListener() {
             public void modifyText(ModifyEvent event) {
                 Float newValue = (float) (spinner.getSelection() / scale);
-                if (newValue.equals(valueFor(source, fp))) {
+                if (newValue.equals(valueFor(source, desc))) {
                     return;
                 }
 
-                source.setProperty(fp, newValue);
-                listener.changed(source, fp, newValue);
+                source.setProperty(desc, newValue);
+                listener.changed(source, desc, newValue);
 
                 adjustRendering(source, desc, spinner);
             }
@@ -67,12 +66,4 @@ public class FloatEditorFactory extends AbstractRealNumberEditor<Float> {
     }
 
 
-    private static FloatProperty floatPropertyFrom(PropertyDescriptor<?> desc) {
-
-        if (desc instanceof PropertyDescriptorWrapper<?>) {
-            return (FloatProperty) ((PropertyDescriptorWrapper<?>) desc).getPropertyDescriptor();
-        } else {
-            return (FloatProperty) desc;
-        }
-    }
 }

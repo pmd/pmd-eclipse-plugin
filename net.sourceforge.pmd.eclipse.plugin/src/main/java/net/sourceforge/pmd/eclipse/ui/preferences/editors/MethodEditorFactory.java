@@ -14,35 +14,34 @@ import net.sourceforge.pmd.PropertySource;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.SizeChangeListener;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.ValueChangeListener;
 import net.sourceforge.pmd.lang.rule.properties.MethodProperty;
-import net.sourceforge.pmd.lang.rule.properties.wrappers.PropertyDescriptorWrapper;
 import net.sourceforge.pmd.util.ClassUtil;
 
 /**
- *
  * @author Brian Remedios
  */
 public class MethodEditorFactory extends AbstractEditorFactory<Method> {
 
-	public static final MethodEditorFactory instance = new MethodEditorFactory();
-	public static final String[] UnwantedPrefixes = new String[] {
-            "java.lang.reflect.",
-	        "java.lang.",
-	        "java.util."
-	        };
+    public static final MethodEditorFactory instance = new MethodEditorFactory();
+    public static final String[] UnwantedPrefixes = new String[] {
+        "java.lang.reflect.",
+        "java.lang.",
+        "java.util."
+    };
 
-	public static final Method stringLength = ClassUtil.methodFor(String.class, "length", ClassUtil.EMPTY_CLASS_ARRAY);
+    public static final Method stringLength = ClassUtil.methodFor(String.class, "length", ClassUtil.EMPTY_CLASS_ARRAY);
 
-	private MethodEditorFactory() { }
+
+    private MethodEditorFactory() { }
 
 
     public PropertyDescriptor<Method> createDescriptor(String name, String optionalDescription, Control[] otherData) {
-        return new MethodProperty(name, "Method value " + name, stringLength, new String[] { "java.lang" }, 0.0f);
+        return new MethodProperty(name, "Method value " + name, stringLength, new String[] {"java.lang"}, 0.0f);
     }
 
 
     protected Method valueFrom(Control valueControl) {
 
-        return ((MethodPicker)valueControl).getMethod();
+        return ((MethodPicker) valueControl).getMethod();
     }
 
 
@@ -54,17 +53,19 @@ public class MethodEditorFactory extends AbstractEditorFactory<Method> {
 
         fillWidget(picker, desc, source);
 
-        final MethodProperty mp = methodPropertyFrom(desc);
-
         picker.addSelectionListener(new SelectionAdapter() {
             public void widgetSelected(SelectionEvent e) {
                 Method newValue = picker.getMethod();
-                if (newValue == null) return;
+                if (newValue == null) {
+                    return;
+                }
 
-                Method existingValue = valueFor(source, mp);
-                if (existingValue == newValue) return;
+                Method existingValue = valueFor(source, desc);
+                if (existingValue == newValue) {
+                    return;
+                }
 
-                source.setProperty(mp, newValue);
+                source.setProperty(desc, newValue);
                 fillWidget(picker, desc, source);     // redraw
                 listener.changed(source, desc, newValue);
             }
@@ -73,20 +74,11 @@ public class MethodEditorFactory extends AbstractEditorFactory<Method> {
         return picker;
     }
 
-    private static MethodProperty methodPropertyFrom(PropertyDescriptor<?> desc) {
-
-        if (desc instanceof PropertyDescriptorWrapper<?>) {
-           return (MethodProperty) ((PropertyDescriptorWrapper<?>)desc).getPropertyDescriptor();
-        } else {
-            return (MethodProperty)desc;
-        }
-    }
-
 
     protected void fillWidget(MethodPicker widget, PropertyDescriptor<Method> desc, PropertySource source) {
 
         Method method = valueFor(source, desc);
         widget.setMethod(method);
         adjustRendering(source, desc, widget);
-	}
+    }
 }

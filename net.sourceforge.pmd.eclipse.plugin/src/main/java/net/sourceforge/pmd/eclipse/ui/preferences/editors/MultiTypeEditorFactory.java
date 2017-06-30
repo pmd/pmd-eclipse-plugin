@@ -15,7 +15,6 @@ import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.PropertySource;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.ValueChangeListener;
 import net.sourceforge.pmd.lang.rule.properties.TypeMultiProperty;
-import net.sourceforge.pmd.lang.rule.properties.wrappers.PropertyDescriptorWrapper;
 import net.sourceforge.pmd.util.ClassUtil;
 import net.sourceforge.pmd.util.CollectionUtil;
 import net.sourceforge.pmd.util.StringUtil;
@@ -56,33 +55,21 @@ public class MultiTypeEditorFactory extends AbstractMultiValueEditorFactory<Clas
     protected void configure(final Text textWidget, final PropertyDescriptor<List<Class>> desc,
                              final PropertySource source, final ValueChangeListener listener) {
 
-        final TypeMultiProperty tmp = multiTypePropertyFrom(desc);  // TODO - really necessary?
-
         textWidget.addListener(SWT.FocusOut, new Listener() {
             public void handleEvent(Event event) {
                 List<Class> newValue = currentTypes(textWidget);
-                List<Class> existingValue = valueFor(source, tmp);
+                List<Class> existingValue = valueFor(source, desc);
                 if (CollectionUtil.areSemanticEquals(existingValue, newValue)) {
                     return;
                 }
 
-                source.setProperty(tmp, newValue);
+                source.setProperty(desc, newValue);
                 fillWidget(textWidget, desc, source);   // display the accepted values
                 listener.changed(source, desc, newValue);
 
                 adjustRendering(source, desc, textWidget);
             }
         });
-    }
-
-
-    private static TypeMultiProperty multiTypePropertyFrom(PropertyDescriptor<?> desc) {
-
-        if (desc instanceof PropertyDescriptorWrapper<?>) {
-            return (TypeMultiProperty) ((PropertyDescriptorWrapper<?>) desc).getPropertyDescriptor();
-        } else {
-            return (TypeMultiProperty) desc;
-        }
     }
 
 

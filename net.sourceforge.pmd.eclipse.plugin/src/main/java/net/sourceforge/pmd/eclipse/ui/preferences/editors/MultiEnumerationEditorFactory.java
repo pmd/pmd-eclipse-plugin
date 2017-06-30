@@ -9,11 +9,10 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Text;
 
+import net.sourceforge.pmd.EnumeratedPropertyDescriptor;
 import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.PropertySource;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.ValueChangeListener;
-import net.sourceforge.pmd.lang.rule.properties.EnumeratedMultiProperty;
-import net.sourceforge.pmd.lang.rule.properties.wrappers.PropertyDescriptorWrapper;
 import net.sourceforge.pmd.util.CollectionUtil;
 
 /**
@@ -59,7 +58,8 @@ public class MultiEnumerationEditorFactory extends AbstractMultiValueEditorFacto
     @Override
     protected boolean canAddNewRowFor(PropertyDescriptor<List<Object>> desc, PropertySource source) {
 
-        EnumeratedMultiProperty<?> multi = enumerationPropertyFrom(desc);
+        EnumeratedPropertyDescriptor<Object, List<Object>> multi
+            = (EnumeratedPropertyDescriptor<Object, List<Object>>) desc;
 
         Object[] choices = multi.choices();
         List<Object> values = source.getProperty(desc);
@@ -68,22 +68,13 @@ public class MultiEnumerationEditorFactory extends AbstractMultiValueEditorFacto
     }
 
 
-    private static EnumeratedMultiProperty<?> enumerationPropertyFrom(PropertyDescriptor<?> desc) {
-
-        if (desc instanceof PropertyDescriptorWrapper<?>) {
-            return (EnumeratedMultiProperty<?>) ((PropertyDescriptorWrapper<?>) desc).getPropertyDescriptor();
-        } else {
-            return (EnumeratedMultiProperty<?>) desc;
-        }
-    }
-
-
     @Override
     protected Control addWidget(Composite parent, Object value, PropertyDescriptor<List<Object>> desc, final PropertySource source) {
 
         final Combo combo = new Combo(parent, SWT.READ_ONLY);
 
-        final EnumeratedMultiProperty<?> ep = enumerationPropertyFrom(desc);
+        final EnumeratedPropertyDescriptor<Object, List<Object>> ep
+            = (EnumeratedPropertyDescriptor<Object, List<Object>>) desc;
 
         // TODO remove all choices already chosen by previous widgets
         combo.setItems(SWTUtil.labelsIn(ep.choices(), 0));

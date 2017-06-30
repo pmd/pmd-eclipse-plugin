@@ -12,7 +12,6 @@ import net.sourceforge.pmd.PropertySource;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.SizeChangeListener;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.ValueChangeListener;
 import net.sourceforge.pmd.lang.rule.properties.TypeProperty;
-import net.sourceforge.pmd.lang.rule.properties.wrappers.PropertyDescriptorWrapper;
 import net.sourceforge.pmd.util.ClassUtil;
 
 
@@ -53,8 +52,6 @@ public class TypeEditorFactory extends AbstractEditorFactory<Class> {
 
         fillWidget(typeText, desc, source);
 
-        final TypeProperty tp = typePropertyFrom(desc);
-
         Listener wereDoneListener = new Listener() {
             public void handleEvent(Event event) {
                 Class<?> newValue = typeText.getType(true);
@@ -62,12 +59,12 @@ public class TypeEditorFactory extends AbstractEditorFactory<Class> {
                     return;
                 }
 
-                Class<?> existingValue = (Class<?>) valueFor(source, tp);
+                Class<?> existingValue = (Class<?>) valueFor(source, desc);
                 if (existingValue == newValue) {
                     return;
                 }
 
-                source.setProperty(tp, newValue);
+                source.setProperty(desc, newValue);
                 listener.changed(source, desc, newValue);
 
                 adjustRendering(source, desc, typeText);
@@ -84,16 +81,6 @@ public class TypeEditorFactory extends AbstractEditorFactory<Class> {
 
         Class<?> type = (Class<?>) valueFor(source, desc);
         textWidget.setType(type);
-    }
-
-
-    private static TypeProperty typePropertyFrom(PropertyDescriptor<Class> desc) {
-
-        if (desc instanceof PropertyDescriptorWrapper<?>) {
-            return (TypeProperty) ((PropertyDescriptorWrapper<Class>) desc).getPropertyDescriptor();
-        } else {
-            return (TypeProperty) desc;
-        }
     }
 
 

@@ -12,7 +12,6 @@ import net.sourceforge.pmd.PropertySource;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.SizeChangeListener;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.ValueChangeListener;
 import net.sourceforge.pmd.lang.rule.properties.IntegerProperty;
-import net.sourceforge.pmd.lang.rule.properties.wrappers.PropertyDescriptorWrapper;
 
 /**
  * @author Brian Remedios
@@ -46,34 +45,22 @@ public class IntegerEditorFactory extends AbstractNumericEditorFactory<Integer> 
     public Control newEditorOn(Composite parent, final PropertyDescriptor<Integer> desc, final PropertySource source,
                                final ValueChangeListener listener, SizeChangeListener sizeListener) {
 
-        final IntegerProperty ip = intPropertyFrom(desc);   // TODO - do I really have to do this?
-
-        final Spinner spinner = newSpinner(parent, ip, valueFor(source, desc));
+        final Spinner spinner = newSpinner(parent, (NumericPropertyDescriptor<Integer>) desc, valueFor(source, desc));
 
         spinner.addModifyListener(new ModifyListener() {
             public void modifyText(ModifyEvent event) {
                 Integer newValue = spinner.getSelection();
-                if (newValue.equals(valueFor(source, ip))) {
+                if (newValue.equals(valueFor(source, desc))) {
                     return;
                 }
 
-                setValue(source, ip, newValue);
+                source.setProperty(desc, newValue);
                 listener.changed(source, desc, newValue);
                 adjustRendering(source, desc, spinner);
             }
         });
 
         return spinner;
-    }
-
-
-    private static IntegerProperty intPropertyFrom(PropertyDescriptor<Integer> desc) {
-
-        if (desc instanceof PropertyDescriptorWrapper<?>) {
-            return (IntegerProperty) ((PropertyDescriptorWrapper<Integer>) desc).getPropertyDescriptor();
-        } else {
-            return (IntegerProperty) desc;
-        }
     }
 
 
@@ -89,10 +76,4 @@ public class IntegerEditorFactory extends AbstractNumericEditorFactory<Integer> 
         return spinner;
     }
 
-
-    protected void setValue(PropertySource source, IntegerProperty desc, Integer value) {
-
-//	    if (!rule.hasDescriptor(desc)) return;
-        source.setProperty(desc, value);
-    }
 }
