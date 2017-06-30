@@ -59,7 +59,7 @@ public class MultiTypeEditorFactory extends AbstractMultiValueEditorFactory<Clas
             public void handleEvent(Event event) {
                 List<Class> newValue = currentTypes(textWidget);
                 List<Class> existingValue = valueFor(source, desc);
-                if (CollectionUtil.areSemanticEquals(existingValue, newValue)) {
+                if (existingValue != null && existingValue.equals(newValue)) {
                     return;
                 }
 

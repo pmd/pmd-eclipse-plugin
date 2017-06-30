@@ -59,7 +59,7 @@ public class MultiStringEditorFactory extends AbstractMultiValueEditorFactory<St
             public void handleEvent(Event event) {
                 List<String> newValues = textWidgetValues(textWidget);
                 List<String> existingValues = valueFor(source, desc);
-                if (CollectionUtil.areSemanticEquals(existingValues, newValues)) {
+                if (existingValues != null && existingValues.equals(newValues)) {
                     return;
                 }
 

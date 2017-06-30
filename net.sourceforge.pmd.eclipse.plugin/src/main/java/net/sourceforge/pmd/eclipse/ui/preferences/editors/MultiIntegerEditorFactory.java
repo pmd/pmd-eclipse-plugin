@@ -93,7 +93,7 @@ public class MultiIntegerEditorFactory extends AbstractMultiValueEditorFactory<I
             public void handleEvent(Event event) {
                 List<Integer> newValue = currentIntegers(textWidget);
                 List<Integer> existingValue = valueFor(source, desc);
-                if (CollectionUtil.areSemanticEquals(existingValue, newValue)) {
+                if (existingValue != null && existingValue.equals(newValue)) {
                     return;
                 }
 
