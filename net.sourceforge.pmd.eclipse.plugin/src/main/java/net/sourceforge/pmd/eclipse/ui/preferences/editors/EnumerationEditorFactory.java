@@ -1,5 +1,7 @@
 package net.sourceforge.pmd.eclipse.ui.preferences.editors;
 
+import java.util.Map.Entry;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -44,8 +46,8 @@ public class EnumerationEditorFactory extends AbstractEditorFactory<Object> {
 
         final EnumeratedPropertyDescriptor<Object, Object> ep = (EnumeratedPropertyDescriptor<Object, Object>) desc;
         Object value = valueFor(source, desc);
-        combo.setItems(SWTUtil.labelsIn(ep.choices(), 0));
-        int selectionIdx = indexOf(value, ep.choices());
+        combo.setItems(SWTUtil.labelsIn(choices(ep), 0));
+        int selectionIdx = indexOf(value, choices(ep));
         if (selectionIdx >= 0) {
             combo.select(selectionIdx);
         }
@@ -53,7 +55,7 @@ public class EnumerationEditorFactory extends AbstractEditorFactory<Object> {
         combo.addSelectionListener(new SelectionAdapter() {
             public void widgetSelected(SelectionEvent e) {
                 int selectionIdx = combo.getSelectionIndex();
-                Object newValue = ep.choices()[selectionIdx][1];
+                Object newValue = choices(ep)[selectionIdx][1];
                 if (newValue == valueFor(source, desc)) {
                     return;
                 }
@@ -84,5 +86,15 @@ public class EnumerationEditorFactory extends AbstractEditorFactory<Object> {
             }
         }
         return -1;
+    }
+
+    public static <E, T> Object[][] choices(EnumeratedPropertyDescriptor<E, T> prop) {
+        Object[][] res = new Object[prop.mappings().size()][2];
+        int i = 0;
+        for (Entry<String, E> e : prop.mappings().entrySet()) {
+            res[i++][0] = e.getKey();
+            res[i][1] = e.getValue();
+        }
+        return res;
     }
 }

@@ -1,5 +1,7 @@
 package net.sourceforge.pmd.eclipse.ui.preferences.editors;
 
+import static net.sourceforge.pmd.eclipse.ui.preferences.editors.EnumerationEditorFactory.choices;
+
 import java.util.Collections;
 import java.util.List;
 
@@ -61,7 +63,7 @@ public class MultiEnumerationEditorFactory extends AbstractMultiValueEditorFacto
         EnumeratedPropertyDescriptor<Object, List<Object>> multi
             = (EnumeratedPropertyDescriptor<Object, List<Object>>) desc;
 
-        Object[] choices = multi.choices();
+        Object[] choices = choices(multi);
         List<Object> values = source.getProperty(desc);
 
         return choices.length > values.size();
@@ -77,8 +79,8 @@ public class MultiEnumerationEditorFactory extends AbstractMultiValueEditorFacto
             = (EnumeratedPropertyDescriptor<Object, List<Object>>) desc;
 
         // TODO remove all choices already chosen by previous widgets
-        combo.setItems(SWTUtil.labelsIn(ep.choices(), 0));
-        int selectionIdx = EnumerationEditorFactory.indexOf(value, ep.choices());
+        combo.setItems(SWTUtil.labelsIn(choices(ep), 0));
+        int selectionIdx = EnumerationEditorFactory.indexOf(value, choices(ep));
         if (selectionIdx >= 0) {
             combo.select(selectionIdx);
         }
