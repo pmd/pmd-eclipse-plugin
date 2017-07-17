@@ -139,13 +139,13 @@ public class XPathPanelManager extends AbstractRulePanelManager {
         gridData.horizontalSpan = 1;
         gridData.grabExcessHorizontalSpace = false;
         xpathVersionField.setLayoutData(gridData);
-        xpathVersionField.setItems(SWTUtil.labelsIn(ep.choices(), 0));
+        xpathVersionField.setItems(SWTUtil.labelsIn(EnumerationEditorFactory.choices(ep), 0));
 
         xpathVersionField.addSelectionListener(new SelectionAdapter() {
             public void widgetSelected(SelectionEvent e) {
                 Rule rule = soleRule();
                 int selectionIdx = xpathVersionField.getSelectionIndex();
-                Object newValue = ep.choices()[selectionIdx][1];
+                String newValue = (String) EnumerationEditorFactory.choices(ep)[selectionIdx][1];
                 if (newValue.equals(rule.getProperty(ep))) return;
 
                 rule.setProperty(ep, newValue);
@@ -159,7 +159,8 @@ public class XPathPanelManager extends AbstractRulePanelManager {
     private void configureVersionFieldFor(Rule rule) {
 
         Object value = rule.getProperty(XPathRule.VERSION_DESCRIPTOR);
-        int selectionIdx = EnumerationEditorFactory.indexOf(value, XPathRule.VERSION_DESCRIPTOR.choices());
+        int selectionIdx = EnumerationEditorFactory.indexOf(value, 
+                                                            EnumerationEditorFactory.choices(XPathRule.VERSION_DESCRIPTOR));
         if (selectionIdx >= 0) xpathVersionField.select(selectionIdx);
     }
 
