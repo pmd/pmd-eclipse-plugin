@@ -1,6 +1,7 @@
 package net.sourceforge.pmd.eclipse.ui.preferences.editors;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -34,7 +35,7 @@ public class MultiTypeEditorFactory extends AbstractMultiValueEditorFactory<Clas
 
     public PropertyDescriptor<List<Class>> createDescriptor(String name, String optionalDescription, Control[] otherData) {
         return new TypeMultiProperty(name, "Type value "
-            + name, new Class[] {String.class}, new String[] {"java.lang"}, 0.0f);
+            + name, Arrays.asList((Class)String.class), new String[] {"java.lang"}, 0.0f);
     }
 
 
