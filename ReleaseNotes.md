@@ -6,6 +6,12 @@ Eclipse Update Site: <https://dl.bintray.com/pmd/pmd-eclipse-plugin/updates/>
 
 ## ????: 4.0.16.v????
 
+*   Updated PMD to 6.0.0
+
+### External Contributions
+
+*   [#25](https://github.com/pmd/pmd-eclipse-plugin/pull/25): \[core] Typesafe properties - [Clément Fournier](https://github.com/oowekyala)
+
 
 ## 24-June-2017: 4.0.15.v20170624-2134
 
