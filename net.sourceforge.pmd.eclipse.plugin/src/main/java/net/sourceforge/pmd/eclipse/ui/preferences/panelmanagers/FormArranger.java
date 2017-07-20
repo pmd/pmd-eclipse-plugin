@@ -21,7 +21,7 @@ import net.sourceforge.pmd.eclipse.ui.preferences.editors.SWTUtil;
 import net.sourceforge.pmd.eclipse.util.ResourceManager;
 import net.sourceforge.pmd.eclipse.util.Util;
 import net.sourceforge.pmd.lang.rule.XPathRule;
-import net.sourceforge.pmd.lang.rule.properties.factories.PropertyDescriptorUtil;
+import net.sourceforge.pmd.lang.rule.properties.PropertyDescriptorUtil;
 
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
@@ -140,7 +140,7 @@ public class FormArranger implements ValueChangeListener {
 		}
 
 		PropertyDescriptor<?>[] orderedDescs = valuesByDescriptor.keySet().toArray(new PropertyDescriptor[valuesByDescriptor.size()]);
-		Arrays.sort(orderedDescs, PropertyDescriptorUtil.COMPARATOR_BY_ORDER);
+		Arrays.sort(orderedDescs);
 		
 		int rowCount = 0;	// count up the actual rows with widgets needed, not all have editors yet
 		for (PropertyDescriptor<?> desc: orderedDescs) {

@@ -231,7 +231,6 @@ public class PMDPlugin extends AbstractUIPlugin {
 
         // if a project is deleted, remove the cached project properties
         ResourcesPlugin.getWorkspace().addResourceChangeListener(new IResourceChangeListener() {
-            @Override
             public void resourceChanged(IResourceChangeEvent arg0) {
                 if (arg0.getType() == IResourceChangeEvent.PRE_DELETE && arg0.getResource() instanceof IProject) {
                     getPropertiesManager().removeProjectProperties((IProject) arg0.getResource());
