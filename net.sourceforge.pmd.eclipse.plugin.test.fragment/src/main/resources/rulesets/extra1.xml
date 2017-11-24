@@ -245,7 +245,7 @@ Some for loops can be simplified to while loops - this makes them more concise.
 
     <rule name="UnnecessaryConversionTemporary"
           message="Avoid unnecessary temporaries when converting primitives to Strings"
-          class="net.sourceforge.pmd.lang.java.rule.unnecessary.UnnecessaryConversionTemporaryRule">
+          class="net.sourceforge.pmd.lang.java.rule.errorprone.UnnecessaryConversionTemporaryRule">
       <description>
 Avoid unnecessary temporaries when converting primitives to Strings
       </description>
@@ -318,7 +318,7 @@ not
 
     <rule name="DoubleCheckedLocking"
           message="Double checked locking is not thread safe in Java."
-          class="net.sourceforge.pmd.lang.java.rule.basic.DoubleCheckedLockingRule">
+          class="net.sourceforge.pmd.lang.java.rule.multithreading.DoubleCheckedLockingRule">
       <description>
 Partially created objects can be returned by the Double Checked Locking pattern when used in Java.
 An optimizing JRE may assign a reference to the baz variable before it creates the object the reference is intended to point to.  
