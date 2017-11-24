@@ -14,7 +14,7 @@
   </modules>
 
   <properties>
-    <tycho.version>0.26.0</tycho.version>
+    <tycho.version>1.0.0</tycho.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <pmd.version>6.0.0-SNAPSHOT</pmd.version>
     <maven-antrun-plugin.version>1.8</maven-antrun-plugin.version>
