@@ -2,17 +2,6 @@ package net.sourceforge.pmd.eclipse.ui.views.dataflow;
 
 import java.util.Iterator;
 
-import name.herlin.command.CommandException;
-import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.eclipse.runtime.PMDRuntimeConstants;
-import net.sourceforge.pmd.eclipse.runtime.cmd.ReviewResourceForRuleCommand;
-import net.sourceforge.pmd.eclipse.ui.model.FileRecord;
-import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
-import net.sourceforge.pmd.eclipse.ui.views.AbstractStructureInspectorPage;
-import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
-import net.sourceforge.pmd.lang.java.rule.controversial.DataflowAnomalyAnalysisRule;
-import net.sourceforge.pmd.util.StringUtil;
-
 import org.eclipse.core.resources.IResource;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
@@ -29,6 +18,18 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.IPropertyListener;
 import org.eclipse.ui.IWorkbenchPart;
+
+import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.eclipse.runtime.PMDRuntimeConstants;
+import net.sourceforge.pmd.eclipse.runtime.cmd.ReviewResourceForRuleCommand;
+import net.sourceforge.pmd.eclipse.ui.model.FileRecord;
+import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
+import net.sourceforge.pmd.eclipse.ui.views.AbstractStructureInspectorPage;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
+import net.sourceforge.pmd.lang.java.rule.errorprone.DataflowAnomalyAnalysisRule;
+import net.sourceforge.pmd.util.StringUtil;
+
+import name.herlin.command.CommandException;
 
 /**
  * A page for the dataflow - view.

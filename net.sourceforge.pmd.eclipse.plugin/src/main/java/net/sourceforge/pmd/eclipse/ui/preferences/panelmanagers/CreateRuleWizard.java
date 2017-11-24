@@ -1,16 +1,16 @@
 package net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers;
 
-import net.sourceforge.pmd.PropertyDescriptor;
-import net.sourceforge.pmd.PropertySource;
+import org.eclipse.jface.wizard.IWizardPage;
+import org.eclipse.jface.wizard.Wizard;
+import org.eclipse.jface.wizard.WizardDialog;
+
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.RuleSelection;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.RuleUtil;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.ValueChangeListener;
+import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.properties.PropertySource;
 import net.sourceforge.pmd.util.StringUtil;
-
-import org.eclipse.jface.wizard.IWizardPage;
-import org.eclipse.jface.wizard.Wizard;
-import org.eclipse.jface.wizard.WizardDialog;
 
 /**
  * A wizard that encapsulates a succession of rule panel managers to collect the

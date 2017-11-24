@@ -9,12 +9,12 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 
-import net.sourceforge.pmd.EnumeratedPropertyDescriptor;
-import net.sourceforge.pmd.PropertyDescriptor;
-import net.sourceforge.pmd.PropertySource;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.SizeChangeListener;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.ValueChangeListener;
-import net.sourceforge.pmd.lang.rule.properties.EnumeratedProperty;
+import net.sourceforge.pmd.properties.EnumeratedProperty;
+import net.sourceforge.pmd.properties.EnumeratedPropertyDescriptor;
+import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.properties.PropertySource;
 
 /**
  * @author Brian Remedios

@@ -3,8 +3,8 @@ package net.sourceforge.pmd.eclipse.ui.preferences.editors;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Spinner;
 
-import net.sourceforge.pmd.NumericPropertyDescriptor;
-import net.sourceforge.pmd.PropertySource;
+import net.sourceforge.pmd.properties.NumericPropertyDescriptor;
+import net.sourceforge.pmd.properties.PropertySource;
 
 /**
  * @author Brian Remedios

@@ -91,8 +91,7 @@ public class RuleSetUtil {
     }
 
     public static RuleSet addRuleSetByReference(RuleSet ruleSet, RuleSet sourceRuleSet, boolean allRules) {
-        RuleSetReference reference = new RuleSetReference(sourceRuleSet.getFileName());
-        reference.setAllRules(allRules);
+        RuleSetReference reference = new RuleSetReference(sourceRuleSet.getFileName(), allRules);
         Collection<Rule> rules = new ArrayList<Rule>(ruleSet.getRules());
         for (Rule rule : sourceRuleSet.getRules()) {
             RuleReference ruleRef = new RuleReference(rule, reference);

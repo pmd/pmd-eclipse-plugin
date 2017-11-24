@@ -3,19 +3,6 @@ package net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.eclipse.ui.editors.SyntaxManager;
-import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
-import net.sourceforge.pmd.eclipse.ui.preferences.br.ImplementationType;
-import net.sourceforge.pmd.eclipse.ui.preferences.br.RuleSelection;
-import net.sourceforge.pmd.eclipse.ui.preferences.br.ValueChangeListener;
-import net.sourceforge.pmd.eclipse.ui.preferences.editors.EnumerationEditorFactory;
-import net.sourceforge.pmd.eclipse.ui.preferences.editors.SWTUtil;
-import net.sourceforge.pmd.lang.rule.RuleReference;
-import net.sourceforge.pmd.lang.rule.XPathRule;
-import net.sourceforge.pmd.lang.rule.properties.EnumeratedProperty;
-import net.sourceforge.pmd.util.StringUtil;
-
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.events.ModifyEvent;
@@ -28,6 +15,19 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
+
+import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.eclipse.ui.editors.SyntaxManager;
+import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
+import net.sourceforge.pmd.eclipse.ui.preferences.br.ImplementationType;
+import net.sourceforge.pmd.eclipse.ui.preferences.br.RuleSelection;
+import net.sourceforge.pmd.eclipse.ui.preferences.br.ValueChangeListener;
+import net.sourceforge.pmd.eclipse.ui.preferences.editors.EnumerationEditorFactory;
+import net.sourceforge.pmd.eclipse.ui.preferences.editors.SWTUtil;
+import net.sourceforge.pmd.lang.rule.RuleReference;
+import net.sourceforge.pmd.lang.rule.XPathRule;
+import net.sourceforge.pmd.properties.EnumeratedProperty;
+import net.sourceforge.pmd.util.StringUtil;
 
 /**
  *

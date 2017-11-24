@@ -4,20 +4,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import net.sourceforge.pmd.PropertyDescriptor;
-import net.sourceforge.pmd.PropertySource;
-import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
-import net.sourceforge.pmd.eclipse.ui.BasicTableLabelProvider;
-import net.sourceforge.pmd.eclipse.ui.preferences.br.AbstractPMDPreferencePage;
-import net.sourceforge.pmd.eclipse.ui.preferences.br.BasicTableManager;
-import net.sourceforge.pmd.eclipse.ui.preferences.br.RuleSelection;
-import net.sourceforge.pmd.eclipse.ui.preferences.br.SizeChangeListener;
-import net.sourceforge.pmd.eclipse.ui.preferences.br.ValueChangeListener;
-import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.FormArranger;
-import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.PerRulePropertyPanelManager;
-import net.sourceforge.pmd.renderers.Renderer;
-import net.sourceforge.pmd.util.StringUtil;
-
 import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
@@ -42,6 +28,20 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
+
+import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
+import net.sourceforge.pmd.eclipse.ui.BasicTableLabelProvider;
+import net.sourceforge.pmd.eclipse.ui.preferences.br.AbstractPMDPreferencePage;
+import net.sourceforge.pmd.eclipse.ui.preferences.br.BasicTableManager;
+import net.sourceforge.pmd.eclipse.ui.preferences.br.RuleSelection;
+import net.sourceforge.pmd.eclipse.ui.preferences.br.SizeChangeListener;
+import net.sourceforge.pmd.eclipse.ui.preferences.br.ValueChangeListener;
+import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.FormArranger;
+import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.PerRulePropertyPanelManager;
+import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.properties.PropertySource;
+import net.sourceforge.pmd.renderers.Renderer;
+import net.sourceforge.pmd.util.StringUtil;
 
 /**
  * The available report formats and their properties.

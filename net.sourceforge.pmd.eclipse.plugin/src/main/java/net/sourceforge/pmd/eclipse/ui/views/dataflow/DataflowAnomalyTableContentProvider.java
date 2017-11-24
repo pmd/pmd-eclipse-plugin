@@ -4,11 +4,11 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import net.sourceforge.pmd.eclipse.util.Util;
-import net.sourceforge.pmd.lang.java.rule.controversial.DaaRuleViolation;
-
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
+
+import net.sourceforge.pmd.eclipse.util.Util;
+import net.sourceforge.pmd.lang.java.rule.errorprone.DaaRuleViolation;
 
 /**
  * Provides the Content for the DataflowAnomalyTable

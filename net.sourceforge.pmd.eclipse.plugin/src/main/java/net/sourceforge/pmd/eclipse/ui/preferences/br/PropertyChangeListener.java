@@ -1,6 +1,6 @@
 package net.sourceforge.pmd.eclipse.ui.preferences.br;
 
-import net.sourceforge.pmd.PropertyDescriptor;
+import net.sourceforge.pmd.properties.PropertyDescriptor;
 
 /**
  *

@@ -51,7 +51,7 @@ import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.PMDException;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Report.ProcessingError;
-import net.sourceforge.pmd.Report.RuleConfigurationError;
+import net.sourceforge.pmd.Report.ConfigurationError;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSet;
@@ -329,7 +329,7 @@ public class BaseVisitor {
                         for (Iterator<ProcessingError> it = report.errors(); it.hasNext(); ) {
                             collectingReport.addError(it.next());
                         }
-                        for (Iterator<RuleConfigurationError> it = report.configErrors(); it.hasNext(); ) {
+                        for (Iterator<ConfigurationError> it = report.configErrors(); it.hasNext(); ) {
                             collectingReport.addConfigError(it.next());
                         }
                     }

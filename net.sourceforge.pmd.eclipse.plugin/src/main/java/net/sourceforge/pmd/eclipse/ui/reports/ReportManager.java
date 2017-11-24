@@ -7,9 +7,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.runtime.preferences.IPreferences;
+import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.renderers.RendererFactory;
 
@@ -71,17 +71,15 @@ public class ReportManager {
     	return actives;
     }
 
-	public static String asString(Map<String, String> propertyDefinitions) {
-
+	public static String asString(Map<PropertyDescriptor<?>, Object> propertyDefinitions) {
 		if (propertyDefinitions.isEmpty()) return "";
 
 		StringBuilder sb = new StringBuilder();
-		String[] keys = propertyDefinitions.keySet().toArray(new String[propertyDefinitions.size()]);
-
-		sb.append(keys[0]).append(": ").append(propertyDefinitions.get(keys[0]));
-
-		for (int i=1; i<keys.length; i++) {
-			sb.append(", ").append(keys[i]).append(": ").append(propertyDefinitions.get(keys[i]));
+		for (Map.Entry<PropertyDescriptor<?>, Object> entry : propertyDefinitions.entrySet()) {
+		    if (sb.length() != 0) {
+		        sb.append(", ");
+		    }
+		    sb.append(entry.getKey().name()).append(": ").append(String.valueOf(entry.getValue()));
 		}
 
 		return sb.toString();

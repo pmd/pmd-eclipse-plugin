@@ -1,11 +1,11 @@
 package net.sourceforge.pmd.eclipse.ui.reports;
 
+import org.eclipse.swt.SWT;
+
 import net.sourceforge.pmd.eclipse.ui.ItemColumnDescriptor;
 import net.sourceforge.pmd.eclipse.ui.ItemFieldAccessor;
 import net.sourceforge.pmd.eclipse.ui.ItemFieldAccessorAdapter;
 import net.sourceforge.pmd.renderers.Renderer;
-
-import org.eclipse.swt.SWT;
 
 /**
  *
@@ -30,7 +30,7 @@ public interface ReportColumnUI {
 
 	ItemFieldAccessor<String, Renderer> propertiesAcc = new ItemFieldAccessorAdapter<String, Renderer>(null) {
 		@Override
-		public String valueFor(Renderer renderer) { return ReportManager.asString(renderer.getPropertyDefinitions()); }
+		public String valueFor(Renderer renderer) { return ReportManager.asString(renderer.getPropertiesByPropertyDescriptor()); }
 	};
 
 	ItemColumnDescriptor<String, Renderer> name   		= new ItemColumnDescriptor<String, Renderer>("", "Name", SWT.LEFT, 55, true, nameAcc);

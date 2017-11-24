@@ -6,7 +6,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.lang.rule.properties.StringProperty;
+import net.sourceforge.pmd.properties.StringProperty;
 import net.sourceforge.pmd.util.StringUtil;
 
 /**

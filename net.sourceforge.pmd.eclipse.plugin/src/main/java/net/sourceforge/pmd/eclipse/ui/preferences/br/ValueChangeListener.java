@@ -1,7 +1,7 @@
 package net.sourceforge.pmd.eclipse.ui.preferences.br;
 
-import net.sourceforge.pmd.PropertyDescriptor;
-import net.sourceforge.pmd.PropertySource;
+import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.properties.PropertySource;
 
 /**
  * Accepts notifications for changes to a single rule or a number of them.

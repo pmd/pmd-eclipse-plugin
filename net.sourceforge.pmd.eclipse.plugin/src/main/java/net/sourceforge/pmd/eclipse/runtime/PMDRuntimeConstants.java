@@ -1,7 +1,7 @@
 package net.sourceforge.pmd.eclipse.runtime;
 
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
-import net.sourceforge.pmd.lang.rule.properties.IntegerProperty;
+import net.sourceforge.pmd.properties.IntegerProperty;
 
 
 /**

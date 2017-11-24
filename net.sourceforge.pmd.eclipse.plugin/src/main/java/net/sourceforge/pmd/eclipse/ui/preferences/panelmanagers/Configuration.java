@@ -2,11 +2,11 @@ package net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers;
 
 import java.util.Map;
 
-import net.sourceforge.pmd.PropertyDescriptor;
-import net.sourceforge.pmd.PropertySource;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.lang.rule.XPathRule;
 import net.sourceforge.pmd.lang.rule.stat.StatisticalRule;
+import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.properties.PropertySource;
 /**
  *
  * @author Brian Remedios
