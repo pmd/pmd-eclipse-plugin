@@ -19,12 +19,6 @@
         <artifactId>pmd-dist</artifactId> <!-- pmd-dist depends on all modules of pmd, so we'll get everything -->
         <version>${pmd.version}</version>
         <type>pom</type>
-        <exclusions>
-            <exclusion>
-                <groupId>net.sourceforge.pmd</groupId>
-                <artifactId>pmd-apex</artifactId>
-            </exclusion>
-        </exclusions>
     </dependency>
     <dependency>
         <groupId>log4j</groupId>
