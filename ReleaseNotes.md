@@ -11,6 +11,7 @@ Eclipse Update Site: <https://dl.bintray.com/pmd/pmd-eclipse-plugin/updates/>
 ### External Contributions
 
 *   [#25](https://github.com/pmd/pmd-eclipse-plugin/pull/25): \[core] Typesafe properties - [Clément Fournier](https://github.com/oowekyala)
+*   [#26](https://github.com/pmd/pmd-eclipse-plugin/pull/26): Updated french translations - [Clément Fournier](https://github.com/oowekyala)
 
 
 ## 24-June-2017: 4.0.15.v20170624-2134
