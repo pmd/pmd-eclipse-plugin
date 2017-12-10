@@ -92,8 +92,8 @@ public class EnumerationEditorFactory extends AbstractEditorFactory<Object> {
         Object[][] res = new Object[prop.mappings().size()][2];
         int i = 0;
         for (Entry<String, E> e : prop.mappings().entrySet()) {
-            res[i++][0] = e.getKey();
-            res[i][1] = e.getValue();
+            res[i][0] = e.getKey();
+            res[i++][1] = e.getValue();
         }
         return res;
     }
