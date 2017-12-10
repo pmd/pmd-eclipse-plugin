@@ -577,7 +577,7 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
      */
     private Button buildCheckCodeOnSaveButton(Composite viewGroup) {
         Button button = new Button(viewGroup, SWT.CHECK);
-        button.setText(StringKeys.PREF_GENERAL_LABEL_CHECK_AFTER_SAVING);
+        button.setText(getMessage(StringKeys.PREF_GENERAL_LABEL_CHECK_AFTER_SAVING));
         button.setSelection(preferences.isCheckAfterSaveEnabled());
         return button;
     }
