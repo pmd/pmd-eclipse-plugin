@@ -115,7 +115,6 @@
    <rule ref="rulesets/java/controversial.xml/DontImportSun"/>
    <rule ref="rulesets/java/controversial.xml/SuspiciousOctalEscape"/>
    <rule ref="rulesets/java/controversial.xml/CallSuperInConstructor"/>
-   <rule ref="rulesets/java/controversial.xml/UnnecessaryParentheses"/>
    <rule ref="rulesets/java/controversial.xml/DefaultPackage"/>
    <rule ref="rulesets/java/controversial.xml/DataflowAnomalyAnalysis"/>
    <rule ref="rulesets/java/controversial.xml/AvoidFinalLocalVariable"/>
@@ -199,9 +198,8 @@
    <rule ref="rulesets/java/empty.xml/EmptySwitchStatements"/>
    <rule ref="rulesets/java/empty.xml/EmptySynchronizedBlock"/>
    <rule ref="rulesets/java/empty.xml/EmptyStatementNotInLoop"/>
-   <rule ref="rulesets/java/empty.xml/EmptyInitializer"/>
    <rule ref="rulesets/java/empty.xml/EmptyStatementBlock"/>
-   <rule ref="rulesets/java/empty.xml/EmptyStaticInitializer"/>
+   <rule ref="rulesets/java/empty.xml/EmptyInitializer"/>
    <rule ref="rulesets/java/finalizers.xml/EmptyFinalizer"/>
    <rule ref="rulesets/java/finalizers.xml/FinalizeOnlyCallsSuperFinalize"/>
    <rule ref="rulesets/java/finalizers.xml/FinalizeOverloaded"/>
@@ -239,13 +237,11 @@
    <rule ref="rulesets/java/junit.xml/UseAssertTrueInsteadOfAssertEquals"/>
    <rule ref="rulesets/java/logging-jakarta-commons.xml/UseCorrectExceptionLogging"/>
    <rule ref="rulesets/java/logging-jakarta-commons.xml/ProperLogger"/>
-   <rule ref="rulesets/java/logging-jakarta-commons.xml/GuardDebugLogging"/>
-   <rule ref="rulesets/java/logging-jakarta-commons.xml/GuardLogStatement"/>
    <rule ref="rulesets/java/logging-java.xml/MoreThanOneLogger"/>
    <rule ref="rulesets/java/logging-java.xml/LoggerIsNotStaticFinal"/>
    <rule ref="rulesets/java/logging-java.xml/SystemPrintln"/>
    <rule ref="rulesets/java/logging-java.xml/AvoidPrintStackTrace"/>
-   <rule ref="rulesets/java/logging-java.xml/GuardLogStatementJavaUtil"/>
+   <rule ref="rulesets/java/logging-jakarta-commons.xml/GuardLogStatement"/>
    <rule ref="rulesets/java/logging-java.xml/InvalidSlf4jMessageFormat"/>
    <rule ref="rulesets/java/migrating.xml/ReplaceVectorWithList"/>
    <rule ref="rulesets/java/migrating.xml/ReplaceHashtableWithMap"/>
@@ -277,7 +273,7 @@
    <rule ref="rulesets/java/naming.xml/AvoidFieldNameMatchingMethodName"/>
    <rule ref="rulesets/java/naming.xml/NoPackage"/>
    <rule ref="rulesets/java/naming.xml/PackageCase"/>
-   <rule ref="rulesets/java/naming.xml/MisleadingVariableName"/>
+   <rule ref="rulesets/java/naming.xml/MIsLeadingVariableName"/>
    <rule ref="rulesets/java/naming.xml/BooleanGetMethodName"/>
    <rule ref="rulesets/java/naming.xml/ShortClassName"/>
    <rule ref="rulesets/java/naming.xml/GenericsNaming"/>
@@ -325,7 +321,6 @@
    <rule ref="rulesets/java/sunsecure.xml/ArrayIsStoredDirectly"/>
    <rule ref="rulesets/java/unnecessary.xml/UnnecessaryConversionTemporary"/>
    <rule ref="rulesets/java/unnecessary.xml/UnnecessaryReturn"/>
-   <rule ref="rulesets/java/unnecessary.xml/UnnecessaryFinalModifier"/>
    <rule ref="rulesets/java/unnecessary.xml/UselessOverridingMethod"/>
    <rule ref="rulesets/java/unnecessary.xml/UselessOperationOnImmutable"/>
    <rule ref="rulesets/java/unnecessary.xml/UnusedNullCheckInEquals"/>

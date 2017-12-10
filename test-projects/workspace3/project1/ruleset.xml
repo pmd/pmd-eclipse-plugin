@@ -4,28 +4,6 @@
          name="My RuleSet"
          xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
    <description>My RuleSet</description>
-   <rule ref="rulesets/java/basic.xml/JumbledIncrementer"/>
-   <rule ref="rulesets/java/basic.xml/ForLoopShouldBeWhileLoop"/>
-   <rule ref="rulesets/java/basic.xml/OverrideBothEqualsAndHashcode"/>
-   <rule ref="rulesets/java/basic.xml/DoubleCheckedLocking"/>
-   <rule ref="rulesets/java/basic.xml/ReturnFromFinallyBlock"/>
-   <rule ref="rulesets/java/basic.xml/UnconditionalIfStatement"/>
-   <rule ref="rulesets/java/basic.xml/BooleanInstantiation"/>
-   <rule ref="rulesets/java/basic.xml/CollapsibleIfStatements"/>
-   <rule ref="rulesets/java/basic.xml/ClassCastExceptionWithToArray"/>
-   <rule ref="rulesets/java/basic.xml/AvoidDecimalLiteralsInBigDecimalConstructor"/>
-   <rule ref="rulesets/java/basic.xml/MisplacedNullCheck"/>
-   <rule ref="rulesets/java/basic.xml/AvoidThreadGroup"/>
-   <rule ref="rulesets/java/basic.xml/BrokenNullCheck"/>
-   <rule ref="rulesets/java/basic.xml/BigIntegerInstantiation"/>
-   <rule ref="rulesets/java/basic.xml/AvoidUsingOctalValues"/>
-   <rule ref="rulesets/java/basic.xml/AvoidUsingHardCodedIP"/>
-   <rule ref="rulesets/java/basic.xml/CheckResultSet"/>
-   <rule ref="rulesets/java/basic.xml/AvoidMultipleUnaryOperators"/>
-   <rule ref="rulesets/java/basic.xml/ExtendsObject"/>
-   <rule ref="rulesets/java/basic.xml/CheckSkipResult"/>
-   <rule ref="rulesets/java/basic.xml/AvoidBranchingStatementAsLastInLoop"/>
-   <rule ref="rulesets/java/basic.xml/DontCallThreadRun"/>
-   <rule ref="rulesets/java/basic.xml/DontUseFloatTypeForLoopIndices"/>
-   <rule ref="rulesets/java/basic.xml/SimplifiedTernary"/>
+   <rule ref="category/java/errorprone.xml/AvoidDecimalLiteralsInBigDecimalConstructor"/>
+   <rule ref="category/java/errorprone.xml/JumbledIncrementer"/>
 </ruleset>
