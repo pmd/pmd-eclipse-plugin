@@ -171,10 +171,9 @@ public class ChangeEvaluator {
 						removals.add(fileRec);
 
 						// remove parent if no more markers
-						PackageRecord packageRec = (PackageRecord) fileRec.getParent();
-						if (!packageRec.hasMarkers()) {
-							projectRec.removeResource(fileRec.getParent().getResource());
-							removals.add(packageRec);
+						if (!fileRec.getParent().hasMarkers()) {
+						    projectRec.removeResource(fileRec.getParent().getResource());
+						    removals.add(fileRec.getParent());
 						}
 					}
 				} else if (rec == null) {
