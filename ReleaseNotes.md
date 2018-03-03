@@ -6,7 +6,13 @@ Eclipse Update Site: <https://dl.bintray.com/pmd/pmd-eclipse-plugin/updates/>
 
 ## ????: 4.0.16.v????
 
-*   Updated PMD to 6.0.0
+### New and noteworthy
+
+*   Updated PMD to 6.1.0
+
+### Fixed Issues
+
+*   [#32](https://github.com/pmd/pmd-eclipse-plugin/issues/32): Upgrade PMD to 6.1.0
 
 ### External Contributions
 
