@@ -1,3 +1,4 @@
+
 package net.sourceforge.pmd.eclipse.ui.views.actions;
 
 import net.sourceforge.pmd.Rule;
@@ -27,22 +28,28 @@ public class ShowRuleAction extends AbstractViolationSelectionAction {
         super(viewer);
     }
 
- 	protected String textId() { return StringKeys.VIEW_ACTION_SHOW_RULE; }
- 	
- 	protected String imageId() { return null; }
-    
-    protected String tooltipMsgId() { return StringKeys.VIEW_TOOLTIP_SHOW_RULE; } 
-    
+    protected String textId() {
+        return StringKeys.VIEW_ACTION_SHOW_RULE;
+    }
+
+    protected String imageId() {
+        return null;
+    }
+
+    protected String tooltipMsgId() {
+        return StringKeys.VIEW_TOOLTIP_SHOW_RULE;
+    }
+
     protected boolean canExecute() {
-    	return super.canExecute() && allSelectionsDenoteSameRule();
+        return super.canExecute() && allSelectionsDenoteSameRule();
     }
-    
+
     private boolean allSelectionsDenoteSameRule() {
-    	
-    	IMarker[] markers = getSelectedViolations();
-    	return MarkerUtil.commonRuleNameAmong(markers) != null;
+
+        IMarker[] markers = getSelectedViolations();
+        return MarkerUtil.commonRuleNameAmong(markers) != null;
     }
-    
+
     /**
      * @see org.eclipse.jface.action.IAction#run()
      */
@@ -62,12 +69,11 @@ public class ShowRuleAction extends AbstractViolationSelectionAction {
         try {
             IMarker[] markers = getSelectedViolations();
             if (markers != null) {
-                rule = PMDPlugin.getDefault().getPreferencesManager().getRuleSet().getRuleByName(
-                        MarkerUtil.ruleNameFor(markers[0])
-                        );
+                rule = PMDPlugin.getDefault().getPreferencesManager().getRuleSet()
+                        .getRuleByName(MarkerUtil.ruleNameFor(markers[0]));
             }
         } catch (RuntimeException e) {
-        	logErrorByKey(StringKeys.ERROR_RUNTIME_EXCEPTION, e);
+            logErrorByKey(StringKeys.ERROR_RUNTIME_EXCEPTION, e);
         }
 
         return rule;

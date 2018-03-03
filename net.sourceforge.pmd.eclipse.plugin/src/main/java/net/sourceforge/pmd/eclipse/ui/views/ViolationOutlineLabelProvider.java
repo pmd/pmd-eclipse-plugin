@@ -1,3 +1,4 @@
+
 package net.sourceforge.pmd.eclipse.ui.views;
 
 import net.sourceforge.pmd.eclipse.ui.PMDUiConstants;
@@ -16,7 +17,11 @@ import org.eclipse.swt.graphics.Image;
  */
 public class ViolationOutlineLabelProvider extends AbstractViolationLabelProvider {
 
-    /* @see org.eclipse.jface.viewers.ITableLabelProvider#getColumnImage(java.lang.Object, int) */
+    /*
+     * @see
+     * org.eclipse.jface.viewers.ITableLabelProvider#getColumnImage(java.lang.
+     * Object, int)
+     */
     public Image getColumnImage(Object element, int columnIndex) {
         IMarker marker;
         if (element instanceof IMarker)
@@ -38,7 +43,11 @@ public class ViolationOutlineLabelProvider extends AbstractViolationLabelProvide
         return null;
     }
 
-    /* @see org.eclipse.jface.viewers.ITableLabelProvider#getColumnText(java.lang.Object, int) */
+    /*
+     * @see
+     * org.eclipse.jface.viewers.ITableLabelProvider#getColumnText(java.lang.
+     * Object, int)
+     */
     public String getColumnText(Object element, int columnIndex) {
         IMarker marker;
         if (element instanceof IMarker)

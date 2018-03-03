@@ -1,3 +1,4 @@
+
 package net.sourceforge.pmd.eclipse.ui.views.ast;
 
 import java.io.StringReader;
@@ -23,68 +24,70 @@ import net.sourceforge.pmd.lang.rule.XPathRule;
  */
 public class XPathEvaluator {
 
-	public static final XPathEvaluator instance = new XPathEvaluator();
-	
-	private XPathEvaluator() {}
-	
-	public Node getCompilationUnit(String source) {
-		
-		LanguageVersionHandler languageVersionHandler = getLanguageVersionHandler();
-		Parser parser = languageVersionHandler.getParser(languageVersionHandler.getDefaultParserOptions());
-		Node node = parser.parse(null, new StringReader(source));
-		languageVersionHandler.getSymbolFacade().start(node);
-		languageVersionHandler.getTypeResolutionFacade(null).start(node);
-		return node;
-	}
+    public static final XPathEvaluator instance = new XPathEvaluator();
 
-	private LanguageVersionHandler getLanguageVersionHandler() {
-		LanguageVersion languageVersion = getLanguageVersion();
-		return languageVersion.getLanguageVersionHandler();
-	}
+    private XPathEvaluator() {
+    }
 
-	private LanguageVersion getLanguageVersion() {
-	    return LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getDefaultVersion();
-	}
+    public Node getCompilationUnit(String source) {
 
-	/**
-	 * Builds a temporary XPathRule using the query provided and executes it against
-	 * the source. Returns a list of nodes detailing any issues found with it.
-	 * 
-	 * @param source
-	 * @param xpathQuery
-	 * @param xpathVersion
-	 * @return
-	 * @throws ParseException
-	 */
-	public List<Node> evaluate(String source, String xpathQuery, String xpathVersion) throws ParseException {
+        LanguageVersionHandler languageVersionHandler = getLanguageVersionHandler();
+        Parser parser = languageVersionHandler.getParser(languageVersionHandler.getDefaultParserOptions());
+        Node node = parser.parse(null, new StringReader(source));
+        languageVersionHandler.getSymbolFacade().start(node);
+        languageVersionHandler.getTypeResolutionFacade(null).start(node);
+        return node;
+    }
 
-		Node c = getCompilationUnit(source);
+    private LanguageVersionHandler getLanguageVersionHandler() {
+        LanguageVersion languageVersion = getLanguageVersion();
+        return languageVersion.getLanguageVersionHandler();
+    }
 
-		final List<Node> results = new ArrayList<Node>();
+    private LanguageVersion getLanguageVersion() {
+        return LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getDefaultVersion();
+    }
 
-		XPathRule xpathRule = new XPathRule() {
-			public void addViolation(Object data, Node node, String arg) {
-				results.add(node);
-			}
-		};
-		
-		xpathRule.setMessage("");
-		xpathRule.setLanguage(getLanguageVersion().getLanguage());
-		xpathRule.setProperty(XPathRule.XPATH_DESCRIPTOR, xpathQuery);
-		xpathRule.setProperty(XPathRule.VERSION_DESCRIPTOR, xpathVersion);
+    /**
+     * Builds a temporary XPathRule using the query provided and executes it
+     * against the source. Returns a list of nodes detailing any issues found
+     * with it.
+     * 
+     * @param source
+     * @param xpathQuery
+     * @param xpathVersion
+     * @return
+     * @throws ParseException
+     */
+    public List<Node> evaluate(String source, String xpathQuery, String xpathVersion) throws ParseException {
 
-		RuleSet ruleSet = RuleSetUtil.newSingle(xpathRule);
+        Node c = getCompilationUnit(source);
 
-		RuleSets ruleSets = new RuleSets(ruleSet);
+        final List<Node> results = new ArrayList<Node>();
 
-		RuleContext ruleContext = new RuleContext();
-		ruleContext.setLanguageVersion(getLanguageVersion());
+        XPathRule xpathRule = new XPathRule() {
+            public void addViolation(Object data, Node node, String arg) {
+                results.add(node);
+            }
+        };
 
-		List<Node> nodes = new ArrayList<Node>(1);
-		nodes.add(c);
-		
-		ruleSets.apply(nodes, ruleContext, xpathRule.getLanguage());
+        xpathRule.setMessage("");
+        xpathRule.setLanguage(getLanguageVersion().getLanguage());
+        xpathRule.setProperty(XPathRule.XPATH_DESCRIPTOR, xpathQuery);
+        xpathRule.setProperty(XPathRule.VERSION_DESCRIPTOR, xpathVersion);
 
-		return results;
-	}
+        RuleSet ruleSet = RuleSetUtil.newSingle(xpathRule);
+
+        RuleSets ruleSets = new RuleSets(ruleSet);
+
+        RuleContext ruleContext = new RuleContext();
+        ruleContext.setLanguageVersion(getLanguageVersion());
+
+        List<Node> nodes = new ArrayList<Node>(1);
+        nodes.add(c);
+
+        ruleSets.apply(nodes, ruleContext, xpathRule.getLanguage());
+
+        return results;
+    }
 }

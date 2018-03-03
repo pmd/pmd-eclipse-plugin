@@ -1,3 +1,4 @@
+
 package net.sourceforge.pmd.eclipse.runtime.builder;
 
 import java.util.Map;
@@ -16,20 +17,22 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 
 /**
- * Implements an incremental builder for PMD. Use ResourceVisitor and DeltaVisitor
- * to process each file of the project.
+ * Implements an incremental builder for PMD. Use ResourceVisitor and
+ * DeltaVisitor to process each file of the project.
  *
  * @author Philippe Herlin
  *
  */
 public class PMDBuilder extends IncrementalProjectBuilder {
-	
+
     public static final Logger log = Logger.getLogger(PMDBuilder.class);
     public static final String PMD_BUILDER = "net.sourceforge.pmd.eclipse.plugin.pmdBuilder";
 
     public static final IProject[] EMPTY_PROJECT_ARRAY = new IProject[0];
+
     /**
-     * @see org.eclipse.core.resources.IncrementalProjectBuilder#build(int, java.util.Map, org.eclipse.core.runtime.IProgressMonitor)
+     * @see org.eclipse.core.resources.IncrementalProjectBuilder#build(int,
+     *      java.util.Map, org.eclipse.core.runtime.IProgressMonitor)
      */
     protected IProject[] build(int kind, Map args, IProgressMonitor monitor) throws CoreException {
         log.info("Incremental builder activated");
@@ -48,7 +51,8 @@ public class PMDBuilder extends IncrementalProjectBuilder {
                 log.warn("This kind of build is not supported : " + kind);
             }
         } catch (CommandException e) {
-            throw new CoreException(new Status(IStatus.ERROR, PMDPlugin.getDefault().getBundle().getSymbolicName(), 0, e.getMessage(), e));
+            throw new CoreException(new Status(IStatus.ERROR, PMDPlugin.getDefault().getBundle().getSymbolicName(), 0,
+                    e.getMessage(), e));
         }
 
         log.info("Build done.");
@@ -57,7 +61,9 @@ public class PMDBuilder extends IncrementalProjectBuilder {
 
     /**
      * Automatic build
-     * @param monitor a progress monitor
+     * 
+     * @param monitor
+     *            a progress monitor
      * @throws CommandException
      */
     private void buildAuto(IProgressMonitor monitor) throws CommandException {
@@ -66,7 +72,9 @@ public class PMDBuilder extends IncrementalProjectBuilder {
 
     /**
      * Full build
-     * @param monitor A progress monitor.
+     * 
+     * @param monitor
+     *            A progress monitor.
      * @throws CommandException
      */
     private void buildFull(IProgressMonitor monitor) throws CommandException {
@@ -78,7 +86,9 @@ public class PMDBuilder extends IncrementalProjectBuilder {
 
     /**
      * Incremental build
-     * @param monitor a progress monitor.
+     * 
+     * @param monitor
+     *            a progress monitor.
      * @throws CommandException
      */
     private void buildIncremental(IProgressMonitor monitor) throws CommandException {
@@ -90,7 +100,9 @@ public class PMDBuilder extends IncrementalProjectBuilder {
                 cmd.setResourceDelta(resourceDelta);
                 cmd.setTaskMarker(false);
                 cmd.setMonitor(monitor);
-                cmd.performExecute(); // a builder is always asynchronous; execute a command synchronously whatever its processor
+                cmd.performExecute(); // a builder is always asynchronous;
+                                      // execute a command synchronously
+                                      // whatever its processor
             } else {
                 log.info("No change reported. Performing no build");
             }
@@ -99,8 +111,11 @@ public class PMDBuilder extends IncrementalProjectBuilder {
 
     /**
      * Process all files in the project
-     * @param project the project
-     * @param monitor a progress monitor
+     * 
+     * @param project
+     *            the project
+     * @param monitor
+     *            a progress monitor
      * @throws CommandException
      */
     private void processProjectFiles(IProject project, IProgressMonitor monitor) throws CommandException {
@@ -108,7 +123,8 @@ public class PMDBuilder extends IncrementalProjectBuilder {
         cmd.addResource(project);
         cmd.setTaskMarker(false);
         cmd.setMonitor(monitor);
-        cmd.performExecute(); // a builder is always asynchronous; execute a command synchronously whatever its processor
+        cmd.performExecute(); // a builder is always asynchronous; execute a
+                              // command synchronously whatever its processor
     }
 
 }

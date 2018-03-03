@@ -33,6 +33,7 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package net.sourceforge.pmd.eclipse.runtime.cmd;
 
 import java.util.ArrayList;
@@ -92,6 +93,8 @@ import name.herlin.command.Timer;
  */
 public class ReviewCodeCmd extends AbstractDefaultCommand {
 
+    private static final Logger LOG = Logger.getLogger(ReviewCodeCmd.class);
+
     private final List<ISchedulingRule> resources = new ArrayList<ISchedulingRule>();
     private IResourceDelta resourceDelta;
     private Map<IFile, Set<MarkerInfo2>> markersByFile = new HashMap<IFile, Set<MarkerInfo2>>();
@@ -101,19 +104,21 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
     private int fileCount;
     private long pmdDuration;
     private String onErrorIssue = null;
-    /** Whether to run the review command, even if PMD is disabled in the project settings. */
+    /**
+     * Whether to run the review command, even if PMD is disabled in the project
+     * settings.
+     */
     private boolean runAlways = false;
     /**
-     * Maximum count of changed resources, that are considered to be not a full build.
-     * If more than these resources are changed, PMD will only be executed, if full build option is enabled.
+     * Maximum count of changed resources, that are considered to be not a full
+     * build. If more than these resources are changed, PMD will only be
+     * executed, if full build option is enabled.
      */
     private static final int MAXIMUM_RESOURCE_COUNT = 5;
 
     private IProjectProperties propertyCache = null;
 
     private static final long serialVersionUID = 1L;
-
-    private static final Logger log = Logger.getLogger(ReviewCodeCmd.class);
 
     /**
      * Default constructor
@@ -174,7 +179,7 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
         if (!doReview)
             return;
 
-        log.info("ReviewCode command starting.");
+        LOG.info("ReviewCode command starting.");
         try {
             fileCount = 0;
             ruleCount = 0;
@@ -232,7 +237,7 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
         } catch (CoreException e) {
             throw new CommandException("Core exception when reviewing code", e);
         } finally {
-            log.info("ReviewCode command has ended.");
+            LOG.info("ReviewCode command has ended.");
             setTerminated(true);
             done();
 
@@ -411,7 +416,7 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
             // Could add a property that lets us set the max number to analyze
             if (properties.isFullBuildEnabled() || isUserInitiated() || targetCount <= MAXIMUM_RESOURCE_COUNT) {
                 setStepCount(targetCount);
-                log.debug("Visiting resource " + resource.getName() + " : " + getStepCount());
+                LOG.debug("Visiting resource " + resource.getName() + " : " + getStepCount());
 
                 if (resource.exists()) {
                     final ResourceVisitor visitor = new ResourceVisitor();
@@ -427,7 +432,7 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
                     fileCount += visitor.getProcessedFilesCount();
                     pmdDuration += visitor.getActualPmdDuration();
                 } else {
-                    log.debug("Skipping resource " + resource.getName() + " because it doesn't exist.");
+                    LOG.debug("Skipping resource " + resource.getName() + " because it doesn't exist.");
                 }
             } else {
                 String message = "Skipping resource " + resource.getName() + " because of fullBuildEnabled flag and "
@@ -451,7 +456,7 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
     private void processProject(IProject project) throws CommandException {
         try {
             setStepCount(countResourceElement(project));
-            log.debug("Visiting  project " + project.getName() + " : " + getStepCount());
+            LOG.debug("Visiting  project " + project.getName() + " : " + getStepCount());
 
             if (project.hasNature(JavaCore.NATURE_ID)) {
                 processJavaProject(project);
@@ -485,7 +490,7 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
                     sourceContainer = root.getProject(entrie.getPath().toString());
                 }
                 if (sourceContainer == null) {
-                    log.warn("Source container " + entrie.getPath() + " for project " + project.getName()
+                    LOG.warn("Source container " + entrie.getPath() + " for project " + project.getName()
                             + " is not valid");
                 } else {
                     processResource(sourceContainer);
@@ -495,8 +500,8 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
     }
 
     private void taskScope(int activeRuleCount, int totalRuleCount) {
-        setTaskName("Checking with " + Integer.toString(activeRuleCount) + " out of "
-                + Integer.toString(totalRuleCount) + " rules");
+        setTaskName("Checking with " + Integer.toString(activeRuleCount) + " out of " + Integer.toString(totalRuleCount)
+                + " rules");
     }
 
     private RuleSet filteredRuleSet(IProjectProperties properties) throws CommandException, PropertiesException {
@@ -508,7 +513,8 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
         int rulesBefore = ruleSet.size();
         RuleSet filteredRuleSet = RuleSetUtil.newCopyOf(ruleSet);
         if (preferences.getGlobalRuleManagement()) {
-            // TODO: active rules are not language aware... filter by rule name...
+            // TODO: active rules are not language aware... filter by rule
+            // name...
             List<Rule> rulesToKeep = new ArrayList<Rule>();
             for (Rule rule : filteredRuleSet.getRules()) {
                 if (onlyActiveRuleNames.contains(rule.getName())) {
@@ -519,14 +525,16 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
             int rulesAfter = filteredRuleSet.size();
 
             if (rulesAfter < rulesBefore) {
-                PMDPlugin.getDefault().logWarn(
-                        "Ruleset has been filtered as Global Rule Management is active. " + rulesAfter + " of "
+                PMDPlugin.getDefault()
+                        .logWarn("Ruleset has been filtered as Global Rule Management is active. " + rulesAfter + " of "
                                 + rulesBefore + " rules are active and are used. " + (rulesBefore - rulesAfter)
                                 + " rules will be ignored.");
             }
         }
-        filteredRuleSet = RuleSetUtil.addExcludePatterns(filteredRuleSet, preferences.activeExclusionPatterns(), properties.getBuildPathExcludePatterns());
-        filteredRuleSet = RuleSetUtil.addIncludePatterns(filteredRuleSet, preferences.activeInclusionPatterns(), properties.getBuildPathIncludePatterns());
+        filteredRuleSet = RuleSetUtil.addExcludePatterns(filteredRuleSet, preferences.activeExclusionPatterns(),
+                properties.getBuildPathExcludePatterns());
+        filteredRuleSet = RuleSetUtil.addIncludePatterns(filteredRuleSet, preferences.activeInclusionPatterns(),
+                properties.getBuildPathIncludePatterns());
 
         taskScope(filteredRuleSet.getRules().size(), ruleSet.getRules().size());
         return filteredRuleSet;
@@ -557,7 +565,7 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
             // Could add a property that lets us set the max number to analyze
             if (properties.isFullBuildEnabled() || isUserInitiated() || targetCount <= MAXIMUM_RESOURCE_COUNT) {
                 setStepCount(targetCount);
-                log.debug("Visiting delta of resource " + resource.getName() + " : " + getStepCount());
+                LOG.debug("Visiting delta of resource " + resource.getName() + " : " + getStepCount());
 
                 DeltaVisitor visitor = new DeltaVisitor();
                 visitor.setMonitor(getMonitor());
@@ -572,11 +580,12 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
                 fileCount += visitor.getProcessedFilesCount();
                 pmdDuration += visitor.getActualPmdDuration();
             } else {
-                String message = "Skipping resourceDelta " + resource.getName() + " because of fullBuildEnabled flag and "
-                        + "targetCount is " + targetCount + ". This is more than " + MAXIMUM_RESOURCE_COUNT + "."
+                String message = "Skipping resourceDelta " + resource.getName()
+                        + " because of fullBuildEnabled flag and " + "targetCount is " + targetCount
+                        + ". This is more than " + MAXIMUM_RESOURCE_COUNT + "."
                         + " If you want to execute PMD, please check \"Full build enabled\" in the project settings";
                 PMDPlugin.getDefault().logInformation(message);
-                log.debug(message);
+                LOG.debug(message);
             }
 
         } catch (PropertiesException e) {
@@ -591,7 +600,7 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
      *
      */
     private void applyMarkers() {
-        log.info("Processing marker directives");
+        LOG.info("Processing marker directives");
         int violationCount = 0;
         final Timer timer = new Timer();
 
@@ -613,13 +622,13 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
                 worked(1);
             }
         } catch (CoreException e) {
-            log.warn("CoreException when setting marker for file " + currentFile + " : " + e.getMessage()); // TODO:
+            LOG.warn("CoreException when setting marker for file " + currentFile + " : " + e.getMessage()); // TODO:
                                                                                                             // NLS
         } finally {
             timer.stop();
             int count = markersByFile.size();
             logInfo("" + violationCount + " markers applied on " + count + " files in " + timer.getDuration() + "ms.");
-            log.info("End of processing marker directives. " + violationCount + " violations for " + count + " files.");
+            LOG.info("End of processing marker directives. " + violationCount + " violations for " + count + " files.");
         }
     }
 

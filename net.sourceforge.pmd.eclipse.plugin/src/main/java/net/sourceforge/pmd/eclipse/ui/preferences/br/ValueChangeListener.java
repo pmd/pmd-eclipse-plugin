@@ -1,3 +1,4 @@
+
 package net.sourceforge.pmd.eclipse.ui.preferences.br;
 
 import net.sourceforge.pmd.properties.PropertyDescriptor;
@@ -10,19 +11,27 @@ import net.sourceforge.pmd.properties.PropertySource;
  */
 public interface ValueChangeListener {
 
-	/**
-	 * Method changed.
-	 * @param rule RuleSelection
-	 * @param desc PropertyDescriptor<?>
-	 * @param newValue Object
-	 */
-	void changed(RuleSelection rule, PropertyDescriptor<?> desc, Object newValue);
-
-	   /**
+    /**
      * Method changed.
-     * @param rule Rule
-     * @param desc PropertyDescriptor<?>
-     * @param newValue Object
+     * 
+     * @param rule
+     *            RuleSelection
+     * @param desc
+     *            PropertyDescriptor<?>
+     * @param newValue
+     *            Object
+     */
+    void changed(RuleSelection rule, PropertyDescriptor<?> desc, Object newValue);
+
+    /**
+     * Method changed.
+     * 
+     * @param rule
+     *            Rule
+     * @param desc
+     *            PropertyDescriptor<?>
+     * @param newValue
+     *            Object
      */
     void changed(PropertySource source, PropertyDescriptor<?> desc, Object newValue);
 }

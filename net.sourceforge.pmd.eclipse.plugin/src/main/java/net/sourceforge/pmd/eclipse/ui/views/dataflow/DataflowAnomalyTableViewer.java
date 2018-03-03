@@ -1,3 +1,4 @@
+
 package net.sourceforge.pmd.eclipse.ui.views.dataflow;
 
 import net.sourceforge.pmd.RuleViolation;
@@ -44,7 +45,7 @@ public class DataflowAnomalyTableViewer extends TableViewer {
         tableLayout.horizontalSpacing = tableLayout.verticalSpacing = 0;
         table.setLayout(tableLayout);
     }
-    
+
     /**
      * Cresate the Columns for th Table
      * 
@@ -56,7 +57,7 @@ public class DataflowAnomalyTableViewer extends TableViewer {
         typeColumn.setWidth(80);
         typeColumn.setText(getString(StringKeys.VIEW_DATAFLOW_TABLE_COLUMN_TYPE));
         typeColumn.setToolTipText(getString(StringKeys.VIEW_DATAFLOW_TABLE_COLUMN_TYPE_TOOLTIP));
-        
+
         // Line(s) where the Anomaly occurs
         final TableColumn lineColumn = new TableColumn(table, SWT.RIGHT);
         lineColumn.setWidth(100);
@@ -114,7 +115,7 @@ public class DataflowAnomalyTableViewer extends TableViewer {
         final TableColumn column = getTable().getColumn(columnNr);
         final int sortOrder = columnSortOrder[columnNr];
         TableColumnSorter sorter = null;
-        
+
         switch (columnNr) {
         // sort by Anomaly-Type-Name
         case 0:
@@ -139,8 +140,8 @@ public class DataflowAnomalyTableViewer extends TableViewer {
                             result = line1.compareTo(line2) * sortOrder;
                         } else {
                             result = message1.compareToIgnoreCase(message2) * sortOrder;
-                        }    
-                    } 
+                        }
+                    }
                     return result;
                 }
             };
@@ -159,7 +160,7 @@ public class DataflowAnomalyTableViewer extends TableViewer {
                         final int m1_l2 = violation2.getBeginLine();
                         final int m2_l1 = violation1.getEndLine();
                         final int m2_l2 = violation2.getEndLine();
-    
+
                         final Integer line1 = Integer.valueOf((m1_l1 < m1_l2) ? (m1_l1) : (m1_l2));
                         final Integer line2 = Integer.valueOf((m2_l1 < m2_l2) ? (m2_l1) : (m2_l2));
                         result = line1.compareTo(line2) * sortOrder;
@@ -171,13 +172,13 @@ public class DataflowAnomalyTableViewer extends TableViewer {
 
         case 2:
             // sort by the variable Name
-            sorter =  new TableColumnSorter(column, sortOrder) {
+            sorter = new TableColumnSorter(column, sortOrder) {
                 public int compare(Viewer viewer, Object e1, Object e2) {
                     int result = 0;
                     if (e1 instanceof RuleViolation && e2 instanceof RuleViolation) {
                         final RuleViolation violation1 = (RuleViolation) e1;
                         final RuleViolation violation2 = (RuleViolation) e2;
-    
+
                         final String var1 = violation1.getVariableName();
                         final String var2 = violation2.getVariableName();
                         result = var1.compareToIgnoreCase(var2) * sortOrder;
@@ -186,7 +187,7 @@ public class DataflowAnomalyTableViewer extends TableViewer {
                 }
             };
             break;
-        
+
         default:
             // do nothing
         }
@@ -201,7 +202,7 @@ public class DataflowAnomalyTableViewer extends TableViewer {
      */
     public void setVisible(boolean visible) {
         getTable().setVisible(visible);
-        ((GridData)getTable().getLayoutData()).exclude = !visible;
+        ((GridData) getTable().getLayoutData()).exclude = !visible;
     }
 
     /**

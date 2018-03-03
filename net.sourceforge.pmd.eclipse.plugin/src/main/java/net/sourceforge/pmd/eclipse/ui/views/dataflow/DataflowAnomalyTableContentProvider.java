@@ -1,3 +1,4 @@
+
 package net.sourceforge.pmd.eclipse.ui.views.dataflow;
 
 import java.util.ArrayList;
@@ -13,16 +14,20 @@ import net.sourceforge.pmd.lang.java.rule.errorprone.DaaRuleViolation;
 /**
  * Provides the Content for the DataflowAnomalyTable
  *
- * @author SebastianRaffel  ( 07.06.2005 )
+ * @author SebastianRaffel ( 07.06.2005 )
  */
 public class DataflowAnomalyTableContentProvider implements IStructuredContentProvider {
-	private static final int MAX_ROWS = 200;
+    private static final int MAX_ROWS = 200;
 
-	/* @see org.eclipse.jface.viewers.IStructuredContentProvider#getElements(java.lang.Object) */
-	public Object[] getElements(Object inputElement) {
+    /*
+     * @see
+     * org.eclipse.jface.viewers.IStructuredContentProvider#getElements(java.
+     * lang.Object)
+     */
+    public Object[] getElements(Object inputElement) {
 
-	    if (inputElement instanceof Iterator<?>) {
-            final Iterator<DaaRuleViolation> violationsIterator = (Iterator<DaaRuleViolation>)inputElement;
+        if (inputElement instanceof Iterator<?>) {
+            final Iterator<DaaRuleViolation> violationsIterator = (Iterator<DaaRuleViolation>) inputElement;
             final List<DaaRuleViolation> violations = new ArrayList<DaaRuleViolation>();
             for (int count = 0; violationsIterator.hasNext() && count < MAX_ROWS; count++) {
                 final DaaRuleViolation violation = violationsIterator.next();
@@ -34,12 +39,12 @@ public class DataflowAnomalyTableContentProvider implements IStructuredContentPr
             return violations.toArray(new DaaRuleViolation[violations.size()]);
         }
         return Util.EMPTY_ARRAY;
-	}
+    }
 
-	/* @see org.eclipse.jface.viewers.IContentProvider#dispose() */
-	public void dispose() {
+    /* @see org.eclipse.jface.viewers.IContentProvider#dispose() */
+    public void dispose() {
         // do nothing
-	}
+    }
 
     public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
         // do nothing
@@ -47,8 +52,9 @@ public class DataflowAnomalyTableContentProvider implements IStructuredContentPr
 
     private static boolean violationIsInList(DaaRuleViolation newViolation, List<DaaRuleViolation> list) {
 
-    	if (list.isEmpty()) return false;
-    	
+        if (list.isEmpty())
+            return false;
+
         final Iterator<DaaRuleViolation> violationIterator = list.iterator();
         while (violationIterator.hasNext()) {
 

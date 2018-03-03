@@ -1,3 +1,4 @@
+
 package net.sourceforge.pmd.eclipse.ui.views.actions;
 
 import net.sourceforge.pmd.eclipse.ui.PMDUiConstants;
@@ -27,31 +28,38 @@ public class RemoveViolationAction extends AbstractViolationSelectionAction {
         super(viewer);
     }
 
- 	protected String textId() { return StringKeys.VIEW_ACTION_REMOVE_VIOLATION; }
- 	
- 	protected String imageId() { return PMDUiConstants.ICON_BUTTON_REMVIO; }
-    
-    protected String tooltipMsgId() { return StringKeys.VIEW_TOOLTIP_REMOVE_VIOLATION; } 
-    
+    protected String textId() {
+        return StringKeys.VIEW_ACTION_REMOVE_VIOLATION;
+    }
+
+    protected String imageId() {
+        return PMDUiConstants.ICON_BUTTON_REMVIO;
+    }
+
+    protected String tooltipMsgId() {
+        return StringKeys.VIEW_TOOLTIP_REMOVE_VIOLATION;
+    }
+
     /**
      * Executes the Action
      */
     public void run() {
         // simply: get all Markers
         final IMarker[] markers = getSelectedViolations();
-        if (markers == null) return;
-        
+        if (markers == null)
+            return;
+
         try {
             IWorkspace workspace = ResourcesPlugin.getWorkspace();
             workspace.run(new IWorkspaceRunnable() {
                 public void run(IProgressMonitor monitor) throws CoreException {
-                    for (IMarker marker : markers) {                        
-                        marker.delete();	// ... and delete them
+                    for (IMarker marker : markers) {
+                        marker.delete(); // ... and delete them
                     }
                 }
             }, null);
         } catch (CoreException ce) {
-        	logErrorByKey(StringKeys.ERROR_CORE_EXCEPTION, ce);
+            logErrorByKey(StringKeys.ERROR_CORE_EXCEPTION, ce);
         }
     }
 

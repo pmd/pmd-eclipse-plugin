@@ -69,121 +69,126 @@ import org.eclipse.ui.texteditor.ITextEditor;
  *
  */
 public class CPDViewTooltipListener2 implements Listener {
-	
+
     private final CPDView2 view;
     private Cursor normalCursor;
     private Cursor handCursor;
-    
+
     public CPDViewTooltipListener2(CPDView2 view) {
         this.view = view;
         initialize();
     }
 
     private void initialize() {
-    	Display disp = Display.getCurrent();
-    	normalCursor = disp.getSystemCursor(SWT.CURSOR_ARROW);
-    	handCursor = disp.getSystemCursor(SWT.CURSOR_HAND);
+        Display disp = Display.getCurrent();
+        normalCursor = disp.getSystemCursor(SWT.CURSOR_ARROW);
+        handCursor = disp.getSystemCursor(SWT.CURSOR_HAND);
     }
 
     // open file and jump to the startline
-	private void highlight(Match match, Mark entry) {
-		
-		IPath path = Path.fromOSString(entry.getFilename());
-		IFile file = ResourcesPlugin.getWorkspace().getRoot().getFileForLocation(path);
-		if (file == null) return;
-		
-	    try {
-	        // open editor
-	        IWorkbenchPage page = view.getSite().getPage();
-	        IEditorPart part = IDE.openEditor(page, file);
-	        if (part instanceof ITextEditor) {
-	            // select text
-	            ITextEditor textEditor = (ITextEditor) part;
-	            IDocument document = textEditor.getDocumentProvider().getDocument(textEditor.getEditorInput());
-	            int offset = document.getLineOffset(entry.getBeginLine()-1);
-	            int length = document.getLineOffset(entry.getBeginLine()-1 + match.getLineCount()) - offset -1;
-	            textEditor.selectAndReveal(offset, length); 
-	        }                    
-	    } catch (PartInitException pie) {
-	        PMDPlugin.getDefault().logError(getString(StringKeys.ERROR_VIEW_EXCEPTION), pie);
-	    } catch (BadLocationException ble) {
-	        PMDPlugin.getDefault().logError(getString(StringKeys.ERROR_VIEW_EXCEPTION), ble);
-	    }
-	}
-    
+    private void highlight(Match match, Mark entry) {
+
+        IPath path = Path.fromOSString(entry.getFilename());
+        IFile file = ResourcesPlugin.getWorkspace().getRoot().getFileForLocation(path);
+        if (file == null)
+            return;
+
+        try {
+            // open editor
+            IWorkbenchPage page = view.getSite().getPage();
+            IEditorPart part = IDE.openEditor(page, file);
+            if (part instanceof ITextEditor) {
+                // select text
+                ITextEditor textEditor = (ITextEditor) part;
+                IDocument document = textEditor.getDocumentProvider().getDocument(textEditor.getEditorInput());
+                int offset = document.getLineOffset(entry.getBeginLine() - 1);
+                int length = document.getLineOffset(entry.getBeginLine() - 1 + match.getLineCount()) - offset - 1;
+                textEditor.selectAndReveal(offset, length);
+            }
+        } catch (PartInitException pie) {
+            PMDPlugin.getDefault().logError(getString(StringKeys.ERROR_VIEW_EXCEPTION), pie);
+        } catch (BadLocationException ble) {
+            PMDPlugin.getDefault().logError(getString(StringKeys.ERROR_VIEW_EXCEPTION), ble);
+        }
+    }
+
     private static Match matchAt(TreeItem treeItem) {
 
-		Object item = ((TreeNode) treeItem.getData()).getValue();
-		return item instanceof Match ? (Match)item : null;
+        Object item = ((TreeNode) treeItem.getData()).getValue();
+        return item instanceof Match ? (Match) item : null;
     }
-    
-	private Mark itemAt(TreeItem treeItem, Point location, GC gc) {
 
-		if (treeItem == null) return null;
-		
-		Object item = ((TreeNode) treeItem.getData()).getValue();
+    private Mark itemAt(TreeItem treeItem, Point location, GC gc) {
 
-		String[] names;
-		if (item instanceof Match) {
-			names = CPDViewLabelProvider2.sourcesFor((Match) item);
-		} else {
-			return null;
-		}
+        if (treeItem == null)
+            return null;
 
-		location.x -= view.widthOf(0);	// subtract width of preceeding columns
-		
-		int colWidth = view.widthOf(CPDView2.SourceColumnIdx);
-		int cellWidth = colWidth / names.length;
+        Object item = ((TreeNode) treeItem.getData()).getValue();
 
-  		for (int i=0; i<names.length; i++) {
-  			int rightEdge = colWidth - (cellWidth * i);  			
-  			int[] widths = view.widthsFor(names[i]);
-  			if (widths == null) continue;
-  			int classWidth = widths[1];
-  			if (location.x > rightEdge-classWidth && 	// right of the start?
-  				location.x < rightEdge)	{				// left of the end?
-  				return CPDViewLabelProvider2.entriesFor((Match)item)[i];				
-  				}
-  			}
-  			
-		return null;
-	}
-	
-    /* 
-     * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
+        String[] names;
+        if (item instanceof Match) {
+            names = CPDViewLabelProvider2.sourcesFor((Match) item);
+        } else {
+            return null;
+        }
+
+        location.x -= view.widthOf(0); // subtract width of preceeding columns
+
+        int colWidth = view.widthOf(CPDView2.SourceColumnIdx);
+        int cellWidth = colWidth / names.length;
+
+        for (int i = 0; i < names.length; i++) {
+            int rightEdge = colWidth - (cellWidth * i);
+            int[] widths = view.widthsFor(names[i]);
+            if (widths == null)
+                continue;
+            int classWidth = widths[1];
+            if (location.x > rightEdge - classWidth && // right of the start?
+                    location.x < rightEdge) { // left of the end?
+                return CPDViewLabelProvider2.entriesFor((Match) item)[i];
+            }
+        }
+
+        return null;
+    }
+
+    /*
+     * @see
+     * org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.
+     * Event)
      */
     public void handleEvent(Event event) {
-        
-    	Tree tree = view.getTreeViewer().getTree();
+
+        Tree tree = view.getTreeViewer().getTree();
         Point location = new Point(event.x, event.y);
         Shell shell = tree.getShell();
-   	 	
+
         if (view.inColumn(location) != CPDView2.SourceColumnIdx) {
-   			shell.setCursor(normalCursor);
-   			return;
-   	 	}
-   	 	
+            shell.setCursor(normalCursor);
+            return;
+        }
+
         TreeItem item = tree.getItem(location);
         Mark entry = itemAt(item, location, event.gc);
         if (entry == null) {
-        	shell.setCursor(normalCursor);
-        	return;
+            shell.setCursor(normalCursor);
+            return;
         }
-        
+
         switch (event.type) {
-            case SWT.MouseDown:
-                 highlight(matchAt(item), entry);               	
-                 break;
-            case SWT.MouseMove:          
-            case SWT.MouseHover:
-                 shell.setCursor(handCursor);
-                 break;                
-            default:
-                break;
-        }        
+        case SWT.MouseDown:
+            highlight(matchAt(item), entry);
+            break;
+        case SWT.MouseMove:
+        case SWT.MouseHover:
+            shell.setCursor(handCursor);
+            break;
+        default:
+            break;
+        }
 
     }
-	
+
     /**
      * Helper method to return an NLS string from its key
      */

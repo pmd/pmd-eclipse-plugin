@@ -33,6 +33,7 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package net.sourceforge.pmd.eclipse.runtime.properties.impl;
 
 import java.io.ByteArrayInputStream;
@@ -70,7 +71,7 @@ import net.sourceforge.pmd.util.StringUtil;
  *
  */
 public class ProjectPropertiesImpl implements IProjectProperties {
-    private static final Logger log = Logger.getLogger(ProjectPropertiesImpl.class);
+    private static final Logger LOG = Logger.getLogger(ProjectPropertiesImpl.class);
 
     private static final String PROJECT_RULESET_FILE = ".ruleset";
 
@@ -85,10 +86,11 @@ public class ProjectPropertiesImpl implements IProjectProperties {
     private IWorkingSet projectWorkingSet;
     private boolean includeDerivedFiles;
     private boolean violationsAsErrors = true;
-    private boolean fullBuildEnabled  = true; // default in case didn't come from properties
+    private boolean fullBuildEnabled = true; // default in case didn't come from
+                                             // properties
     private Set<String> buildPathExcludePatterns = new HashSet<String>();
     private Set<String> buildPathIncludePatterns = new HashSet<String>();
-    
+
     /**
      * The default constructor takes a project as an argument
      */
@@ -101,37 +103,38 @@ public class ProjectPropertiesImpl implements IProjectProperties {
     }
 
     /**
-     * Determines the included and excluded paths configured for the build path of this eclipse project.
+     * Determines the included and excluded paths configured for the build path
+     * of this eclipse project.
      */
     private void determineBuildPathIncludesExcludes() {
         IClasspathEntry source = PMDPlugin.buildSourceClassPathEntryFor(project);
         if (source != null) {
             try {
-               String basePath = new File(project.getWorkspace().getRoot().getLocation().toOSString()
+                String basePath = new File(project.getWorkspace().getRoot().getLocation().toOSString()
                         + java.io.File.separator + source.getPath().toOSString()).getCanonicalPath();
-               if (!basePath.endsWith(File.separator)) {
-                   basePath += File.separator;
-               }
-               if (source.getExclusionPatterns() != null) {
-                   for (IPath path : source.getExclusionPatterns()) {
-                       String pathString = path.toOSString();
-                       if (!pathString.endsWith(File.separator)) {
-                           pathString += File.separator;
-                       }
-                       buildPathExcludePatterns.add(basePath + pathString + ".*");
-                   }
-               }
-               if (source.getInclusionPatterns() != null) {
-                   for (IPath path : source.getInclusionPatterns()) {
-                       String pathString = path.toOSString();
-                       if (!pathString.endsWith(File.separator)) {
-                           pathString += File.separator;
-                       }
-                       buildPathIncludePatterns.add(basePath + pathString + ".*");
-                   }
-               }
+                if (!basePath.endsWith(File.separator)) {
+                    basePath += File.separator;
+                }
+                if (source.getExclusionPatterns() != null) {
+                    for (IPath path : source.getExclusionPatterns()) {
+                        String pathString = path.toOSString();
+                        if (!pathString.endsWith(File.separator)) {
+                            pathString += File.separator;
+                        }
+                        buildPathExcludePatterns.add(basePath + pathString + ".*");
+                    }
+                }
+                if (source.getInclusionPatterns() != null) {
+                    for (IPath path : source.getInclusionPatterns()) {
+                        String pathString = path.toOSString();
+                        if (!pathString.endsWith(File.separator)) {
+                            pathString += File.separator;
+                        }
+                        buildPathIncludePatterns.add(basePath + pathString + ".*");
+                    }
+                }
             } catch (IOException e) {
-               log.error("Couldn't determine build class path", e);
+                LOG.error("Couldn't determine build class path", e);
             }
         }
     }
@@ -146,7 +149,7 @@ public class ProjectPropertiesImpl implements IProjectProperties {
     /**
      * @see net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties#isPmdEnabled()
      */
-    public boolean isPmdEnabled()  {
+    public boolean isPmdEnabled() {
         return this.pmdEnabled;
     }
 
@@ -154,7 +157,7 @@ public class ProjectPropertiesImpl implements IProjectProperties {
      * @see net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties#setPmdEnabled(boolean)
      */
     public void setPmdEnabled(final boolean pmdEnabled) {
-        log.debug("Enable PMD for project " + this.project.getName() + ": " + this.pmdEnabled);
+        LOG.debug("Enable PMD for project " + this.project.getName() + ": " + this.pmdEnabled);
         if (this.pmdEnabled != pmdEnabled) {
             this.pmdEnabled = pmdEnabled;
             this.needRebuild |= pmdEnabled;
@@ -172,18 +175,19 @@ public class ProjectPropertiesImpl implements IProjectProperties {
      * @see net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties#setProjectRuleSet(net.sourceforge.pmd.RuleSet)
      */
     public void setProjectRuleSet(final RuleSet projectRuleSet) throws PropertiesException {
-        log.debug("Set a rule set for project " + this.project.getName());
+        LOG.debug("Set a rule set for project " + this.project.getName());
         if (projectRuleSet == null) {
-            throw new PropertiesException("Setting a project rule set to null"); // TODO NLS
+            throw new PropertiesException("Setting a project rule set to null"); // TODO
+                                                                                 // NLS
         }
 
         this.needRebuild |= !this.projectRuleSet.getRules().equals(projectRuleSet.getRules());
         this.projectRuleSet = projectRuleSet;
         if (this.ruleSetStoredInProject) {
-        	File f = getResolvedRuleSetFile();
-        	if (f != null) {
-        		projectRuleFileLastModified = f.lastModified();
-        	}
+            File f = getResolvedRuleSetFile();
+            if (f != null) {
+                projectRuleFileLastModified = f.lastModified();
+            }
         }
     }
 
@@ -198,17 +202,20 @@ public class ProjectPropertiesImpl implements IProjectProperties {
      * @see net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties#setRuleSetStoredInProject(boolean)
      */
     public void setRuleSetStoredInProject(final boolean ruleSetStoredInProject) throws PropertiesException {
-        log.debug("Set rule set stored in project for project " + this.project.getName() + ": " + ruleSetStoredInProject);
+        LOG.debug(
+                "Set rule set stored in project for project " + this.project.getName() + ": " + ruleSetStoredInProject);
         this.needRebuild |= this.ruleSetStoredInProject != ruleSetStoredInProject;
         this.ruleSetStoredInProject = ruleSetStoredInProject;
         if (this.ruleSetStoredInProject) {
-        	if (!isRuleSetFileExist()) {
-        		throw new PropertiesException("The project ruleset file cannot be found for project " + this.project.getName()); // TODO NLS
-        	}
-        	File f = getResolvedRuleSetFile();
-        	if (f != null) {
-        		projectRuleFileLastModified = f.lastModified();
-        	}
+            if (!isRuleSetFileExist()) {
+                throw new PropertiesException(
+                        "The project ruleset file cannot be found for project " + this.project.getName()); // TODO
+                                                                                                           // NLS
+            }
+            File f = getResolvedRuleSetFile();
+            if (f != null) {
+                projectRuleFileLastModified = f.lastModified();
+            }
         }
     }
 
@@ -216,29 +223,31 @@ public class ProjectPropertiesImpl implements IProjectProperties {
      * @see net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties#getRuleSetFile()
      */
     public String getRuleSetFile() {
-    	
+
         return StringUtil.isEmpty(ruleSetFile) ? PROJECT_RULESET_FILE : ruleSetFile;
-	}
+    }
 
     /**
      * @see net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties#setRuleSetFile(String)
      */
-	public void setRuleSetFile(String ruleSetFile) throws PropertiesException {
-        log.debug("Set rule set file for project " + project.getName() + ": " + ruleSetFile);
+    public void setRuleSetFile(String ruleSetFile) throws PropertiesException {
+        LOG.debug("Set rule set file for project " + project.getName() + ": " + ruleSetFile);
         needRebuild |= this.ruleSetFile == null || !this.ruleSetFile.equals(ruleSetFile);
         this.ruleSetFile = ruleSetFile;
         if (ruleSetStoredInProject) {
             if (!isRuleSetFileExist()) {
-                throw new PropertiesException("The project ruleset file cannot be found for project " + project.getName()); // TODO NLS
+                throw new PropertiesException(
+                        "The project ruleset file cannot be found for project " + project.getName()); // TODO
+                                                                                                      // NLS
             }
-        	File f = getResolvedRuleSetFile();
-        	if (f != null) {
-        		projectRuleFileLastModified = f.lastModified();
-        	}
+            File f = getResolvedRuleSetFile();
+            if (f != null) {
+                projectRuleFileLastModified = f.lastModified();
+            }
         }
-	}
+    }
 
-	/**
+    /**
      * @see net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties#getProjectWorkingSet()
      */
     public IWorkingSet getProjectWorkingSet() {
@@ -249,10 +258,11 @@ public class ProjectPropertiesImpl implements IProjectProperties {
      * @see net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties#setProjectWorkingSet(org.eclipse.ui.IWorkingSet)
      */
     public void setProjectWorkingSet(final IWorkingSet projectWorkingSet) {
-        log.debug("Set working set for project " + project.getName() + ": "
+        LOG.debug("Set working set for project " + project.getName() + ": "
                 + (projectWorkingSet == null ? "none" : projectWorkingSet.getName()));
 
-        needRebuild |= projectWorkingSet == null ? this.projectWorkingSet != null:!projectWorkingSet.equals(this.projectWorkingSet);
+        needRebuild |= projectWorkingSet == null ? this.projectWorkingSet != null
+                : !projectWorkingSet.equals(this.projectWorkingSet);
         this.projectWorkingSet = projectWorkingSet;
     }
 
@@ -260,14 +270,14 @@ public class ProjectPropertiesImpl implements IProjectProperties {
      * @see net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties#isNeedRebuild()
      */
     public boolean isNeedRebuild() {
-        log.debug("Query if project " + project.getName() + " need rebuild : " + (pmdEnabled && needRebuild));
-        log.debug("   PMD Enabled = " + pmdEnabled);
-        log.debug("   Project need rebuild = " + needRebuild);
+        LOG.debug("Query if project " + project.getName() + " need rebuild : " + (pmdEnabled && needRebuild));
+        LOG.debug("   PMD Enabled = " + pmdEnabled);
+        LOG.debug("   Project need rebuild = " + needRebuild);
         if (ruleSetStoredInProject) {
-        	File f = getResolvedRuleSetFile();
-        	if (f != null) {
-        		needRebuild |= f.lastModified() > projectRuleFileLastModified;
-        	}
+            File f = getResolvedRuleSetFile();
+            if (f != null) {
+                needRebuild |= f.lastModified() > projectRuleFileLastModified;
+            }
         }
         return pmdEnabled && needRebuild;
     }
@@ -276,7 +286,7 @@ public class ProjectPropertiesImpl implements IProjectProperties {
      * @see net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties#setNeedRebuild()
      */
     public void setNeedRebuild(final boolean needRebuild) {
-        log.debug("Set if rebuild is needed for project " + project.getName() + ": " + needRebuild);
+        LOG.debug("Set if rebuild is needed for project " + project.getName() + ": " + needRebuild);
         this.needRebuild = needRebuild;
     }
 
@@ -284,7 +294,7 @@ public class ProjectPropertiesImpl implements IProjectProperties {
      * @see net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties#isRuleSetFileExist()
      */
     public final boolean isRuleSetFileExist() {
-    	return getResolvedRuleSetFile().exists();
+        return getResolvedRuleSetFile().exists();
     }
 
     /**
@@ -316,7 +326,8 @@ public class ProjectPropertiesImpl implements IProjectProperties {
         File result = null;
         if (exists) {
             File f = new File(file.getLocation().toOSString());
-            // For some reason IFile says exists when it doesn't!  So double check.
+            // For some reason IFile says exists when it doesn't! So double
+            // check.
             if (f.exists()) {
                 result = f;
             }
@@ -329,7 +340,7 @@ public class ProjectPropertiesImpl implements IProjectProperties {
      *
      */
     public void createDefaultRuleSetFile() throws PropertiesException {
-        log.info("Create a default rule set file for project " + this.project.getName());
+        LOG.info("Create a default rule set file for project " + this.project.getName());
         ByteArrayOutputStream baos = null;
         ByteArrayInputStream bais = null;
         try {
@@ -349,8 +360,8 @@ public class ProjectPropertiesImpl implements IProjectProperties {
         } catch (CoreException e) {
             throw new PropertiesException(e);
         } finally {
-        	IOUtil.closeQuietly(baos);
-        	IOUtil.closeQuietly(bais);
+            IOUtil.closeQuietly(baos);
+            IOUtil.closeQuietly(bais);
         }
     }
 
@@ -365,7 +376,7 @@ public class ProjectPropertiesImpl implements IProjectProperties {
      * @see net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties#setIncludeDerivedFiles(boolean)
      */
     public void setIncludeDerivedFiles(boolean includeDerivedFiles) {
-        log.debug("Set if derived files should be included: " + includeDerivedFiles);
+        LOG.debug("Set if derived files should be included: " + includeDerivedFiles);
         this.needRebuild |= this.includeDerivedFiles != includeDerivedFiles;
         this.includeDerivedFiles = includeDerivedFiles;
     }
@@ -374,7 +385,7 @@ public class ProjectPropertiesImpl implements IProjectProperties {
      * @see net.sourceforge.pmd.eclipse.model.PMDPluginModel#sync()
      */
     public void sync() throws PropertiesException {
-        log.info("Commit properties for project " + project.getName());
+        LOG.info("Commit properties for project " + project.getName());
         projectPropertiesManager.storeProjectProperties(this);
     }
 
@@ -386,7 +397,7 @@ public class ProjectPropertiesImpl implements IProjectProperties {
     }
 
     public void setViolationsAsErrors(boolean violationsAsErrors) throws PropertiesException {
-        log.debug("Set to handle violations as errors: " + violationsAsErrors);
+        LOG.debug("Set to handle violations as errors: " + violationsAsErrors);
         needRebuild |= this.violationsAsErrors != violationsAsErrors;
         this.violationsAsErrors = violationsAsErrors;
     }
@@ -394,49 +405,52 @@ public class ProjectPropertiesImpl implements IProjectProperties {
     /**
      * @see net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties#isFullBuildEnabled()
      */
-	public boolean isFullBuildEnabled() throws PropertiesException {
-		return fullBuildEnabled;
-	}
+    public boolean isFullBuildEnabled() throws PropertiesException {
+        return fullBuildEnabled;
+    }
 
     /**
      * @see net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties#setFullBuildEnabled(boolean)
      */
-	public void setFullBuildEnabled(boolean fullBuildEnabled)
-			throws PropertiesException {
-        log.debug("Set if run at full build for project " + project.getName() + ": " + fullBuildEnabled);
-		if (this.fullBuildEnabled != fullBuildEnabled){
-			this.fullBuildEnabled = fullBuildEnabled;
-			if (this.fullBuildEnabled){
-				needRebuild = true;
-			}
-		}
-		
-	}
-	
-	/**
-	 * Provide some help to folks using the debugger and logging
-	 */
-	public String toString(){
-		String projectName = "n/a";
-		String projectRuleSetName = "n/a";
-		String projectWorkingSetName = "n/a";
-		if (project != null ){ projectName = project.getName();}
-		if (projectRuleSet!= null){ projectRuleSetName = projectRuleSet.getName();}
-		if (projectWorkingSet!=null){ projectWorkingSetName = projectWorkingSet.getName();}
-		
-		return "fullBuildEnabled:"+fullBuildEnabled 
-		+ " includeDerivedFiles:"+includeDerivedFiles+" pmdEnabled:"+pmdEnabled
-		+ " project:"+projectName+ " projectRuleSet:"+projectRuleSetName
-		+ " projectWorkingSet:"+projectWorkingSetName + " ruleSetFile:"+ruleSetFile
-		+ " ruleSetStoredInProject:"+ruleSetStoredInProject 
-		+ " violationsAsErrors: "+violationsAsErrors;
-	}
+    public void setFullBuildEnabled(boolean fullBuildEnabled) throws PropertiesException {
+        LOG.debug("Set if run at full build for project " + project.getName() + ": " + fullBuildEnabled);
+        if (this.fullBuildEnabled != fullBuildEnabled) {
+            this.fullBuildEnabled = fullBuildEnabled;
+            if (this.fullBuildEnabled) {
+                needRebuild = true;
+            }
+        }
 
-	public Set<String> getBuildPathExcludePatterns() {
-	    return buildPathExcludePatterns;
-	}
+    }
 
-	public Set<String> getBuildPathIncludePatterns() {
-	    return buildPathIncludePatterns;
-	}
+    /**
+     * Provide some help to folks using the debugger and logging
+     */
+    public String toString() {
+        String projectName = "n/a";
+        String projectRuleSetName = "n/a";
+        String projectWorkingSetName = "n/a";
+        if (project != null) {
+            projectName = project.getName();
+        }
+        if (projectRuleSet != null) {
+            projectRuleSetName = projectRuleSet.getName();
+        }
+        if (projectWorkingSet != null) {
+            projectWorkingSetName = projectWorkingSet.getName();
+        }
+
+        return "fullBuildEnabled:" + fullBuildEnabled + " includeDerivedFiles:" + includeDerivedFiles + " pmdEnabled:"
+                + pmdEnabled + " project:" + projectName + " projectRuleSet:" + projectRuleSetName
+                + " projectWorkingSet:" + projectWorkingSetName + " ruleSetFile:" + ruleSetFile
+                + " ruleSetStoredInProject:" + ruleSetStoredInProject + " violationsAsErrors: " + violationsAsErrors;
+    }
+
+    public Set<String> getBuildPathExcludePatterns() {
+        return buildPathExcludePatterns;
+    }
+
+    public Set<String> getBuildPathIncludePatterns() {
+        return buildPathIncludePatterns;
+    }
 }

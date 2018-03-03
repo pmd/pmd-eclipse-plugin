@@ -1,3 +1,4 @@
+
 package net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers;
 
 import net.sourceforge.pmd.Rule;
@@ -9,5 +10,5 @@ import net.sourceforge.pmd.Rule;
  */
 public interface RuleTarget {
 
-	void rule(Rule theRule);
+    void rule(Rule theRule);
 }

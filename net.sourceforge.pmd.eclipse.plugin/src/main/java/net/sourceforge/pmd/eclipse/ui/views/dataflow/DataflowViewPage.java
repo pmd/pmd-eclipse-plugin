@@ -1,3 +1,4 @@
+
 package net.sourceforge.pmd.eclipse.ui.views.dataflow;
 
 import java.util.Iterator;
@@ -38,11 +39,11 @@ import name.herlin.command.CommandException;
  *
  */
 public class DataflowViewPage extends AbstractStructureInspectorPage implements IPropertyListener {
-	
-    private Composite 					dfaFrame;
-    private Button 						switchButton;
 
-    protected DataflowGraphViewer 		graphViewer;
+    private Composite dfaFrame;
+    private Button switchButton;
+
+    protected DataflowGraphViewer graphViewer;
     protected DataflowAnomalyTableViewer tableViewer;
 
     private boolean isTableShown;
@@ -50,15 +51,20 @@ public class DataflowViewPage extends AbstractStructureInspectorPage implements 
 
     /**
      * Constructor
+     * 
      * @param part
-     * @param record the FileRecord
+     * @param record
+     *            the FileRecord
      */
     public DataflowViewPage(IWorkbenchPart part, FileRecord record) {
         super(part, record);
-       
+
     }
 
-    /* @see org.eclipse.ui.part.IPage#createControl(org.eclipse.swt.widgets.Composite) */
+    /*
+     * @see org.eclipse.ui.part.IPage#createControl(org.eclipse.swt.widgets.
+     * Composite)
+     */
     @Override
     public void createControl(Composite parent) {
         dfaFrame = new Composite(parent, SWT.NONE);
@@ -74,7 +80,7 @@ public class DataflowViewPage extends AbstractStructureInspectorPage implements 
 
         Label methodLabel = new Label(titleArea, 0);
         methodLabel.setText("Method: ");
-        
+
         buildMethodSelector(titleArea);
 
         // a label for the spacing
@@ -84,24 +90,24 @@ public class DataflowViewPage extends AbstractStructureInspectorPage implements 
         // the Button for showing or hiding the Anomaly-List
         switchButton = new Button(titleArea, SWT.RIGHT);
         switchButton.setLayoutData(new GridData(130, 25));
-        switchButton.addSelectionListener(new SelectionAdapter() {        	
-        	public void widgetSelected(SelectionEvent se) {
-	            isTableShown = !isTableShown;
-	            showTableArea(isTableShown);
-	
-	            if (!isTableShown) {
-	                if (graphViewer == null || graphViewer.getGraph() == null) {
-	                    return;
-	                }
-	
-	                final DataflowGraph graph = graphViewer.getGraph();
-	                if (graph.isMarked()) {
-	                    graph.demark();
-	                }
-	            }
-        	}}
-        );
-        
+        switchButton.addSelectionListener(new SelectionAdapter() {
+            public void widgetSelected(SelectionEvent se) {
+                isTableShown = !isTableShown;
+                showTableArea(isTableShown);
+
+                if (!isTableShown) {
+                    if (graphViewer == null || graphViewer.getGraph() == null) {
+                        return;
+                    }
+
+                    final DataflowGraph graph = graphViewer.getGraph();
+                    if (graph.isMarked()) {
+                        graph.demark();
+                    }
+                }
+            }
+        });
+
         switchButton.setText(getString(StringKeys.VIEW_DATAFLOW_SWITCHBUTTON_SHOW));
 
         // //////////////////////////////////////////////////
@@ -119,7 +125,7 @@ public class DataflowViewPage extends AbstractStructureInspectorPage implements 
 
         GridLayout mainLayout = new GridLayout(2, true);
         mainLayout.horizontalSpacing = mainLayout.verticalSpacing = 7;
-        mainLayout.marginWidth = 3; 	
+        mainLayout.marginWidth = 3;
         mainLayout.marginHeight = 3;
         dfaFrame.setLayout(mainLayout);
 
@@ -137,7 +143,8 @@ public class DataflowViewPage extends AbstractStructureInspectorPage implements 
     /**
      * Shows the DataflowGraph (and Dataflow-Anomalies) for a Method.
      *
-     * @param pmdMethod Method to show in the graph
+     * @param pmdMethod
+     *            Method to show in the graph
      */
     protected void showMethod(final ASTMethodDeclaration pmdMethod) {
         if (pmdMethod != null) {
@@ -149,11 +156,11 @@ public class DataflowViewPage extends AbstractStructureInspectorPage implements 
             graphViewer.addMouseListener(new MouseAdapter() {
 
                 public void mouseDown(MouseEvent e) {
-                   int row = (int)((double)e.y / DataflowGraphViewer.ROW_HEIGHT);
-                   graphViewer.getGraph().demark();
-                   graphViewer.getGraph().markNode(row);
-                   highlightLine( pmdMethod.getDataFlowNode().getFlow().get(row).getLine()-1 );
-                   tableViewer.getTable().deselectAll();
+                    int row = (int) ((double) e.y / DataflowGraphViewer.ROW_HEIGHT);
+                    graphViewer.getGraph().demark();
+                    graphViewer.getGraph().markNode(row);
+                    highlightLine(pmdMethod.getDataFlowNode().getFlow().get(row).getLine() - 1);
+                    tableViewer.getTable().deselectAll();
                 }
             });
             showTableArea(isTableShown);
@@ -161,9 +168,11 @@ public class DataflowViewPage extends AbstractStructureInspectorPage implements 
     }
 
     /**
-     * Shows or hides the DataflowAnomalyTable, set the right text for the button.
+     * Shows or hides the DataflowAnomalyTable, set the right text for the
+     * button.
      *
-     * @param isShown, true if the Table should be visible, false otherwise
+     * @param isShown,
+     *            true if the Table should be visible, false otherwise
      */
     private void showTableArea(boolean isShown) {
         tableViewer.setVisible(isShown);
@@ -186,46 +195,54 @@ public class DataflowViewPage extends AbstractStructureInspectorPage implements 
         // lay out to update the View
         dfaFrame.layout(true, true);
     }
-    
-    /* @see org.eclipse.jface.viewers.ISelectionChangedListener#selectionChanged(org.eclipse.jface.viewers.SelectionChangedEvent) */
-	public void selectionChanged(SelectionChangedEvent event) {
 
-		RuleViolation violation = selectedViolationFrom(event);
-		if (violation == null) return;
-		
-		String varName = violation.getVariableName();
-		if (StringUtil.isEmpty(varName)) return;
-		
-		int beginLine = violation.getBeginLine();
-		int endLine = violation.getEndLine();
+    /*
+     * @see
+     * org.eclipse.jface.viewers.ISelectionChangedListener#selectionChanged(org.
+     * eclipse.jface.viewers.SelectionChangedEvent)
+     */
+    public void selectionChanged(SelectionChangedEvent event) {
 
-		if (beginLine != 0 && endLine != 0) {
-			try {
-				int offset = getDocument().getLineOffset(violation.getBeginLine() - 1);
-				int length = getDocument().getLineOffset(violation.getEndLine()) - offset;
-				highlight(offset, length);
-			} catch (BadLocationException ble) {
-				logError(StringKeys.ERROR_RUNTIME_EXCEPTION	+ "Exception when selecting a line in the editor", ble);
-			}
+        RuleViolation violation = selectedViolationFrom(event);
+        if (violation == null)
+            return;
 
-			// showMethodToMarker(marker);
-			showMethodToViolation(violation);
+        String varName = violation.getVariableName();
+        if (StringUtil.isEmpty(varName))
+            return;
 
-			// then we calculate and color _a possible_ Path
-			// for this Error in the Dataflow
-			DataflowGraph graph = graphViewer.getGraph();
-			if (!graphViewer.isDisposed() && graph != null) {
-				graph.markPath(beginLine, endLine, varName);
-			}
-		}
-	}
+        int beginLine = violation.getBeginLine();
+        int endLine = violation.getEndLine();
+
+        if (beginLine != 0 && endLine != 0) {
+            try {
+                int offset = getDocument().getLineOffset(violation.getBeginLine() - 1);
+                int length = getDocument().getLineOffset(violation.getEndLine()) - offset;
+                highlight(offset, length);
+            } catch (BadLocationException ble) {
+                logError(StringKeys.ERROR_RUNTIME_EXCEPTION + "Exception when selecting a line in the editor", ble);
+            }
+
+            // showMethodToMarker(marker);
+            showMethodToViolation(violation);
+
+            // then we calculate and color _a possible_ Path
+            // for this Error in the Dataflow
+            DataflowGraph graph = graphViewer.getGraph();
+            if (!graphViewer.isDisposed() && graph != null) {
+                graph.markPath(beginLine, endLine, varName);
+            }
+        }
+    }
 
     /**
      * Refreshes the page with a new resource.
-     * @param newResource new resource for the page
+     * 
+     * @param newResource
+     *            new resource for the page
      */
     public void refresh(IResource newResource) {
-    	super.refresh(newResource);
+        super.refresh(newResource);
 
         if (isTableShown) {
             refreshDFATable(newResource);
@@ -237,9 +254,11 @@ public class DataflowViewPage extends AbstractStructureInspectorPage implements 
     }
 
     /**
-     * Executes a command to refresh the DFA table.
-     * After execution {@link #refresh(IResource)} will be called.
-     * @param newResource the new resource
+     * Executes a command to refresh the DFA table. After execution
+     * {@link #refresh(IResource)} will be called.
+     * 
+     * @param newResource
+     *            the new resource
      */
     public void refreshDFATable(IResource newResource) {
         isTableRefreshed = true;
@@ -253,7 +272,7 @@ public class DataflowViewPage extends AbstractStructureInspectorPage implements 
             cmd.addPropertyListener(this);
             cmd.performExecute();
         } catch (CommandException e) {
-        	logErrorByKey(StringKeys.ERROR_PMD_EXCEPTION, e);
+            logErrorByKey(StringKeys.ERROR_PMD_EXCEPTION, e);
         }
     }
 
@@ -261,10 +280,9 @@ public class DataflowViewPage extends AbstractStructureInspectorPage implements 
      * If the review is ready propertyChanged with the results will be called.
      */
     public void propertyChanged(Object source, int propId) {
-        if (source instanceof Iterator<?>
-                && propId == PMDRuntimeConstants.PROPERTY_REVIEW) {
+        if (source instanceof Iterator<?> && propId == PMDRuntimeConstants.PROPERTY_REVIEW) {
             tableViewer.setInput(source);
         }
     }
-    
+
 }

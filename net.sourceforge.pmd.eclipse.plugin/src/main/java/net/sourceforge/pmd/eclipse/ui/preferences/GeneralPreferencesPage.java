@@ -505,7 +505,7 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
 
         StringBuilder aboutText = new StringBuilder();
         aboutText.append(getMessage(StringKeys.PREF_GENERAL_LABEL_PMD_ECLIPSE_VERSION))
-            .append(" ").append(PMDPlugin.VERSION).append("\n");
+            .append(" ").append(PMDPlugin.version).append("\n");
         aboutText.append(getMessage(StringKeys.PREF_GENERAL_LABEL_PMD_VERSION))
             .append(" ").append(PMD.VERSION).append("\n");
 

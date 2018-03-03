@@ -1,3 +1,4 @@
+
 package net.sourceforge.pmd.eclipse.ui.views;
 
 import java.util.ArrayList;
@@ -16,107 +17,114 @@ import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
 
-
 /**
  * Provides the ViolationOutlinePages with Content
  *
- * @author SebastianRaffel  ( 08.05.2005 )
+ * @author SebastianRaffel ( 08.05.2005 )
  */
-public class ViolationOutlineContentProvider implements
-		IStructuredContentProvider, IResourceChangeListener {
+public class ViolationOutlineContentProvider implements IStructuredContentProvider, IResourceChangeListener {
 
-	private RefreshableTablePage tablePage;
-	private TableViewer tableViewer;	
-	private FileRecord resource;
+    private RefreshableTablePage tablePage;
+    private TableViewer tableViewer;
+    private FileRecord resource;
 
-	/**
-	 * Constructor
-	 *
-	 * @param page
-	 */
-	public ViolationOutlineContentProvider(RefreshableTablePage page) {
-		tablePage = page;
-		tableViewer = page.tableViewer();
-	}
+    /**
+     * Constructor
+     *
+     * @param page
+     */
+    public ViolationOutlineContentProvider(RefreshableTablePage page) {
+        tablePage = page;
+        tableViewer = page.tableViewer();
+    }
 
+    /*
+     * @see
+     * org.eclipse.jface.viewers.IStructuredContentProvider#getElements(java.
+     * lang.Object)
+     */
+    public Object[] getElements(Object inputElement) {
 
-	/* @see org.eclipse.jface.viewers.IStructuredContentProvider#getElements(java.lang.Object) */
-	public Object[] getElements(Object inputElement) {
-	    
-		if (inputElement instanceof FileRecord) {
-			return ((FileRecord) inputElement).findMarkers();
-		}
-		return Util.EMPTY_ARRAY;
-	}
+        if (inputElement instanceof FileRecord) {
+            return ((FileRecord) inputElement).findMarkers();
+        }
+        return Util.EMPTY_ARRAY;
+    }
 
+    /* @see org.eclipse.jface.viewers.IContentProvider#dispose() */
+    public void dispose() {
+    }
 
-	/* @see org.eclipse.jface.viewers.IContentProvider#dispose() */
-	public void dispose() {
-	}
+    /*
+     * @see
+     * org.eclipse.jface.viewers.IContentProvider#inputChanged(org.eclipse.jface
+     * .viewers.Viewer, java.lang.Object, java.lang.Object)
+     */
+    public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+        if (resource != null) {
+            resource.getResource().getWorkspace().removeResourceChangeListener(this);
+        }
 
+        // we create a new FileRecord
+        resource = (FileRecord) newInput;
+        if (resource != null) {
+            resource.getResource().getWorkspace().addResourceChangeListener(this, IResourceChangeEvent.POST_CHANGE);
+        }
+        tableViewer = (TableViewer) viewer;
+    }
 
-	/* @see org.eclipse.jface.viewers.IContentProvider#inputChanged(org.eclipse.jface.viewers.Viewer, java.lang.Object, java.lang.Object) */
-	public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-		if (resource != null) {
-			resource.getResource().getWorkspace().removeResourceChangeListener(this);
-		}
+    /*
+     * @see
+     * org.eclipse.core.resources.IResourceChangeListener#resourceChanged(org.
+     * eclipse.core.resources.IResourceChangeEvent)
+     */
+    public void resourceChanged(IResourceChangeEvent event) {
 
-		// we create a new FileRecord
-		resource = (FileRecord) newInput;
-		if (resource != null) {
-			resource.getResource().getWorkspace().addResourceChangeListener(this, IResourceChangeEvent.POST_CHANGE);
-		}
-		tableViewer = (TableViewer) viewer;
-	}
-	
+        if (resource == null || !resource.getResource().exists())
+            return;
 
-	/* @see org.eclipse.core.resources.IResourceChangeListener#resourceChanged(org.eclipse.core.resources.IResourceChangeEvent) */
-	public void resourceChanged(IResourceChangeEvent event) {
-		
-		if (resource == null || !resource.getResource().exists()) return;
-		
-		List<IMarkerDelta> markerDeltas = MarkerUtil.markerDeltasIn(event);
+        List<IMarkerDelta> markerDeltas = MarkerUtil.markerDeltasIn(event);
 
-		if (markerDeltas.isEmpty())	return;
+        if (markerDeltas.isEmpty())
+            return;
 
-		// we search for removed, added or changed Markers
+        // we search for removed, added or changed Markers
         final List<IMarker> additions = new ArrayList<IMarker>();
         final List<IMarker> removals = new ArrayList<IMarker>();
         final List<IMarker> changes = new ArrayList<IMarker>();
 
         for (IMarkerDelta delta : markerDeltas) {
-        	if (!delta.getResource().equals(resource.getResource()))
-        		continue;
-        	IMarker marker = delta.getMarker();
-        	switch (delta.getKind()) {
-    			case IResourceDelta.ADDED:
-    				additions.add(marker);
-    				break;
-    			case IResourceDelta.REMOVED:
-    				removals.add(marker);
-    				break;
-    			case IResourceDelta.CHANGED:
-    				changes.add(marker);
-    				break;
-        	}
+            if (!delta.getResource().equals(resource.getResource()))
+                continue;
+            IMarker marker = delta.getMarker();
+            switch (delta.getKind()) {
+            case IResourceDelta.ADDED:
+                additions.add(marker);
+                break;
+            case IResourceDelta.REMOVED:
+                removals.add(marker);
+                break;
+            case IResourceDelta.CHANGED:
+                changes.add(marker);
+                break;
+            }
         }
 
         // updating the table MUST be in sync
         tableViewer.getControl().getDisplay().syncExec(new Runnable() {
-        	public void run() {
-        		updateViewer(additions, removals, changes);
-        	}
+            public void run() {
+                updateViewer(additions, removals, changes);
+            }
         });
-	}
+    }
 
-	/**
-     * Applies found updates on the table,
-     * adapted from Philippe Herlin
-	 *
-	 * @param additions
-	 * @param removals
-	 * @param changes
-	 */
+    /**
+     * Applies found updates on the table, adapted from Philippe Herlin
+     *
+     * @param additions
+     * @param removals
+     * @param changes
+     */
     protected void updateViewer(List<IMarker> additions, List<IMarker> removals, List<IMarker> changes) {
         // perform removals
         if (removals.size() > 0) {
@@ -137,5 +145,3 @@ public class ViolationOutlineContentProvider implements
         tablePage.refresh();
     }
 }
-
-

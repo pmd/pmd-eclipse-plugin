@@ -1,3 +1,4 @@
+
 package net.sourceforge.pmd.eclipse.ui.views.actions;
 
 import java.io.ByteArrayInputStream;
@@ -48,19 +49,26 @@ public class ReviewAction extends AbstractViolationSelectionAction {
         super(viewer);
     }
 
- 	protected String textId() { return StringKeys.VIEW_ACTION_REVIEW; }
- 	
- 	protected String imageId() { return PMDUiConstants.ICON_BUTTON_REVIEW; }
-    
-    protected String tooltipMsgId() { return StringKeys.VIEW_TOOLTIP_REVIEW; } 
-    
+    protected String textId() {
+        return StringKeys.VIEW_ACTION_REVIEW;
+    }
+
+    protected String imageId() {
+        return PMDUiConstants.ICON_BUTTON_REVIEW;
+    }
+
+    protected String tooltipMsgId() {
+        return StringKeys.VIEW_TOOLTIP_REVIEW;
+    }
+
     /**
      * @see org.eclipse.jface.action.IAction#run()
      */
     public void run() {
         final IMarker[] markers = getSelectedViolations();
-        if (markers == null) return;
-        
+        if (markers == null)
+            return;
+
         final boolean reviewPmdStyle = loadPreferences().isReviewPmdStyleEnabled();
 
         // Get confirmation if multiple markers are selected
@@ -82,21 +90,21 @@ public class ReviewAction extends AbstractViolationSelectionAction {
             } catch (InvocationTargetException e) {
                 logErrorByKey(StringKeys.ERROR_INVOCATIONTARGET_EXCEPTION, e);
             } catch (InterruptedException e) {
-            	logErrorByKey(StringKeys.ERROR_INTERRUPTED_EXCEPTION, e);
+                logErrorByKey(StringKeys.ERROR_INTERRUPTED_EXCEPTION, e);
             }
         }
     }
 
-	private static boolean confirmForMultiples(IMarker[] markers, boolean reviewPmdStyle) {
-		boolean go = true;
+    private static boolean confirmForMultiples(IMarker[] markers, boolean reviewPmdStyle) {
+        boolean go = true;
         if (markers.length > 1 && !reviewPmdStyle) {
             String title = getString(StringKeys.CONFIRM_TITLE);
             String message = getString(StringKeys.CONFIRM_REVIEW_MULTIPLE_MARKERS);
             Shell shell = Display.getCurrent().getActiveShell();
             go = MessageDialog.openConfirm(shell, title, message);
         }
-		return go;
-	}
+        return go;
+    }
 
     /**
      * Do the insertion of the review comment
@@ -117,13 +125,13 @@ public class ReviewAction extends AbstractViolationSelectionAction {
 
                     monitorWorked();
 
-                    sourceCode = reviewPmdStyle ? 
-                    		addPmdReviewComment(sourceCode, offset, marker) :
-                        	addPluginReviewComment(sourceCode, offset, marker);
+                    sourceCode = reviewPmdStyle ? addPmdReviewComment(sourceCode, offset, marker)
+                            : addPluginReviewComment(sourceCode, offset, marker);
 
                     monitorWorked();
 
-                    file.setContents(new ByteArrayInputStream(sourceCode.getBytes(file.getCharset())), false, true, getMonitor());
+                    file.setContents(new ByteArrayInputStream(sourceCode.getBytes(file.getCharset())), false, true,
+                            getMonitor());
 
                     monitorWorked();
                 } else {
@@ -136,26 +144,26 @@ public class ReviewAction extends AbstractViolationSelectionAction {
         } catch (JavaModelException jme) {
             ignore(jme);
         } catch (CoreException e) {
-        	logErrorByKey(StringKeys.ERROR_CORE_EXCEPTION, e);
+            logErrorByKey(StringKeys.ERROR_CORE_EXCEPTION, e);
         } catch (IOException e) {
-        	logErrorByKey(StringKeys.ERROR_IO_EXCEPTION, e);
+            logErrorByKey(StringKeys.ERROR_IO_EXCEPTION, e);
         }
     }
 
-	private static void ignore(JavaModelException jme) {
-		
-		IJavaModelStatus status = jme.getJavaModelStatus();
-		PMDPlugin.getDefault().logError(status);
-		log.warn("Ignoring Java Model Exception : " + status.getMessage());
-		if (log.isDebugEnabled()) {
-		    log.debug("   code : " + status.getCode());
-		    log.debug("   severity : " + status.getSeverity());
-		    IJavaElement[] elements = status.getElements();
-		    for (int i = 0; i < elements.length; i++) {
-		        log.debug("   element : " + elements[i].getElementName() + " (" + elements[i].getElementType() + ')');
-		    }
-		}
-	}
+    private static void ignore(JavaModelException jme) {
+
+        IJavaModelStatus status = jme.getJavaModelStatus();
+        PMDPlugin.getDefault().logError(status);
+        log.warn("Ignoring Java Model Exception : " + status.getMessage());
+        if (log.isDebugEnabled()) {
+            log.debug("   code : " + status.getCode());
+            log.debug("   severity : " + status.getSeverity());
+            IJavaElement[] elements = status.getElements();
+            for (int i = 0; i < elements.length; i++) {
+                log.debug("   element : " + elements[i].getElementName() + " (" + elements[i].getElementType() + ')');
+            }
+        }
+    }
 
     /**
      * Get the monitor
@@ -208,13 +216,11 @@ public class ReviewAction extends AbstractViolationSelectionAction {
     }
 
     public static String additionalCommentTxt() {
-    	String additionalCommentPattern = loadPreferences().getReviewAdditionalComment();
-    	return MessageFormat.format(
-    		additionalCommentPattern, 
-    		new Object[] { System.getProperty("user.name", ""), new Date() }
-    		);
+        String additionalCommentPattern = loadPreferences().getReviewAdditionalComment();
+        return MessageFormat.format(additionalCommentPattern,
+                new Object[] { System.getProperty("user.name", ""), new Date() });
     }
-    
+
     /**
      * Insert a review comment with the Plugin style
      */

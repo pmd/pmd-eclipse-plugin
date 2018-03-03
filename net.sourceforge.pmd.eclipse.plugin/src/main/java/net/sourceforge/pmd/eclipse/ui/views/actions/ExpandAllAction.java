@@ -56,10 +56,14 @@ public class ExpandAllAction extends AbstractPMDAction {
         treeViewer = theViewer;
     }
 
- 	protected String imageId() { return PMDUiConstants.ICON_BUTTON_EXPAND; }
-    
-    protected String tooltipMsgId() { return StringKeys.VIEW_TOOLTIP_EXPAND_ALL; }
-   
+    protected String imageId() {
+        return PMDUiConstants.ICON_BUTTON_EXPAND;
+    }
+
+    protected String tooltipMsgId() {
+        return StringKeys.VIEW_TOOLTIP_EXPAND_ALL;
+    }
+
     public void run() {
         treeViewer.expandAll();
     }

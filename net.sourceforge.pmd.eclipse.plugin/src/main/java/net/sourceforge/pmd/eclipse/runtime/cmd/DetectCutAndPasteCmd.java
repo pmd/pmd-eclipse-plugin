@@ -33,6 +33,7 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package net.sourceforge.pmd.eclipse.runtime.cmd;
 
 import java.io.ByteArrayInputStream;
@@ -82,13 +83,13 @@ public class DetectCutAndPasteCmd extends AbstractProjectCommand {
 
     private static final long serialVersionUID = 1L;
     private static final Logger log = Logger.getLogger(DetectCutAndPasteCmd.class);
-    
+
     /**
      * Default Constructor
      */
     public DetectCutAndPasteCmd() {
         super("DetectCutAndPaste", "Detect Cut & paste for a project");
-        
+
         setOutputProperties(true);
         setReadOnly(false);
         setTerminated(false);
@@ -98,14 +99,14 @@ public class DetectCutAndPasteCmd extends AbstractProjectCommand {
     private void notifyListeners(final CPD cpd) {
         // trigger event propertyChanged for all listeners
         Display.getDefault().asyncExec(new Runnable() {
-            public void run() {                            
+            public void run() {
                 for (IPropertyListener listener : listeners) {
                     listener.propertyChanged(cpd.getMatches(), PMDRuntimeConstants.PROPERTY_CPD);
                 }
             }
         });
     }
-    
+
     /**
      * @see name.herlin.command.AbstractProcessableCommand#execute()
      */
@@ -120,7 +121,7 @@ public class DetectCutAndPasteCmd extends AbstractProjectCommand {
                 logInfo("Found " + files.size() + " files for the specified language. Performing CPD.");
             }
             setStepCount(files.size());
-            beginTask("Finding suspect Cut And Paste", getStepCount()*2);
+            beginTask("Finding suspect Cut And Paste", getStepCount() * 2);
 
             if (!isCanceled()) {
                 final CPD cpd = detectCutAndPaste(files);
@@ -149,7 +150,7 @@ public class DetectCutAndPasteCmd extends AbstractProjectCommand {
     @Override
     public void reset() {
         super.reset();
-        
+
         setTerminated(false);
         setReportName(null);
         setRenderer(null);
@@ -161,35 +162,40 @@ public class DetectCutAndPasteCmd extends AbstractProjectCommand {
     }
 
     /**
-     * @param language The language to set.
+     * @param language
+     *            The language to set.
      */
     public void setLanguage(String theLanguage) {
         language = LanguageFactory.createLanguage(theLanguage);
     }
 
     /**
-     * @param tilesize The tilesize to set.
+     * @param tilesize
+     *            The tilesize to set.
      */
     public void setMinTileSize(final int tilesize) {
         minTileSize = tilesize;
     }
 
     /**
-     * @param renderer The renderer to set.
+     * @param renderer
+     *            The renderer to set.
      */
     public void setRenderer(final Renderer renderer) {
         this.renderer = renderer;
     }
 
     /**
-     * @param reportName The reportName to set.
+     * @param reportName
+     *            The reportName to set.
      */
     public void setReportName(final String reportName) {
         this.reportName = reportName;
     }
 
     /**
-     * @param render render a report or not.
+     * @param render
+     *            render a report or not.
      */
     public void setCreateReport(final boolean render) {
         createReport = render;
@@ -197,30 +203,41 @@ public class DetectCutAndPasteCmd extends AbstractProjectCommand {
 
     /**
      * Adds an object that wants to get an event after the command is finished.
-     * @param listener the property listener to set.
+     * 
+     * @param listener
+     *            the property listener to set.
      */
     public void addPropertyListener(IPropertyListener listener) {
         listeners.add(listener);
     }
 
     private boolean canRenderReport() {
-    	return renderer != null && StringUtil.isNotEmpty(reportName);
+        return renderer != null && StringUtil.isNotEmpty(reportName);
     }
-    
+
     /**
      * @see name.herlin.command.Command#isReadyToExecute()
      */
     @Override
     public boolean isReadyToExecute() {
-        return super.isReadyToExecute()
-            && language != null
-            && (!createReport // need a renderer and reportName if a report should be created
-                    || canRenderReport());
+        return super.isReadyToExecute() && language != null && (!createReport // need
+                                                                              // a
+                                                                              // renderer
+                                                                              // and
+                                                                              // reportName
+                                                                              // if
+                                                                              // a
+                                                                              // report
+                                                                              // should
+                                                                              // be
+                                                                              // created
+                || canRenderReport());
     }
 
     /**
-     * Finds all files in a project based on a language.
-     * Uses internally the CPDVisitor.
+     * Finds all files in a project based on a language. Uses internally the
+     * CPDVisitor.
+     * 
      * @return List of files
      * @throws PropertiesException
      * @throws CoreException
@@ -238,15 +255,17 @@ public class DetectCutAndPasteCmd extends AbstractProjectCommand {
     }
 
     /**
-     * Run the cut and paste detector. At first all files have to be added
-     * to the cpd. Then the CPD can be executed.
-     * @param files List of files to be checked.
+     * Run the cut and paste detector. At first all files have to be added to
+     * the cpd. Then the CPD can be executed.
+     * 
+     * @param files
+     *            List of files to be checked.
      * @return the CPD itself for retrieving the matches.
      * @throws CoreException
      */
     private CPD detectCutAndPaste(final List<File> files) {
         log.debug("Searching for project files");
-        
+
         final CPD cpd = newCPD();
 
         subTask("Collecting files for CPD");
@@ -282,12 +301,14 @@ public class DetectCutAndPasteCmd extends AbstractProjectCommand {
     /**
      * Renders a report using the matches of the CPD. Creates a report folder
      * and report file.
-     * @param matches matches of the CPD
+     * 
+     * @param matches
+     *            matches of the CPD
      * @throws CommandException
      */
     private void renderReport(Iterator<Match> matches) throws CommandException {
-    	InputStream contentsStream = null;
-    	
+        InputStream contentsStream = null;
+
         try {
             log.debug("Rendering CPD report");
             subTask("Rendering CPD report");
@@ -317,7 +338,7 @@ public class DetectCutAndPasteCmd extends AbstractProjectCommand {
             log.debug("Core Exception: " + e.getMessage(), e);
             throw new CommandException(e);
         } finally {
-        	IOUtil.closeQuietly(contentsStream);
+            IOUtil.closeQuietly(contentsStream);
         }
     }
 }

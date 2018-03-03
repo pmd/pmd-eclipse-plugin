@@ -60,30 +60,32 @@ import org.apache.log4j.Level;
  */
 
 class PreferencesImpl implements IPreferences {
-	
-	private Map<String, Boolean> booleansById = new HashMap<String, Boolean>();
-	
+
+    private Map<String, Boolean> booleansById = new HashMap<String, Boolean>();
+
     private IPreferencesManager preferencesManager;
-    private boolean 			projectBuildPathEnabled;
-    private boolean 			pmdPerspectiveEnabled;
-    private boolean				checkAfterSaveEnabled;
-    private boolean				useCustomPriorityNames;
-    private int 				maxViolationsPerFilePerRule;
-    private String 				reviewAdditionalComment;
-    private boolean 			reviewPmdStyleEnabled;
-    private int 				minTileSize;
-    private String 				logFileName;
-    private Level 				logLevel;
-    private boolean             globalRuleManagement;
-    private Set<String> 		activeRuleNames = new HashSet<String>();
-    private Set<String> 		activeRendererNames = new HashSet<String>();
-    private Set<String> 		activeExclusionPatterns = new HashSet<String>();
-    private Set<String> 		activeInclusionPatterns = new HashSet<String>();
-    
-    private Map<RulePriority, PriorityDescriptor> uiDescriptorsByPriority = new HashMap<RulePriority, PriorityDescriptor>(5);
-    
+    private boolean projectBuildPathEnabled;
+    private boolean pmdPerspectiveEnabled;
+    private boolean checkAfterSaveEnabled;
+    private boolean useCustomPriorityNames;
+    private int maxViolationsPerFilePerRule;
+    private String reviewAdditionalComment;
+    private boolean reviewPmdStyleEnabled;
+    private int minTileSize;
+    private String logFileName;
+    private Level logLevel;
+    private boolean globalRuleManagement;
+    private Set<String> activeRuleNames = new HashSet<String>();
+    private Set<String> activeRendererNames = new HashSet<String>();
+    private Set<String> activeExclusionPatterns = new HashSet<String>();
+    private Set<String> activeInclusionPatterns = new HashSet<String>();
+
+    private Map<RulePriority, PriorityDescriptor> uiDescriptorsByPriority = new HashMap<RulePriority, PriorityDescriptor>(
+            5);
+
     /**
      * Is constructed from a preferences manager
+     * 
      * @param preferencesManager
      */
     public PreferencesImpl(IPreferencesManager preferencesManager) {
@@ -92,50 +94,51 @@ class PreferencesImpl implements IPreferences {
     }
 
     public boolean boolFor(String prefId) {
-    	Boolean value = booleansById.get(prefId);
-    	if (value == null) throw new IllegalArgumentException("Unknown pref id: " + prefId);
-    	return value;
+        Boolean value = booleansById.get(prefId);
+        if (value == null)
+            throw new IllegalArgumentException("Unknown pref id: " + prefId);
+        return value;
     }
-    
+
     public void boolFor(String prefId, boolean newValue) {
-    	booleansById.put(prefId, newValue);
+        booleansById.put(prefId, newValue);
     }
-    
+
     /**
      * @see net.sourceforge.pmd.eclipse.runtime.preferences.IPreferences#isProjectBuildPathEnabled()
      */
     public boolean isProjectBuildPathEnabled() {
-    	return projectBuildPathEnabled;
-	}
+        return projectBuildPathEnabled;
+    }
 
     /**
      * @see net.sourceforge.pmd.eclipse.runtime.preferences.IPreferences#setProjectBuildPathEnabled(boolean)
      */
-	public void setProjectBuildPathEnabled(boolean projectBuildPathEnabled) {
-		this.projectBuildPathEnabled = projectBuildPathEnabled;
-	}
+    public void setProjectBuildPathEnabled(boolean projectBuildPathEnabled) {
+        this.projectBuildPathEnabled = projectBuildPathEnabled;
+    }
 
-	/**
+    /**
      * @see net.sourceforge.pmd.eclipse.runtime.preferences.IPreferences#isPmdPerspectiveEnabled()
      */
     public boolean isPmdPerspectiveEnabled() {
         return pmdPerspectiveEnabled;
     }
 
-	/**
+    /**
      * @see net.sourceforge.pmd.eclipse.runtime.preferences.IPreferences#isCheckCodeAfterSaveEnabled()
      */
     public boolean isCheckAfterSaveEnabled() {
         return checkAfterSaveEnabled;
     }
-    
-	/**
+
+    /**
      * @see net.sourceforge.pmd.eclipse.runtime.preferences.IPreferences#isCheckCodeAfterSaveEnabled()
      */
     public void isCheckAfterSaveEnabled(boolean flag) {
         checkAfterSaveEnabled = flag;
     }
-    
+
     /**
      * @see net.sourceforge.pmd.eclipse.runtime.preferences.IPreferences#setPmdPerspectiveEnabled(boolean)
      */
@@ -242,34 +245,34 @@ class PreferencesImpl implements IPreferences {
         globalRuleManagement = b;
     }
 
-	public boolean isActive(String ruleName) {
-		return activeRuleNames.contains(ruleName);
-	}
+    public boolean isActive(String ruleName) {
+        return activeRuleNames.contains(ruleName);
+    }
 
-	public boolean isActiveRenderer(String rendererName) {
-		return activeRendererNames.contains(rendererName);
-	}
-	
-	public void isActive(String ruleName, boolean isActive) {
-		if (isActive) {
-			activeRuleNames.add(ruleName);
-		} else {
-			activeRuleNames.remove(ruleName);
-		}
-	}
+    public boolean isActiveRenderer(String rendererName) {
+        return activeRendererNames.contains(rendererName);
+    }
 
-	public Set<String> getActiveRuleNames() {
-		return activeRuleNames;
-	}
+    public void isActive(String ruleName, boolean isActive) {
+        if (isActive) {
+            activeRuleNames.add(ruleName);
+        } else {
+            activeRuleNames.remove(ruleName);
+        }
+    }
+
+    public Set<String> getActiveRuleNames() {
+        return activeRuleNames;
+    }
 
     /**
-     * Returns a comma-separated list of rules that are active by default.
-     * This contains all default rules of PMD.
+     * Returns a comma-separated list of rules that are active by default. This
+     * contains all default rules of PMD.
      */
     public String getDefaultActiveRules() {
         StringBuilder rules = new StringBuilder();
         IRuleSetManager ruleSetManager = PMDPlugin.getDefault().getRuleSetManager();
-        for (RuleSet ruleSet: ruleSetManager.getDefaultRuleSets()) {
+        for (RuleSet ruleSet : ruleSetManager.getDefaultRuleSets()) {
             for (Rule rule : ruleSet.getRules()) {
                 if (rules.length() > 0) {
                     rules.append(',');
@@ -281,47 +284,47 @@ class PreferencesImpl implements IPreferences {
     }
 
     public void setActiveRuleNames(Set<String> ruleNames) {
-		activeRuleNames = ruleNames;
-	}
+        activeRuleNames = ruleNames;
+    }
 
-	public Set<String> activeExclusionPatterns() {
-		return activeExclusionPatterns;
-	}
+    public Set<String> activeExclusionPatterns() {
+        return activeExclusionPatterns;
+    }
 
-	public void activeExclusionPatterns(Set<String> patterns) {
-		activeExclusionPatterns = patterns;
-	}
-	
-	public Set<String> activeInclusionPatterns() {
-		return activeInclusionPatterns;
-	}
+    public void activeExclusionPatterns(Set<String> patterns) {
+        activeExclusionPatterns = patterns;
+    }
 
-	public void activeInclusionPatterns(Set<String> patterns) {
-		activeInclusionPatterns = patterns;
-	}
-	
-	public void setPriorityDescriptor(RulePriority priority, PriorityDescriptor pd) {
-		uiDescriptorsByPriority.put(priority, pd);		
-	}
+    public Set<String> activeInclusionPatterns() {
+        return activeInclusionPatterns;
+    }
 
-	public PriorityDescriptor getPriorityDescriptor(RulePriority priority) {
-		return uiDescriptorsByPriority.get(priority);
-	}
+    public void activeInclusionPatterns(Set<String> patterns) {
+        activeInclusionPatterns = patterns;
+    }
 
-	public boolean useCustomPriorityNames() {
-		return useCustomPriorityNames;
-	}
+    public void setPriorityDescriptor(RulePriority priority, PriorityDescriptor pd) {
+        uiDescriptorsByPriority.put(priority, pd);
+    }
 
-	public void useCustomPriorityNames(boolean flag) {
-		useCustomPriorityNames = flag;
-	}
+    public PriorityDescriptor getPriorityDescriptor(RulePriority priority) {
+        return uiDescriptorsByPriority.get(priority);
+    }
 
-	public Set<String> activeReportRenderers() {
-		return activeRendererNames;
-	}
+    public boolean useCustomPriorityNames() {
+        return useCustomPriorityNames;
+    }
 
-	public void activeReportRenderers(Set<String> names) {
-		activeRendererNames = names;
-	}
+    public void useCustomPriorityNames(boolean flag) {
+        useCustomPriorityNames = flag;
+    }
+
+    public Set<String> activeReportRenderers() {
+        return activeRendererNames;
+    }
+
+    public void activeReportRenderers(Set<String> names) {
+        activeRendererNames = names;
+    }
 
 }

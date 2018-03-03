@@ -1,3 +1,4 @@
+
 package net.sourceforge.pmd.eclipse.ui.views.actions;
 
 import net.sourceforge.pmd.eclipse.ui.PMDUiConstants;
@@ -22,8 +23,10 @@ public class ProjectFilterAction extends AbstractPMDAction {
     /**
      * Constructor
      * 
-     * @param projectRecord, the project to show or hide
-     * @param view, the Violation Overview
+     * @param projectRecord,
+     *            the project to show or hide
+     * @param view,
+     *            the Violation Overview
      */
     public ProjectFilterAction(AbstractPMDRecord projectRecord, ViolationOverview view) {
         violationView = view;
@@ -40,10 +43,14 @@ public class ProjectFilterAction extends AbstractPMDAction {
         setText(getString(StringKeys.VIEW_FILTER_PROJECT_PREFIX) + " " + projectRecord.getName());
     }
 
- 	protected String imageId() { return PMDUiConstants.ICON_PROJECT; }
- 	
- 	protected String tooltipMsgId() { return null; }      
-    
+    protected String imageId() {
+        return PMDUiConstants.ICON_PROJECT;
+    }
+
+    protected String tooltipMsgId() {
+        return null;
+    }
+
     /**
      * @return the Style, in which the Button is displayed
      */

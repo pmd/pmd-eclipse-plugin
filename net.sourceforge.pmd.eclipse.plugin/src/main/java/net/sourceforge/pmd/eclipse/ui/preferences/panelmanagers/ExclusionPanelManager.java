@@ -1,3 +1,4 @@
+
 package net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers;
 
 import java.util.ArrayList;
@@ -30,26 +31,33 @@ import net.sourceforge.pmd.properties.StringProperty;
  */
 public class ExclusionPanelManager extends AbstractRulePanelManager {
 
-	private Text 			excludeWidget;
-	private StyledText 		xpathWidget;
-	private Composite		excludeColour;
-	private Composite		xPathColour;
-	private ColourManager	colourManager;
-	private boolean			showColourBoxes;
-	private List<Control>	miscControls = new ArrayList<Control>();	// hide-show as req'd
-	
-	public static final String ID = "exclusion";
-	/**
-	 * Constructor for ExclusionPanelManager.
-	 * @param listener ValueChangeListener
-	 */
-	public ExclusionPanelManager(String theTitle, EditorUsageMode theMode, ValueChangeListener theListener, boolean showColourBoxesFlag) {
-		super(ID, theTitle, theMode, theListener);
+    private Text excludeWidget;
+    private StyledText xpathWidget;
+    private Composite excludeColour;
+    private Composite xPathColour;
+    private ColourManager colourManager;
+    private boolean showColourBoxes;
+    private List<Control> miscControls = new ArrayList<Control>(); // hide-show
+                                                                   // as req'd
 
-		showColourBoxes = showColourBoxesFlag;
-	}
+    public static final String ID = "exclusion";
 
-	protected boolean canManageMultipleRules() { return true; }
+    /**
+     * Constructor for ExclusionPanelManager.
+     * 
+     * @param listener
+     *            ValueChangeListener
+     */
+    public ExclusionPanelManager(String theTitle, EditorUsageMode theMode, ValueChangeListener theListener,
+            boolean showColourBoxesFlag) {
+        super(ID, theTitle, theMode, theListener);
+
+        showColourBoxes = showColourBoxesFlag;
+    }
+
+    protected boolean canManageMultipleRules() {
+        return true;
+    }
 
     protected void clearControls() {
         excludeWidget.setText("");
@@ -59,7 +67,7 @@ public class ExclusionPanelManager extends AbstractRulePanelManager {
     public void showControls(boolean flag) {
 
         for (Control control : miscControls) {
-        	control.setVisible(flag);
+            control.setVisible(flag);
         }
     }
 
@@ -67,53 +75,51 @@ public class ExclusionPanelManager extends AbstractRulePanelManager {
         return Collections.emptyList();
     }
 
-	private void addListeners(final Text control, final StringProperty desc, final Control colourWindow) {
+    private void addListeners(final Text control, final StringProperty desc, final Control colourWindow) {
 
-		addTextListeners(control, desc);
+        addTextListeners(control, desc);
 
-		control.addModifyListener(new ModifyListener() {
-			public void modifyText(ModifyEvent e) {
-				String newText = control.getText();
-				if (colourWindow != null) {
-					colourWindow.setBackground(
-						colourManager.colourFor(newText)
-						);
-					}
+        control.addModifyListener(new ModifyListener() {
+            public void modifyText(ModifyEvent e) {
+                String newText = control.getText();
+                if (colourWindow != null) {
+                    colourWindow.setBackground(colourManager.colourFor(newText));
+                }
                 changed(desc, newText);
-			}
-		});
-	}
+            }
+        });
+    }
 
-	private void addListeners(final StyledText control, final StringProperty desc, final Control colourWindow) {
+    private void addListeners(final StyledText control, final StringProperty desc, final Control colourWindow) {
 
-		addTextListeners(control, desc);
+        addTextListeners(control, desc);
 
-		control.addModifyListener(new ModifyListener() {
-			public void modifyText(ModifyEvent e) {
-				String newText = control.getText();
-				if (colourWindow != null) {
-					colourWindow.setBackground(
-						colourManager.colourFor(newText)
-						);
-					}
+        control.addModifyListener(new ModifyListener() {
+            public void modifyText(ModifyEvent e) {
+                String newText = control.getText();
+                if (colourWindow != null) {
+                    colourWindow.setBackground(colourManager.colourFor(newText));
+                }
                 changed(desc, newText);
-			}
-		});
-	}
-	
-	private Composite newColourPanel(Composite parent, String label) {
+            }
+        });
+    }
 
-	    Composite panel = new Composite(parent, SWT.None);
+    private Composite newColourPanel(Composite parent, String label) {
+
+        Composite panel = new Composite(parent, SWT.None);
 
         GridLayout layout = new GridLayout(2, false);
-        layout.verticalSpacing = 0;     layout.horizontalSpacing = 0;
-        layout.marginHeight = 0;        layout.marginWidth = 0;
+        layout.verticalSpacing = 0;
+        layout.horizontalSpacing = 0;
+        layout.marginHeight = 0;
+        layout.marginWidth = 0;
         panel.setLayout(layout);
 
-	    Label labelWidget = new Label(panel, SWT.None);
-	    labelWidget.setText(label);
+        Label labelWidget = new Label(panel, SWT.None);
+        labelWidget.setText(label);
 
-	    Composite clrPanel = new Composite(panel, SWT.BORDER);
+        Composite clrPanel = new Composite(panel, SWT.BORDER);
         GridData gridData = new GridData();
         gridData.horizontalSpan = 1;
         gridData.heightHint = 15;
@@ -123,92 +129,94 @@ public class ExclusionPanelManager extends AbstractRulePanelManager {
 
         miscControls.add(clrPanel);
         miscControls.add(labelWidget);
-        
+
         return clrPanel;
-	}
+    }
 
-	/**
-	 * @param parent Composite
-	 * @param regexExclusionLabel String
-	 * @param xpathExclusionLabel String
-	 * @return Control
-	 */
-	public Control setupOn(Composite parent) {
+    /**
+     * @param parent
+     *            Composite
+     * @param regexExclusionLabel
+     *            String
+     * @param xpathExclusionLabel
+     *            String
+     * @return Control
+     */
+    public Control setupOn(Composite parent) {
 
-		String regexExclusionLabel = SWTUtil.stringFor(StringKeys.LABEL_EXCLUSION_REGEX);
-		String xpathExclusionLabel = SWTUtil.stringFor(StringKeys.LABEL_XPATH_EXCLUSION);
-		String colourBoxLabel = SWTUtil.stringFor(StringKeys.LABEL_COLOUR_CODE);
+        String regexExclusionLabel = SWTUtil.stringFor(StringKeys.LABEL_EXCLUSION_REGEX);
+        String xpathExclusionLabel = SWTUtil.stringFor(StringKeys.LABEL_XPATH_EXCLUSION);
+        String colourBoxLabel = SWTUtil.stringFor(StringKeys.LABEL_COLOUR_CODE);
 
-		colourManager = ColourManager.managerFor(parent.getDisplay());
+        colourManager = ColourManager.managerFor(parent.getDisplay());
 
-		GridData gridData;
+        GridData gridData;
 
-		Composite panel = new Composite(parent, 0);
-	    GridLayout layout = new GridLayout(2, false);
-		panel.setLayout(layout);
+        Composite panel = new Composite(parent, 0);
+        GridLayout layout = new GridLayout(2, false);
+        panel.setLayout(layout);
 
-		Label labelA = new Label(panel, 0);
-		labelA.setText(regexExclusionLabel);
-		gridData = new GridData(GridData.FILL_HORIZONTAL);
-	    gridData.horizontalSpan = 1;
+        Label labelA = new Label(panel, 0);
+        labelA.setText(regexExclusionLabel);
+        gridData = new GridData(GridData.FILL_HORIZONTAL);
+        gridData.horizontalSpan = 1;
         gridData.grabExcessHorizontalSpace = true;
-	    labelA.setLayoutData(gridData);
+        labelA.setLayoutData(gridData);
 
-	 //   labelAIcon.setImage(ResourceManager.imageFor(PMDUiConstants.ICON_FILTER));
+        // labelAIcon.setImage(ResourceManager.imageFor(PMDUiConstants.ICON_FILTER));
 
-	    if (showColourBoxes) {
-	    	excludeColour = newColourPanel(panel, colourBoxLabel);
-	    }
+        if (showColourBoxes) {
+            excludeColour = newColourPanel(panel, colourBoxLabel);
+        }
 
-		excludeWidget = newTextField(panel);
-		gridData = new GridData(GridData.FILL_BOTH);
-	    gridData.grabExcessHorizontalSpace = true;
-	    gridData.horizontalSpan = 2;
-		excludeWidget.setLayoutData(gridData);
+        excludeWidget = newTextField(panel);
+        gridData = new GridData(GridData.FILL_BOTH);
+        gridData.grabExcessHorizontalSpace = true;
+        gridData.horizontalSpan = 2;
+        excludeWidget.setLayoutData(gridData);
 
-		addListeners(excludeWidget, Rule.VIOLATION_SUPPRESS_REGEX_DESCRIPTOR, excludeColour);
+        addListeners(excludeWidget, Rule.VIOLATION_SUPPRESS_REGEX_DESCRIPTOR, excludeColour);
 
-		Label labelB = new Label(panel, 0);
-		labelB.setText(xpathExclusionLabel);
-		gridData = new GridData(GridData.FILL_HORIZONTAL);
-	    gridData.horizontalSpan = 1;
-	    labelB.setLayoutData(gridData);
+        Label labelB = new Label(panel, 0);
+        labelB.setText(xpathExclusionLabel);
+        gridData = new GridData(GridData.FILL_HORIZONTAL);
+        gridData.horizontalSpan = 1;
+        labelB.setLayoutData(gridData);
 
-	 //   labelAIcon.setImage(ResourceManager.imageFor(PMDUiConstants.ICON_FILTER_X));
+        // labelAIcon.setImage(ResourceManager.imageFor(PMDUiConstants.ICON_FILTER_X));
 
-	    if (showColourBoxes) {
-	    	xPathColour = newColourPanel(panel, colourBoxLabel);
-	    }
+        if (showColourBoxes) {
+            xPathColour = newColourPanel(panel, colourBoxLabel);
+        }
 
-		gridData = new GridData(GridData.FILL_BOTH);
-		gridData.horizontalSpan = 2;
-	    gridData.grabExcessHorizontalSpace = true;
-		xpathWidget = newCodeField(panel);
-		xpathWidget.setLayoutData(gridData);
-		SyntaxManager.adapt(xpathWidget, "xpath", null);
-		
-		addListeners(xpathWidget, Rule.VIOLATION_SUPPRESS_XPATH_DESCRIPTOR, xPathColour);
-		
-	    miscControls.add(labelA);
-	    miscControls.add(labelB);
-	    miscControls.add(excludeWidget);
-	    miscControls.add(xpathWidget);
-	    
-		panel.pack();
+        gridData = new GridData(GridData.FILL_BOTH);
+        gridData.horizontalSpan = 2;
+        gridData.grabExcessHorizontalSpace = true;
+        xpathWidget = newCodeField(panel);
+        xpathWidget.setLayoutData(gridData);
+        SyntaxManager.adapt(xpathWidget, "xpath", null);
 
-		return panel;
-	}
+        addListeners(xpathWidget, Rule.VIOLATION_SUPPRESS_XPATH_DESCRIPTOR, xPathColour);
 
-	protected void adapt() {
+        miscControls.add(labelA);
+        miscControls.add(labelB);
+        miscControls.add(excludeWidget);
+        miscControls.add(xpathWidget);
 
-		if (rules == null) {
-			shutdown(excludeWidget);
-			shutdown(xpathWidget);
-			return;
-		}
+        panel.pack();
 
-		show(excludeWidget, rules.commonStringValue(Rule.VIOLATION_SUPPRESS_REGEX_DESCRIPTOR));
-		show(xpathWidget, rules.commonStringValue(Rule.VIOLATION_SUPPRESS_XPATH_DESCRIPTOR));
-	}
+        return panel;
+    }
+
+    protected void adapt() {
+
+        if (rules == null) {
+            shutdown(excludeWidget);
+            shutdown(xpathWidget);
+            return;
+        }
+
+        show(excludeWidget, rules.commonStringValue(Rule.VIOLATION_SUPPRESS_REGEX_DESCRIPTOR));
+        show(xpathWidget, rules.commonStringValue(Rule.VIOLATION_SUPPRESS_XPATH_DESCRIPTOR));
+    }
 }
-

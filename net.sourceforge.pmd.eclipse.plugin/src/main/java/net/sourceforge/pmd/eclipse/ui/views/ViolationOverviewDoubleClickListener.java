@@ -57,7 +57,7 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.ide.IDE;
 
 /**
- * DoubleClickListener for the violation-overview. 
+ * DoubleClickListener for the violation-overview.
  * 
  * @author Sven
  *
@@ -65,7 +65,7 @@ import org.eclipse.ui.ide.IDE;
 
 public class ViolationOverviewDoubleClickListener implements IDoubleClickListener {
     private final ViolationOverview overview;
-    
+
     public ViolationOverviewDoubleClickListener(ViolationOverview overview) {
         this.overview = overview;
     }
@@ -90,12 +90,13 @@ public class ViolationOverviewDoubleClickListener implements IDoubleClickListene
 
     /**
      * Opens the editor and select the markers of the record.
+     * 
      * @param record
      */
     private void doubleClickToFileToMarkerRecord(FileToMarkerRecord record) {
         openEditor((IFile) record.getResource());
         final IMarker[] markers = record.findMarkers();
-        
+
         Display.getDefault().asyncExec(new Runnable() {
             public void run() {
                 selectMarkerInOutline(markers);
@@ -104,7 +105,9 @@ public class ViolationOverviewDoubleClickListener implements IDoubleClickListene
     }
 
     /**
-     * Opens the editor to the marker and select all according markers in the violation outline. 
+     * Opens the editor to the marker and select all according markers in the
+     * violation outline.
+     * 
      * @param markerRec
      */
     private void doubleClickToMarkerRecord(MarkerRecord markerRec) {
@@ -113,7 +116,7 @@ public class ViolationOverviewDoubleClickListener implements IDoubleClickListene
         case ViolationOverview.SHOW_PACKAGES_FILES_MARKERS:
             openEditor((IFile) markerRec.getResource());
             final IMarker[] markers = markerRec.findMarkers();
-            
+
             Display.getDefault().asyncExec(new Runnable() {
                 public void run() {
                     selectMarkerInOutline(markers);
@@ -123,7 +126,7 @@ public class ViolationOverviewDoubleClickListener implements IDoubleClickListene
         default:
             // do nothing
         }
-        
+
         final TreeViewer viewer = this.overview.getViewer();
         if (viewer.getExpandedState(markerRec)) {
             viewer.collapseToLevel(markerRec, 1);
@@ -136,6 +139,7 @@ public class ViolationOverviewDoubleClickListener implements IDoubleClickListene
 
     /**
      * Expand or collapse the tree and open the editor.
+     * 
      * @param fileRec
      */
     private void doubleClickToFileRecord(FileRecord fileRec) {
@@ -145,12 +149,13 @@ public class ViolationOverviewDoubleClickListener implements IDoubleClickListene
         } else {
             viewer.expandToLevel(fileRec, 1);
         }
-        
+
         openEditor((IFile) fileRec.getResource());
     }
 
     /**
      * Just expand or collapse the tree.
+     * 
      * @param packageRec
      */
     private void doubleClickToPackageRecord(PackageRecord packageRec) {
@@ -164,19 +169,21 @@ public class ViolationOverviewDoubleClickListener implements IDoubleClickListene
 
     /**
      * Helper method to open the editor on a file
+     * 
      * @param file
      */
     private void openEditor(IFile file) {
         try {
-            // open the corresponding File            
+            // open the corresponding File
             IDE.openEditor(this.overview.getSite().getPage(), file);
         } catch (PartInitException pie) {
             PMDPlugin.getDefault().logError(StringKeys.ERROR_VIEW_EXCEPTION + this.toString(), pie);
         }
     }
-    
+
     /**
      * Select the markers in the violation outline.
+     * 
      * @param markers
      */
     private void selectMarkerInOutline(IMarker[] markers) {
@@ -186,16 +193,15 @@ public class ViolationOverviewDoubleClickListener implements IDoubleClickListene
             if (view == null) {
                 view = (ViolationOutline) workbenchPage.showView(PMDUiConstants.ID_OUTLINE);
             }
-            
+
             if (view.getCurrentPage() instanceof ViolationOutlinePageBR) {
-                final ViolationOutlinePageBR vioPage = (ViolationOutlinePageBR)view.getCurrentPage();
-                
+                final ViolationOutlinePageBR vioPage = (ViolationOutlinePageBR) view.getCurrentPage();
+
                 final TableItem[] items = vioPage.getTableViewer().getTable().getItems();
                 vioPage.getTableViewer().getTable().deselectAll();
-                for (int j=0; j< markers.length; j++) {                               
-                    for (int i=0; i< items.length; i++) {
-                        if (items[i].getData() instanceof IMarker 
-                                && markers[j].equals(items[i].getData())) {
+                for (int j = 0; j < markers.length; j++) {
+                    for (int i = 0; i < items.length; i++) {
+                        if (items[i].getData() instanceof IMarker && markers[j].equals(items[i].getData())) {
                             vioPage.getTableViewer().getTable().select(i);
                         }
                     }
@@ -203,6 +209,6 @@ public class ViolationOverviewDoubleClickListener implements IDoubleClickListene
             }
         } catch (PartInitException pie) {
             PMDPlugin.getDefault().logError(StringKeys.ERROR_VIEW_EXCEPTION + toString(), pie);
-        }            
+        }
     }
 }

@@ -1,3 +1,4 @@
+
 package net.sourceforge.pmd.eclipse.ui.dialogs;
 
 import java.lang.reflect.Method;
@@ -38,36 +39,41 @@ import net.sourceforge.pmd.properties.PropertySource;
 import net.sourceforge.pmd.util.StringUtil;
 
 /**
- * Implements a dialog for adding or editing a rule property. As the user changes the specified
- * type, each type's associated editor factory will provide additional labels & widgets intended
- * to capture other metadata.
+ * Implements a dialog for adding or editing a rule property. As the user
+ * changes the specified type, each type's associated editor factory will
+ * provide additional labels & widgets intended to capture other metadata.
  *
  * @author Brian Remedios
  */
 public class NewPropertyDialog extends TitleAreaDialog implements SizeChangeListener {
 
-    private Text                    nameField;
-    private Text                    labelField;
-    private Combo                   typeField;
-    private Control[]               factoryControls;
-    private Composite               dlgArea;
-    private EditorFactory           factory;
-    private ValueChangeListener     changeListener;
+    private Text nameField;
+    private Text labelField;
+    private Combo typeField;
+    private Control[] factoryControls;
+    private Composite dlgArea;
+    private EditorFactory factory;
+    private ValueChangeListener changeListener;
 
-    private PropertySource                  propertySource;
-    private PropertyDescriptor<?>           descriptor;
-    private Map<Class<?>, EditorFactory>    editorFactoriesByValueType;
+    private PropertySource propertySource;
+    private PropertyDescriptor<?> descriptor;
+    private Map<Class<?>, EditorFactory> editorFactoriesByValueType;
 
-    // these are the ones we've tested, the others may work but might not make sense in the xpath source context...
-    private static final Class<?>[] validEditorTypes = new Class[] { String.class, Integer.class, Boolean.class, Class.class, Method.class };
-    private static final Class<?> defaultEditorType = validEditorTypes[0];     // first one
+    // these are the ones we've tested, the others may work but might not make
+    // sense in the xpath source context...
+    private static final Class<?>[] validEditorTypes = new Class[] { String.class, Integer.class, Boolean.class,
+        Class.class, Method.class };
+    private static final Class<?> defaultEditorType = validEditorTypes[0]; // first
+                                                                           // one
 
     /**
-     * Constructor for RuleDialog.  Supply a working descriptor with name & description values we expect the user to change.
+     * Constructor for RuleDialog. Supply a working descriptor with name &
+     * description values we expect the user to change.
      *
      * @param parentdlgArea
      */
-    public NewPropertyDialog(Shell parent, Map<Class<?>, EditorFactory> theEditorFactoriesByValueType, PropertySource theSource, ValueChangeListener theChangeListener) {
+    public NewPropertyDialog(Shell parent, Map<Class<?>, EditorFactory> theEditorFactoriesByValueType,
+            PropertySource theSource, ValueChangeListener theChangeListener) {
         super(parent);
 
         setShellStyle(SWT.DIALOG_TRIM | SWT.RESIZE | SWT.MAX | SWT.APPLICATION_MODAL);
@@ -82,13 +88,15 @@ public class NewPropertyDialog extends TitleAreaDialog implements SizeChangeList
      *
      * @param parentdlgArea
      */
-    public NewPropertyDialog(Shell parent, Map<Class<?>, EditorFactory> theEditorFactoriesByValueType, Rule theRule, PropertyDescriptor<?> theDescriptor, ValueChangeListener theChangeListener) {
+    public NewPropertyDialog(Shell parent, Map<Class<?>, EditorFactory> theEditorFactoriesByValueType, Rule theRule,
+            PropertyDescriptor<?> theDescriptor, ValueChangeListener theChangeListener) {
         this(parent, theEditorFactoriesByValueType, theRule, theChangeListener);
 
         descriptor = theDescriptor;
     }
 
-    public static Map<Class<?>, EditorFactory> withOnly(Map<Class<?>, EditorFactory> factoriesByType, Class<?>[] legalTypeKeys) {
+    public static Map<Class<?>, EditorFactory> withOnly(Map<Class<?>, EditorFactory> factoriesByType,
+            Class<?>[] legalTypeKeys) {
         Map<Class<?>, EditorFactory> results = new HashMap<Class<?>, EditorFactory>(legalTypeKeys.length);
 
         for (Class<?> type : legalTypeKeys) {
@@ -102,7 +110,7 @@ public class NewPropertyDialog extends TitleAreaDialog implements SizeChangeList
     public boolean close() {
 
         return super.close();
-     }
+    }
 
     /**
      * @see org.eclipse.jface.dialogs.Dialog#createDialogArea(Composite)
@@ -110,7 +118,7 @@ public class NewPropertyDialog extends TitleAreaDialog implements SizeChangeList
     @Override
     protected Control createDialogArea(Composite parent) {
 
-//        parent.setLayoutData(new GridData(GridData.FILL_BOTH));
+        // parent.setLayoutData(new GridData(GridData.FILL_BOTH));
         getShell().setText(SWTUtil.stringFor(StringKeys.DIALOG_PREFS_ADD_NEW_PROPERTY));
 
         dlgArea = new Composite(parent, SWT.NULL);
@@ -120,9 +128,12 @@ public class NewPropertyDialog extends TitleAreaDialog implements SizeChangeList
         dlgArea.setLayout(layout);
         dlgArea.setLayoutData(new GridData(GridData.FILL_BOTH));
 
-        buildLabel(dlgArea, "Name:");        nameField = buildNameText(dlgArea);  	// TODO i18l label
-        buildLabel(dlgArea, "Datatype:");    typeField = buildTypeField(dlgArea);	// TODO i18l label
-        buildLabel(dlgArea, "Label:");       labelField = buildLabelField(dlgArea);	// TODO i18l label
+        buildLabel(dlgArea, "Name:");
+        nameField = buildNameText(dlgArea); // TODO i18l label
+        buildLabel(dlgArea, "Datatype:");
+        typeField = buildTypeField(dlgArea); // TODO i18l label
+        buildLabel(dlgArea, "Label:");
+        labelField = buildLabelField(dlgArea); // TODO i18l label
 
         setPreferredName();
         setInitialType();
@@ -132,12 +143,12 @@ public class NewPropertyDialog extends TitleAreaDialog implements SizeChangeList
         return dlgArea;
     }
 
-    
     protected Control createButtonBar(Composite parent) {
-    	Control result = super.createButtonBar(parent);
-    	validateForm();
-    	return result;
+        Control result = super.createButtonBar(parent);
+        validateForm();
+        return result;
     }
+
     /**
      * Build a label
      */
@@ -146,17 +157,17 @@ public class NewPropertyDialog extends TitleAreaDialog implements SizeChangeList
         label.setText(msgKey == null ? "" : SWTUtil.stringFor(msgKey));
         return label;
     }
-    
+
     private void setFieldLayoutData(Control widget) {
-    	
-    	GridData data = new GridData();
+
+        GridData data = new GridData();
         data.horizontalSpan = 1;
         data.horizontalAlignment = GridData.FILL;
         data.grabExcessHorizontalSpace = true;
-        
+
         widget.setLayoutData(data);
     }
-    
+
     /**
      * Build the rule name text
      */
@@ -166,7 +177,7 @@ public class NewPropertyDialog extends TitleAreaDialog implements SizeChangeList
         setFieldLayoutData(text);
 
         text.addVerifyListener(RuleUIUtil.RuleNameVerifier);
-        
+
         text.addListener(SWT.Modify, new Listener() {
             public void handleEvent(Event event) {
                 validateForm();
@@ -178,13 +189,14 @@ public class NewPropertyDialog extends TitleAreaDialog implements SizeChangeList
 
     private boolean isValidNewLabel(String labelCandidate) {
 
-    	return ! StringUtil.isEmpty(labelCandidate);
+        return !StringUtil.isEmpty(labelCandidate);
     }
-        
+
     private boolean isPreExistingLabel(String labelCandidate) {
-    	
+
         for (PropertyDescriptor<?> desc : propertySource.getPropertyDescriptors()) {
-            if (desc.description().equalsIgnoreCase(labelCandidate)) return false;
+            if (desc.description().equalsIgnoreCase(labelCandidate))
+                return false;
         }
         return true;
     }
@@ -198,10 +210,10 @@ public class NewPropertyDialog extends TitleAreaDialog implements SizeChangeList
         setFieldLayoutData(text);
 
         text.addVerifyListener(RuleUIUtil.RuleLabelVerifier);
-        
+
         text.addListener(SWT.Modify, new Listener() {
             public void handleEvent(Event event) {
-               validateForm();
+                validateForm();
             }
         });
 
@@ -213,7 +225,8 @@ public class NewPropertyDialog extends TitleAreaDialog implements SizeChangeList
     }
 
     /**
-     * A bit of a hack but this avoids the need to create an alternate lookup structure
+     * A bit of a hack but this avoids the need to create an alternate lookup
+     * structure
      *
      * @param label
      * @return
@@ -221,9 +234,8 @@ public class NewPropertyDialog extends TitleAreaDialog implements SizeChangeList
     private EditorFactory factoryFor(String label) {
 
         for (Entry<Class<?>, EditorFactory> entry : editorFactoriesByValueType.entrySet()) {
-            if (label.equals(
-                   labelFor(entry.getKey())
-                   )) return entry.getValue();
+            if (label.equals(labelFor(entry.getKey())))
+                return entry.getValue();
         }
 
         return null;
@@ -238,7 +250,7 @@ public class NewPropertyDialog extends TitleAreaDialog implements SizeChangeList
         setFieldLayoutData(combo);
 
         String[] labels = new String[editorFactoriesByValueType.size()];
-        int i=0;
+        int i = 0;
         for (Entry<Class<?>, EditorFactory> entry : editorFactoriesByValueType.entrySet()) {
             labels[i++] = labelFor(entry.getKey());
         }
@@ -250,9 +262,9 @@ public class NewPropertyDialog extends TitleAreaDialog implements SizeChangeList
                 int selectionIdx = combo.getSelectionIndex();
                 EditorFactory factory = factoryFor(combo.getItem(selectionIdx));
 
-                factory( factory );
+                factory(factory);
             }
-          });
+        });
 
         return combo;
     }
@@ -271,7 +283,8 @@ public class NewPropertyDialog extends TitleAreaDialog implements SizeChangeList
         List<String> names = Util.fragmentsWithin(xpath, positions);
 
         for (String name : names) {
-            if (ruleHasPropertyName(name)) continue;
+            if (ruleHasPropertyName(name))
+                continue;
             nameField.setText(name);
             return;
         }
@@ -281,45 +294,49 @@ public class NewPropertyDialog extends TitleAreaDialog implements SizeChangeList
     private void setInitialType() {
 
         String editorLabel = labelFor(defaultEditorType);
-        typeField.select( Util.indexOf(typeField.getItems(), editorLabel) );
-        factory( factoryFor(editorLabel));
+        typeField.select(Util.indexOf(typeField.getItems(), editorLabel));
+        factory(factoryFor(editorLabel));
     }
 
     private void cleanFactoryStuff() {
-        if (factoryControls != null) for (Control control : factoryControls) control.dispose();
+        if (factoryControls != null)
+            for (Control control : factoryControls)
+                control.dispose();
     }
 
     private void factory(EditorFactory theFactory) {
 
         factory = theFactory;
 
-        descriptor = factory.createDescriptor("??", "??", null);	// dummy values that will be replaced
+        descriptor = factory.createDescriptor("??", "??", null); // dummy values
+                                                                 // that will be
+                                                                 // replaced
         labelField.setText(descriptor.description());
         cleanFactoryStuff();
 
         factoryControls = factory.createOtherControlsOn(dlgArea, descriptor, propertySource, changeListener, this);
-        
+
         dlgArea.getShell().layout();
         dlgArea.pack();
         dlgArea.getParent().pack();
     }
 
-//    /**
-//     * Helper method to shorten message access
-//     *
-//     * @param key a message key
-//     * @return requested message
-//     */
-//    private String getMessage(String key) {
-//        return PMDPlugin.getDefault().getStringTable().getString(key);
-//    }
+    // /**
+    // * Helper method to shorten message access
+    // *
+    // * @param key a message key
+    // * @return requested message
+    // */
+    // private String getMessage(String key) {
+    // return PMDPlugin.getDefault().getStringTable().getString(key);
+    // }
 
     /**
      * @see org.eclipse.jface.dialogs.Dialog#okPressed()
      */
     @Override
     protected void okPressed() {
-        if (validateForm() ) {
+        if (validateForm()) {
             descriptor = newDescriptor();
             super.okPressed();
         }
@@ -331,7 +348,8 @@ public class NewPropertyDialog extends TitleAreaDialog implements SizeChangeList
     private boolean validateForm() {
         boolean isOk = validateName() && validateLabel();
         Control button = getButton(IDialogConstants.OK_ID);
-        if (button != null) button.setEnabled(isOk);
+        if (button != null)
+            button.setEnabled(isOk);
         return isOk;
     }
 
@@ -343,21 +361,17 @@ public class NewPropertyDialog extends TitleAreaDialog implements SizeChangeList
         String name = nameField.getText().trim();
 
         if (StringUtil.isEmpty(name)) {
-            setErrorMessage(
-            		"A property name is required"
-            		);
+            setErrorMessage("A property name is required");
             return false;
         }
 
         if (ruleHasPropertyName(name)) {
-            setErrorMessage(
-                    "'" + name + "' is already used by another property"
-                    );
+            setErrorMessage("'" + name + "' is already used by another property");
             return false;
         }
 
         setErrorMessage(null);
-        
+
         return true;
     }
 
@@ -369,9 +383,7 @@ public class NewPropertyDialog extends TitleAreaDialog implements SizeChangeList
         String label = labelField.getText().trim();
 
         if (StringUtil.isEmpty(label)) {
-            setErrorMessage(
-                    "A descriptive label is required"
-                    );
+            setErrorMessage("A descriptive label is required");
             return false;
         }
 
@@ -379,16 +391,14 @@ public class NewPropertyDialog extends TitleAreaDialog implements SizeChangeList
             setErrorMessage("Invalid label");
             return false;
         }
-        
+
         if (!isPreExistingLabel(label)) {
-            setErrorMessage(
-            		"Label text must differ from other label text"
-                    );
+            setErrorMessage("Label text must differ from other label text");
             return false;
         }
 
         setErrorMessage(null);
-        
+
         return true;
     }
 
@@ -403,11 +413,7 @@ public class NewPropertyDialog extends TitleAreaDialog implements SizeChangeList
 
     private PropertyDescriptor<?> newDescriptor() {
 
-        return factory.createDescriptor(
-                nameField.getText().trim(),
-                labelField.getText().trim(),
-                factoryControls
-                );
+        return factory.createDescriptor(nameField.getText().trim(), labelField.getText().trim(), factoryControls);
     }
 
     /**
@@ -415,7 +421,7 @@ public class NewPropertyDialog extends TitleAreaDialog implements SizeChangeList
      */
     @Override
     protected void cancelPressed() {
-       // courierFont.dispose();
+        // courierFont.dispose();
         super.cancelPressed();
     }
 

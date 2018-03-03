@@ -33,6 +33,7 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package net.sourceforge.pmd.eclipse.runtime.cmd;
 
 import name.herlin.command.CommandException;
@@ -56,7 +57,7 @@ public class BuildProjectCommand extends AbstractProjectCommand {
      */
     public BuildProjectCommand() {
         super("BuildProject", "Rebuild a project.");
-        
+
         setReadOnly(false);
         setOutputProperties(false);
         setTerminated(false);

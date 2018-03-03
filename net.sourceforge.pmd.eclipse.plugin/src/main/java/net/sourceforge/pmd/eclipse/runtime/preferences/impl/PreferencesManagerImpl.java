@@ -89,59 +89,69 @@ import net.sourceforge.pmd.util.StringUtil;
  */
 
 class PreferencesManagerImpl implements IPreferencesManager {
-    
-    private IPreferences        preferences;
-    private IPreferenceStore    storePreferencesStore = PMDPlugin.getDefault().getPreferenceStore();
-    private IPreferenceStore    loadPreferencesStore;
 
-    private RuleSet 			ruleSet;
-    
-    
-    private static final Logger log = Logger.getLogger(PreferencesManagerImpl.class);
+    private IPreferences preferences;
+    private IPreferenceStore storePreferencesStore = PMDPlugin.getDefault().getPreferenceStore();
+    private IPreferenceStore loadPreferencesStore;
 
-    private static final String PROJECT_BUILD_PATH_ENABLED  	= PMDPlugin.PLUGIN_ID + ".project_build_path_enabled";
-    private static final String PMD_PERSPECTIVE_ENABLED     	= PMDPlugin.PLUGIN_ID + ".pmd_perspective_enabled";
-    private static final String PMD_CHECK_AFTER_SAVE_ENABLED	= PMDPlugin.PLUGIN_ID + ".pmd_check_after_save_enabled";
-    private static final String MAX_VIOLATIONS_PFPR         	= PMDPlugin.PLUGIN_ID + ".max_violations_pfpr";
-    private static final String REVIEW_ADDITIONAL_COMMENT 		= PMDPlugin.PLUGIN_ID + ".review_additional_comment";
-    private static final String REVIEW_PMD_STYLE_ENABLED    	= PMDPlugin.PLUGIN_ID + ".review_pmd_style_enabled";
-    private static final String PMD_USE_CUSTOM_PRIORITY_NAMES   = PMDPlugin.PLUGIN_ID + ".use_custom_priority_names";
-    private static final String MIN_TILE_SIZE               	= PMDPlugin.PLUGIN_ID + ".min_tile_size";
-    private static final String LOG_FILENAME                	= PMDPlugin.PLUGIN_ID + ".log_filename";
-    private static final String LOG_LEVEL                   	= PMDPlugin.PLUGIN_ID + ".log_level";
-    private static final String GLOBAL_RULE_MANAGEMENT          = PMDPlugin.PLUGIN_ID + ".globalRuleManagement";
-    private static final String ACTIVE_RULES                	= PMDPlugin.PLUGIN_ID + ".active_rules";
-    private static final String ACTIVE_RENDERERS               	= PMDPlugin.PLUGIN_ID + ".active_renderers";
-    private static final String ACTIVE_EXCLUSIONS              	= PMDPlugin.PLUGIN_ID + ".active_exclusions";
-    private static final String ACTIVE_INCLUSIONS              	= PMDPlugin.PLUGIN_ID + ".active_inclusions";
-    
-    private static final String OLD_PREFERENCE_PREFIX       = "net.sourceforge.pmd.runtime";
-    private static final String OLD_PREFERENCE_LOCATION     = "/.metadata/.plugins/org.eclipse.core.runtime/.settings/net.sourceforge.pmd.runtime.prefs";
-    public static final String NEW_PREFERENCE_LOCATION      = "/.metadata/.plugins/org.eclipse.core.runtime/.settings/net.sourceforge.pmd.eclipse.plugin.prefs";
+    private RuleSet ruleSet;
 
-    private static final String PREFERENCE_RULESET_FILE     = "/ruleset.xml";
+    private static final Logger LOG = Logger.getLogger(PreferencesManagerImpl.class);
 
-    private static final Map<RulePriority, PriorityDescriptor> DefaultDescriptorsByPriority = new HashMap<RulePriority, PriorityDescriptor>(5);
+    private static final String PROJECT_BUILD_PATH_ENABLED = PMDPlugin.PLUGIN_ID + ".project_build_path_enabled";
+    private static final String PMD_PERSPECTIVE_ENABLED = PMDPlugin.PLUGIN_ID + ".pmd_perspective_enabled";
+    private static final String PMD_CHECK_AFTER_SAVE_ENABLED = PMDPlugin.PLUGIN_ID + ".pmd_check_after_save_enabled";
+    private static final String MAX_VIOLATIONS_PFPR = PMDPlugin.PLUGIN_ID + ".max_violations_pfpr";
+    private static final String REVIEW_ADDITIONAL_COMMENT = PMDPlugin.PLUGIN_ID + ".review_additional_comment";
+    private static final String REVIEW_PMD_STYLE_ENABLED = PMDPlugin.PLUGIN_ID + ".review_pmd_style_enabled";
+    private static final String PMD_USE_CUSTOM_PRIORITY_NAMES = PMDPlugin.PLUGIN_ID + ".use_custom_priority_names";
+    private static final String MIN_TILE_SIZE = PMDPlugin.PLUGIN_ID + ".min_tile_size";
+    private static final String LOG_FILENAME = PMDPlugin.PLUGIN_ID + ".log_filename";
+    private static final String LOG_LEVEL = PMDPlugin.PLUGIN_ID + ".log_level";
+    private static final String GLOBAL_RULE_MANAGEMENT = PMDPlugin.PLUGIN_ID + ".globalRuleManagement";
+    private static final String ACTIVE_RULES = PMDPlugin.PLUGIN_ID + ".active_rules";
+    private static final String ACTIVE_RENDERERS = PMDPlugin.PLUGIN_ID + ".active_renderers";
+    private static final String ACTIVE_EXCLUSIONS = PMDPlugin.PLUGIN_ID + ".active_exclusions";
+    private static final String ACTIVE_INCLUSIONS = PMDPlugin.PLUGIN_ID + ".active_inclusions";
+
+    private static final String OLD_PREFERENCE_PREFIX = "net.sourceforge.pmd.runtime";
+    private static final String OLD_PREFERENCE_LOCATION = "/.metadata/.plugins/org.eclipse.core.runtime/.settings/net.sourceforge.pmd.runtime.prefs";
+    public static final String NEW_PREFERENCE_LOCATION = "/.metadata/.plugins/org.eclipse.core.runtime/.settings/net.sourceforge.pmd.eclipse.plugin.prefs";
+
+    private static final String PREFERENCE_RULESET_FILE = "/ruleset.xml";
+
+    private static final Map<RulePriority, PriorityDescriptor> DefaultDescriptorsByPriority = new HashMap<RulePriority, PriorityDescriptor>(
+            5);
     private static final Map<RulePriority, String> StoreKeysByPriority = new HashMap<RulePriority, String>(5);
-    
+
     static {
-    	DefaultDescriptorsByPriority.put(RulePriority.HIGH, 		new PriorityDescriptor(RulePriority.HIGH, 		StringKeys.VIEW_FILTER_PRIORITY_1, StringKeys.VIEW_TOOLTIP_FILTER_PRIORITY, null, Shape.triangleRight, 	new RGB( 255,0,0), 	13));	// red
-    	DefaultDescriptorsByPriority.put(RulePriority.MEDIUM_HIGH, 	new PriorityDescriptor(RulePriority.MEDIUM_HIGH,StringKeys.VIEW_FILTER_PRIORITY_2, StringKeys.VIEW_TOOLTIP_FILTER_PRIORITY, null, Shape.triangleRight, 	new RGB( 0,255,255), 13));	// yellow
-    	DefaultDescriptorsByPriority.put(RulePriority.MEDIUM, 		new PriorityDescriptor(RulePriority.MEDIUM, 	StringKeys.VIEW_FILTER_PRIORITY_3, StringKeys.VIEW_TOOLTIP_FILTER_PRIORITY, null, Shape.triangleRight, 	new RGB( 0,255,0), 	13));	// green
-    	DefaultDescriptorsByPriority.put(RulePriority.MEDIUM_LOW, 	new PriorityDescriptor(RulePriority.MEDIUM_LOW,	StringKeys.VIEW_FILTER_PRIORITY_4, StringKeys.VIEW_TOOLTIP_FILTER_PRIORITY, null, Shape.triangleRight,	new RGB( 255,0,255), 13));	// purple
-    	DefaultDescriptorsByPriority.put(RulePriority.LOW, 			new PriorityDescriptor(RulePriority.LOW, 	  	StringKeys.VIEW_FILTER_PRIORITY_5, StringKeys.VIEW_TOOLTIP_FILTER_PRIORITY, null, Shape.triangleRight, 	new RGB( 0,0,255), 	13));  	// blue
-    
-    	StoreKeysByPriority.put(RulePriority.HIGH, 			PMDPlugin.PLUGIN_ID + ".priority_descriptor_1");
-    	StoreKeysByPriority.put(RulePriority.MEDIUM_HIGH, 	PMDPlugin.PLUGIN_ID + ".priority_descriptor_2");
-    	StoreKeysByPriority.put(RulePriority.MEDIUM, 		PMDPlugin.PLUGIN_ID + ".priority_descriptor_3");
-    	StoreKeysByPriority.put(RulePriority.MEDIUM_LOW, 	PMDPlugin.PLUGIN_ID + ".priority_descriptor_4");
-    	StoreKeysByPriority.put(RulePriority.LOW, 			PMDPlugin.PLUGIN_ID + ".priority_descriptor_5");
-   }
+        DefaultDescriptorsByPriority.put(RulePriority.HIGH,
+                new PriorityDescriptor(RulePriority.HIGH, StringKeys.VIEW_FILTER_PRIORITY_1,
+                        StringKeys.VIEW_TOOLTIP_FILTER_PRIORITY, null, Shape.triangleRight, new RGB(255, 0, 0), 13)); // red
+        DefaultDescriptorsByPriority.put(RulePriority.MEDIUM_HIGH,
+                new PriorityDescriptor(RulePriority.MEDIUM_HIGH, StringKeys.VIEW_FILTER_PRIORITY_2,
+                        StringKeys.VIEW_TOOLTIP_FILTER_PRIORITY, null, Shape.triangleRight, new RGB(0, 255, 255), 13)); // yellow
+        DefaultDescriptorsByPriority.put(RulePriority.MEDIUM,
+                new PriorityDescriptor(RulePriority.MEDIUM, StringKeys.VIEW_FILTER_PRIORITY_3,
+                        StringKeys.VIEW_TOOLTIP_FILTER_PRIORITY, null, Shape.triangleRight, new RGB(0, 255, 0), 13)); // green
+        DefaultDescriptorsByPriority.put(RulePriority.MEDIUM_LOW,
+                new PriorityDescriptor(RulePriority.MEDIUM_LOW, StringKeys.VIEW_FILTER_PRIORITY_4,
+                        StringKeys.VIEW_TOOLTIP_FILTER_PRIORITY, null, Shape.triangleRight, new RGB(255, 0, 255), 13)); // purple
+        DefaultDescriptorsByPriority.put(RulePriority.LOW,
+                new PriorityDescriptor(RulePriority.LOW, StringKeys.VIEW_FILTER_PRIORITY_5,
+                        StringKeys.VIEW_TOOLTIP_FILTER_PRIORITY, null, Shape.triangleRight, new RGB(0, 0, 255), 13)); // blue
+
+        StoreKeysByPriority.put(RulePriority.HIGH, PMDPlugin.PLUGIN_ID + ".priority_descriptor_1");
+        StoreKeysByPriority.put(RulePriority.MEDIUM_HIGH, PMDPlugin.PLUGIN_ID + ".priority_descriptor_2");
+        StoreKeysByPriority.put(RulePriority.MEDIUM, PMDPlugin.PLUGIN_ID + ".priority_descriptor_3");
+        StoreKeysByPriority.put(RulePriority.MEDIUM_LOW, PMDPlugin.PLUGIN_ID + ".priority_descriptor_4");
+        StoreKeysByPriority.put(RulePriority.LOW, PMDPlugin.PLUGIN_ID + ".priority_descriptor_5");
+    }
 
     public PriorityDescriptor defaultDescriptorFor(RulePriority priority) {
-    	return DefaultDescriptorsByPriority.get(priority);
+        return DefaultDescriptorsByPriority.get(priority);
     }
-    
+
     /**
      * @see net.sourceforge.pmd.eclipse.runtime.preferences.IPreferencesManager#loadPreferences()
      */
@@ -181,11 +191,11 @@ class PreferencesManagerImpl implements IPreferencesManager {
 
         return preferences;
     }
-    
+
     /**
-     * Initialize 'loadPreferencesStore' to deal with backward compatibility issues.
-     * The old preferences use the net.sourceforge.pmd.runtime package instead of the
-     * new net.sourceforge.pmd.eclipse.plugin package.
+     * Initialize 'loadPreferencesStore' to deal with backward compatibility
+     * issues. The old preferences use the net.sourceforge.pmd.runtime package
+     * instead of the new net.sourceforge.pmd.eclipse.plugin package.
      */
     private void initLoadPreferencesStore() {
         IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
@@ -204,12 +214,12 @@ class PreferencesManagerImpl implements IPreferencesManager {
                 props.load(in);
                 in.close();
                 loadPreferencesStore = new PreferenceStore();
-                for (Map.Entry<Object, Object> entry: props.entrySet()) {
-                    String key = (String)entry.getKey();
+                for (Map.Entry<Object, Object> entry : props.entrySet()) {
+                    String key = (String) entry.getKey();
                     if (key.startsWith(OLD_PREFERENCE_PREFIX)) {
                         key = key.replaceFirst(OLD_PREFERENCE_PREFIX, PMDPlugin.PLUGIN_ID);
                     }
-                    loadPreferencesStore.putValue(key, (String)entry.getValue());
+                    loadPreferencesStore.putValue(key, (String) entry.getValue());
                 }
             } catch (IOException ioe) {
                 PMDPlugin.getDefault().logError("IOException in loading old format preferences", ioe);
@@ -248,7 +258,7 @@ class PreferencesManagerImpl implements IPreferencesManager {
      * @see net.sourceforge.pmd.eclipse.runtime.preferences.IPreferencesManager#getRuleSet()
      */
     public RuleSet getRuleSet() {
-        
+
         if (ruleSet == null) {
             ruleSet = getRuleSetFromStateLocation();
         }
@@ -268,7 +278,7 @@ class PreferencesManagerImpl implements IPreferencesManager {
         loadPreferencesStore.setDefault(PROJECT_BUILD_PATH_ENABLED, IPreferences.PROJECT_BUILD_PATH_ENABLED_DEFAULT);
         preferences.setProjectBuildPathEnabled(loadPreferencesStore.getBoolean(PROJECT_BUILD_PATH_ENABLED));
     }
-    
+
     private void loadPmdPerspectiveEnabled() {
         loadPreferencesStore.setDefault(PMD_PERSPECTIVE_ENABLED, IPreferences.PMD_PERSPECTIVE_ENABLED_DEFAULT);
         preferences.setPmdPerspectiveEnabled(loadPreferencesStore.getBoolean(PMD_PERSPECTIVE_ENABLED));
@@ -278,9 +288,10 @@ class PreferencesManagerImpl implements IPreferencesManager {
         loadPreferencesStore.setDefault(PMD_CHECK_AFTER_SAVE_ENABLED, IPreferences.PMD_CHECK_AFTER_SAVE_DEFAULT);
         preferences.isCheckAfterSaveEnabled(loadPreferencesStore.getBoolean(PMD_CHECK_AFTER_SAVE_ENABLED));
     }
-    
+
     private void loadUseCustomPriorityNames() {
-        loadPreferencesStore.setDefault(PMD_USE_CUSTOM_PRIORITY_NAMES, IPreferences.PMD_USE_CUSTOM_PRIORITY_NAMES_DEFAULT);
+        loadPreferencesStore.setDefault(PMD_USE_CUSTOM_PRIORITY_NAMES,
+                IPreferences.PMD_USE_CUSTOM_PRIORITY_NAMES_DEFAULT);
         preferences.useCustomPriorityNames(loadPreferencesStore.getBoolean(PMD_USE_CUSTOM_PRIORITY_NAMES));
     }
 
@@ -328,73 +339,77 @@ class PreferencesManagerImpl implements IPreferencesManager {
         loadPreferencesStore.setDefault(ACTIVE_RENDERERS, IPreferences.ACTIVE_RENDERERS);
         preferences.activeReportRenderers(asStringSet(loadPreferencesStore.getString(ACTIVE_RENDERERS), ","));
     }
-    
+
     private void loadActiveExclusions() {
         loadPreferencesStore.setDefault(ACTIVE_EXCLUSIONS, IPreferences.ACTIVE_EXCLUSIONS);
         preferences.activeExclusionPatterns(asStringSet(loadPreferencesStore.getString(ACTIVE_EXCLUSIONS), ","));
     }
-    
+
     private void loadActiveInclusions() {
         loadPreferencesStore.setDefault(ACTIVE_INCLUSIONS, IPreferences.ACTIVE_INCLUSIONS);
         preferences.activeInclusionPatterns(asStringSet(loadPreferencesStore.getString(ACTIVE_INCLUSIONS), ","));
     }
-    
+
     private void loadRulePriorityDescriptors() {
-    	
-    	for (Map.Entry<RulePriority, String> entry : StoreKeysByPriority.entrySet()) {
-    		PriorityDescriptor desc = defaultDescriptorFor(entry.getKey());
-    		loadPreferencesStore.setDefault(entry.getValue(), desc.storeString());
-    		String storeKey = StoreKeysByPriority.get(entry.getKey());
-    		preferences.setPriorityDescriptor(entry.getKey(), PriorityDescriptor.from( loadPreferencesStore.getString(storeKey) ) );
-    	}
+
+        for (Map.Entry<RulePriority, String> entry : StoreKeysByPriority.entrySet()) {
+            PriorityDescriptor desc = defaultDescriptorFor(entry.getKey());
+            loadPreferencesStore.setDefault(entry.getValue(), desc.storeString());
+            String storeKey = StoreKeysByPriority.get(entry.getKey());
+            preferences.setPriorityDescriptor(entry.getKey(),
+                    PriorityDescriptor.from(loadPreferencesStore.getString(storeKey)));
+        }
     }
-    
-    
+
     private static Set<String> asStringSet(String delimitedString, String delimiter) {
-    	
-    	String[] values = delimitedString.split(delimiter);
-    	Set<String> valueSet = new HashSet<String>(values.length);
-    	for (int i=0; i<values.length; i++) {
-    		String name = values[i].trim();
-    		if (StringUtil.isEmpty(name)) continue;
-    		valueSet.add(name);
-    	}
-    	return valueSet;
+
+        String[] values = delimitedString.split(delimiter);
+        Set<String> valueSet = new HashSet<String>(values.length);
+        for (int i = 0; i < values.length; i++) {
+            String name = values[i].trim();
+            if (StringUtil.isEmpty(name))
+                continue;
+            valueSet.add(name);
+        }
+        return valueSet;
     }
-    
-    private static String asDelimitedString(Set<String>values, String delimiter) {
-    	
-    	if (values == null || values.isEmpty()) return "";
-    	
-    	StringBuilder sb = new StringBuilder();
-    	
-    	for (String value : values) {
-    		sb.append(delimiter).append(value);
-    	}
-    	
-    	return sb.toString();
+
+    private static String asDelimitedString(Set<String> values, String delimiter) {
+
+        if (values == null || values.isEmpty())
+            return "";
+
+        StringBuilder sb = new StringBuilder();
+
+        for (String value : values) {
+            sb.append(delimiter).append(value);
+        }
+
+        return sb.toString();
     }
-    
+
     private void storeGlobalRuleManagement() {
         storePreferencesStore.setValue(GLOBAL_RULE_MANAGEMENT, preferences.getGlobalRuleManagement());
     }
 
     private void storeActiveRules() {
-    	storePreferencesStore.setValue(ACTIVE_RULES, asDelimitedString(preferences.getActiveRuleNames(), ","));
+        storePreferencesStore.setValue(ACTIVE_RULES, asDelimitedString(preferences.getActiveRuleNames(), ","));
     }
-    
+
     private void storeActiveReportRenderers() {
-    	storePreferencesStore.setValue(ACTIVE_RENDERERS, asDelimitedString(preferences.activeReportRenderers(), ","));
+        storePreferencesStore.setValue(ACTIVE_RENDERERS, asDelimitedString(preferences.activeReportRenderers(), ","));
     }
 
     private void storeActiveExclusions() {
-    	storePreferencesStore.setValue(ACTIVE_EXCLUSIONS, asDelimitedString(preferences.activeExclusionPatterns(), ","));
+        storePreferencesStore.setValue(ACTIVE_EXCLUSIONS,
+                asDelimitedString(preferences.activeExclusionPatterns(), ","));
     }
-    
+
     private void storeActiveInclusions() {
-    	storePreferencesStore.setValue(ACTIVE_INCLUSIONS, asDelimitedString(preferences.activeInclusionPatterns(), ","));
+        storePreferencesStore.setValue(ACTIVE_INCLUSIONS,
+                asDelimitedString(preferences.activeInclusionPatterns(), ","));
     }
-    
+
     private void storeProjectBuildPathEnabled() {
         storePreferencesStore.setValue(PROJECT_BUILD_PATH_ENABLED, preferences.isProjectBuildPathEnabled());
     }
@@ -402,11 +417,11 @@ class PreferencesManagerImpl implements IPreferencesManager {
     private void storeCheckAfterSaveEnabled() {
         storePreferencesStore.setValue(PMD_CHECK_AFTER_SAVE_ENABLED, preferences.isCheckAfterSaveEnabled());
     }
-    
+
     private void storeUseCustomPriorityNames() {
         storePreferencesStore.setValue(PMD_USE_CUSTOM_PRIORITY_NAMES, preferences.useCustomPriorityNames());
     }
-    
+
     private void storePmdPerspectiveEnabled() {
         storePreferencesStore.setValue(PMD_PERSPECTIVE_ENABLED, preferences.isPmdPerspectiveEnabled());
     }
@@ -436,13 +451,13 @@ class PreferencesManagerImpl implements IPreferencesManager {
     }
 
     private void storePriorityDescriptors() {
-    	
-    	for (Map.Entry<RulePriority, String> entry : StoreKeysByPriority.entrySet()) {
-    		PriorityDescriptor desc = preferences.getPriorityDescriptor(entry.getKey());
-    		storePreferencesStore.setValue(entry.getValue(), desc.storeString());
-    	}
+
+        for (Map.Entry<RulePriority, String> entry : StoreKeysByPriority.entrySet()) {
+            PriorityDescriptor desc = preferences.getPriorityDescriptor(entry.getKey());
+            storePreferencesStore.setValue(entry.getValue(), desc.storeString());
+        }
     }
-    
+
     /**
      * Get rule set from state location
      */
@@ -457,18 +472,22 @@ class PreferencesManagerImpl implements IPreferencesManager {
             try {
                 preferredRuleSet = factory.createRuleSet(ruleSetLocation.toOSString());
             } catch (RuntimeException e) {
-            	PMDPlugin.getDefault().showError("Runtime Exception when loading stored ruleset file. Falling back to default ruleset.", e);
+                PMDPlugin.getDefault().showError(
+                        "Runtime Exception when loading stored ruleset file. Falling back to default ruleset.", e);
             } catch (RuleSetNotFoundException e) {
-            	PMDPlugin.getDefault().showError("RuleSet Not Found Exception when loading stored ruleset file. Falling back to default ruleset.", e);
-	    }
+                PMDPlugin.getDefault().showError(
+                        "RuleSet Not Found Exception when loading stored ruleset file. Falling back to default ruleset.",
+                        e);
+            }
         }
 
         // Finally, build a default ruleset
         if (preferredRuleSet == null) {
-            preferredRuleSet = RuleSetUtil.newEmpty(RuleSetUtil.DEFAULT_RULESET_NAME, RuleSetUtil.DEFAULT_RULESET_DESCRIPTION);
+            preferredRuleSet = RuleSetUtil.newEmpty(RuleSetUtil.DEFAULT_RULESET_NAME,
+                    RuleSetUtil.DEFAULT_RULESET_DESCRIPTION);
 
             IRuleSetManager ruleSetManager = PMDPlugin.getDefault().getRuleSetManager();
-            for (RuleSet ruleSet: ruleSetManager.getDefaultRuleSets()) {
+            for (RuleSet ruleSet : ruleSetManager.getDefaultRuleSets()) {
                 preferredRuleSet = RuleSetUtil.addRuleSetByReference(preferredRuleSet, ruleSet, false);
             }
         }
@@ -482,7 +501,7 @@ class PreferencesManagerImpl implements IPreferencesManager {
      */
     private Collection<Rule> getNewRules(RuleSet newRuleSet) {
         List<Rule> addedRules = new ArrayList<Rule>();
-        for (Rule rule: newRuleSet.getRules()) {
+        for (Rule rule : newRuleSet.getRules()) {
             if (this.ruleSet.getRuleByName(rule.getName()) == null) {
                 addedRules.add(rule);
             }
@@ -492,10 +511,11 @@ class PreferencesManagerImpl implements IPreferencesManager {
     }
 
     /**
-     * Add new rules to already configured projects, and update the exclude/include patterns
+     * Add new rules to already configured projects, and update the
+     * exclude/include patterns
      */
     private void updateConfiguredProjects(RuleSet updatedRuleSet) {
-        log.debug("Updating configured projects");
+        LOG.debug("Updating configured projects");
 
         IProject[] projects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
 
@@ -507,8 +527,10 @@ class PreferencesManagerImpl implements IPreferencesManager {
                     RuleSet projectRuleSet = properties.getProjectRuleSet();
                     if (projectRuleSet != null) {
                         projectRuleSet = RuleSetUtil.addRules(projectRuleSet, getNewRules(updatedRuleSet));
-                        projectRuleSet = RuleSetUtil.setExcludePatterns(projectRuleSet, updatedRuleSet.getExcludePatterns());
-                        projectRuleSet = RuleSetUtil.setIncludePatterns(projectRuleSet, updatedRuleSet.getIncludePatterns());
+                        projectRuleSet = RuleSetUtil.setExcludePatterns(projectRuleSet,
+                                updatedRuleSet.getExcludePatterns());
+                        projectRuleSet = RuleSetUtil.setIncludePatterns(projectRuleSet,
+                                updatedRuleSet.getIncludePatterns());
                         properties.setProjectRuleSet(projectRuleSet);
                         properties.sync();
                     }
@@ -523,22 +545,22 @@ class PreferencesManagerImpl implements IPreferencesManager {
      * Store the rule set in preference store
      */
     private void storeRuleSetInStateLocation(RuleSet ruleSet) {
-    	OutputStream out = null;
-    	PMDPlugin plugin = PMDPlugin.getDefault();
-    	
+        OutputStream out = null;
+        PMDPlugin plugin = PMDPlugin.getDefault();
+
         try {
             IPath ruleSetLocation = plugin.getStateLocation().append(PREFERENCE_RULESET_FILE);
             out = new FileOutputStream(ruleSetLocation.toOSString());
             IRuleSetWriter writer = plugin.getRuleSetWriter();
             writer.write(out, ruleSet);
             out.flush();
-            
+
         } catch (IOException e) {
-        	plugin.logError("IO Exception when storing ruleset in state location", e);
+            plugin.logError("IO Exception when storing ruleset in state location", e);
         } catch (WriterException e) {
-        	plugin.logError("General PMD Eclipse Exception when storing ruleset in state location", e);
+            plugin.logError("General PMD Eclipse Exception when storing ruleset in state location", e);
         } finally {
-        	IOUtil.closeQuietly(out);
+            IOUtil.closeQuietly(out);
         }
     }
 }

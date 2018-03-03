@@ -33,6 +33,7 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package net.sourceforge.pmd.eclipse.runtime.cmd;
 
 import name.herlin.command.AbstractProcessableCommand;
@@ -44,8 +45,8 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
 
 /**
- * This is a base implementation for a command inside the PMD plugin.
- * This must be used as a root implementation for all the plugin commands.
+ * This is a base implementation for a command inside the PMD plugin. This must
+ * be used as a root implementation for all the plugin commands.
  *
  * @author Philippe Herlin
  *
@@ -68,32 +69,35 @@ public abstract class AbstractDefaultCommand extends AbstractProcessableCommand 
         description = theDescription;
     }
 
-//    private static final Logger log = Logger.getLogger(AbstractDefaultCommand.class);
-    
+    // private static final Logger log =
+    // Logger.getLogger(AbstractDefaultCommand.class);
+
     public static void logInfo(String message) {
-    	PMDPlugin.getDefault().logInformation(message);
+        PMDPlugin.getDefault().logInformation(message);
     }
 
     public static void logError(String message, Throwable error) {
-    	PMDPlugin.getDefault().logError(message, error);
+        PMDPlugin.getDefault().logError(message, error);
     }
 
     /**
      * 
      * @param file
      * @return
-     *  @deprecated  we support multiple languages now
+     * @deprecated we support multiple languages now
      */
     public static boolean isJavaFile(IFile file) {
-    	if (file == null) return false;
-    	return "JAVA".equalsIgnoreCase(file.getFileExtension());
+        if (file == null)
+            return false;
+        return "JAVA".equalsIgnoreCase(file.getFileExtension());
     }
-    
+
     public static boolean isLanguageFile(IFile file, Language language) {
-    	if (file == null) return false;
-    	return language.hasExtension(file.getFileExtension());
+        if (file == null)
+            return false;
+        return language.hasExtension(file.getFileExtension());
     }
-    
+
     /**
      * @return Returns the readOnly status.
      */
@@ -103,7 +107,8 @@ public abstract class AbstractDefaultCommand extends AbstractProcessableCommand 
     }
 
     /**
-     * @param readOnly The readOnly to set.
+     * @param readOnly
+     *            The readOnly to set.
      */
     public void setReadOnly(final boolean readOnly) {
         this.readOnly = readOnly;
@@ -126,7 +131,8 @@ public abstract class AbstractDefaultCommand extends AbstractProcessableCommand 
     }
 
     /**
-     * @param outputProperties The outputProperties to set.
+     * @param outputProperties
+     *            The outputProperties to set.
      */
     public void setOutputProperties(final boolean outputProperties) {
         this.outputProperties = outputProperties;
@@ -149,7 +155,8 @@ public abstract class AbstractDefaultCommand extends AbstractProcessableCommand 
     }
 
     /**
-     * @param readyToExecute The readyToExecute to set.
+     * @param readyToExecute
+     *            The readyToExecute to set.
      */
     public void setReadyToExecute(final boolean readyToExecute) {
         this.readyToExecute = readyToExecute;
@@ -163,7 +170,8 @@ public abstract class AbstractDefaultCommand extends AbstractProcessableCommand 
     }
 
     /**
-     * @param stepsCount The number of steps for that command
+     * @param stepsCount
+     *            The number of steps for that command
      */
     public void setStepCount(final int stepCount) {
         this.stepCount = stepCount;
@@ -175,9 +183,10 @@ public abstract class AbstractDefaultCommand extends AbstractProcessableCommand 
     public boolean isUserInitiated() {
         return userInitiated;
     }
-    
+
     /**
-     * @param userInitiated The userInitiated to set.
+     * @param userInitiated
+     *            The userInitiated to set.
      */
     public void setUserInitiated(boolean userInitiated) {
         this.userInitiated = userInitiated;
@@ -191,7 +200,8 @@ public abstract class AbstractDefaultCommand extends AbstractProcessableCommand 
     }
 
     /**
-     * @param monitor The monitor to set.
+     * @param monitor
+     *            The monitor to set.
      */
     public void setMonitor(final IProgressMonitor monitor) {
         this.monitor = monitor;
@@ -211,6 +221,7 @@ public abstract class AbstractDefaultCommand extends AbstractProcessableCommand 
 
     /**
      * delegate method for monitor.beginTask
+     * 
      * @see org.eclipse.core.runtime.IProgressMonitor#beginTask
      */
     protected void beginTask(String name, int totalWork) {
@@ -221,6 +232,7 @@ public abstract class AbstractDefaultCommand extends AbstractProcessableCommand 
 
     /**
      * delegate method to monitor.done()
+     * 
      * @see org.eclipse.core.runtime.IProgressMonitor#done
      */
     protected void done() {
@@ -233,6 +245,7 @@ public abstract class AbstractDefaultCommand extends AbstractProcessableCommand 
 
     /**
      * delegate method for monitor.isCanceled()
+     * 
      * @see org.eclipse.core.runtime.IProgressMonitor#isCanceled
      */
     protected boolean isCanceled() {
@@ -241,6 +254,7 @@ public abstract class AbstractDefaultCommand extends AbstractProcessableCommand 
 
     /**
      * delegate method for monitor.setTaskName()
+     * 
      * @see org.eclipse.core.runtime.IProgressMonitor#setTaskName
      */
     protected void setTaskName(String name) {
@@ -251,6 +265,7 @@ public abstract class AbstractDefaultCommand extends AbstractProcessableCommand 
 
     /**
      * delegate method for monitor.subTask()
+     * 
      * @see org.eclipse.core.runtime.IProgressMonitor#subTask
      */
     protected void subTask(String name) {
@@ -261,6 +276,7 @@ public abstract class AbstractDefaultCommand extends AbstractProcessableCommand 
 
     /**
      * delegate method for monitor.worked()
+     * 
      * @see org.eclipse.core.runtime.IProgressMonitor#isCanceled
      */
     protected void worked(int work) {
@@ -268,35 +284,41 @@ public abstract class AbstractDefaultCommand extends AbstractProcessableCommand 
             monitor.worked(work);
         }
     }
-    
-//    /**
-//     * Return a PMD Engine for that project. The engine is parameterized
-//     * according to the target JDK of that project.
-//     *
-//     * @param project
-//     * @return
-//     */
-//    protected PMDEngine getPmdEngineForProject(IProject project) throws CommandException {
-//        IJavaProject javaProject = JavaCore.create(project);
-//        PMDEngine pmdEngine = new PMDEngine();
-//
-//        if (javaProject.exists()) {
-//            String compilerCompliance = javaProject.getOption(JavaCore.COMPILER_COMPLIANCE, true);
-//            log.debug("compilerCompliance = " + compilerCompliance);
-//
-//            LanguageVersion languageVersion = Language.JAVA.getVersion(compilerCompliance);
-//            if ( languageVersion == null ) {
-//                throw new CommandException("The target JDK, " + compilerCompliance + " is not supported"); // TODO NLS
-//            }
-//            pmdEngine.setLanguageVersion(languageVersion);
-//
-//            IPreferences preferences = PMDPlugin.getDefault().loadPreferences();
-//            if (preferences.isProjectBuildPathEnabled()) {
-//            	pmdEngine.setClassLoader(new JavaProjectClassLoader(pmdEngine.getClassLoader(), javaProject));
-//            }
-//        } else {
-//            throw new CommandException("The project " + project.getName() + " is not a Java project"); // TODO NLS
-//        }
-//        return pmdEngine;
-//    }
+
+    // /**
+    // * Return a PMD Engine for that project. The engine is parameterized
+    // * according to the target JDK of that project.
+    // *
+    // * @param project
+    // * @return
+    // */
+    // protected PMDEngine getPmdEngineForProject(IProject project) throws
+    // CommandException {
+    // IJavaProject javaProject = JavaCore.create(project);
+    // PMDEngine pmdEngine = new PMDEngine();
+    //
+    // if (javaProject.exists()) {
+    // String compilerCompliance =
+    // javaProject.getOption(JavaCore.COMPILER_COMPLIANCE, true);
+    // log.debug("compilerCompliance = " + compilerCompliance);
+    //
+    // LanguageVersion languageVersion =
+    // Language.JAVA.getVersion(compilerCompliance);
+    // if ( languageVersion == null ) {
+    // throw new CommandException("The target JDK, " + compilerCompliance + " is
+    // not supported"); // TODO NLS
+    // }
+    // pmdEngine.setLanguageVersion(languageVersion);
+    //
+    // IPreferences preferences = PMDPlugin.getDefault().loadPreferences();
+    // if (preferences.isProjectBuildPathEnabled()) {
+    // pmdEngine.setClassLoader(new
+    // JavaProjectClassLoader(pmdEngine.getClassLoader(), javaProject));
+    // }
+    // } else {
+    // throw new CommandException("The project " + project.getName() + " is not
+    // a Java project"); // TODO NLS
+    // }
+    // return pmdEngine;
+    // }
 }

@@ -33,6 +33,7 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package net.sourceforge.pmd.eclipse.runtime.cmd;
 
 import java.io.ByteArrayInputStream;
@@ -67,7 +68,7 @@ import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 
 /**
- * This command produce a report for a project using the specified renderer. 
+ * This command produce a report for a project using the specified renderer.
  *
  * @author Philippe Herlin
  *
@@ -97,8 +98,10 @@ public class RenderReportsCmd extends AbstractProjectCommand {
     /**
      * Register a renderer and its associated file for processing.
      *
-     * @param renderer the renderer
-     * @param reportFile the file name where the report will be saved
+     * @param renderer
+     *            the renderer
+     * @param reportFile
+     *            the file name where the report will be saved
      */
     public void registerRenderer(Renderer renderer, String reportFile) {
         if (reportFile != null && renderer != null) {
@@ -115,27 +118,28 @@ public class RenderReportsCmd extends AbstractProjectCommand {
      * @throws IOException
      * @throws CoreException
      */
-    private void render(Report report, IFolder folder, String reportName, Renderer renderer) throws IOException, CoreException {
-    	
+    private void render(Report report, IFolder folder, String reportName, Renderer renderer)
+            throws IOException, CoreException {
+
         StringWriter writer = new StringWriter();
         String reportString = null;
-        
+
         try {
-	        renderer.setWriter(writer);
-	        renderer.start();
-	        renderer.renderFileReport(report);
-	        renderer.end();
-	
-	        reportString = writer.toString();
-	        } finally {
-	        	IOUtil.closeQuietly(writer);
-	        }
-	        
-	    if (StringUtil.isEmpty(reportString)) {
-	    	log.debug("Missing content for report: " + reportName);
-	    	return;
-	    }
-	        
+            renderer.setWriter(writer);
+            renderer.start();
+            renderer.renderFileReport(report);
+            renderer.end();
+
+            reportString = writer.toString();
+        } finally {
+            IOUtil.closeQuietly(writer);
+        }
+
+        if (StringUtil.isEmpty(reportString)) {
+            log.debug("Missing content for report: " + reportName);
+            return;
+        }
+
         log.debug("   Creating the report file");
         IFile reportFile = folder.getFile(reportName);
         InputStream contentsStream = new ByteArrayInputStream(reportString.getBytes());
@@ -145,9 +149,9 @@ public class RenderReportsCmd extends AbstractProjectCommand {
             reportFile.create(contentsStream, true, getMonitor());
         }
         reportFile.refreshLocal(IResource.DEPTH_INFINITE, getMonitor());
-        contentsStream.close();    	
+        contentsStream.close();
     }
-    
+
     /**
      * @see name.herlin.command.AbstractProcessableCommand#execute()
      */
@@ -165,7 +169,7 @@ public class RenderReportsCmd extends AbstractProjectCommand {
                 folder.create(true, true, getMonitor());
             }
 
-            for (Map.Entry<String, Renderer> entry: renderers.entrySet()) {
+            for (Map.Entry<String, Renderer> entry : renderers.entrySet()) {
                 String reportName = entry.getKey();
                 Renderer renderer = entry.getValue();
                 log.debug("   Render the report");
@@ -177,7 +181,7 @@ public class RenderReportsCmd extends AbstractProjectCommand {
         } catch (IOException e) {
             log.debug("Core Exception: " + e.getMessage(), e);
             throw new CommandException(e);
-        } finally {        	
+        } finally {
             log.debug("End of RenderReport command");
             setTerminated(true);
         }
@@ -188,9 +192,9 @@ public class RenderReportsCmd extends AbstractProjectCommand {
      */
     @Override
     public void reset() {
-       setProject(null);
-       renderers = new HashMap<String, Renderer>();
-       setTerminated(false);
+        setProject(null);
+        renderers = new HashMap<String, Renderer>();
+        setTerminated(false);
     }
 
     /**
@@ -202,17 +206,18 @@ public class RenderReportsCmd extends AbstractProjectCommand {
     }
 
     private static void classAndPackageFrom(IMarker marker, FakeRuleViolation violation) throws JavaModelException {
-    	 ICompilationUnit unit = JavaCore.createCompilationUnitFrom((IFile) marker.getResource());
+        ICompilationUnit unit = JavaCore.createCompilationUnitFrom((IFile) marker.getResource());
 
-         IPackageDeclaration[] packages = unit.getPackageDeclarations();         
-         violation.setPackageName(packages.length > 0 ? packages[0].getElementName() : "(default)");
-         
-         IType[] types = unit.getAllTypes();
-         violation.setClassName(types.length > 0 ? types[0].getElementName() : marker.getResource().getName());        
+        IPackageDeclaration[] packages = unit.getPackageDeclarations();
+        violation.setPackageName(packages.length > 0 ? packages[0].getElementName() : "(default)");
+
+        IType[] types = unit.getAllTypes();
+        violation.setClassName(types.length > 0 ? types[0].getElementName() : marker.getResource().getName());
     }
-    
+
     /**
      * Create a Report object from the markers of a project
+     * 
      * @param project
      * @return
      */
@@ -223,7 +228,7 @@ public class RenderReportsCmd extends AbstractProjectCommand {
         IMarker[] markers = MarkerUtil.findAllMarkers(project);
         RuleSet ruleSet = PMDPlugin.getDefault().getPreferencesManager().getRuleSet();
         boolean isJavaProject = project.hasNature(JavaCore.NATURE_ID);
-        
+
         for (IMarker marker : markers) {
             String ruleName = marker.getAttribute(PMDRuntimeConstants.KEY_MARKERATT_RULENAME, "");
             Rule rule = ruleSet.getRuleByName(ruleName);
@@ -231,7 +236,7 @@ public class RenderReportsCmd extends AbstractProjectCommand {
             FakeRuleViolation ruleViolation = createViolation(marker, rule);
 
             if (isJavaProject && marker.getResource() instanceof IFile) {
-            	classAndPackageFrom(marker, ruleViolation);
+                classAndPackageFrom(marker, ruleViolation);
             }
 
             report.addRuleViolation(ruleViolation);
@@ -240,17 +245,18 @@ public class RenderReportsCmd extends AbstractProjectCommand {
         return report;
     }
 
-	private static FakeRuleViolation createViolation(IMarker marker, Rule rule) {
+    private static FakeRuleViolation createViolation(IMarker marker, Rule rule) {
 
-		// @PMD:REVIEWED:AvoidInstantiatingObjectsInLoops: by Herlin on 01/05/05 19:14
-		FakeRuleViolation ruleViolation = new FakeRuleViolation(rule);
+        // @PMD:REVIEWED:AvoidInstantiatingObjectsInLoops: by Herlin on 01/05/05
+        // 19:14
+        FakeRuleViolation ruleViolation = new FakeRuleViolation(rule);
 
-		// Fill in the rule violation object before adding it to the report
-		ruleViolation.setBeginLine(marker.getAttribute(IMarker.LINE_NUMBER, 0));
-		ruleViolation.setEndLine(marker.getAttribute(PMDRuntimeConstants.KEY_MARKERATT_LINE2, 0));
-		ruleViolation.setVariableName(marker.getAttribute(PMDRuntimeConstants.KEY_MARKERATT_LINE2, ""));
-		ruleViolation.setFilename(marker.getResource().getProjectRelativePath().toString());
-		ruleViolation.setDescription(marker.getAttribute(IMarker.MESSAGE, rule.getMessage()));
-		return ruleViolation;
-	}
+        // Fill in the rule violation object before adding it to the report
+        ruleViolation.setBeginLine(marker.getAttribute(IMarker.LINE_NUMBER, 0));
+        ruleViolation.setEndLine(marker.getAttribute(PMDRuntimeConstants.KEY_MARKERATT_LINE2, 0));
+        ruleViolation.setVariableName(marker.getAttribute(PMDRuntimeConstants.KEY_MARKERATT_LINE2, ""));
+        ruleViolation.setFilename(marker.getResource().getProjectRelativePath().toString());
+        ruleViolation.setDescription(marker.getAttribute(IMarker.MESSAGE, rule.getMessage()));
+        return ruleViolation;
+    }
 }

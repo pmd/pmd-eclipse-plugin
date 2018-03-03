@@ -1,3 +1,4 @@
+
 package net.sourceforge.pmd.eclipse.runtime.cmd;
 
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
@@ -18,10 +19,10 @@ public abstract class AbstractProjectCommand extends AbstractDefaultCommand {
     private IProject project;
 
     private static final long serialVersionUID = 1L;
-    
-	protected AbstractProjectCommand(String theName, String theDescription) {
-		super(theName, theDescription);
-	}
+
+    protected AbstractProjectCommand(String theName, String theDescription) {
+        super(theName, theDescription);
+    }
 
     /**
      * @see name.herlin.command.Command#reset()
@@ -30,35 +31,36 @@ public abstract class AbstractProjectCommand extends AbstractDefaultCommand {
         setProject(null);
         setTerminated(false);
     }
-    
+
     /**
-     * @param project The project to set.
+     * @param project
+     *            The project to set.
      */
     public void setProject(final IProject theProject) {
         project = theProject;
         setReadyToExecute(project != null);
     }
-    
+
     protected IProject project() {
-    	return project;
+        return project;
     }
-    
+
     protected void visitProjectResourcesWith(IResourceVisitor visitor) throws CoreException {
-    	project.accept(visitor);
+        project.accept(visitor);
     }
-    
+
     /**
      * @see name.herlin.command.Command#isReadyToExecute()
      */
     public boolean isReadyToExecute() {
         return project != null;
     }
-    
+
     protected IFolder getProjectFolder(String folderId) {
-    	return project.getFolder(folderId);
+        return project.getFolder(folderId);
     }
-    
+
     protected IProjectProperties projectProperties() throws PropertiesException {
-    	return PMDPlugin.getDefault().loadProjectProperties(project);
+        return PMDPlugin.getDefault().loadProjectProperties(project);
     }
 }

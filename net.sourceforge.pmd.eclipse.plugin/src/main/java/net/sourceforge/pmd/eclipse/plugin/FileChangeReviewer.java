@@ -1,13 +1,9 @@
+
 package net.sourceforge.pmd.eclipse.plugin;
 
 import java.util.HashSet;
 import java.util.Set;
 
-import name.herlin.command.CommandException;
-import net.sourceforge.pmd.eclipse.runtime.builder.MarkerUtil;
-import net.sourceforge.pmd.eclipse.runtime.cmd.ReviewCodeCmd;
-
-import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceChangeEvent;
@@ -15,10 +11,13 @@ import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.IWorkspaceDescription;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
+
+import net.sourceforge.pmd.eclipse.runtime.cmd.ReviewCodeCmd;
+
+import name.herlin.command.CommandException;
 
 /**
  * Monitors for changes in the workspace and initiates the ReviewCodeCmd when
@@ -51,10 +50,12 @@ public class FileChangeReviewer implements IResourceChangeListener {
         }
 
         public boolean equals(Object other) {
-            if (other == null)
+            if (other == null) {
                 return false;
-            if (other == this)
+            }
+            if (other == this) {
                 return true;
+            }
             if (other.getClass() == getClass()) {
                 ResourceChange chg = (ResourceChange) other;
                 return chg.file.equals(file) && resourceDeltaType == chg.resourceDeltaType && flags == chg.flags;
@@ -69,7 +70,8 @@ public class FileChangeReviewer implements IResourceChangeListener {
     public void resourceChanged(IResourceChangeEvent event) {
         IWorkspaceDescription workspaceSettings = ResourcesPlugin.getWorkspace().getDescription();
         if (workspaceSettings.isAutoBuilding()) {
-            PMDPlugin.getDefault().logInformation("Not running PMD via FileChangeReviewer, as autoBuilding is enabled for this workspace");
+            PMDPlugin.getDefault().logInformation(
+                    "Not running PMD via FileChangeReviewer, as autoBuilding is enabled for this workspace");
             return;
         }
 
@@ -84,16 +86,21 @@ public class FileChangeReviewer implements IResourceChangeListener {
 
         case IResourceChangeEvent.POST_CHANGE:
             changed(itemsChanged, event.getDelta(), new NullProgressMonitor());
+            break;
+        default:
+            //TODO
         }
 
-        if (itemsChanged.isEmpty())
+        if (itemsChanged.isEmpty()) {
             return;
+        }
 
         ReviewCodeCmd cmd = new ReviewCodeCmd(); // separate one for each thread
         cmd.reset();
 
-        for (ResourceChange chg : itemsChanged)
+        for (ResourceChange chg : itemsChanged) {
             cmd.addResource(chg.file);
+        }
 
         try {
             cmd.performExecute();
@@ -118,8 +125,9 @@ public class FileChangeReviewer implements IResourceChangeListener {
             // removed(itemsChanged, (IFile)rsc, flags, true);
             // }
             for (IResourceDelta grandkidDelta : delta.getAffectedChildren()) {
-                if (monitor.isCanceled())
+                if (monitor.isCanceled()) {
                     return;
+                }
                 changed(itemsChanged, grandkidDelta, monitor);
             }
             break;
@@ -131,8 +139,9 @@ public class FileChangeReviewer implements IResourceChangeListener {
                 added(itemsChanged, (IFile) rsc, flags, true);
             }
             for (IResourceDelta grandkidDelta : delta.getAffectedChildren()) {
-                if (monitor.isCanceled())
+                if (monitor.isCanceled()) {
                     return;
+                }
                 changed(itemsChanged, grandkidDelta, monitor);
             }
             break;
@@ -144,15 +153,17 @@ public class FileChangeReviewer implements IResourceChangeListener {
                 changed(itemsChanged, (IFile) rsc, flags, true);
             }
             for (IResourceDelta grandkidDelta : delta.getAffectedChildren()) {
-                if (monitor.isCanceled())
+                if (monitor.isCanceled()) {
                     return;
+                }
                 changed(itemsChanged, grandkidDelta, monitor);
             }
             break;
         default:
             for (IResourceDelta grandkidDelta : delta.getAffectedChildren()) {
-                if (monitor.isCanceled())
+                if (monitor.isCanceled()) {
                     return;
+                }
                 changed(itemsChanged, grandkidDelta, monitor);
             }
         }

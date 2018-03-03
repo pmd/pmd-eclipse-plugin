@@ -60,7 +60,7 @@ import org.eclipse.swt.graphics.Image;
  *
  */
 public class ViolationOverviewLabelProvider extends AbstractViolationLabelProvider {
-	
+
     private static final String KEY_IMAGE_PACKAGE = "package";
     private static final String KEY_IMAGE_JAVAFILE = "javafile";
 
@@ -75,9 +75,10 @@ public class ViolationOverviewLabelProvider extends AbstractViolationLabelProvid
         super();
         violationView = overview;
     }
-    
+
     /**
-     * @see org.eclipse.jface.viewers.ITableLabelProvider#getColumnImage(java.lang.Object, int)
+     * @see org.eclipse.jface.viewers.ITableLabelProvider#getColumnImage(java.lang.Object,
+     *      int)
      */
     public Image getColumnImage(Object element, int columnIndex) {
         Image image = null;
@@ -89,7 +90,7 @@ public class ViolationOverviewLabelProvider extends AbstractViolationLabelProvid
             } else if (element instanceof FileRecord || element instanceof FileToMarkerRecord) {
                 image = getImage(KEY_IMAGE_JAVAFILE, PMDUiConstants.ICON_JAVACU);
             } else if (element instanceof MarkerRecord) {
-                MarkerRecord markerRecord = (MarkerRecord)element;
+                MarkerRecord markerRecord = (MarkerRecord) element;
                 int priority = markerRecord.getPriority();
                 image = getPriorityImage(priority);
             }
@@ -97,7 +98,7 @@ public class ViolationOverviewLabelProvider extends AbstractViolationLabelProvid
 
         return image;
     }
-    
+
     /**
      * @see org.eclipse.jface.viewers.ITableLabelProvider#getColumnText(java.lang.Object,
      *      int)
@@ -106,7 +107,7 @@ public class ViolationOverviewLabelProvider extends AbstractViolationLabelProvid
         String result = "";
 
         if (element instanceof AbstractPMDRecord) {
-            final AbstractPMDRecord record = (AbstractPMDRecord)element;
+            final AbstractPMDRecord record = (AbstractPMDRecord) element;
             switch (columnIndex) {
 
             // show the Element's Name
@@ -143,23 +144,24 @@ public class ViolationOverviewLabelProvider extends AbstractViolationLabelProvid
 
     /**
      * Gets the number of violation to an element.
-     * @param element the record
+     * 
+     * @param element
+     *            the record
      * @return number as string
      */
     private String getNumberOfViolations(AbstractPMDRecord element) {
         final int violations = this.violationView.getNumberOfFilteredViolations(element);
         String result = String.valueOf(violations);
 
-        if (element instanceof MarkerRecord
-                && violationView.getShowType() != ViolationOverview.SHOW_MARKERS_FILES) {
-            final String ruleName = ((MarkerRecord)element).getName();
+        if (element instanceof MarkerRecord && violationView.getShowType() != ViolationOverview.SHOW_MARKERS_FILES) {
+            final String ruleName = ((MarkerRecord) element).getName();
             final int maxViolations = getMaxViolations(ruleName);
 
             if (violations == maxViolations) {
                 result = "(max) " + result;
             }
         } else if (element instanceof FileToMarkerRecord) {
-            final String ruleName = ((FileToMarkerRecord)element).getParent().getName();
+            final String ruleName = ((FileToMarkerRecord) element).getParent().getName();
             final int maxViolations = getMaxViolations(ruleName);
 
             if (violations == maxViolations) {
@@ -172,7 +174,9 @@ public class ViolationOverviewLabelProvider extends AbstractViolationLabelProvid
 
     /**
      * Gets the maximum number of violations to a rule.
-     * @param ruleName name of the rule
+     * 
+     * @param ruleName
+     *            name of the rule
      * @return maximum number
      */
     private int getMaxViolations(String ruleName) {
@@ -180,9 +184,9 @@ public class ViolationOverviewLabelProvider extends AbstractViolationLabelProvid
         final Rule rule = PMDPlugin.getDefault().getPreferencesManager().getRuleSet().getRuleByName(ruleName);
         if (rule != null) {
             if (rule.hasDescriptor(PMDRuntimeConstants.MAX_VIOLATIONS_DESCRIPTOR)) {
-        	return rule.getProperty(PMDRuntimeConstants.MAX_VIOLATIONS_DESCRIPTOR);
+                return rule.getProperty(PMDRuntimeConstants.MAX_VIOLATIONS_DESCRIPTOR);
             } else {
-        	return PMDRuntimeConstants.MAX_VIOLATIONS_DESCRIPTOR.defaultValue();
+                return PMDRuntimeConstants.MAX_VIOLATIONS_DESCRIPTOR.defaultValue();
             }
         }
 
@@ -224,11 +228,11 @@ public class ViolationOverviewLabelProvider extends AbstractViolationLabelProvid
         if (loc == 0) {
             result = "N/A";
         } else {
-            double vioPerLoc = (double)(vioCount * 1000) / loc;
+            double vioPerLoc = (double) (vioCount * 1000) / loc;
             if (vioPerLoc < 0.1) {
                 result = "< 0.1";
             } else {
-                DecimalFormat format = (DecimalFormat)NumberFormat.getInstance(Locale.US);
+                DecimalFormat format = (DecimalFormat) NumberFormat.getInstance(Locale.US);
                 format.applyPattern("##0.0");
                 result = format.format(vioPerLoc);
             }
@@ -252,12 +256,12 @@ public class ViolationOverviewLabelProvider extends AbstractViolationLabelProvid
         if (numMethods == 0) {
             result = "N/A";
         } else {
-            final double vioPerMethod = (double)vioCount2 / numMethods;
+            final double vioPerMethod = (double) vioCount2 / numMethods;
 
             if (vioPerMethod < 0.01 || numMethods == 0) {
                 result = "< 0.01";
             } else {
-                final DecimalFormat format = (DecimalFormat)NumberFormat.getInstance(Locale.US);
+                final DecimalFormat format = (DecimalFormat) NumberFormat.getInstance(Locale.US);
                 format.applyPattern("##0.00");
                 result = format.format(vioPerMethod);
             }

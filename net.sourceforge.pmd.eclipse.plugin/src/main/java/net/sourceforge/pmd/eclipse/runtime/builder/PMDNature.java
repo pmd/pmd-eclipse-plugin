@@ -1,5 +1,5 @@
-package net.sourceforge.pmd.eclipse.runtime.builder;
 
+package net.sourceforge.pmd.eclipse.runtime.builder;
 
 import org.eclipse.core.resources.ICommand;
 import org.eclipse.core.resources.IProject;
@@ -15,10 +15,10 @@ import org.eclipse.core.runtime.IProgressMonitor;
  *
  */
 public class PMDNature implements IProjectNature {
-	
+
     public static final String PMD_NATURE = "net.sourceforge.pmd.eclipse.plugin.pmdNature";
     private IProject project;
-    
+
     /**
      * @see org.eclipse.core.resources.IProjectNature#configure()
      */
@@ -70,11 +70,15 @@ public class PMDNature implements IProjectNature {
 
     /**
      * Add the PMD Nature to a project
-     * @param project a project to set the PMD Nature
-     * @param monitor a progress monitor
+     * 
+     * @param project
+     *            a project to set the PMD Nature
+     * @param monitor
+     *            a progress monitor
      * @return success true if the nature has been correctly set; false means
-     * the project already had PMD nature.
-     * @throws CoreException if any error occurs
+     *         the project already had PMD nature.
+     * @throws CoreException
+     *             if any error occurs
      */
     public static boolean addPMDNature(final IProject project, final IProgressMonitor monitor) throws CoreException {
         boolean success = false;
@@ -95,39 +99,45 @@ public class PMDNature implements IProjectNature {
 
     /**
      * Remove the PMD Nature from a project
-     * @param project a project to remove the PMD Nature
-     * @param monitor a progress monitor
+     * 
+     * @param project
+     *            a project to remove the PMD Nature
+     * @param monitor
+     *            a progress monitor
      * @return success true if the nature has been removed; false means the
-     * project already had not the PMD Nature.
-     * @throws CoreException if any error occurs.
+     *         project already had not the PMD Nature.
+     * @throws CoreException
+     *             if any error occurs.
      */
     public static boolean removePMDNature(final IProject project, final IProgressMonitor monitor) throws CoreException {
-       boolean success = false;
+        boolean success = false;
 
-       if (project.hasNature(PMD_NATURE)) {
-           final IProjectDescription description = project.getDescription();
-           final String[] natureIds = description.getNatureIds();
-           String[] newNatureIds = new String[natureIds.length - 1];
-           for (int i = 0, j = 0; i < natureIds.length; i++) {
-               if (!natureIds[i].equals(PMD_NATURE)) {
-                   newNatureIds[j++] = natureIds[i];
-               }
-           }
-           description.setNatureIds(newNatureIds);
-           project.setDescription(description, monitor);
-           MarkerUtil.deleteAllMarkersIn(project);
-       }
+        if (project.hasNature(PMD_NATURE)) {
+            final IProjectDescription description = project.getDescription();
+            final String[] natureIds = description.getNatureIds();
+            String[] newNatureIds = new String[natureIds.length - 1];
+            for (int i = 0, j = 0; i < natureIds.length; i++) {
+                if (!natureIds[i].equals(PMD_NATURE)) {
+                    newNatureIds[j++] = natureIds[i];
+                }
+            }
+            description.setNatureIds(newNatureIds);
+            project.setDescription(description, monitor);
+            MarkerUtil.deleteAllMarkersIn(project);
+        }
 
-       return success;
+        return success;
     }
 
     /**
      * Check if PMD builder is already in command list
-     * @param commands a command list
+     * 
+     * @param commands
+     *            a command list
      */
     private boolean pmdBuilderFound(ICommand[] commands) {
-        
-        for (ICommand command: commands) {
+
+        for (ICommand command : commands) {
             if (command.getBuilderName().equals(PMDBuilder.PMD_BUILDER)) {
                 return true;
             }

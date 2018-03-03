@@ -1,3 +1,4 @@
+
 package net.sourceforge.pmd.eclipse.runtime.cmd;
 
 import java.io.File;
@@ -23,22 +24,24 @@ import org.eclipse.ui.ResourceWorkingSetFilter;
  *
  */
 public class CPDVisitor implements IResourceVisitor {
-	
-    private static final Logger log = Logger.getLogger(CPDVisitor.class);
+
+    private static final Logger LOG = Logger.getLogger(CPDVisitor.class);
     private boolean includeDerivedFiles;
     private ResourceWorkingSetFilter workingSetFilter;
     private Language language;
     private List<File> files;
 
     /**
-     * @param includeDerivedFiles The includeDerivedFiles to set.
+     * @param includeDerivedFiles
+     *            The includeDerivedFiles to set.
      */
     public void setIncludeDerivedFiles(boolean includeDerivedFiles) {
         this.includeDerivedFiles = includeDerivedFiles;
     }
 
     /**
-     * @param workingSet WorkingSet of the visited project.
+     * @param workingSet
+     *            WorkingSet of the visited project.
      */
     public void setWorkingSet(IWorkingSet workingSet) {
         this.workingSetFilter = new ResourceWorkingSetFilter();
@@ -46,7 +49,8 @@ public class CPDVisitor implements IResourceVisitor {
     }
 
     /**
-     * @param language Only add files with that language
+     * @param language
+     *            Only add files with that language
      */
     public void setLanguage(Language language) {
         this.language = language;
@@ -60,32 +64,33 @@ public class CPDVisitor implements IResourceVisitor {
     }
 
     /**
-     * @param files the list of files to set
+     * @param files
+     *            the list of files to set
      */
     public void setFiles(List<File> files) {
         this.files = files;
     }
 
     /**
-     * @see org.eclipse.core.resources.IResourceVisitor#visit(IResource) Add java files into the CPD object
+     * @see org.eclipse.core.resources.IResourceVisitor#visit(IResource) Add
+     *      java files into the CPD object
      */
     public boolean visit(IResource resource) throws CoreException {
-        log.debug("CPD Visiting " + resource.getName());
-       
+        LOG.debug("CPD Visiting " + resource.getName());
+
         if (resource instanceof IFile) {
             IFile file = (IFile) resource;
             File ioFile = file.getLocation().toFile();
             try {
                 if (StringUtil.isNotEmpty(file.getFileExtension())
-                     && language.getFileFilter().accept(ioFile, file.getName())
-                     && isFileInWorkingSet(file)
-                     && (includeDerivedFiles || !file.isDerived())) {
-                    log.debug("Add file " + resource.getName());
+                        && language.getFileFilter().accept(ioFile, file.getName()) && isFileInWorkingSet(file)
+                        && (includeDerivedFiles || !file.isDerived())) {
+                    LOG.debug("Add file " + resource.getName());
                     files.add(ioFile);
                     return false;
                 }
             } catch (PropertiesException e) {
-                log.warn("ModelException when adding file " + resource.getName() + " to CPD. Continuing.", e);
+                LOG.warn("ModelException when adding file " + resource.getName() + " to CPD. Continuing.", e);
             }
         }
 

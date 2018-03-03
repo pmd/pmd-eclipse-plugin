@@ -1,3 +1,4 @@
+
 package net.sourceforge.pmd.eclipse.ui.views;
 
 import java.util.Arrays;
@@ -43,28 +44,26 @@ import org.eclipse.ui.part.Page;
  */
 public class ViolationOutlinePageBR extends Page implements IPage, ISelectionChangedListener, RefreshableTablePage {
 
-    private TableViewer					tableViewer;
-    private ViolationOutline			violationOutline;
-    private ViewerFilter				viewerFilter;
-    private FileRecord					resource;
-    private Integer[]                   columnWidths;
-    private Integer[]                   sorterProperties;
-    private BasicTableManager<IMarker>	tableManager;
+    private TableViewer tableViewer;
+    private ViolationOutline violationOutline;
+    private ViewerFilter viewerFilter;
+    private FileRecord resource;
+    private Integer[] columnWidths;
+    private Integer[] sorterProperties;
+    private BasicTableManager<IMarker> tableManager;
 
-	private ItemColumnDescriptor<?,IMarker>[] initialColumns = new ItemColumnDescriptor[] {
-		MarkerColumnsUI.priority,
-		MarkerColumnsUI.lineNumber,
-//		MarkerColumnsUI.done,
-		MarkerColumnsUI.created,
-		MarkerColumnsUI.ruleName,
-		MarkerColumnsUI.message
-		};
-	
+    private ItemColumnDescriptor<?, IMarker>[] initialColumns = new ItemColumnDescriptor[] { MarkerColumnsUI.priority,
+        MarkerColumnsUI.lineNumber,
+        // MarkerColumnsUI.done,
+        MarkerColumnsUI.created, MarkerColumnsUI.ruleName, MarkerColumnsUI.message };
+
     /**
      * Constructor
      * 
-     * @param resourceRecord, the FileRecord
-     * @param outline, the parent Outline
+     * @param resourceRecord,
+     *            the FileRecord
+     * @param outline,
+     *            the parent Outline
      */
     public ViolationOutlinePageBR(FileRecord resourceRecord, ViolationOutline outline) {
 
@@ -78,11 +77,14 @@ public class ViolationOutlinePageBR extends Page implements IPage, ISelectionCha
         }
     }
 
-    public TableViewer tableViewer() { return tableViewer; }
-    
+    public TableViewer tableViewer() {
+        return tableViewer;
+    }
+
     public void createControl(Composite parent) {
-    	
-    	tableManager = new BasicTableManager<IMarker>("rscViolations", PMDPlugin.getDefault().loadPreferences(), initialColumns);
+
+        tableManager = new BasicTableManager<IMarker>("rscViolations", PMDPlugin.getDefault().loadPreferences(),
+                initialColumns);
         tableViewer = tableManager.buildTableViewer(parent);
 
         tableManager.setupColumns(initialColumns);
@@ -112,7 +114,7 @@ public class ViolationOutlinePageBR extends Page implements IPage, ISelectionCha
 
         // create the Table
         createActionBars();
-        
+
         // set the Input
         tableViewer.setContentProvider(new ViolationOutlineContentProvider(this));
 
@@ -170,23 +172,29 @@ public class ViolationOutlinePageBR extends Page implements IPage, ISelectionCha
 
     }
 
-    /* @see org.eclipse.jface.viewers.ISelectionChangedListener#selectionChanged(org.eclipse.jface.viewers.SelectionChangedEvent) */
+    /*
+     * @see
+     * org.eclipse.jface.viewers.ISelectionChangedListener#selectionChanged(org.
+     * eclipse.jface.viewers.SelectionChangedEvent)
+     */
     public void selectionChanged(SelectionChangedEvent event) {
-    	
+
         IStructuredSelection selection = (IStructuredSelection) event.getSelection();
         IMarker marker = (IMarker) selection.getFirstElement();
-        if (marker == null) return;
-            
+        if (marker == null)
+            return;
+
         IEditorPart editor = getSite().getPage().getActiveEditor();
-        if (editor == null) return;
-            
+        if (editor == null)
+            return;
+
         IEditorInput input = editor.getEditorInput();
         if (input instanceof IFileEditorInput) {
             IFile file = ((IFileEditorInput) input).getFile();
             if (marker.getResource().equals(file)) {
-               IDE.gotoMarker(editor, marker);
-               }
+                IDE.gotoMarker(editor, marker);
             }
+        }
     }
 
     public List<Integer> getColumnWidths() {
@@ -211,8 +219,7 @@ public class ViolationOutlinePageBR extends Page implements IPage, ISelectionCha
     }
 
     /**
-     * first: column index
-     * second: ascending/descending: UP, DOWN or NONE
+     * first: column index second: ascending/descending: UP, DOWN or NONE
      */
     public List<Integer> getSorterProperties() {
         return Arrays.asList(sorterProperties);
@@ -231,7 +238,8 @@ public class ViolationOutlinePageBR extends Page implements IPage, ISelectionCha
         TableColumn sortColumn = null;
         int direction = SWT.NONE;
         if (sorterProps.size() == 2) {
-            if (sorterProps.get(0) != null && sorterProps.get(0).intValue() >= 0 && sorterProps.get(0).intValue() < table.getColumnCount()) {
+            if (sorterProps.get(0) != null && sorterProps.get(0).intValue() >= 0
+                    && sorterProps.get(0).intValue() < table.getColumnCount()) {
                 sortColumn = table.getColumn(sorterProps.get(0).intValue());
             }
             if (sorterProps.get(1) != null) {

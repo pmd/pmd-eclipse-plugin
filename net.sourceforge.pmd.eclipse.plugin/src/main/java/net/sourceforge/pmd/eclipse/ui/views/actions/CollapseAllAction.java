@@ -56,10 +56,14 @@ public class CollapseAllAction extends AbstractPMDAction {
         treeViewer = theViewer;
     }
 
- 	protected String imageId() { return PMDUiConstants.ICON_BUTTON_COLLAPSE; }
-    
-    protected String tooltipMsgId() { return StringKeys.VIEW_TOOLTIP_COLLAPSE_ALL; }
-   
+    protected String imageId() {
+        return PMDUiConstants.ICON_BUTTON_COLLAPSE;
+    }
+
+    protected String tooltipMsgId() {
+        return StringKeys.VIEW_TOOLTIP_COLLAPSE_ALL;
+    }
+
     public void run() {
         treeViewer.collapseAll();
     }

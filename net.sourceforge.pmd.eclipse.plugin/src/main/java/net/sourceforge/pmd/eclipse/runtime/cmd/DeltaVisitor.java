@@ -1,3 +1,4 @@
+
 package net.sourceforge.pmd.eclipse.runtime.cmd;
 
 import org.apache.log4j.Logger;
@@ -37,30 +38,33 @@ public class DeltaVisitor extends BaseVisitor implements IResourceDeltaVisitor {
      */
     public boolean visit(IResourceDelta delta) throws CoreException {
 
-    	if (isCanceled()) return false;
+        if (isCanceled())
+            return false;
 
-    	switch (delta.getKind()) {
-	    	case IResourceDelta.ADDED : {
-	    		log.debug("Visiting added resource " + delta.getResource().getName());
-	    		visitAdded(delta.getResource());
-	    		break;
-	    	}	
-	    	case IResourceDelta.CHANGED : {
-	    		log.debug("Visiting changed resource " + delta.getResource().getName());
-	    		visitChanged(delta.getResource());
-	    		break;
-	    	}
-	    	default : { // other kinds are not visited            
-	    		log.debug("Resource " + delta.getResource().getName() + " not visited.");
-	    	}
-    	}
+        switch (delta.getKind()) {
+        case IResourceDelta.ADDED: {
+            log.debug("Visiting added resource " + delta.getResource().getName());
+            visitAdded(delta.getResource());
+            break;
+        }
+        case IResourceDelta.CHANGED: {
+            log.debug("Visiting changed resource " + delta.getResource().getName());
+            visitChanged(delta.getResource());
+            break;
+        }
+        default: { // other kinds are not visited
+            log.debug("Resource " + delta.getResource().getName() + " not visited.");
+        }
+        }
 
-    	return true;
+        return true;
     }
 
     /**
      * Visit added resource
-     * @param resource a new resource
+     * 
+     * @param resource
+     *            a new resource
      */
     private void visitAdded(IResource resource) {
         reviewResource(resource);
@@ -68,7 +72,9 @@ public class DeltaVisitor extends BaseVisitor implements IResourceDeltaVisitor {
 
     /**
      * Visit changed resource
-     * @param resource a changed resource
+     * 
+     * @param resource
+     *            a changed resource
      */
     private void visitChanged(final IResource resource) {
         reviewResource(resource);

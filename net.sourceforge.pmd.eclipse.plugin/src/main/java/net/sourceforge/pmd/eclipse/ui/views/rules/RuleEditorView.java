@@ -1,3 +1,4 @@
+
 package net.sourceforge.pmd.eclipse.ui.views.rules;
 
 import org.eclipse.swt.SWT;
@@ -34,63 +35,64 @@ import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertySource;
 
 /**
- * @deprecated  - temporary (don't add code here, demo/testing view only)
+ * @deprecated - temporary (don't add code here, demo/testing view only)
  * 
  * @author br
  *
  */
-public class RuleEditorView extends ViewPart implements RuleSelectionListener, ModifyListener, ValueChangeListener, ValueResetHandler {
+public class RuleEditorView extends ViewPart
+        implements RuleSelectionListener, ModifyListener, ValueChangeListener, ValueResetHandler {
 
-	private TabFolder 		     	tabFolder;
-	private RulePropertyManager[]   rulePropertyManagers;
-	private RuleTableManager		tableManager;
-	    
+    private TabFolder tabFolder;
+    private RulePropertyManager[] rulePropertyManagers;
+    private RuleTableManager tableManager;
+
     private IPreferences preferences = PMDPlugin.getDefault().loadPreferences();
 
-	protected static PMDPlugin		plugin = PMDPlugin.getDefault();
-	
-	// columns shown in the rule treetable in the desired order
-	private static final RuleColumnDescriptor[] availableColumns = PMDPreferencePage2.availableColumns;
+    protected static PMDPlugin plugin = PMDPlugin.getDefault();
 
-	// last item in this list is the grouping used at startup
-	private static final Object[][] groupingChoices = PMDPreferencePage2.groupingChoices;
-	
-	
-	public RuleEditorView() {
+    // columns shown in the rule treetable in the desired order
+    private static final RuleColumnDescriptor[] availableColumns = PMDPreferencePage2.availableColumns;
 
-	}
-	
-	protected String descriptionId() {
-		return StringKeys.PREF_RULESET_TITLE;
-	}
+    // last item in this list is the grouping used at startup
+    private static final Object[][] groupingChoices = PMDPreferencePage2.groupingChoices;
 
-	@Override
-	public void createPartControl(Composite parent) {
+    public RuleEditorView() {
 
-		tableManager = new RuleTableManager("rules", availableColumns, PMDPlugin.getDefault().loadPreferences(), this);
-		tableManager.modifyListener(this);
-		tableManager.selectionListener(this);
+    }
 
-	    populateRuleset();
+    protected String descriptionId() {
+        return StringKeys.PREF_RULESET_TITLE;
+    }
 
-		Composite composite = new Composite(parent, SWT.NULL);
-		layoutControls(composite);
+    @Override
+    public void createPartControl(Composite parent) {
 
-		tableManager.populateRuleTable();
-		int i =  PreferenceUIStore.instance.selectedPropertyTab() ;
-		tabFolder.setSelection( i );
+        tableManager = new RuleTableManager("rules", availableColumns, PMDPlugin.getDefault().loadPreferences(), this);
+        tableManager.modifyListener(this);
+        tableManager.selectionListener(this);
 
-	}
+        populateRuleset();
 
-	private Composite createRuleSection(Composite parent) {
+        Composite composite = new Composite(parent, SWT.NULL);
+        layoutControls(composite);
 
-	    Composite ruleSection = new Composite(parent, SWT.NULL);
+        tableManager.populateRuleTable();
+        int i = PreferenceUIStore.instance.selectedPropertyTab();
+        tabFolder.setSelection(i);
 
-	    // Create the controls (order is important !)
-        Composite groupCombo = tableManager.buildGroupCombo(ruleSection, StringKeys.PREF_RULESET_RULES_GROUPED_BY, groupingChoices);
+    }
 
-	    Tree ruleTree = tableManager.buildRuleTreeViewer(ruleSection);
-	    tableManager.groupBy(null);
+    private Composite createRuleSection(Composite parent) {
+
+        Composite ruleSection = new Composite(parent, SWT.NULL);
+
+        // Create the controls (order is important !)
+        Composite groupCombo = tableManager.buildGroupCombo(ruleSection, StringKeys.PREF_RULESET_RULES_GROUPED_BY,
+                groupingChoices);
+
+        Tree ruleTree = tableManager.buildRuleTreeViewer(ruleSection);
+        tableManager.groupBy(null);
 
         Composite ruleTableButtons = tableManager.buildRuleTableButtons(ruleSection);
         Composite rulePropertiesTableButtons = PMDPreferencePage2.buildRulePropertiesTableButtons(ruleSection);
@@ -104,88 +106,99 @@ public class RuleEditorView extends ViewPart implements RuleSelectionListener, M
         groupCombo.setLayoutData(data);
 
         data = new GridData();
-        data.heightHint = 200;                          data.widthHint = 350;
+        data.heightHint = 200;
+        data.widthHint = 350;
         data.horizontalSpan = 1;
-        data.horizontalAlignment = GridData.FILL;       data.verticalAlignment = GridData.FILL;
-        data.grabExcessHorizontalSpace = true;          data.grabExcessVerticalSpace = true;
+        data.horizontalAlignment = GridData.FILL;
+        data.verticalAlignment = GridData.FILL;
+        data.grabExcessHorizontalSpace = true;
+        data.grabExcessVerticalSpace = true;
         ruleTree.setLayoutData(data);
 
         data = new GridData();
         data.horizontalSpan = 1;
-        data.horizontalAlignment = GridData.FILL;       data.verticalAlignment = GridData.FILL;
+        data.horizontalAlignment = GridData.FILL;
+        data.verticalAlignment = GridData.FILL;
         ruleTableButtons.setLayoutData(data);
 
         data = new GridData();
         data.horizontalSpan = 1;
-        data.horizontalAlignment = GridData.FILL;       data.verticalAlignment = GridData.FILL;
+        data.horizontalAlignment = GridData.FILL;
+        data.verticalAlignment = GridData.FILL;
         rulePropertiesTableButtons.setLayoutData(data);
 
         return ruleSection;
-	}
+    }
 
-	/**
-	 * Method buildTabFolder.
-	 * @param parent Composite
-	 * @return TabFolder
-	 */
-	private TabFolder buildTabFolder(Composite parent) {
+    /**
+     * Method buildTabFolder.
+     * 
+     * @param parent
+     *            Composite
+     * @return TabFolder
+     */
+    private TabFolder buildTabFolder(Composite parent) {
 
-		tabFolder = new TabFolder(parent, SWT.TOP);
+        tabFolder = new TabFolder(parent, SWT.TOP);
 
-		rulePropertyManagers = PMDPreferencePage2.buildPropertyManagersOn(tabFolder, this);
+        rulePropertyManagers = PMDPreferencePage2.buildPropertyManagersOn(tabFolder, this);
 
-		tabFolder.pack();
-		return tabFolder;
-	}
+        tabFolder.pack();
+        return tabFolder;
+    }
 
-	public void changed(PropertySource source, PropertyDescriptor<?> desc, Object newValue) {
-	        // TODO enhance to recognize default values
-	     setModified();
-	     tableManager.updated(source);
-	}
+    public void changed(PropertySource source, PropertyDescriptor<?> desc, Object newValue) {
+        // TODO enhance to recognize default values
+        setModified();
+        tableManager.updated(source);
+    }
 
-	public void changed(RuleSelection selection, PropertyDescriptor<?> desc, Object newValue) {
-			// TODO enhance to recognize default values
+    public void changed(RuleSelection selection, PropertyDescriptor<?> desc, Object newValue) {
+        // TODO enhance to recognize default values
 
-		for (Rule rule : selection.allRules()) {
-			if (newValue != null) {		// non-reliable update behaviour, alternate trigger option - weird
-				tableManager.changed(selection, desc, newValue);
-			//		System.out.println("doing redraw");
-			} else {
-				tableManager.changed(rule, desc, newValue);
-			//		System.out.println("viewer update");
-			}
-		}
-		for (RulePropertyManager manager : rulePropertyManagers) {
-		    manager.validate();
-		}
+        for (Rule rule : selection.allRules()) {
+            if (newValue != null) { // non-reliable update behaviour, alternate
+                                    // trigger option - weird
+                tableManager.changed(selection, desc, newValue);
+                // System.out.println("doing redraw");
+            } else {
+                tableManager.changed(rule, desc, newValue);
+                // System.out.println("viewer update");
+            }
+        }
+        for (RulePropertyManager manager : rulePropertyManagers) {
+            manager.validate();
+        }
 
-		setModified();
-	}
+        setModified();
+    }
 
-	/**
+    /**
      * Main layout
-     * @param parent Composite
+     * 
+     * @param parent
+     *            Composite
      */
     private void layoutControls(Composite parent) {
 
         parent.setLayout(new FormLayout());
-        int ruleTableFraction = 55;	//PreferenceUIStore.instance.tableFraction();
+        int ruleTableFraction = 55; // PreferenceUIStore.instance.tableFraction();
 
         // Create the sash first, so the other controls can be attached to it.
         final Sash sash = new Sash(parent, SWT.HORIZONTAL);
         FormData data = new FormData();
-        data.left = new FormAttachment(0, 0);                   // attach to left
-        data.right = new FormAttachment(100, 0);                // attach to right
+        data.left = new FormAttachment(0, 0); // attach to left
+        data.right = new FormAttachment(100, 0); // attach to right
         data.top = new FormAttachment(ruleTableFraction, 0);
         sash.setLayoutData(data);
         sash.addSelectionListener(new SelectionAdapter() {
-          public void widgetSelected(SelectionEvent event) {
-            // Re-attach to the top edge, and we use the y value of the event to determine the offset from the top
-            ((FormData)sash.getLayoutData()).top = new FormAttachment(0, event.y);
-//            PreferenceUIStore.instance.tableFraction(event.y);
-            sash.getParent().layout();
-          }
+            public void widgetSelected(SelectionEvent event) {
+                // Re-attach to the top edge, and we use the y value of the
+                // event to determine the offset from the top
+                ((FormData) sash.getLayoutData()).top = new FormAttachment(0, event.y);
+                // PreferenceUIStore.instance.tableFraction(event.y);
+                sash.getParent().layout();
+            }
         });
 
         // Create the first text box and attach its bottom edge to the sash
@@ -207,110 +220,119 @@ public class RuleEditorView extends ViewPart implements RuleSelectionListener, M
         propertySection.setLayoutData(data);
     }
 
-	/**
-	 * @see org.eclipse.jface.preference.IPreferencePage#performOk()
-	 */
+    /**
+     * @see org.eclipse.jface.preference.IPreferencePage#performOk()
+     */
 
     public void performOk() {
 
-		saveUIState();
+        saveUIState();
 
-//		if (isModified()) {
-//			updateRuleSet();
-//			rebuildProjects();
-//			storeActiveRules();
-//		}
-	}
+        // if (isModified()) {
+        // updateRuleSet();
+        // rebuildProjects();
+        // storeActiveRules();
+        // }
+    }
 
-	/**
-	 * @see org.eclipse.jface.preference.PreferencePage#performDefaults()
-	 */
+    /**
+     * @see org.eclipse.jface.preference.PreferencePage#performDefaults()
+     */
 
     protected void performDefaults() {
-		tableManager.populateRuleTable();
-	}
+        tableManager.populateRuleTable();
+    }
 
-	private void populateRuleset() {
+    private void populateRuleset() {
 
-	    RuleSet defaultRuleSet = plugin.getPreferencesManager().getRuleSet();
+        RuleSet defaultRuleSet = plugin.getPreferencesManager().getRuleSet();
         RuleSet ruleSet = RuleSetUtil.newCopyOf(defaultRuleSet);
         tableManager.useRuleSet(ruleSet);
-	}
+    }
 
-	public void selection(RuleSelection selection) {
+    public void selection(RuleSelection selection) {
 
-		if (rulePropertyManagers == null) return;
-		
-		for (RulePropertyManager manager : rulePropertyManagers) {
-			manager.manage(selection);
-		    manager.validate();
-		}
-	}
+        if (rulePropertyManagers == null)
+            return;
 
-	/**
-	 * If user wants to, rebuild all projects
-	 */
-	private void rebuildProjects() {
-//		if (MessageDialog.openQuestion(getShell(), getMessage(StringKeys.MSGKEY_QUESTION_TITLE),
-//				getMessage(StringKeys.MSGKEY_QUESTION_RULES_CHANGED))) {
-//			try {
-//				ProgressMonitorDialog monitorDialog = new ProgressMonitorDialog(getShell());
-//				monitorDialog.run(true, true, new IRunnableWithProgress() {
-//					public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-//						try {
-//							ResourcesPlugin.getWorkspace().build(IncrementalProjectBuilder.FULL_BUILD, monitor);
-//						} catch (CoreException e) {
-//							plugin.logError("Exception building all projects after a preference change", e);
-//						}
-//					}
-//				});
-//			} catch (Exception e) {
-//				plugin.logError("Exception building all projects after a preference change", e);
-//			}
-//		}
-	}
+        for (RulePropertyManager manager : rulePropertyManagers) {
+            manager.manage(selection);
+            manager.validate();
+        }
+    }
 
-	private void saveUIState() {
-		tableManager.saveUIState();
-		int i =  tabFolder.getSelectionIndex();
-		PreferenceUIStore.instance.selectedPropertyTab( i );
-		PreferenceUIStore.instance.save();
-	}
+    /**
+     * If user wants to, rebuild all projects
+     */
+    private void rebuildProjects() {
+        // if (MessageDialog.openQuestion(getShell(),
+        // getMessage(StringKeys.MSGKEY_QUESTION_TITLE),
+        // getMessage(StringKeys.MSGKEY_QUESTION_RULES_CHANGED))) {
+        // try {
+        // ProgressMonitorDialog monitorDialog = new
+        // ProgressMonitorDialog(getShell());
+        // monitorDialog.run(true, true, new IRunnableWithProgress() {
+        // public void run(IProgressMonitor monitor) throws
+        // InvocationTargetException, InterruptedException {
+        // try {
+        // ResourcesPlugin.getWorkspace().build(IncrementalProjectBuilder.FULL_BUILD,
+        // monitor);
+        // } catch (CoreException e) {
+        // plugin.logError("Exception building all projects after a preference
+        // change", e);
+        // }
+        // }
+        // });
+        // } catch (Exception e) {
+        // plugin.logError("Exception building all projects after a preference
+        // change", e);
+        // }
+        // }
+    }
 
-	/**
-	 * Update the configured rule set
-	 * Update also all configured projects
-	 */
-	private void updateRuleSet() {
-//		try {
-//			ProgressMonitorDialog monitorDialog = new ProgressMonitorDialog(getShell());
-//			monitorDialog.run(true, true, new IRunnableWithProgress() {
-//				public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-//					plugin.getPreferencesManager().setRuleSet(tableManager.ruleSet());
-//				}
-//			});
-//		} catch (Exception e) {
-//			plugin.logError("Exception updating all projects after a preference change", e);
-//		}
-	}
-	
+    private void saveUIState() {
+        tableManager.saveUIState();
+        int i = tabFolder.getSelectionIndex();
+        PreferenceUIStore.instance.selectedPropertyTab(i);
+        PreferenceUIStore.instance.save();
+    }
+
+    /**
+     * Update the configured rule set Update also all configured projects
+     */
+    private void updateRuleSet() {
+        // try {
+        // ProgressMonitorDialog monitorDialog = new
+        // ProgressMonitorDialog(getShell());
+        // monitorDialog.run(true, true, new IRunnableWithProgress() {
+        // public void run(IProgressMonitor monitor) throws
+        // InvocationTargetException, InterruptedException {
+        // plugin.getPreferencesManager().setRuleSet(tableManager.ruleSet());
+        // }
+        // });
+        // } catch (Exception e) {
+        // plugin.logError("Exception updating all projects after a preference
+        // change", e);
+        // }
+    }
+
     protected String getMessage(String key) {
         return PMDPlugin.getDefault().getStringTable().getString(key);
     }
 
-	public void setModified() {
-		// TODO Auto-generated method stub
-		
-	}
+    public void setModified() {
+        // TODO Auto-generated method stub
 
-	@Override
-	public void setFocus() {
-		// TODO Auto-generated method stub
-		
-	}
+    }
 
-	public void resetValuesIn(RuleSelection rules) {
-		// TODO Auto-generated method stub
-		
-	}
+    @Override
+    public void setFocus() {
+        // TODO Auto-generated method stub
+
+    }
+
+    public void resetValuesIn(RuleSelection rules) {
+        // TODO Auto-generated method stub
+
+    }
 }

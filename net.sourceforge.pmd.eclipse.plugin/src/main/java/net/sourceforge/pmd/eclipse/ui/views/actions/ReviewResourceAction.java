@@ -1,3 +1,4 @@
+
 package net.sourceforge.pmd.eclipse.ui.views.actions;
 
 import java.lang.reflect.InvocationTargetException;
@@ -15,14 +16,15 @@ import org.eclipse.swt.widgets.Display;
 
 /**
  * Action for reviewing one single resource.
+ * 
  * @author Sven Jacob
  *
  */
 public class ReviewResourceAction extends AbstractPMDAction {
-	
+
     private IProgressMonitor monitor;
     private IResource resource;
-    
+
     /**
      * Constructor
      */
@@ -30,11 +32,15 @@ public class ReviewResourceAction extends AbstractPMDAction {
         super();
         this.resource = resource;
     }
-    
- 	protected String imageId() { return PMDUiConstants.ICON_BUTTON_REFRESH; }
-    
-    protected String tooltipMsgId() { return StringKeys.VIEW_TOOLTIP_REFRESH; }
-    
+
+    protected String imageId() {
+        return PMDUiConstants.ICON_BUTTON_REFRESH;
+    }
+
+    protected String tooltipMsgId() {
+        return StringKeys.VIEW_TOOLTIP_REFRESH;
+    }
+
     public void setResource(IResource resource) {
         this.resource = resource;
     }
@@ -57,18 +63,18 @@ public class ReviewResourceAction extends AbstractPMDAction {
                     try {
                         cmd.performExecute();
                     } catch (CommandException e) {
-                    	logErrorByKey(StringKeys.ERROR_CORE_EXCEPTION, e);
+                        logErrorByKey(StringKeys.ERROR_CORE_EXCEPTION, e);
                     }
                     monitor.done();
                 }
             });
         } catch (InvocationTargetException e) {
-        	logErrorByKey(StringKeys.ERROR_INVOCATIONTARGET_EXCEPTION, e);
+            logErrorByKey(StringKeys.ERROR_INVOCATIONTARGET_EXCEPTION, e);
         } catch (InterruptedException e) {
-        	logErrorByKey(StringKeys.ERROR_INTERRUPTED_EXCEPTION, e);
+            logErrorByKey(StringKeys.ERROR_INTERRUPTED_EXCEPTION, e);
         }
     }
- 
+
     /**
      * Get the monitor
      * 

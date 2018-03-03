@@ -33,6 +33,7 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package net.sourceforge.pmd.eclipse.runtime.properties.impl;
 
 import javax.xml.bind.annotation.XmlAccessOrder;
@@ -42,17 +43,16 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
  * This class is a simple data bean to let simply serialize project properties
- * to an XML file (or any). 
+ * to an XML file (or any).
  * 
  * @author Philippe Herlin
  *
  */
 @XmlRootElement(name = "pmd")
-@XmlType(propOrder = {"workingSetName", "ruleSetStoredInProject", "ruleSetFile", "excludePatterns",
-        "includePatterns", "rules", "includeDerivedFiles", "violationsAsErrors", "fullBuildEnabled"})
+@XmlType(propOrder = { "workingSetName", "ruleSetStoredInProject", "ruleSetFile", "excludePatterns", "includePatterns",
+    "rules", "includeDerivedFiles", "violationsAsErrors", "fullBuildEnabled" })
 public class ProjectPropertiesTO {
     private RuleSpecTO[] rules;
     private String[] excludePatterns;
@@ -65,76 +65,84 @@ public class ProjectPropertiesTO {
     /** set the default to true to match pre-flag behavior */
     private boolean fullBuildEnabled = true;
 
-	/**
-     * @return rules an array of RuleSpecTO objects that keep information of rules
-     * selected for the current project
+    /**
+     * @return rules an array of RuleSpecTO objects that keep information of
+     *         rules selected for the current project
      */
     @XmlElementWrapper(name = "rules")
     @XmlElement(name = "rule")
     public RuleSpecTO[] getRules() {
         return rules;
     }
-    
+
     /**
      * Set the rules selected for a project
-     * @param rules an array of RuleSpecTO objects describing each select project
-     * rules.
+     * 
+     * @param rules
+     *            an array of RuleSpecTO objects describing each select project
+     *            rules.
      */
     public void setRules(final RuleSpecTO[] rules) {
         this.rules = rules;
     }
-    
+
     /**
-     * @return an array of String objects for exclude patterns
-     * for the current project.
+     * @return an array of String objects for exclude patterns for the current
+     *         project.
      */
     @XmlElementWrapper(name = "excludePatterns")
     @XmlElement(name = "excludePattern")
     public String[] getExcludePatterns() {
-		return excludePatterns;
-	}
-    
-    /**
-     * Set the exclude patterns for a project
-     * @param excludePatterns an array of String objects for exclude patterns
-     * for the current project.
-     */
-	public void setExcludePatterns(String[] excludePatterns) {
-		this.excludePatterns = excludePatterns;
-	}
+        return excludePatterns;
+    }
 
     /**
-     * @return an array of String objects for include patterns
-     * for the current project.
+     * Set the exclude patterns for a project
+     * 
+     * @param excludePatterns
+     *            an array of String objects for exclude patterns for the
+     *            current project.
      */
-	@XmlElementWrapper(name = "includePatterns")
-	@XmlElement(name = "includePattern")
-	public String[] getIncludePatterns() {
-		return includePatterns;
-	}
+    public void setExcludePatterns(String[] excludePatterns) {
+        this.excludePatterns = excludePatterns;
+    }
+
+    /**
+     * @return an array of String objects for include patterns for the current
+     *         project.
+     */
+    @XmlElementWrapper(name = "includePatterns")
+    @XmlElement(name = "includePattern")
+    public String[] getIncludePatterns() {
+        return includePatterns;
+    }
 
     /**
      * Set the include patterns for a project
-     * @param includePatterns an array of String objects for include patterns
-     * for the current project.
+     * 
+     * @param includePatterns
+     *            an array of String objects for include patterns for the
+     *            current project.
      */
-	public void setIncludePatterns(String[] includePatterns) {
-		this.includePatterns = includePatterns;
-	}
+    public void setIncludePatterns(String[] includePatterns) {
+        this.includePatterns = includePatterns;
+    }
 
-	/**
+    /**
      * @return ruleSetStoredInProject tells whether the project use a ruleset
-     * stored in the project or the global plugin ruleset.
+     *         stored in the project or the global plugin ruleset.
      */
     @XmlElement(name = "useProjectRuleSet")
     public boolean isRuleSetStoredInProject() {
         return ruleSetStoredInProject;
     }
-    
+
     /**
      * Tells whether a project must use a ruleset stored in the project or the
      * global project ruleset.
-     * @param ruleSetStoredInProject see above.
+     * 
+     * @param ruleSetStoredInProject
+     *            see above.
      */
     public void setRuleSetStoredInProject(final boolean ruleSetStoredInProject) {
         this.ruleSetStoredInProject = ruleSetStoredInProject;
@@ -145,14 +153,15 @@ public class ProjectPropertiesTO {
      */
     @XmlElement(name = "ruleSetFile")
     public String getRuleSetFile() {
-    	return ruleSetFile;
+        return ruleSetFile;
     }
 
     /**
-     * @param ruleSetFile The rule set file.
+     * @param ruleSetFile
+     *            The rule set file.
      */
     public void setRuleSetFile(String ruleSetFile) {
-    	this.ruleSetFile = ruleSetFile;
+        this.ruleSetFile = ruleSetFile;
     }
 
     /**
@@ -162,10 +171,12 @@ public class ProjectPropertiesTO {
     public String getWorkingSetName() {
         return workingSetName;
     }
-    
+
     /**
      * Set the project working set name
-     * @param workingSetName the name of the project working set
+     * 
+     * @param workingSetName
+     *            the name of the project working set
      */
     public void setWorkingSetName(final String workingSetName) {
         this.workingSetName = workingSetName;
@@ -180,7 +191,8 @@ public class ProjectPropertiesTO {
     }
 
     /**
-     * @param includeDerivedFiles The includeDerivedFiles to set.
+     * @param includeDerivedFiles
+     *            The includeDerivedFiles to set.
      */
     public void setIncludeDerivedFiles(boolean includeDerivedFiles) {
         this.includeDerivedFiles = includeDerivedFiles;
@@ -197,19 +209,22 @@ public class ProjectPropertiesTO {
 
     /**
      * syntactic sugar for accessing this field
-     * @param fullBuildEnabled whether or not we should run at full build
+     * 
+     * @param fullBuildEnabled
+     *            whether or not we should run at full build
      */
-	public void setFullBuildEnabled(boolean fullBuildEnabled) {
-		this.fullBuildEnabled = fullBuildEnabled;
-	}
+    public void setFullBuildEnabled(boolean fullBuildEnabled) {
+        this.fullBuildEnabled = fullBuildEnabled;
+    }
 
-	/**
+    /**
      * syntactic sugar for accessing this field
-	 * @return true if we should run at full build
-	 */
-	@XmlElement(name = "fullBuildEnabled")
-	public boolean isFullBuildEnabled() {
-		return fullBuildEnabled;
-	}
+     * 
+     * @return true if we should run at full build
+     */
+    @XmlElement(name = "fullBuildEnabled")
+    public boolean isFullBuildEnabled() {
+        return fullBuildEnabled;
+    }
 
 }

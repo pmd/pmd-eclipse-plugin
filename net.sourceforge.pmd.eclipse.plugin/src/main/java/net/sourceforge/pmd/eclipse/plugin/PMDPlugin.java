@@ -1,3 +1,4 @@
+
 package net.sourceforge.pmd.eclipse.plugin;
 
 import java.io.File;
@@ -87,17 +88,17 @@ public class PMDPlugin extends AbstractUIPlugin {
 
     public static final String PLUGIN_ID = "net.sourceforge.pmd.eclipse.plugin";
 
-    private static Map<IProject, IJavaProject> JavaProjectsByIProject = new HashMap<IProject, IJavaProject>();
+    private static Map<IProject, IJavaProject> javaProjectsByIProject = new HashMap<IProject, IJavaProject>();
 
     // The shared instance
     private static PMDPlugin plugin;
 
-    public static String VERSION = "unknown";
+    public static String version = "unknown";
 
-    private static final Integer[] priorityValues = new Integer[] { Integer.valueOf(1), Integer.valueOf(2),
-            Integer.valueOf(3), Integer.valueOf(4), Integer.valueOf(5) };
+    private static final Integer[] PRIORITY_VALUES = new Integer[] { Integer.valueOf(1), Integer.valueOf(2),
+        Integer.valueOf(3), Integer.valueOf(4), Integer.valueOf(5), };
 
-    private static final Logger log = Logger.getLogger(PMDPlugin.class);
+    private static final Logger LOG = Logger.getLogger(PMDPlugin.class);
 
     private StringTable stringTable; // NOPMD by Herlin on 11/10/06 00:22
 
@@ -117,8 +118,9 @@ public class PMDPlugin extends AbstractUIPlugin {
     public Color colorFor(RGB rgb) {
 
         Color color = coloursByRGB.get(rgb);
-        if (color != null)
+        if (color != null) {
             return color;
+        }
 
         color = new Color(null, rgb.red, rgb.green, rgb.blue);
         coloursByRGB.put(rgb, color);
@@ -148,10 +150,10 @@ public class PMDPlugin extends AbstractUIPlugin {
      */
     public static LanguageVersion javaVersionFor(IProject project) {
 
-        IJavaProject jProject = JavaProjectsByIProject.get(project);
+        IJavaProject jProject = javaProjectsByIProject.get(project);
         if (jProject == null) {
             jProject = JavaCore.create(project);
-            JavaProjectsByIProject.put(project, jProject);
+            javaProjectsByIProject.put(project, jProject);
         }
 
         if (jProject.exists()) {
@@ -162,10 +164,10 @@ public class PMDPlugin extends AbstractUIPlugin {
     }
 
     public static IClasspathEntry buildSourceClassPathEntryFor(IProject project) {
-        IJavaProject jProject = JavaProjectsByIProject.get(project);
+        IJavaProject jProject = javaProjectsByIProject.get(project);
         if (jProject == null) {
             jProject = JavaCore.create(project);
-            JavaProjectsByIProject.put(project, jProject);
+            javaProjectsByIProject.put(project, jProject);
         }
         if (jProject.exists()) {
             try {
@@ -177,7 +179,7 @@ public class PMDPlugin extends AbstractUIPlugin {
                     }
                 }
             } catch (JavaModelException e) {
-                log.error("Couldn't determine source classpath", e);
+                LOG.error("Couldn't determine source classpath", e);
             }
         }
         return null;
@@ -189,8 +191,9 @@ public class PMDPlugin extends AbstractUIPlugin {
     }
 
     public static void disposeAll(Collection<Color> colors) {
-        for (Color color : colors)
+        for (Color color : colors) {
             color.dispose();
+        }
     }
 
     public static File getPluginFolder() {
@@ -211,9 +214,8 @@ public class PMDPlugin extends AbstractUIPlugin {
     /*
      * (non-Javadoc)
      * 
-     * @see
-     * org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework.BundleContext
-     * )
+     * @see org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework.
+     * BundleContext )
      */
     public void start(BundleContext context) throws Exception {
         super.start(context);
@@ -238,7 +240,7 @@ public class PMDPlugin extends AbstractUIPlugin {
             }
         });
 
-        VERSION = context.getBundle().getHeaders().get("Bundle-Version");
+        version = context.getBundle().getHeaders().get("Bundle-Version");
     }
 
     public void fileChangeListenerEnabled(boolean flag) {
@@ -246,8 +248,9 @@ public class PMDPlugin extends AbstractUIPlugin {
         IWorkspace workspace = ResourcesPlugin.getWorkspace();
 
         if (flag) {
-            if (changeReviewer == null)
+            if (changeReviewer == null) {
                 changeReviewer = new FileChangeReviewer();
+            }
             workspace.addResourceChangeListener(changeReviewer);
         } else {
             if (changeReviewer != null) {
@@ -260,9 +263,8 @@ public class PMDPlugin extends AbstractUIPlugin {
     /*
      * (non-Javadoc)
      * 
-     * @see
-     * org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework.BundleContext
-     * )
+     * @see org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework.
+     * BundleContext )
      */
     public void stop(BundleContext context) throws Exception {
 
@@ -320,8 +322,8 @@ public class PMDPlugin extends AbstractUIPlugin {
      */
     public void logError(String message, Throwable t) {
         getLog().log(new Status(IStatus.ERROR, getBundle().getSymbolicName(), 0, message + t.getMessage(), t));
-        if (log != null) {
-            log.error(message, t);
+        if (LOG != null) {
+            LOG.error(message, t);
         }
     }
 
@@ -332,8 +334,8 @@ public class PMDPlugin extends AbstractUIPlugin {
      */
     public void logError(IStatus status) {
         getLog().log(status);
-        if (log != null) {
-            log.error(status.getMessage(), status.getException());
+        if (LOG != null) {
+            LOG.error(status.getMessage(), status.getException());
         }
     }
 
@@ -382,7 +384,7 @@ public class PMDPlugin extends AbstractUIPlugin {
      * @deprecated
      */
     public Integer[] getPriorityValues() {
-        return priorityValues;
+        return PRIORITY_VALUES;
     }
 
     /**
@@ -554,8 +556,9 @@ public class PMDPlugin extends AbstractUIPlugin {
     public void changedFiles(Collection<IFile> changedFiles) {
 
         RuleLabelDecorator rld = ruleLabelDecorator();
-        if (rld == null)
+        if (rld == null) {
             return;
+        }
 
         Collection<IResource> withParents = new HashSet<IResource>(changedFiles.size() * 2);
         withParents.addAll(changedFiles);
@@ -607,8 +610,9 @@ public class PMDPlugin extends AbstractUIPlugin {
 
     private void addKids(Collection<IResource> allKids, IResource[] kids) {
 
-        if (kids == null)
+        if (kids == null) {
             return;
+        }
 
         for (IResource irc : kids) {
             if (irc instanceof IFile) {
@@ -624,8 +628,9 @@ public class PMDPlugin extends AbstractUIPlugin {
     public void removedMarkersIn(IResource resource) {
 
         RuleLabelDecorator decorator = ruleLabelDecorator();
-        if (decorator == null)
+        if (decorator == null) {
             return;
+        }
 
         Collection<IResource> changes = new ArrayList<IResource>();
 

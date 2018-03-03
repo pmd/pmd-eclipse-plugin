@@ -1,3 +1,4 @@
+
 package net.sourceforge.pmd.eclipse.runtime.cmd;
 
 import java.net.MalformedURLException;
@@ -20,99 +21,102 @@ import org.eclipse.jdt.core.JavaModelException;
  * This is a ClassLoader for the Build Path of an IJavaProject.
  */
 public class JavaProjectClassLoader extends URLClassLoader {
-	private static final Logger log = Logger.getLogger(JavaProjectClassLoader.class);
+    private static final Logger log = Logger.getLogger(JavaProjectClassLoader.class);
 
-	private Set<IJavaProject> javaProjects = new HashSet<IJavaProject>();
-	private IWorkspaceRoot workspaceRoot;
+    private Set<IJavaProject> javaProjects = new HashSet<IJavaProject>();
+    private IWorkspaceRoot workspaceRoot;
 
-	public JavaProjectClassLoader(ClassLoader parent, IProject project) {
-		super(new URL[0], parent);
-		try {
+    public JavaProjectClassLoader(ClassLoader parent, IProject project) {
+        super(new URL[0], parent);
+        try {
             if (!project.hasNature(JavaCore.NATURE_ID)) {
                 throw new IllegalArgumentException("The project " + project + " is not a java project");
             }
         } catch (CoreException e) {
             throw new IllegalArgumentException("The project " + project + " is not a java project", e);
         }
-		workspaceRoot = project.getProject().getWorkspace().getRoot();
-		
-		IJavaProject javaProject = JavaCore.create(project);
-		addURLs(javaProject, false);
+        workspaceRoot = project.getProject().getWorkspace().getRoot();
 
-		// No longer need these things, drop references
-		javaProjects = null;
-		workspaceRoot = null;
-	}
+        IJavaProject javaProject = JavaCore.create(project);
+        addURLs(javaProject, false);
 
-	private static IProject projectFor(IJavaProject javaProject, IClasspathEntry classpathEntry) {
-		return javaProject.getProject().getWorkspace().getRoot().getProject(classpathEntry.getPath().toString());
-	}
-	
-	private void addURLs(IJavaProject javaProject, boolean exportsOnly) {
-		
-		if (javaProjects.contains(javaProject)) return;
-		
-		javaProjects.add(javaProject);
+        // No longer need these things, drop references
+        javaProjects = null;
+        workspaceRoot = null;
+    }
 
-		try {
-			// Add default output location
-			addURL(javaProject.getOutputLocation());
+    private static IProject projectFor(IJavaProject javaProject, IClasspathEntry classpathEntry) {
+        return javaProject.getProject().getWorkspace().getRoot().getProject(classpathEntry.getPath().toString());
+    }
 
-			// Add each classpath entry
-			IClasspathEntry[] classpathEntries = javaProject.getResolvedClasspath(true);
-			for (IClasspathEntry classpathEntry : classpathEntries) {
-				if (classpathEntry.isExported() || !exportsOnly) {
-					switch (classpathEntry.getEntryKind()) {
+    private void addURLs(IJavaProject javaProject, boolean exportsOnly) {
 
-					// Recurse on projects
-					case IClasspathEntry.CPE_PROJECT:
-						IProject project = projectFor(javaProject, classpathEntry);
-						IJavaProject javaProj = JavaCore.create(project);
-						if (javaProj != null) {
-							addURLs(javaProj, true);
-							}
-						break;
+        if (javaProjects.contains(javaProject))
+            return;
 
-						// Library
-					case IClasspathEntry.CPE_LIBRARY:
-						addURL(classpathEntry);
-						break;
+        javaProjects.add(javaProject);
 
-					// Only Source entries with custom output location need to be added
-					case IClasspathEntry.CPE_SOURCE:
-						IPath outputLocation = classpathEntry.getOutputLocation();
-						if (outputLocation != null) {
-							addURL(outputLocation);
-							}
-						break;
+        try {
+            // Add default output location
+            addURL(javaProject.getOutputLocation());
 
-					// Variable and Container entries should not be happening, because we've asked for resolved entries.
-					case IClasspathEntry.CPE_VARIABLE:
-					case IClasspathEntry.CPE_CONTAINER:
-					break;
-					}
-				}
-			}
-		} catch (JavaModelException e) {
-			log.debug("MalformedURLException occurred: " + e.getLocalizedMessage(), e);
-			}
-	}
+            // Add each classpath entry
+            IClasspathEntry[] classpathEntries = javaProject.getResolvedClasspath(true);
+            for (IClasspathEntry classpathEntry : classpathEntries) {
+                if (classpathEntry.isExported() || !exportsOnly) {
+                    switch (classpathEntry.getEntryKind()) {
 
-	private void addURL(IClasspathEntry classpathEntry) {
-		addURL(classpathEntry.getPath());
-	}
+                    // Recurse on projects
+                    case IClasspathEntry.CPE_PROJECT:
+                        IProject project = projectFor(javaProject, classpathEntry);
+                        IJavaProject javaProj = JavaCore.create(project);
+                        if (javaProj != null) {
+                            addURLs(javaProj, true);
+                        }
+                        break;
 
-	private void addURL(IPath path) {
-		try {
-			if (workspaceRoot.exists(path)) {
-				// path = workspaceRoot.getFileForLocation(path).getFullPath();
-				//path = workspaceRoot.getFile(path).getFullPath();
-				path = workspaceRoot.getLocation().append(path);
-			}
-			URL url = path.toFile().getAbsoluteFile().toURI().toURL();
-			addURL(url);
-		} catch (MalformedURLException e) {
-			log.debug("MalformedURLException occurred: " + e.getLocalizedMessage(), e);
-		}
-	}
+                    // Library
+                    case IClasspathEntry.CPE_LIBRARY:
+                        addURL(classpathEntry);
+                        break;
+
+                    // Only Source entries with custom output location need to
+                    // be added
+                    case IClasspathEntry.CPE_SOURCE:
+                        IPath outputLocation = classpathEntry.getOutputLocation();
+                        if (outputLocation != null) {
+                            addURL(outputLocation);
+                        }
+                        break;
+
+                    // Variable and Container entries should not be happening,
+                    // because we've asked for resolved entries.
+                    case IClasspathEntry.CPE_VARIABLE:
+                    case IClasspathEntry.CPE_CONTAINER:
+                        break;
+                    }
+                }
+            }
+        } catch (JavaModelException e) {
+            log.debug("MalformedURLException occurred: " + e.getLocalizedMessage(), e);
+        }
+    }
+
+    private void addURL(IClasspathEntry classpathEntry) {
+        addURL(classpathEntry.getPath());
+    }
+
+    private void addURL(IPath path) {
+        try {
+            if (workspaceRoot.exists(path)) {
+                // path = workspaceRoot.getFileForLocation(path).getFullPath();
+                // path = workspaceRoot.getFile(path).getFullPath();
+                path = workspaceRoot.getLocation().append(path);
+            }
+            URL url = path.toFile().getAbsoluteFile().toURI().toURL();
+            addURL(url);
+        } catch (MalformedURLException e) {
+            log.debug("MalformedURLException occurred: " + e.getLocalizedMessage(), e);
+        }
+    }
 }

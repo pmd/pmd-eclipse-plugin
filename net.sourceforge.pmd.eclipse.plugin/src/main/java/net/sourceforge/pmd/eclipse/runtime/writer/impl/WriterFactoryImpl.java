@@ -20,6 +20,7 @@
  *   
  * </copyright>
  */
+
 package net.sourceforge.pmd.eclipse.runtime.writer.impl;
 
 import net.sourceforge.pmd.eclipse.runtime.writer.IAstWriter;

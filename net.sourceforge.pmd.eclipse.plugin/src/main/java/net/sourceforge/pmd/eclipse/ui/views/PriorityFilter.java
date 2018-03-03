@@ -1,3 +1,4 @@
+
 package net.sourceforge.pmd.eclipse.ui.views;
 
 import java.util.ArrayList;
@@ -24,7 +25,7 @@ import org.eclipse.jface.viewers.ViewerFilter;
  * @author SebastianRaffel ( 17.05.2005 )
  */
 public class PriorityFilter extends ViewerFilter {
-	
+
     private List<Integer> priorityList;
 
     /**
@@ -34,21 +35,26 @@ public class PriorityFilter extends ViewerFilter {
      */
     public PriorityFilter() {
         super();
- //       priorityList = new ArrayList<Integer>(Arrays.asList(PMDPlugin.getDefault().getPriorityValues()));
+        // priorityList = new
+        // ArrayList<Integer>(Arrays.asList(PMDPlugin.getDefault().getPriorityValues()));
         priorityList = UISettings.getPriorityIntValues();
     }
 
-    /* @see org.eclipse.jface.viewers.ViewerFilter#select(org.eclipse.jface.viewers.Viewer, java.lang.Object, java.lang.Object) */
+    /*
+     * @see
+     * org.eclipse.jface.viewers.ViewerFilter#select(org.eclipse.jface.viewers.
+     * Viewer, java.lang.Object, java.lang.Object)
+     */
     @Override
     public boolean select(Viewer viewer, Object parentElement, Object element) {
         boolean select = false;
 
         if (element instanceof PackageRecord) {
             // ViolationOverview
-            select = hasMarkersToShow((PackageRecord)element);
+            select = hasMarkersToShow((PackageRecord) element);
         } else if (element instanceof FileRecord) {
             // ViolationOverview
-            select = hasMarkersToShow((FileRecord)element);
+            select = hasMarkersToShow((FileRecord) element);
         } else if (element instanceof IMarker) {
             // ViolationOutline
             try {
@@ -99,11 +105,11 @@ public class PriorityFilter extends ViewerFilter {
         return hasMarkers;
     }
 
-
     /**
      * Sets the List of Priorities to filter
      *
-     * @param newList, an ArrayLust of Integers
+     * @param newList,
+     *            an ArrayLust of Integers
      */
     public void setPriorityFilterList(List<Integer> newList) {
         priorityList = newList;
@@ -137,10 +143,13 @@ public class PriorityFilter extends ViewerFilter {
     }
 
     /**
-     * Loads a PriorityList out of a String, e.g. from "1,2,3" it builds up the List {1,2,3} (for use with Mementos)
+     * Loads a PriorityList out of a String, e.g. from "1,2,3" it builds up the
+     * List {1,2,3} (for use with Mementos)
      *
-     * @param newList, the List-String
-     * @param splitter, the List splitter (in general ",")
+     * @param newList,
+     *            the List-String
+     * @param splitter,
+     *            the List splitter (in general ",")
      */
     public void setPriorityFilterListFromString(String newList, String splitter) {
         if (newList != null) {
@@ -148,7 +157,8 @@ public class PriorityFilter extends ViewerFilter {
             final List<Integer> priorities = new ArrayList<Integer>(newArray.length);
 
             for (String element : newArray) {
-                priorities.add(Integer.valueOf(element)); // NOPMD by Sven on 13.11.06 11:53
+                priorities.add(Integer.valueOf(element)); // NOPMD by Sven on
+                                                          // 13.11.06 11:53
             }
 
             priorityList = priorities;
@@ -156,17 +166,19 @@ public class PriorityFilter extends ViewerFilter {
     }
 
     /**
-     * Returns the FilterList as String with the given splitter, e.g. with "," the Priorities {1,4,5} 
-     * would look like "1,4,5" (for use with Mementos)
+     * Returns the FilterList as String with the given splitter, e.g. with ","
+     * the Priorities {1,4,5} would look like "1,4,5" (for use with Mementos)
      *
-     * @param splitter, The String splitter (in general ",")
+     * @param splitter,
+     *            The String splitter (in general ",")
      * @return the List-String
      */
     public String getPriorityFilterListAsString(String splitter) {
-        if (priorityList.isEmpty()) return "";
-        
+        if (priorityList.isEmpty())
+            return "";
+
         final StringBuilder listString = new StringBuilder(priorityList.get(0));
-        for (int i=1; i<priorityList.size(); i++) {
+        for (int i = 1; i < priorityList.size(); i++) {
             listString.append(splitter).append(priorityList.get(i));
         }
         return listString.toString();

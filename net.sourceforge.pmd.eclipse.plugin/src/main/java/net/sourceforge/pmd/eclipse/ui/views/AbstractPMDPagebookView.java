@@ -1,3 +1,4 @@
+
 package net.sourceforge.pmd.eclipse.ui.views;
 
 import java.util.Collections;
@@ -31,41 +32,45 @@ public abstract class AbstractPMDPagebookView extends PageBookView {
     }
 
     public static FileRecord tryForFileRecordFrom(IWorkbenchPart part) {
-    	
-    	if (part instanceof IEditorPart) {
-            // If there is a file opened in the editor, we create a record for it
+
+        if (part instanceof IEditorPart) {
+            // If there is a file opened in the editor, we create a record for
+            // it
             IEditorInput input = ((IEditorPart) part).getEditorInput();
             if (input != null && input instanceof IFileEditorInput) {
                 IFile file = ((IFileEditorInput) input).getFile();
-                return new FileRecord(file); 
-            	}
-    		}
-       return null;
+                return new FileRecord(file);
+            }
+        }
+        return null;
     }
 
     protected abstract String pageMessageId();
-    
+
     protected abstract String mementoFileId();
-    
+
     protected boolean hasMemento() {
-    	return memento != null;
+        return memento != null;
     }
-    
+
     protected IWorkbenchPage getSitePage() {
-    	return getSite().getPage();
+        return getSite().getPage();
     }
-    
+
     /**
      * Gets the fileRecord from the currently active editor.
-     * @param part IWorkbenchPart
+     * 
+     * @param part
+     *            IWorkbenchPart
      * @return a new FileRecord
      */
     protected FileRecord getFileRecordFromWorkbenchPart(IWorkbenchPart part) {
         if (part instanceof IEditorPart) {
-            // If there is a file opened in the editor, we create a record for it
+            // If there is a file opened in the editor, we create a record for
+            // it
             IEditorInput input = ((IEditorPart) part).getEditorInput();
             if (input != null && input instanceof IFileEditorInput) {
-                IFile file = ((IFileEditorInput) input).getFile();                
+                IFile file = ((IFileEditorInput) input).getFile();
                 return new FileRecord(file);
             }
         } else {
@@ -78,44 +83,55 @@ public abstract class AbstractPMDPagebookView extends PageBookView {
         }
         return null;
     }
-    
+
     /* @see org.eclipse.ui.part.ViewPart#init(org.eclipse.ui.IViewSite) */
     @Override
     public void init(IViewSite site) throws PartInitException {
         super.init(site);
 
-        memento = new ViewMemento(mementoFileId());		// load Memento from a File, if existing
+        memento = new ViewMemento(mementoFileId()); // load Memento from a File,
+                                                    // if existing
     }
-	
+
     protected void save(String mementoId, List<Integer> integerList) {
-    	  memento.putList(mementoId, integerList);
+        memento.putList(mementoId, integerList);
     }
-    
+
     protected List<Integer> getIntegerList(String mementoId) {
-    	return memento == null ? Collections.<Integer>emptyList() : memento.getIntegerList(mementoId);
+        return memento == null ? Collections.<Integer>emptyList() : memento.getIntegerList(mementoId);
     }
-    
-    /* @see org.eclipse.ui.IPartListener#partBroughtToTop(org.eclipse.ui.IPartListener) */
+
+    /*
+     * @see org.eclipse.ui.IPartListener#partBroughtToTop(org.eclipse.ui.
+     * IPartListener)
+     */
     @Override
     public void partBroughtToTop(IWorkbenchPart part) {
         partActivated(part);
     }
-    
+
     /* @see org.eclipse.ui.part.PageBookView#getBootstrapPart() */
     @Override
     protected IWorkbenchPart getBootstrapPart() {
         IWorkbenchPage page = getSite().getPage();
         return page == null ? null : page.getActiveEditor();
     }
-    
-    /* @see org.eclipse.ui.part.PageBookView#isImportant(org.eclipse.ui.IWorkbenchPart) */
+
+    /*
+     * @see org.eclipse.ui.part.PageBookView#isImportant(org.eclipse.ui.
+     * IWorkbenchPart)
+     */
     @Override
     protected boolean isImportant(IWorkbenchPart part) {
         // We only care about the editor
         return part instanceof IEditorPart;
     }
-    
-    /* @see org.eclipse.ui.part.PageBookView#createDefaultPage(org.eclipse.ui.part.PageBook) */
+
+    /*
+     * @see
+     * org.eclipse.ui.part.PageBookView#createDefaultPage(org.eclipse.ui.part.
+     * PageBook)
+     */
     protected IPage createDefaultPage(PageBook book) {
         // builds a message page showing a text
         MessagePage page = new MessagePage();
@@ -124,11 +140,11 @@ public abstract class AbstractPMDPagebookView extends PageBookView {
         page.setMessage(getString(pageMessageId()));
         return page;
     }
-    
+
     protected static String getString(String textId) {
-    	return PMDPlugin.getDefault().getStringTable().getString(textId);
+        return PMDPlugin.getDefault().getStringTable().getString(textId);
     }
-    
+
     @Override
     public void dispose() {
         memento.save();

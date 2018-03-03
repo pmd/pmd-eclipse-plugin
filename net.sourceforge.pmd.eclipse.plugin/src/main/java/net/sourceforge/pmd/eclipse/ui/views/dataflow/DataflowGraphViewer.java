@@ -1,3 +1,4 @@
+
 package net.sourceforge.pmd.eclipse.ui.views.dataflow;
 
 import java.io.IOException;
@@ -44,8 +45,10 @@ public class DataflowGraphViewer extends Composite {
     /**
      * Constructor
      *
-     * @param parent the parent Composite
-     * @param style the SWT Style
+     * @param parent
+     *            the parent Composite
+     * @param style
+     *            the SWT Style
      */
     public DataflowGraphViewer(Composite parent, int style) {
         super(parent, style);
@@ -78,19 +81,20 @@ public class DataflowGraphViewer extends Composite {
 
         // set Column-widths and header titles
         colWidths = new int[] { 50, 250, 70, 220, 300 };
-        String[] headerTitles = { 
-        		getString(StringKeys.VIEW_DATAFLOW_GRAPH_COLUMN_LINE),
-                getString(StringKeys.VIEW_DATAFLOW_GRAPH_COLUMN_GRAPH),
-                getString(StringKeys.VIEW_DATAFLOW_GRAPH_COLUMN_NEXT),
-                getString(StringKeys.VIEW_DATAFLOW_GRAPH_COLUMN_VALUES),
-                getString(StringKeys.VIEW_DATAFLOW_GRAPH_COLUMN_CODE) };
+        String[] headerTitles = { getString(StringKeys.VIEW_DATAFLOW_GRAPH_COLUMN_LINE),
+            getString(StringKeys.VIEW_DATAFLOW_GRAPH_COLUMN_GRAPH),
+            getString(StringKeys.VIEW_DATAFLOW_GRAPH_COLUMN_NEXT),
+            getString(StringKeys.VIEW_DATAFLOW_GRAPH_COLUMN_VALUES),
+            getString(StringKeys.VIEW_DATAFLOW_GRAPH_COLUMN_CODE) };
         dfaTable.setColumns(colWidths, headerTitles, 1);
 
         Display display = parent.getDisplay();
         // set the Colors
-        bgColor = display.getSystemColor(SWT.COLOR_WHITE);	//new Color(null, 255, 255, 255);
+        bgColor = display.getSystemColor(SWT.COLOR_WHITE); // new Color(null,
+                                                           // 255, 255, 255);
         lineColor = new Color(null, 192, 192, 192);
-        textColor = display.getSystemColor(SWT.COLOR_BLACK);	//new Color(null, 0, 0, 0);
+        textColor = display.getSystemColor(SWT.COLOR_BLACK); // new Color(null,
+                                                             // 0, 0, 0);
         dfaTable.setColors(textColor, bgColor, lineColor);
 
         return dfaTable;
@@ -100,7 +104,8 @@ public class DataflowGraphViewer extends Composite {
      * Sets the data for this Viewer, gives the Table Data to show.
      *
      * @param node
-     * @param resString the Node's Resource as String
+     * @param resString
+     *            the Node's Resource as String
      */
     public void setData(Node node, String resString) {
         if (method != null) {
@@ -128,43 +133,53 @@ public class DataflowGraphViewer extends Composite {
     }
 
     private String nextNodeNumberStringFrom(DataFlowNode dfNode) {
-    	
-    	 List<DataFlowNode> dfNodes = dfNode.getChildren();
-    	 if (dfNodes.isEmpty()) return "";
-    	 
-         StringBuilder sb = new StringBuilder( Integer.toString(dfNodes.get(0).getIndex()) );
-	            
-	     for (int j = 1; j < dfNodes.size(); j++) {
-	        sb.append(", ").append(dfNodes.get(j).getIndex());
-	        }
-	     return sb.toString();
+
+        List<DataFlowNode> dfNodes = dfNode.getChildren();
+        if (dfNodes.isEmpty())
+            return "";
+
+        StringBuilder sb = new StringBuilder(Integer.toString(dfNodes.get(0).getIndex()));
+
+        for (int j = 1; j < dfNodes.size(); j++) {
+            sb.append(", ").append(dfNodes.get(j).getIndex());
+        }
+        return sb.toString();
     }
-    
-	private String referenceStringFrom(DataFlowNode dfNode) {
 
-		List<VariableAccess> access = dfNode.getVariableAccess();
-		if (access == null)	return null;
+    private String referenceStringFrom(DataFlowNode dfNode) {
 
-		StringBuilder exp = new StringBuilder();
-		for (int k = 0; k < access.size(); k++) {
-			if (k > 0) {
-				exp.append(", ");
-			}
-			VariableAccess va = access.get(k);
-			switch (va.getAccessType()) {
-				case VariableAccess.DEFINITION:		exp.append("d(");	break;
-				case VariableAccess.REFERENCING:	exp.append("r(");	break;
-				case VariableAccess.UNDEFINITION:	exp.append("u(");	break;
-				default:							exp.append("?(");
-				}
-			exp.append(va.getVariableName()).append(')');
-			}
-		
-		return exp.toString();
-	}
-    
+        List<VariableAccess> access = dfNode.getVariableAccess();
+        if (access == null)
+            return null;
+
+        StringBuilder exp = new StringBuilder();
+        for (int k = 0; k < access.size(); k++) {
+            if (k > 0) {
+                exp.append(", ");
+            }
+            VariableAccess va = access.get(k);
+            switch (va.getAccessType()) {
+            case VariableAccess.DEFINITION:
+                exp.append("d(");
+                break;
+            case VariableAccess.REFERENCING:
+                exp.append("r(");
+                break;
+            case VariableAccess.UNDEFINITION:
+                exp.append("u(");
+                break;
+            default:
+                exp.append("?(");
+            }
+            exp.append(va.getVariableName()).append(')');
+        }
+
+        return exp.toString();
+    }
+
     /**
-     * Creates an List (#Rows) of List (#Columns) with TableData in it, provides the Input for the Table
+     * Creates an List (#Rows) of List (#Columns) with TableData in it, provides
+     * the Input for the Table
      *
      * @param node
      * @return the DataflowGraphTable's Input-List
@@ -185,11 +200,12 @@ public class DataflowGraphViewer extends Composite {
             // 2. empty, because the Graph is shown in this column
             rowData.add(null);
 
-            // 3. the Numbers of the next Nodes           
+            // 3. the Numbers of the next Nodes
             String cellContent = nextNodeNumberStringFrom(inode);
             rowData.add(new DataflowGraphTableData(cellContent, SWT.LEFT | SWT.WRAP));
-            
-            // 4. The Dataflow occurrences (definition, undefinition, reference) in this Line of Code
+
+            // 4. The Dataflow occurrences (definition, undefinition, reference)
+            // in this Line of Code
             cellContent = referenceStringFrom(inode);
             if (cellContent != null) {
                 rowData.add(new DataflowGraphTableData(cellContent, SWT.LEFT | SWT.WRAP));
@@ -199,7 +215,7 @@ public class DataflowGraphViewer extends Composite {
 
             // 5. The Line of Code itself
             if (resourceString != null) {
-            	cellContent = getCodeLine(resourceString, inode.getLine()).trim();
+                cellContent = getCodeLine(resourceString, inode.getLine()).trim();
                 rowData.add(new DataflowGraphTableData(cellContent, SWT.LEFT | SWT.WRAP));
             } else {
                 rowData.add(null);
@@ -214,14 +230,16 @@ public class DataflowGraphViewer extends Composite {
     /**
      * Simply returns the given Line from the String
      *
-     * @param code, in general a Text representing a Java-File
-     * @param line, the Line of Code to return
+     * @param code,
+     *            in general a Text representing a Java-File
+     * @param line,
+     *            the Line of Code to return
      * @return the Line of Code or null, if not found
      */
     protected String getCodeLine(String code, int line) {
-    	
-    	LineNumberReader reader = null;
-    	
+
+        LineNumberReader reader = null;
+
         try {
             reader = new LineNumberReader(new StringReader(code));
             String retString;
@@ -238,7 +256,7 @@ public class DataflowGraphViewer extends Composite {
         } catch (IOException ioe) {
             PMDPlugin.getDefault().logError(StringKeys.ERROR_IO_EXCEPTION + this.toString(), ioe);
         } finally {
-        	IOUtil.closeQuietly(reader);
+            IOUtil.closeQuietly(reader);
         }
 
         return null;

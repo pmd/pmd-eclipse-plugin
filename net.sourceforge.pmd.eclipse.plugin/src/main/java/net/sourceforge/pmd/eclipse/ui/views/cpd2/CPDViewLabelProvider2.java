@@ -65,20 +65,23 @@ import org.eclipse.ui.ide.IDE.SharedImages;
 public class CPDViewLabelProvider2 extends LabelProvider implements ITableLabelProvider {
 
     /*
-     * @see org.eclipse.jface.viewers.ITableLabelProvider#getColumnImage(java.lang.Object, int)
+     * @see
+     * org.eclipse.jface.viewers.ITableLabelProvider#getColumnImage(java.lang.
+     * Object, int)
      */
     public Image getColumnImage(Object element, int columnIndex) {
         Image image = null;
-        
+
         final TreeNode node = (TreeNode) element;
         final Object value = node.getValue();
-        
+
         // the second Column gets an Image depending on,
         // if the Element is a Match or TokenEntry
         switch (columnIndex) {
         case 0:
-            if (value instanceof Match) {               
-             //   image = PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJS_ERROR_TSK);
+            if (value instanceof Match) {
+                // image =
+                // PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJS_ERROR_TSK);
             } else if (value instanceof TokenEntry) {
                 image = PlatformUI.getWorkbench().getSharedImages().getImage(SharedImages.IMG_OPEN_MARKER);
             }
@@ -93,65 +96,67 @@ public class CPDViewLabelProvider2 extends LabelProvider implements ITableLabelP
     }
 
     private int lineCountFor(TreeNode node) {
-    	
-    	Object source = node.getValue();
-    
-    	 if (source instanceof Match) {
-             return node.getChildren().length;
-    	 }
-    	 
-    	 return -1;
+
+        Object source = node.getValue();
+
+        if (source instanceof Match) {
+            return node.getChildren().length;
+        }
+
+        return -1;
     }
-    
+
     public static String pathFor(Mark entry) {
-    	
-       final IPath path = Path.fromOSString(entry.getFilename());
-       final IResource resource = ResourcesPlugin.getWorkspace().getRoot().getContainerForLocation(path);
-       if (resource != null) {
-           return resource.getProjectRelativePath().removeFileExtension().toString().replace(IPath.SEPARATOR, '.');
-       } else {
-    	   return "?";
-       }
+
+        final IPath path = Path.fromOSString(entry.getFilename());
+        final IResource resource = ResourcesPlugin.getWorkspace().getRoot().getContainerForLocation(path);
+        if (resource != null) {
+            return resource.getProjectRelativePath().removeFileExtension().toString().replace(IPath.SEPARATOR, '.');
+        } else {
+            return "?";
+        }
     }
-    
+
     public static Mark[] entriesFor(Match match) {
 
-    	Set<Mark> entrySet = match.getMarkSet();
-    	Mark[] entries = new Mark[entrySet.size()];
-    	entries = entrySet.toArray(entries);
-    	Arrays.sort(entries);
-    	
-    	return entries;
+        Set<Mark> entrySet = match.getMarkSet();
+        Mark[] entries = new Mark[entrySet.size()];
+        entries = entrySet.toArray(entries);
+        Arrays.sort(entries);
+
+        return entries;
     }
-    
+
     public static String[] sourcesFor(Match match) {
-    	
+
         Mark[] entries = entriesFor(match);
-    	
-    	String[] classNames = new String[entries.length];
-    	
-    	int i = 0;
-    	for (Mark entry : entries) {
-    		classNames[i++] = pathFor(entry);
-    	}
-    	
-    	return classNames;
+
+        String[] classNames = new String[entries.length];
+
+        int i = 0;
+        for (Mark entry : entries) {
+            classNames[i++] = pathFor(entry);
+        }
+
+        return classNames;
     }
-    
+
     public static Map<String, Mark> entriesByClassnameFor(Match match) {
-    	
+
         Mark[] entries = entriesFor(match);
-    	Map<String, Mark> entriesByName = new HashMap<String, Mark>(entries.length);
-    	
-    	for (Mark entry : entries) {
-    		entriesByName.put( pathFor(entry), entry);
-    	}
-    	
-    	return entriesByName;
+        Map<String, Mark> entriesByName = new HashMap<String, Mark>(entries.length);
+
+        for (Mark entry : entries) {
+            entriesByName.put(pathFor(entry), entry);
+        }
+
+        return entriesByName;
     }
-    
+
     /*
-     * @see org.eclipse.jface.viewers.ITableLabelProvider#getColumnText(java.lang.Object, int)
+     * @see
+     * org.eclipse.jface.viewers.ITableLabelProvider#getColumnText(java.lang.
+     * Object, int)
      */
     public String getColumnText(Object element, int columnIndex) {
         final TreeNode node = (TreeNode) element;
@@ -159,17 +164,20 @@ public class CPDViewLabelProvider2 extends LabelProvider implements ITableLabelP
         String result = "";
 
         switch (columnIndex) {
-        case 0: int count = lineCountFor(node);
-        		if (count > 0) result = Integer.toString(count);
-        		break;
-        // show the source 
+        case 0:
+            int count = lineCountFor(node);
+            if (count > 0)
+                result = Integer.toString(count);
+            break;
+        // show the source
         case 1:
-            if (value instanceof String) {          
+            if (value instanceof String) {
                 result = String.valueOf(value);
-                if (result.endsWith("\r")) result = result.substring(0, result.length()-1);
+                if (result.endsWith("\r"))
+                    result = result.substring(0, result.length() - 1);
             }
-            if (value instanceof Match) {          
-           //     do nothing, let the painter show it
+            if (value instanceof Match) {
+                // do nothing, let the painter show it
             }
             break;
         default:

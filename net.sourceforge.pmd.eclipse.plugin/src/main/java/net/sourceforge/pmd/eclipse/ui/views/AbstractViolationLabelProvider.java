@@ -1,3 +1,4 @@
+
 package net.sourceforge.pmd.eclipse.ui.views;
 
 import java.util.HashMap;
@@ -16,31 +17,28 @@ import org.eclipse.swt.graphics.Image;
  */
 public abstract class AbstractViolationLabelProvider extends LabelProvider implements ITableLabelProvider {
 
-	private static Map<Integer, Image> imagesByPriorityIndex;
+    private static Map<Integer, Image> imagesByPriorityIndex;
 
-	static {
-		loadImageMap();
-	}
+    static {
+        loadImageMap();
+    }
 
-	protected AbstractViolationLabelProvider() {
-	}
+    protected AbstractViolationLabelProvider() {
+    }
 
-	private static void loadImageMap() {
+    private static void loadImageMap() {
 
-		Map<Integer, ImageDescriptor> map = UISettings.markerImgDescriptorsByPriority();
+        Map<Integer, ImageDescriptor> map = UISettings.markerImgDescriptorsByPriority();
 
-		imagesByPriorityIndex = new HashMap<Integer, Image>(map.size());
+        imagesByPriorityIndex = new HashMap<Integer, Image>(map.size());
 
-		for (Map.Entry<Integer, ImageDescriptor> entry : map.entrySet()) {
-			imagesByPriorityIndex.put(
-					entry.getKey(), 
-					entry.getValue().createImage()
-			);
-		}
-	}
+        for (Map.Entry<Integer, ImageDescriptor> entry : map.entrySet()) {
+            imagesByPriorityIndex.put(entry.getKey(), entry.getValue().createImage());
+        }
+    }
 
-	protected static Image getPriorityImage(int priority) {
+    protected static Image getPriorityImage(int priority) {
 
-		return imagesByPriorityIndex.get(priority);
-	}
+        return imagesByPriorityIndex.get(priority);
+    }
 }

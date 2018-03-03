@@ -33,6 +33,7 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package net.sourceforge.pmd.eclipse.runtime.cmd;
 
 import java.util.Collections;
@@ -64,11 +65,12 @@ import org.eclipse.core.runtime.jobs.Job;
  */
 public class JobCommandProcessor implements CommandProcessor {
     private static final Logger log = Logger.getLogger(JobCommandProcessor.class);
-    private final Map<AbstractProcessableCommand, Job> jobs = Collections.synchronizedMap(new HashMap<AbstractProcessableCommand, Job>());
+    private final Map<AbstractProcessableCommand, Job> jobs = Collections
+            .synchronizedMap(new HashMap<AbstractProcessableCommand, Job>());
 
     private static ConcurrentLinkedQueue<Job> outstanding = new ConcurrentLinkedQueue<Job>();
     private static AtomicInteger count = new AtomicInteger();
-    
+
     /**
      * @see name.herlin.command.CommandProcessor#processCommand(name.herlin.command.AbstractProcessableCommand)
      */
@@ -89,17 +91,18 @@ public class JobCommandProcessor implements CommandProcessor {
                     Timer timer = new Timer();
                     aCommand.execute();
                     timer.stop();
-                    PMDPlugin.getDefault().logInformation("Command " + aCommand.getName() + " excecuted in " + timer.getDuration() + "ms");
+                    PMDPlugin.getDefault().logInformation(
+                            "Command " + aCommand.getName() + " excecuted in " + timer.getDuration() + "ms");
                 } catch (CommandException e) {
                     PMDPlugin.getDefault().logError("Error executing command " + aCommand.getName(), e);
                 }
 
                 synchronized (outstanding) {
-                	count.decrementAndGet();
-                	Job job = outstanding.poll();
-                	if (job != null) {
-                		job.schedule();
-                	}
+                    count.decrementAndGet();
+                    Job job = outstanding.poll();
+                    if (job != null) {
+                        job.schedule();
+                    }
                 }
                 return Status.OK_STATUS;
             }
@@ -110,12 +113,12 @@ public class JobCommandProcessor implements CommandProcessor {
         }
 
         synchronized (outstanding) {
-        	if (count.incrementAndGet() > 10) {
-        		//too many already running, put in a queue to run later
-        		outstanding.add(job);
-        	} else {
-        		job.schedule();
-        	}
+            if (count.incrementAndGet() > 10) {
+                // too many already running, put in a queue to run later
+                outstanding.add(job);
+            } else {
+                job.schedule();
+            }
         }
         this.addJob(aCommand, job);
         log.debug("Ending job command " + aCommand.getName());
@@ -138,8 +141,11 @@ public class JobCommandProcessor implements CommandProcessor {
 
     /**
      * Add a job to the map. Also, clear all finished jobs
-     * @param command for which to keep the job
-     * @param job a job to keep until it is finished
+     * 
+     * @param command
+     *            for which to keep the job
+     * @param job
+     *            a job to keep until it is finished
      */
     private void addJob(final AbstractProcessableCommand command, final Job job) {
         this.jobs.put(command, job);

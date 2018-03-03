@@ -1,3 +1,4 @@
+
 package net.sourceforge.pmd.eclipse.ui.preferences.editors;
 
 import java.util.HashMap;
@@ -20,18 +21,21 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
+
 /**
  * 
  * @author Brian Remedios
  */
 public class EditorTester implements ValueChangeListener, SizeChangeListener {
-    
-	  // these are the ones we've tested, the others may work but might not make sense in the xpath source context...
+
+    // these are the ones we've tested, the others may work but might not make
+    // sense in the xpath source context...
     private static final Class<?>[] validEditorTypes = new Class[] { String.class, Integer.class, Boolean.class };
-       
-    public static Map<Class<?>, EditorFactory> withOnly(Map<Class<?>, EditorFactory> factoriesByType, Class<?>[] legalTypeKeys) {
+
+    public static Map<Class<?>, EditorFactory> withOnly(Map<Class<?>, EditorFactory> factoriesByType,
+            Class<?>[] legalTypeKeys) {
         Map<Class<?>, EditorFactory> results = new HashMap<Class<?>, EditorFactory>(legalTypeKeys.length);
-        
+
         for (Class<?> type : legalTypeKeys) {
             if (factoriesByType.containsKey(type)) {
                 results.put(type, factoriesByType.get(type));
@@ -40,55 +44,62 @@ public class EditorTester implements ValueChangeListener, SizeChangeListener {
         return results;
     }
 
-	public EditorTester() {
-				
-		Display d = new Display();
-		Shell s = new Shell(d);
-		GridLayout gl = new GridLayout();
-		gl.numColumns = 2;
-		s.setLayout(gl);
-		s.setSize(850, 595);
+    public EditorTester() {
 
-		s.setText("Type Editor Tester");
-		s.setLayout(gl);
-		Composite panel = new Composite(s, SWT.BORDER);
-		GridData gd = new GridData(GridData.FILL_BOTH);
-		gd.horizontalSpan = 4;
-		panel.setLayoutData(gd);
-		gd = new GridData();
+        Display d = new Display();
+        Shell s = new Shell(d);
+        GridLayout gl = new GridLayout();
+        gl.numColumns = 2;
+        s.setLayout(gl);
+        s.setSize(850, 595);
 
-		Composite c1 = new Composite(s, SWT.NO_FOCUS);
-		gd = new GridData(GridData.FILL_HORIZONTAL);
-		c1.setLayoutData(gd);
-		Composite c2 = new Composite(s, SWT.NO_FOCUS);
-		gd = new GridData(GridData.FILL_HORIZONTAL);
-		c2.setLayoutData(gd);
+        s.setText("Type Editor Tester");
+        s.setLayout(gl);
+        Composite panel = new Composite(s, SWT.BORDER);
+        GridData gd = new GridData(GridData.FILL_BOTH);
+        gd.horizontalSpan = 4;
+        panel.setLayoutData(gd);
+        gd = new GridData();
 
-		Composite c = new Composite(s, SWT.NO_FOCUS);		c.setLayout(new RowLayout());
-		Button b1 = new Button(c, SWT.PUSH | SWT.BORDER);	b1.setText("OK");
-		Button b2 = new Button(c, SWT.PUSH | SWT.BORDER);	b2.setText("Cancel");
-		gd = new GridData(GridData.FILL_HORIZONTAL);
-		c.setLayoutData(gd);
+        Composite c1 = new Composite(s, SWT.NO_FOCUS);
+        gd = new GridData(GridData.FILL_HORIZONTAL);
+        c1.setLayoutData(gd);
+        Composite c2 = new Composite(s, SWT.NO_FOCUS);
+        gd = new GridData(GridData.FILL_HORIZONTAL);
+        c2.setLayoutData(gd);
 
-		FormArranger formArranger = new FormArranger(panel, PerRulePropertyPanelManager.editorFactoriesByPropertyType, this, this);
-		formArranger.arrangeFor(new NonRuleWithAllPropertyTypes());
-		s.open();
-		while (!s.isDisposed()) {
-			if (!d.readAndDispatch())
-				d.sleep();
-		}
-		d.dispose();
-	}
+        Composite c = new Composite(s, SWT.NO_FOCUS);
+        c.setLayout(new RowLayout());
+        Button b1 = new Button(c, SWT.PUSH | SWT.BORDER);
+        b1.setText("OK");
+        Button b2 = new Button(c, SWT.PUSH | SWT.BORDER);
+        b2.setText("Cancel");
+        gd = new GridData(GridData.FILL_HORIZONTAL);
+        c.setLayoutData(gd);
 
-	public static void main(String[] arg) {
-		new EditorTester();
-	}
+        FormArranger formArranger = new FormArranger(panel, PerRulePropertyPanelManager.editorFactoriesByPropertyType,
+                this, this);
+        formArranger.arrangeFor(new NonRuleWithAllPropertyTypes());
+        s.open();
+        while (!s.isDisposed()) {
+            if (!d.readAndDispatch())
+                d.sleep();
+        }
+        d.dispose();
+    }
 
-	// ignore these callbacks
-	public void changed(RuleSelection rule, PropertyDescriptor<?> desc,	Object newValue) {	}
+    public static void main(String[] arg) {
+        new EditorTester();
+    }
 
-	public void changed(PropertySource source, PropertyDescriptor<?> desc, Object newValue) { }
+    // ignore these callbacks
+    public void changed(RuleSelection rule, PropertyDescriptor<?> desc, Object newValue) {
+    }
 
-	public void addedRows(int newRowCount) { }
+    public void changed(PropertySource source, PropertyDescriptor<?> desc, Object newValue) {
+    }
+
+    public void addedRows(int newRowCount) {
+    }
 
 }

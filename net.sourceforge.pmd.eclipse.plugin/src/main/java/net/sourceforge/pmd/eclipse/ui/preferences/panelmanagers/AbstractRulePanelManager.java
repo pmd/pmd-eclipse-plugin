@@ -1,3 +1,4 @@
+
 package net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers;
 
 import java.util.Collections;
@@ -31,19 +32,20 @@ import net.sourceforge.pmd.properties.StringProperty;
 import net.sourceforge.pmd.util.StringUtil;
 
 /**
- * Concrete subclasses can also be used as tab folders outside of a wizard dialog via the setupOn(Composite) method.
+ * Concrete subclasses can also be used as tab folders outside of a wizard
+ * dialog via the setupOn(Composite) method.
  *
  * @author Brian Remedios
  */
 public abstract class AbstractRulePanelManager extends WizardPage implements RulePropertyManager {
 
-    private TabItem                     		tab;
-    private String                      		tabText;
-    private boolean                    			isActive;
-    protected RuleSelection            			rules;
-    protected final ValueChangeListener 		changeListener;
-    private final EditorUsageMode				usageMode;
-    
+    private TabItem tab;
+    private String tabText;
+    private boolean isActive;
+    protected RuleSelection rules;
+    protected final ValueChangeListener changeListener;
+    private final EditorUsageMode usageMode;
+
     protected static Color textColour;
     protected static Color errorColour;
     protected static Color disabledColour;
@@ -51,26 +53,30 @@ public abstract class AbstractRulePanelManager extends WizardPage implements Rul
 
     private static final String disabledTabText = "-------";
 
-    public static final RGB overridenColourValues = new RGB(236, 236, 255);  // light blue
+    public static final RGB overridenColourValues = new RGB(236, 236, 255); // light
+                                                                            // blue
 
-    public AbstractRulePanelManager(String theId, String theTitle, EditorUsageMode theMode, ValueChangeListener theListener) {
-    	super(theId, theTitle, null);
+    public AbstractRulePanelManager(String theId, String theTitle, EditorUsageMode theMode,
+            ValueChangeListener theListener) {
+        super(theId, theTitle, null);
 
         changeListener = theListener;
         usageMode = theMode;
-        
+
     }
 
     public abstract Control setupOn(Composite panel);
 
-    public EditorUsageMode mode() { return usageMode; }
-    
+    public EditorUsageMode mode() {
+        return usageMode;
+    }
+
     /**
      * For use by wizards only..
      */
     public void createControl(Composite panel) {
 
-    	Control childPanel = setupOn(panel);
+        Control childPanel = setupOn(panel);
 
         setControl(childPanel);
 
@@ -78,9 +84,9 @@ public abstract class AbstractRulePanelManager extends WizardPage implements Rul
     }
 
     protected boolean creatingNewRule() {
-   	 	return usageMode == EditorUsageMode.CreateNew;
+        return usageMode == EditorUsageMode.CreateNew;
     }
-    
+
     public void tab(TabItem theTab) {
         tab = theTab;
         tabText = theTab.getText();
@@ -91,20 +97,21 @@ public abstract class AbstractRulePanelManager extends WizardPage implements Rul
     }
 
     protected String asCleanString(String original) {
-    	if (original == null) return "";
-    	return original.trim();
+        if (original == null)
+            return "";
+        return original.trim();
     }
 
     public void manage(RuleSelection theRules) {
 
         rules = theRules;
 
-        isActive =
-             (rules.hasOneRule() && canWorkWith(rules.soleRule())) ||
-             (rules.hasMultipleRules() && canManageMultipleRules());
+        isActive = (rules.hasOneRule() && canWorkWith(rules.soleRule()))
+                || (rules.hasMultipleRules() && canManageMultipleRules());
 
         showControls(isActive);
-        if (tab != null) tab.setText(isActive ? tabText : disabledTabText);
+        if (tab != null)
+            tab.setText(isActive ? tabText : disabledTabText);
 
         if (isActive) {
             adapt();
@@ -121,9 +128,10 @@ public abstract class AbstractRulePanelManager extends WizardPage implements Rul
     }
 
     protected void updateUI() {
-    	List<String> warnings = fieldWarnings();
-    	List<String> errors = fieldErrors();
-        if (tab != null) updateTabUI(warnings, errors);
+        List<String> warnings = fieldWarnings();
+        List<String> errors = fieldErrors();
+        if (tab != null)
+            updateTabUI(warnings, errors);
         updateOverridenFields();
         disableIrrelevantFields();
     }
@@ -133,34 +141,36 @@ public abstract class AbstractRulePanelManager extends WizardPage implements Rul
     }
 
     protected void disableIrrelevantFields() {
-    	
-    }
-    
-    protected boolean canWorkWith(Rule rule) { return true; }   // override as necessary
 
-    protected List<String> fieldErrors() {                          // override as necessary
+    }
+
+    protected boolean canWorkWith(Rule rule) {
+        return true;
+    } // override as necessary
+
+    protected List<String> fieldErrors() { // override as necessary
         return Collections.emptyList();
     }
 
-    protected List<String> fieldWarnings() {                        // override as necessary
+    protected List<String> fieldWarnings() { // override as necessary
         return Collections.emptyList();
     }
 
     public boolean validate() {
-    	
-    	List<String> warnings = fieldWarnings();
-    	List<String> errors = fieldErrors();
-    	
+
+        List<String> warnings = fieldWarnings();
+        List<String> errors = fieldErrors();
+
         if (tab != null) {
-        	updateTabUI(warnings, errors);
+            updateTabUI(warnings, errors);
         }
-        
+
         String errorText = errors.isEmpty() ? null : StringUtil.asString(errors.toArray(), ", ");
-        
+
         setErrorMessage(errorText);
-        
-    	setPageComplete(StringUtil.isEmpty(errorText));
-        
+
+        setPageComplete(StringUtil.isEmpty(errorText));
+
         return errorText == null;
     }
 
@@ -173,7 +183,8 @@ public abstract class AbstractRulePanelManager extends WizardPage implements Rul
         }
 
         boolean hasIssues = updateTab(errors, PMDUiConstants.ICON_ERROR);
-        if (hasIssues) return;
+        if (hasIssues)
+            return;
 
         updateTab(fieldWarnings(), PMDUiConstants.ICON_WARN);
     }
@@ -182,9 +193,7 @@ public abstract class AbstractRulePanelManager extends WizardPage implements Rul
 
         boolean hasIssues = !issues.isEmpty();
 
-        tab.setImage(
-                hasIssues ? ResourceManager.imageFor(iconName) : null
-                );
+        tab.setImage(hasIssues ? ResourceManager.imageFor(iconName) : null);
 
         tab.setToolTipText(hasIssues ? issues.toString() : "");
 
@@ -211,7 +220,7 @@ public abstract class AbstractRulePanelManager extends WizardPage implements Rul
             }
         });
     }
-    
+
     protected void addTextListeners(final StyledText control, final StringProperty desc) {
 
         control.addListener(SWT.FocusOut, new Listener() {
@@ -220,38 +229,43 @@ public abstract class AbstractRulePanelManager extends WizardPage implements Rul
             }
         });
     }
-    
+
     public void loadValues() {
-    	// subclasses to re-implement
+        // subclasses to re-implement
     }
-    
+
     protected void initializeOn(Composite parent) {
 
-        if (errorColour != null) return;
+        if (errorColour != null)
+            return;
 
         ColourManager clrMgr = ColourManager.managerFor(parent.getDisplay());
-        errorColour = clrMgr.colourFor(new RGB( 255, 0, 0 ));        // red
-        textColour = clrMgr.colourFor(new RGB( 0, 0, 0 ));           // black
-        disabledColour = clrMgr.colourFor(new RGB( 128, 128, 128));   // grey
-//        overridenColour = clrMgr.colourFor(overridenColourValues);
+        errorColour = clrMgr.colourFor(new RGB(255, 0, 0)); // red
+        textColour = clrMgr.colourFor(new RGB(0, 0, 0)); // black
+        disabledColour = clrMgr.colourFor(new RGB(128, 128, 128)); // grey
+        // overridenColour = clrMgr.colourFor(overridenColourValues);
     }
 
-//    protected void valueChanged() {
-//    	 changeListener.changed(rules, null, "");
-//    }
+    // protected void valueChanged() {
+    // changeListener.changed(rules, null, "");
+    // }
 
     /**
-     * @param property StringProperty
-     * @param newValue String
+     * @param property
+     *            StringProperty
+     * @param newValue
+     *            String
      */
     protected void changed(StringProperty property, String newValue) {
 
-        if (rules == null) return;
+        if (rules == null)
+            return;
 
         String cleanValue = newValue.trim();
         String existingValue = rules.commonStringValue(property);
 
-        if (StringUtil.areSemanticEquals(existingValue, cleanValue)) return;
+        if (StringUtil.areSemanticEquals(existingValue, cleanValue))
+            return;
 
         rules.setValue(property, cleanValue);
         valueChanged(property, newValue);
@@ -273,96 +287,98 @@ public abstract class AbstractRulePanelManager extends WizardPage implements Rul
     }
 
     protected void show(TypeText control, Class<?> type) {
-    	control.setType(type);
-//    	control.setEnabled(usageMode == EditorUsageMode.CreateNew);
+        control.setType(type);
+        // control.setEnabled(usageMode == EditorUsageMode.CreateNew);
     }
 
     protected void show(Button checkbox, boolean checked) {
-    	checkbox.setSelection(checked);
-//    	checkbox.setEnabled(usageMode == EditorUsageMode.CreateNew);
+        checkbox.setSelection(checked);
+        // checkbox.setEnabled(usageMode == EditorUsageMode.CreateNew);
     }
 
     protected void show(Text control, String value) {
         control.setText(value == null ? "" : value);
-//        control.setEnabled(usageMode == EditorUsageMode.CreateNew);
+        // control.setEnabled(usageMode == EditorUsageMode.CreateNew);
     }
 
     protected void show(StyledText control, String value) {
         control.setText(value == null ? "" : value);
-//        control.setEnabled(usageMode == EditorUsageMode.CreateNew);
+        // control.setEnabled(usageMode == EditorUsageMode.CreateNew);
     }
 
     protected void show(Combo control, String value) {
-    	
-//    	control.setEnabled(usageMode == EditorUsageMode.CreateNew);
-    	
-    	if (StringUtil.isEmpty(value)) {
-    		control.deselectAll();
-    		return;
-    	}
 
-    	String[] choices = control.getItems();
+        // control.setEnabled(usageMode == EditorUsageMode.CreateNew);
 
-    	int index = -1;
-    	for (int i=0; i<choices.length; i++) {
-    		if (StringUtil.areSemanticEquals(choices[i], value)) {
-    			index = i;
-    			break;
-    		}
-    	}
+        if (StringUtil.isEmpty(value)) {
+            control.deselectAll();
+            return;
+        }
+
+        String[] choices = control.getItems();
+
+        int index = -1;
+        for (int i = 0; i < choices.length; i++) {
+            if (StringUtil.areSemanticEquals(choices[i], value)) {
+                index = i;
+                break;
+            }
+        }
 
         if (index < 0) {
-        	control.deselectAll();
+            control.deselectAll();
         } else {
-        	control.select(index);
+            control.select(index);
         }
     }
-    
+
     protected void show(CCombo control, String value) {
-    	
-//    	control.setEnabled(usageMode == EditorUsageMode.CreateNew);
-    	
-    	if (StringUtil.isEmpty(value)) {
-    		control.deselectAll();
-    		return;
-    	}
 
-    	String[] choices = control.getItems();
+        // control.setEnabled(usageMode == EditorUsageMode.CreateNew);
 
-    	int index = -1;
-    	for (int i=0; i<choices.length; i++) {
-    		if (StringUtil.areSemanticEquals(choices[i], value)) {
-    			index = i;
-    			break;
-    		}
-    	}
+        if (StringUtil.isEmpty(value)) {
+            control.deselectAll();
+            return;
+        }
+
+        String[] choices = control.getItems();
+
+        int index = -1;
+        for (int i = 0; i < choices.length; i++) {
+            if (StringUtil.areSemanticEquals(choices[i], value)) {
+                index = i;
+                break;
+            }
+        }
 
         if (index < 0) {
-        	control.deselectAll();
+            control.deselectAll();
         } else {
-        	control.select(index);
+            control.select(index);
         }
     }
 
     protected void show(Link control, String value) {
         control.setText(value == null ? "" : value);
-//        control.setEnabled(true);
+        // control.setEnabled(true);
     }
 
     /**
      * Method newTextField.
-     * @param parent Composite
+     * 
+     * @param parent
+     *            Composite
      * @return Text
      */
     protected Text newTextField(Composite parent) {
 
         return new Text(parent, SWT.BORDER | SWT.WRAP | SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
     }
-    
+
     protected StyledText newCodeField(Composite parent) {
-    	
-    	StyledText st = new StyledText(parent, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
-    	return st;
-    }    
-    
+
+        StyledText st = new StyledText(parent, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
+        return st;
+    }
+
 }

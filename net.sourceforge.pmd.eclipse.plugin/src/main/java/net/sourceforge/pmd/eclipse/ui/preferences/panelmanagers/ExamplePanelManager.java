@@ -1,3 +1,4 @@
+
 package net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers;
 
 import java.util.ArrayList;
@@ -28,14 +29,16 @@ public class ExamplePanelManager extends AbstractRulePanelManager {
 
     private StyledText exampleField;
     private ModifyListener modifyListener;
-    
+
     public static final String ID = "example";
 
     public ExamplePanelManager(String theTitle, EditorUsageMode theMode, ValueChangeListener theListener) {
         super(ID, theTitle, theMode, theListener);
     }
 
-    protected boolean canManageMultipleRules() { return false; }
+    protected boolean canManageMultipleRules() {
+        return false;
+    }
 
     protected void clearControls() {
         exampleField.setText("");
@@ -51,8 +54,8 @@ public class ExamplePanelManager extends AbstractRulePanelManager {
         Rule rule = soleRule();
 
         if (rule instanceof RuleReference) {
-            RuleReference ruleReference = (RuleReference)rule;
-            exampleField.setBackground(ruleReference.getOverriddenExamples() != null ? overridenColour: null);
+            RuleReference ruleReference = (RuleReference) rule;
+            exampleField.setBackground(ruleReference.getOverriddenExamples() != null ? overridenColour : null);
         }
     }
 
@@ -78,22 +81,25 @@ public class ExamplePanelManager extends AbstractRulePanelManager {
                 String cleanValue = exampleField.getText().trim();
                 String existingValue = soleRule.getDescription();
 
-                if (StringUtil.areSemanticEquals(existingValue, cleanValue)) return;
+                if (StringUtil.areSemanticEquals(existingValue, cleanValue))
+                    return;
 
-                soleRule.setDescription(cleanValue);                                
+                soleRule.setDescription(cleanValue);
                 valueChanged(null, cleanValue);
             }
         });
-        
+
         return panel;
     }
 
     private void formatExampleOn(StringBuilder sb, String example) {
-   //     sb.append(example.trim());
+        // sb.append(example.trim());
 
         String[] lines = example.split("\n");
         List<String> realLines = new ArrayList<String>(lines.length);
-        for (String line : lines) if (StringUtil.isNotEmpty(line)) realLines.add(line);
+        for (String line : lines)
+            if (StringUtil.isNotEmpty(line))
+                realLines.add(line);
         lines = realLines.toArray(new String[realLines.size()]);
 
         int trimDepth = StringUtil.maxCommonLeadingWhitespaceForAll(lines);
@@ -108,12 +114,13 @@ public class ExamplePanelManager extends AbstractRulePanelManager {
     private String examples(Rule rule) {
 
         List<String> examples = rule.getExamples();
-        if (examples.isEmpty()) return "";
+        if (examples.isEmpty())
+            return "";
 
         StringBuilder sb = new StringBuilder();
         formatExampleOn(sb, examples.get(0));
 
-        for (int i=1; i<examples.size(); i++) {
+        for (int i = 1; i < examples.size(); i++) {
             sb.append("----------");
             formatExampleOn(sb, examples.get(i));
         }
@@ -129,11 +136,7 @@ public class ExamplePanelManager extends AbstractRulePanelManager {
             shutdown(exampleField);
         } else {
             show(exampleField, examples(soleRule));
-            modifyListener = SyntaxManager.adapt(
-            		exampleField, 
-            		soleRule.getLanguage().getTerseName(), 
-            		modifyListener
-            		);
+            modifyListener = SyntaxManager.adapt(exampleField, soleRule.getLanguage().getTerseName(), modifyListener);
         }
     }
 
