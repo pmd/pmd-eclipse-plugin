@@ -4,10 +4,6 @@ package net.sourceforge.pmd.eclipse.runtime.cmd;
 import java.io.File;
 import java.util.List;
 
-import net.sourceforge.pmd.cpd.Language;
-import net.sourceforge.pmd.eclipse.runtime.properties.PropertiesException;
-import net.sourceforge.pmd.util.StringUtil;
-
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
@@ -15,6 +11,10 @@ import org.eclipse.core.resources.IResourceVisitor;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ui.IWorkingSet;
 import org.eclipse.ui.ResourceWorkingSetFilter;
+
+import net.sourceforge.pmd.cpd.Language;
+import net.sourceforge.pmd.eclipse.runtime.properties.PropertiesException;
+import net.sourceforge.pmd.util.StringUtil;
 
 /**
  * A visitor to process IFile resource against CPD

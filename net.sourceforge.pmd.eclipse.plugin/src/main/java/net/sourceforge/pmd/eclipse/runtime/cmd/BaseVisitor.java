@@ -51,8 +51,8 @@ import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.PMDException;
 import net.sourceforge.pmd.Report;
-import net.sourceforge.pmd.Report.ProcessingError;
 import net.sourceforge.pmd.Report.ConfigurationError;
+import net.sourceforge.pmd.Report.ProcessingError;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSet;
@@ -86,7 +86,7 @@ import name.herlin.command.Timer;
  *
  */
 public class BaseVisitor {
-    private static final Logger log = Logger.getLogger(BaseVisitor.class);
+    private static final Logger LOG = Logger.getLogger(BaseVisitor.class);
     private IProgressMonitor monitor;
     private boolean useTaskMarker = false;
     private Map<IFile, Set<MarkerInfo2>> accumulator;
@@ -107,8 +107,9 @@ public class BaseVisitor {
     }
 
     protected PMDConfiguration configuration() {
-        if (configuration == null)
+        if (configuration == null) {
             configuration = new PMDConfiguration();
+        }
         return configuration;
     }
 
@@ -262,15 +263,16 @@ public class BaseVisitor {
     protected final void reviewResource(IResource resource) {
 
         IFile file = (IFile) resource.getAdapter(IFile.class);
-        if (file == null || file.getFileExtension() == null)
+        if (file == null || file.getFileExtension() == null) {
             return;
+        }
 
         Reader input = null;
         try {
             boolean included = isIncluded(file);
-            log.debug("Derived files included: " + projectProperties.isIncludeDerivedFiles());
-            log.debug("file " + file.getName() + " is derived: " + file.isDerived());
-            log.debug("file checked: " + included);
+            LOG.debug("Derived files included: " + projectProperties.isIncludeDerivedFiles());
+            LOG.debug("file " + file.getName() + " is derived: " + file.isDerived());
+            LOG.debug("file checked: " + included);
 
             prepareMarkerAccumulator(file);
 
@@ -284,7 +286,7 @@ public class BaseVisitor {
             if (languageVersion != null) {
                 configuration().setDefaultLanguageVersion(languageVersion);
             }
-            log.debug("discovered language: " + languageVersion);
+            LOG.debug("discovered language: " + languageVersion);
 
             PMDPlugin.setJavaClassLoader(configuration(), resource.getProject());
 
@@ -311,13 +313,12 @@ public class BaseVisitor {
                         return new RuleSets(getRuleSet());
                     }
                 };
-                configuration().setThreads(0); // need to disable multi
-                                               // threading, as the ruleset is
-                                               // not recreated and shared
-                                               // between threads...
+                // need to disable multi threading, as the ruleset is
+                // not recreated and shared between threads...
                 // but as we anyway have only one file to process, it won't hurt
                 // here.
-                log.debug("PMD running on file " + file.getName());
+                configuration().setThreads(0);
+                LOG.debug("PMD running on file " + file.getName());
                 final Report collectingReport = new Report();
                 Renderer collectingRenderer = new AbstractRenderer("collectingRenderer",
                         "Renderer that collect violations") {
@@ -364,12 +365,12 @@ public class BaseVisitor {
                 // Arrays.asList(collectingRenderer));
                 new MonoThreadProcessor(configuration()).processFiles(ruleSetFactory, Arrays.asList(dataSource),
                         context, Arrays.asList(collectingRenderer));
-                log.debug("PMD run finished.");
+                LOG.debug("PMD run finished.");
 
                 timer.stop();
                 pmdDuration += timer.getDuration();
 
-                log.debug("PMD found " + collectingReport.size() + " violations for file " + file.getName());
+                LOG.debug("PMD found " + collectingReport.size() + " violations for file " + file.getName());
 
                 if (collectingReport.hasErrors()) {
                     StringBuilder message = new StringBuilder("There were processing errors!\n");
@@ -387,30 +388,23 @@ public class BaseVisitor {
                 worked(1);
                 fileCount++;
             } else {
-                log.debug("The file " + file.getName() + " is not in the working set");
+                LOG.debug("The file " + file.getName() + " is not in the working set");
             }
 
         } catch (CoreException e) {
-            log.error("Core exception visiting " + file.getName(), e); // TODO:
-                                                                       // //
-                                                                       // complete
-                                                                       // message
+            // TODO: complete message
+            LOG.error("Core exception visiting " + file.getName(), e); 
         } catch (PMDException e) {
-            log.error("PMD exception visiting " + file.getName(), e); // TODO:
-                                                                      // //
-                                                                      // complete
-                                                                      // message
+            // TODO: complete message
+            LOG.error("PMD exception visiting " + file.getName(), e);
         } catch (IOException e) {
-            log.error("IO exception visiting " + file.getName(), e); // TODO: //
-                                                                     // complete
-                                                                     // message
+            // TODO: complete message
+            LOG.error("IO exception visiting " + file.getName(), e);
         } catch (PropertiesException e) {
-            log.error("Properties exception visiting " + file.getName(), e); // TODO:
-                                                                             // //
-                                                                             // complete
-                                                                             // message
+            // TODO: complete message
+            LOG.error("Properties exception visiting " + file.getName(), e);
         } catch (IllegalArgumentException e) {
-            log.error("Illegal argument", e);
+            LOG.error("Illegal argument", e);
         } finally {
             IOUtil.closeQuietly(input);
         }
@@ -503,7 +497,7 @@ public class BaseVisitor {
             review.lineNumber = violation.getBeginLine();
 
             if (reviewsList.contains(review)) {
-                log.debug("Ignoring violation of rule " + rule.getName() + " at line " + violation.getBeginLine()
+                LOG.debug("Ignoring violation of rule " + rule.getName() + " at line " + violation.getBeginLine()
                         + " because of a review.");
                 continue;
             }
@@ -534,15 +528,15 @@ public class BaseVisitor {
                  */
                 violationsByRule.put(rule, Integer.valueOf(count.intValue() + 1));
 
-                log.debug("Adding a violation for rule " + rule.getName() + " at line " + violation.getBeginLine());
+                LOG.debug("Adding a violation for rule " + rule.getName() + " at line " + violation.getBeginLine());
             } else {
-                log.debug("Ignoring violation of rule " + rule.getName() + " at line " + violation.getBeginLine()
+                LOG.debug("Ignoring violation of rule " + rule.getName() + " at line " + violation.getBeginLine()
                         + " because maximum violations has been reached for file " + file.getName());
             }
         }
 
         if (accumulator != null) {
-            log.debug("Adding markerSet to accumulator for file " + file.getName());
+            LOG.debug("Adding markerSet to accumulator for file " + file.getName());
             accumulator.put(file, markerSet);
         }
     }
@@ -641,8 +635,12 @@ public class BaseVisitor {
 
         case 3:
             info.add(IMarker.PRIORITY, IMarker.PRIORITY_HIGH);
+            info.add(IMarker.SEVERITY, IMarker.SEVERITY_WARNING);
+            break;
+
         case 4:
         default:
+            info.add(IMarker.PRIORITY, IMarker.PRIORITY_HIGH);
             info.add(IMarker.SEVERITY, IMarker.SEVERITY_WARNING);
             break;
         }

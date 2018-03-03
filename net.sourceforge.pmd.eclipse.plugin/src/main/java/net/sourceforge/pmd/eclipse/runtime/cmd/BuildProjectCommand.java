@@ -36,11 +36,12 @@
 
 package net.sourceforge.pmd.eclipse.runtime.cmd;
 
-import name.herlin.command.CommandException;
-import net.sourceforge.pmd.eclipse.runtime.properties.PropertiesException;
-
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
+
+import net.sourceforge.pmd.eclipse.runtime.properties.PropertiesException;
+
+import name.herlin.command.CommandException;
 
 /**
  * Rebuild a project to force PMD to be run on that project.

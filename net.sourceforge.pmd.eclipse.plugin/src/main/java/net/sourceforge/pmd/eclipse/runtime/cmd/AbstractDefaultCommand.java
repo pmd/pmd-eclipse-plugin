@@ -36,13 +36,14 @@
 
 package net.sourceforge.pmd.eclipse.runtime.cmd;
 
-import name.herlin.command.AbstractProcessableCommand;
-import name.herlin.command.CommandException;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.runtime.IProgressMonitor;
+
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.lang.Language;
 
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.runtime.IProgressMonitor;
+import name.herlin.command.AbstractProcessableCommand;
+import name.herlin.command.CommandException;
 
 /**
  * This is a base implementation for a command inside the PMD plugin. This must
@@ -87,14 +88,16 @@ public abstract class AbstractDefaultCommand extends AbstractProcessableCommand 
      * @deprecated we support multiple languages now
      */
     public static boolean isJavaFile(IFile file) {
-        if (file == null)
+        if (file == null) {
             return false;
+        }
         return "JAVA".equalsIgnoreCase(file.getFileExtension());
     }
 
     public static boolean isLanguageFile(IFile file, Language language) {
-        if (file == null)
+        if (file == null) {
             return false;
+        }
         return language.hasExtension(file.getFileExtension());
     }
 

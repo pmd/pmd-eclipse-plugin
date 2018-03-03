@@ -18,11 +18,13 @@
  * Contact: philippe_herlin@yahoo.fr
  *
  */
+
 package name.herlin.command;
+
+import org.apache.log4j.Logger;
 
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 
-import org.apache.log4j.Logger;
 
 /**
  * Default command processor implementation. This processor simply call the
@@ -30,7 +32,7 @@ import org.apache.log4j.Logger;
  */
 
 public class DefaultCommandProcessor implements CommandProcessor {
-    private static final Logger log = Logger.getLogger(DefaultCommandProcessor.class);
+    private static final Logger LOG = Logger.getLogger(DefaultCommandProcessor.class);
 
     /**
      * Execute the command.
@@ -41,7 +43,7 @@ public class DefaultCommandProcessor implements CommandProcessor {
      *             if an unexpected condition occurred.
      */
     public void processCommand(final AbstractProcessableCommand aCommand) throws CommandException {
-        log.debug("Beginning command " + aCommand.getName());
+        LOG.debug("Beginning command " + aCommand.getName());
         if (aCommand.isReadyToExecute()) {
             Timer timer = new Timer();
             aCommand.execute();
@@ -51,7 +53,7 @@ public class DefaultCommandProcessor implements CommandProcessor {
             throw new UnsetInputPropertiesException();
         }
 
-        log.debug("Ending command " + aCommand.getName());
+        LOG.debug("Ending command " + aCommand.getName());
     }
 
     /**

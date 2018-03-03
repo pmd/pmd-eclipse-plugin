@@ -18,6 +18,7 @@
  * Contact: philippe_herlin@yahoo.fr
  *
  */
+
 package name.herlin.command;
 
 /**

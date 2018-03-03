@@ -1,14 +1,14 @@
 
 package net.sourceforge.pmd.eclipse.runtime.cmd;
 
-import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
-import net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties;
-import net.sourceforge.pmd.eclipse.runtime.properties.PropertiesException;
-
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResourceVisitor;
 import org.eclipse.core.runtime.CoreException;
+
+import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
+import net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties;
+import net.sourceforge.pmd.eclipse.runtime.properties.PropertiesException;
 
 /**
  * 

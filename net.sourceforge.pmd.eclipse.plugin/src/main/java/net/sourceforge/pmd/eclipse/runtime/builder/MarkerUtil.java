@@ -51,8 +51,9 @@ public class MarkerUtil {
 
             public boolean visit(IResource resource) {
 
-                if (foundOne[0])
+                if (foundOne[0]) {
                     return false;
+                }
 
                 if (resource instanceof IFile) {
 
@@ -86,10 +87,12 @@ public class MarkerUtil {
 
     private static IProject projectFor(IResource resource) {
 
-        if (resource instanceof IWorkspaceRoot)
+        if (resource instanceof IWorkspaceRoot) {
             return null;
-        if (resource instanceof IProject)
+        }
+        if (resource instanceof IProject) {
             return (IProject) resource;
+        }
         return projectFor(resource.getParent());
     }
 
@@ -99,8 +102,9 @@ public class MarkerUtil {
 
         for (IMarker marker : markers) {
             IProject project = projectFor(marker.getResource());
-            if (project != null)
+            if (project != null) {
                 projects.add(project);
+            }
         }
 
         return projects;
@@ -139,8 +143,9 @@ public class MarkerUtil {
 
         try {
             IMarker[] markers = findAllMarkers(resource);
-            if (markers.length == 0)
+            if (markers.length == 0) {
                 return 0;
+            }
 
             List<IMarker> matches = new ArrayList<IMarker>(markers.length);
 
@@ -166,8 +171,9 @@ public class MarkerUtil {
         List<IMarkerDelta> deltas = new ArrayList<IMarkerDelta>();
         for (String markerType : PMDRuntimeConstants.RULE_MARKER_TYPES) {
             IMarkerDelta[] deltaArray = event.findMarkerDeltas(markerType, true);
-            for (IMarkerDelta delta : deltaArray)
+            for (IMarkerDelta delta : deltaArray) {
                 deltas.add(delta);
+            }
         }
 
         return deltas;
@@ -180,11 +186,13 @@ public class MarkerUtil {
 
         for (IMarker marker : markers) {
             String name = ruleNameFor(marker);
-            if (StringUtil.isEmpty(name))
+            if (StringUtil.isEmpty(name)) {
                 continue;
+            }
             Rule rule = ruleset.getRuleByName(name);
-            if (rule == null)
+            if (rule == null) {
                 continue;
+            }
             rules.add(rule);
         }
 
@@ -203,8 +211,9 @@ public class MarkerUtil {
 
         String ruleName = ruleNameFor(markers[0]);
         for (int i = 1; i < markers.length; i++) {
-            if (!ruleName.equals(ruleNameFor(markers[i])))
+            if (!ruleName.equals(ruleNameFor(markers[i]))) {
                 return null;
+            }
         }
 
         return ruleName;
@@ -255,8 +264,9 @@ public class MarkerUtil {
         for (String markerType : markerTypes) {
             for (IMarker marker : resource.findMarkers(markerType, true, IResource.DEPTH_INFINITE)) {
                 priorityLevels.add(rulePriorityFor(marker));
-                if (priorityLevels.size() == sizeLimit)
+                if (priorityLevels.size() == sizeLimit) {
                     return priorityLevels;
+                }
             }
         }
 
@@ -281,8 +291,9 @@ public class MarkerUtil {
 
     private static Rule ruleFrom(IMarker marker) {
         String ruleName = marker.getAttribute(PMDRuntimeConstants.KEY_MARKERATT_RULENAME, "");
-        if (StringUtil.isEmpty(ruleName))
+        if (StringUtil.isEmpty(ruleName)) {
             return null; // printValues(marker);
+        }
         return rulesByName.get(ruleName);
     }
 
@@ -300,8 +311,9 @@ public class MarkerUtil {
                         MarkerRecord markerRecord = (MarkerRecord) mRecord;
                         for (IMarker marker : markerRecord.findMarkers()) {
                             Rule rule = ruleFrom(marker);
-                            if (rule == null)
+                            if (rule == null) {
                                 continue;
+                            }
                             files.add((IFile) fileRecord.getResource());
                             break;
                         }

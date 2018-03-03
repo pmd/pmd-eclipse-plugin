@@ -16,7 +16,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
  */
 public class DeltaVisitor extends BaseVisitor implements IResourceDeltaVisitor {
 
-    private static final Logger log = Logger.getLogger(DeltaVisitor.class);
+    private static final Logger LOG = Logger.getLogger(DeltaVisitor.class);
 
     /**
      * Default constructor
@@ -38,22 +38,23 @@ public class DeltaVisitor extends BaseVisitor implements IResourceDeltaVisitor {
      */
     public boolean visit(IResourceDelta delta) throws CoreException {
 
-        if (isCanceled())
+        if (isCanceled()) {
             return false;
+        }
 
         switch (delta.getKind()) {
         case IResourceDelta.ADDED: {
-            log.debug("Visiting added resource " + delta.getResource().getName());
+            LOG.debug("Visiting added resource " + delta.getResource().getName());
             visitAdded(delta.getResource());
             break;
         }
         case IResourceDelta.CHANGED: {
-            log.debug("Visiting changed resource " + delta.getResource().getName());
+            LOG.debug("Visiting changed resource " + delta.getResource().getName());
             visitChanged(delta.getResource());
             break;
         }
         default: { // other kinds are not visited
-            log.debug("Resource " + delta.getResource().getName() + " not visited.");
+            LOG.debug("Resource " + delta.getResource().getName() + " not visited.");
         }
         }
 

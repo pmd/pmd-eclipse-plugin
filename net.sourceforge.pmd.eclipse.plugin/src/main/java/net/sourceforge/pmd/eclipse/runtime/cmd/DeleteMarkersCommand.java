@@ -36,10 +36,10 @@
 
 package net.sourceforge.pmd.eclipse.runtime.cmd;
 
-import name.herlin.command.CommandException;
-
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.runtime.CoreException;
+
+import name.herlin.command.CommandException;
 
 /**
  * Command to delete single markers.
