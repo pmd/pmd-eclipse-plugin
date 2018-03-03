@@ -51,6 +51,21 @@
 
     <profiles>
         <profile>
+            <!-- Activate this profile additionally to release-composite, to release snapshot builds to Bintray -->
+            <id>snapshot-properties</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+
+            <properties>
+                <bintray.package>snapshots</bintray.package>
+                <bintray.releases.path>snapshots/builds</bintray.releases.path>
+                <bintray.composite.path>snapshots/updates</bintray.composite.path>
+                <bintray.zip.path>snapshots/zipped</bintray.zip.path>
+                <child.repository.path.prefix>../../builds/</child.repository.path.prefix>
+            </properties>
+        </profile>
+        <profile>
             <!-- Activate this profile to perform the release to Bintray -->
             <id>release-composite</id>
             <activation>
