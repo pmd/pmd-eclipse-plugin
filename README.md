@@ -4,7 +4,10 @@
 
 Release Notes: <https://github.com/pmd/pmd-eclipse-plugin/blob/master/ReleaseNotes.md>
 
-Eclipse Update Site: <https://dl.bintray.com/pmd/pmd-eclipse-plugin/updates/>
+Eclipse Update Site:
+
+*   Releases: <https://dl.bintray.com/pmd/pmd-eclipse-plugin/updates/>
+*   Snapshots: <https://dl.bintray.com/pmd/pmd-eclipse-plugin/snapshots/updates/>
 
 ## How to contribute
 
