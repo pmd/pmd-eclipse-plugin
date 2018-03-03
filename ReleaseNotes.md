@@ -1,6 +1,6 @@
 # PMD For Eclipse - Release Notes
 
-Installation instructions: <http://pmd.sourceforge.net/eclipse/>
+Installation instructions: <https://pmd.github.io/eclipse/>
 
 Eclipse Update Site:
 
