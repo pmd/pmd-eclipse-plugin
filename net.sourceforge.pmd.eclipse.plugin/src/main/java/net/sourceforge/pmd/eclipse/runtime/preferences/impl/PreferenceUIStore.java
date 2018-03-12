@@ -6,15 +6,15 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
-import net.sourceforge.pmd.eclipse.ui.preferences.br.RuleColumnDescriptor;
-import net.sourceforge.pmd.eclipse.ui.preferences.br.RuleTableColumns;
-import net.sourceforge.pmd.eclipse.ui.preferences.editors.SWTUtil;
-
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.preference.PreferenceStore;
+
+import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
+import net.sourceforge.pmd.eclipse.ui.preferences.br.RuleColumnDescriptor;
+import net.sourceforge.pmd.eclipse.ui.preferences.br.RuleTableColumns;
+import net.sourceforge.pmd.eclipse.ui.preferences.editors.SWTUtil;
 
 /**
  * 
@@ -25,36 +25,36 @@ public class PreferenceUIStore {
 
     private PreferenceStore preferenceStore;
 
-    private static final String tableFraction = PMDPlugin.PLUGIN_ID + ".ruletable.fraction";
-    private static final String tableHiddenCols = PMDPlugin.PLUGIN_ID + ".ruletable.hiddenColumns";
-    private static final String tableColumnSortUp = PMDPlugin.PLUGIN_ID + ".ruletable.sortUp";
-    private static final String groupingColumn = PMDPlugin.PLUGIN_ID + ".ruletable.groupingColumn";
-    private static final String selectedRuleNames = PMDPlugin.PLUGIN_ID + ".ruletable.selectedRules";
-    private static final String selectedPropertyTab = PMDPlugin.PLUGIN_ID + ".ruletable.selectedPropertyTab";
-    private static final String globalRuleManagement = PMDPlugin.PLUGIN_ID + ".globalRuleManagement";
+    private static final String TABLE_FRACTION = PMDPlugin.PLUGIN_ID + ".ruletable.fraction";
+    private static final String TABLE_HIDDEN_COLS = PMDPlugin.PLUGIN_ID + ".ruletable.hiddenColumns";
+    private static final String TABLE_COLUMN_SORT_UP = PMDPlugin.PLUGIN_ID + ".ruletable.sortUp";
+    private static final String GROUPING_COLUMN = PMDPlugin.PLUGIN_ID + ".ruletable.groupingColumn";
+    private static final String SELECTED_RULE_NAMES = PMDPlugin.PLUGIN_ID + ".ruletable.selectedRules";
+    private static final String SELECTED_PROPERTY_TAB = PMDPlugin.PLUGIN_ID + ".ruletable.selectedPropertyTab";
+    private static final String GLOBAL_RULE_MANAGEMENT = PMDPlugin.PLUGIN_ID + ".globalRuleManagement";
 
-    private static final int tableFractionDefault = 55;
-    private static final char stringSeparator = ',';
+    private static final int TABLE_FRACTION_DEFAULT = 55;
+    private static final char STRING_SEPARATOR = ',';
 
-    private static final RuleColumnDescriptor[] defaultHiddenColumns = new RuleColumnDescriptor[] {
+    private static final RuleColumnDescriptor[] DEFAULT_HIDDEN_COLUMNS = new RuleColumnDescriptor[] {
         RuleTableColumns.externalURL, RuleTableColumns.minLangVers, RuleTableColumns.fixCount,
         RuleTableColumns.exampleCount, RuleTableColumns.maxLangVers, RuleTableColumns.since,
         RuleTableColumns.modCount };
 
-    private static final boolean defaultSortUp = false;
+    private static final boolean DEFAULT_SORT_UP = false;
 
-    public static final PreferenceUIStore instance = new PreferenceUIStore();
+    public static final PreferenceUIStore INSTANCE = new PreferenceUIStore();
 
     private PreferenceUIStore() {
         initialize();
     }
 
     private static String defaultHiddenColumnIds() {
-        Set<String> colNames = new HashSet<String>(defaultHiddenColumns.length);
-        for (RuleColumnDescriptor rcDesc : defaultHiddenColumns) {
+        Set<String> colNames = new HashSet<String>(DEFAULT_HIDDEN_COLUMNS.length);
+        for (RuleColumnDescriptor rcDesc : DEFAULT_HIDDEN_COLUMNS) {
             colNames.add(rcDesc.id());
         }
-        return SWTUtil.asString(colNames, stringSeparator);
+        return SWTUtil.asString(colNames, STRING_SEPARATOR);
     }
 
     private void initialize() {
@@ -65,7 +65,7 @@ public class PreferenceUIStore {
 
         // TODO - replace this with the existing ViewMemento
         preferenceStore = new PreferenceStore(fileName);
-        preferenceStore.setDefault(globalRuleManagement, false);
+        preferenceStore.setDefault(GLOBAL_RULE_MANAGEMENT, false);
 
         try {
             preferenceStore.load();
@@ -76,13 +76,13 @@ public class PreferenceUIStore {
 
     private void createNewStore() {
 
-        preferenceStore.setValue(tableFraction, tableFractionDefault);
-        preferenceStore.setValue(tableHiddenCols, defaultHiddenColumnIds());
-        preferenceStore.setValue(tableColumnSortUp, defaultSortUp);
-        preferenceStore.setValue(groupingColumn, "");
-        preferenceStore.setValue(selectedRuleNames, "");
-        preferenceStore.setValue(selectedPropertyTab, 0);
-        preferenceStore.setValue(globalRuleManagement, false);
+        preferenceStore.setValue(TABLE_FRACTION, TABLE_FRACTION_DEFAULT);
+        preferenceStore.setValue(TABLE_HIDDEN_COLS, defaultHiddenColumnIds());
+        preferenceStore.setValue(TABLE_COLUMN_SORT_UP, DEFAULT_SORT_UP);
+        preferenceStore.setValue(GROUPING_COLUMN, "");
+        preferenceStore.setValue(SELECTED_RULE_NAMES, "");
+        preferenceStore.setValue(SELECTED_PROPERTY_TAB, 0);
+        preferenceStore.setValue(GLOBAL_RULE_MANAGEMENT, false);
 
         save();
     }
@@ -97,62 +97,62 @@ public class PreferenceUIStore {
     }
 
     public int tableFraction() {
-        return preferenceStore.getInt(tableFraction);
+        return preferenceStore.getInt(TABLE_FRACTION);
     }
 
     public void tableFraction(int aFraction) {
-        preferenceStore.setValue(tableFraction, aFraction);
+        preferenceStore.setValue(TABLE_FRACTION, aFraction);
     }
 
     public Set<String> hiddenColumnIds() {
-        String names = preferenceStore.getString(tableHiddenCols);
-        return SWTUtil.asStringSet(names, stringSeparator);
+        String names = preferenceStore.getString(TABLE_HIDDEN_COLS);
+        return SWTUtil.asStringSet(names, STRING_SEPARATOR);
     }
 
     public void hiddenColumnIds(Set<String> names) {
-        String nameStr = SWTUtil.asString(names, stringSeparator);
-        preferenceStore.setValue(tableHiddenCols, nameStr);
+        String nameStr = SWTUtil.asString(names, STRING_SEPARATOR);
+        preferenceStore.setValue(TABLE_HIDDEN_COLS, nameStr);
     }
 
     public int selectedPropertyTab() {
-        return preferenceStore.getInt(selectedPropertyTab);
+        return preferenceStore.getInt(SELECTED_PROPERTY_TAB);
     }
 
     public void selectedPropertyTab(int anIndex) {
-        preferenceStore.setValue(selectedPropertyTab, anIndex);
+        preferenceStore.setValue(SELECTED_PROPERTY_TAB, anIndex);
     }
 
     public boolean globalRuleManagement() {
-        return preferenceStore.getBoolean(globalRuleManagement);
+        return preferenceStore.getBoolean(GLOBAL_RULE_MANAGEMENT);
     }
 
     public void globalRuleManagement(boolean b) {
-        preferenceStore.setValue(globalRuleManagement, b);
+        preferenceStore.setValue(GLOBAL_RULE_MANAGEMENT, b);
     }
 
     public Set<String> selectedRuleNames() {
-        String names = preferenceStore.getString(selectedRuleNames);
-        return SWTUtil.asStringSet(names, stringSeparator);
+        String names = preferenceStore.getString(SELECTED_RULE_NAMES);
+        return SWTUtil.asStringSet(names, STRING_SEPARATOR);
     }
 
     public void selectedRuleNames(Collection<String> ruleNames) {
-        String nameStr = SWTUtil.asString(ruleNames, stringSeparator);
-        preferenceStore.setValue(selectedRuleNames, nameStr);
+        String nameStr = SWTUtil.asString(ruleNames, STRING_SEPARATOR);
+        preferenceStore.setValue(SELECTED_RULE_NAMES, nameStr);
     }
 
     public boolean sortDirectionUp() {
-        return preferenceStore.getBoolean(tableColumnSortUp);
+        return preferenceStore.getBoolean(TABLE_COLUMN_SORT_UP);
     }
 
     public void sortDirectionUp(boolean isUp) {
-        preferenceStore.setValue(tableColumnSortUp, isUp);
+        preferenceStore.setValue(TABLE_COLUMN_SORT_UP, isUp);
     }
 
     public String groupingColumnName() {
-        return preferenceStore.getString(groupingColumn);
+        return preferenceStore.getString(GROUPING_COLUMN);
     }
 
     public void groupingColumnName(String columnName) {
-        preferenceStore.setValue(groupingColumn, columnName);
+        preferenceStore.setValue(GROUPING_COLUMN, columnName);
     }
 }

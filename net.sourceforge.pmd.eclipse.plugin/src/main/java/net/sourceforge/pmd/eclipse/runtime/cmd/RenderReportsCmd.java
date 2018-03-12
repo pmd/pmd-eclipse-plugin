@@ -43,17 +43,6 @@ import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
 
-import name.herlin.command.CommandException;
-import net.sourceforge.pmd.Report;
-import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.RuleSet;
-import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
-import net.sourceforge.pmd.eclipse.runtime.PMDRuntimeConstants;
-import net.sourceforge.pmd.eclipse.runtime.builder.MarkerUtil;
-import net.sourceforge.pmd.eclipse.util.IOUtil;
-import net.sourceforge.pmd.renderers.Renderer;
-import net.sourceforge.pmd.util.StringUtil;
-
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -67,6 +56,18 @@ import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 
+import net.sourceforge.pmd.Report;
+import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.RuleSet;
+import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
+import net.sourceforge.pmd.eclipse.runtime.PMDRuntimeConstants;
+import net.sourceforge.pmd.eclipse.runtime.builder.MarkerUtil;
+import net.sourceforge.pmd.eclipse.util.IOUtil;
+import net.sourceforge.pmd.renderers.Renderer;
+import net.sourceforge.pmd.util.StringUtil;
+
+import name.herlin.command.CommandException;
+
 /**
  * This command produce a report for a project using the specified renderer.
  *
@@ -77,7 +78,7 @@ public class RenderReportsCmd extends AbstractProjectCommand {
 
     private static final long serialVersionUID = 1L;
 
-    private static final Logger log = Logger.getLogger(RenderReportsCmd.class);
+    private static final Logger LOG = Logger.getLogger(RenderReportsCmd.class);
 
     /**
      * Table containing the renderers indexed by the file name.
@@ -136,11 +137,11 @@ public class RenderReportsCmd extends AbstractProjectCommand {
         }
 
         if (StringUtil.isEmpty(reportString)) {
-            log.debug("Missing content for report: " + reportName);
+            LOG.debug("Missing content for report: " + reportName);
             return;
         }
 
-        log.debug("   Creating the report file");
+        LOG.debug("   Creating the report file");
         IFile reportFile = folder.getFile(reportName);
         InputStream contentsStream = new ByteArrayInputStream(reportString.getBytes());
         if (reportFile.exists()) {
@@ -159,11 +160,11 @@ public class RenderReportsCmd extends AbstractProjectCommand {
     public void execute() throws CommandException {
 
         try {
-            log.debug("Starting RenderReport command");
-            log.debug("   Create a report object");
+            LOG.debug("Starting RenderReport command");
+            LOG.debug("   Create a report object");
             final Report report = createReport(project());
 
-            log.debug("   Getting the report folder");
+            LOG.debug("   Getting the report folder");
             final IFolder folder = getProjectFolder(PMDRuntimeConstants.REPORT_FOLDER);
             if (!folder.exists()) {
                 folder.create(true, true, getMonitor());
@@ -172,17 +173,17 @@ public class RenderReportsCmd extends AbstractProjectCommand {
             for (Map.Entry<String, Renderer> entry : renderers.entrySet()) {
                 String reportName = entry.getKey();
                 Renderer renderer = entry.getValue();
-                log.debug("   Render the report");
+                LOG.debug("   Render the report");
                 render(report, folder, reportName, renderer);
             }
         } catch (CoreException e) {
-            log.debug("Core Exception: " + e.getMessage(), e);
+            LOG.debug("Core Exception: " + e.getMessage(), e);
             throw new CommandException(e);
         } catch (IOException e) {
-            log.debug("Core Exception: " + e.getMessage(), e);
+            LOG.debug("Core Exception: " + e.getMessage(), e);
             throw new CommandException(e);
         } finally {
-            log.debug("End of RenderReport command");
+            LOG.debug("End of RenderReport command");
             setTerminated(true);
         }
     }

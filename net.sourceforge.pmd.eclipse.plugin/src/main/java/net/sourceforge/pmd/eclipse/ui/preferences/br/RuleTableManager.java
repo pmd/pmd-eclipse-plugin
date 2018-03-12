@@ -905,7 +905,7 @@ public class RuleTableManager extends AbstractTreeTableManager<Rule> implements 
 
     private void restoreSavedRuleSelections() {
 
-        Set<String> names = PreferenceUIStore.instance.selectedRuleNames();
+        Set<String> names = PreferenceUIStore.INSTANCE.selectedRuleNames();
         List<Rule> rules = new ArrayList<Rule>();
         for (String name : names)
             rules.add(ruleSet.getRuleByName(name));
@@ -938,7 +938,7 @@ public class RuleTableManager extends AbstractTreeTableManager<Rule> implements 
                 ruleNames.add(((Rule) item).getName());
         }
 
-        PreferenceUIStore.instance.selectedRuleNames(ruleNames);
+        PreferenceUIStore.INSTANCE.selectedRuleNames(ruleNames);
     }
 
     /**

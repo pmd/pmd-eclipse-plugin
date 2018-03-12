@@ -40,9 +40,14 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import name.herlin.command.CommandException;
-import net.sourceforge.pmd.PMDConfiguration;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.IPropertyListener;
+
 import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.PMDException;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
@@ -52,11 +57,7 @@ import net.sourceforge.pmd.SourceCodeProcessor;
 import net.sourceforge.pmd.eclipse.runtime.PMDRuntimeConstants;
 import net.sourceforge.pmd.eclipse.ui.actions.RuleSetUtil;
 
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.IPropertyListener;
+import name.herlin.command.CommandException;
 
 /**
  * This command reviews a resource - a file - for a specific rule.

@@ -302,12 +302,12 @@ public abstract class AbstractTableManager<T extends Object> implements SortList
 			columnIds.add(desc.id());
 		}
 		
-		PreferenceUIStore.instance.hiddenColumnIds(columnIds);
+		PreferenceUIStore.INSTANCE.hiddenColumnIds(columnIds);
 	}
 	
 	private void loadHiddenColumns() {
 		
-		for (String columnId : PreferenceUIStore.instance.hiddenColumnIds() ) {
+		for (String columnId : PreferenceUIStore.INSTANCE.hiddenColumnIds() ) {
 			for (ColumnDescriptor desc : availableColumns) {
 				if (desc.id().equals(columnId)) {
 					hiddenColumns.add(desc);

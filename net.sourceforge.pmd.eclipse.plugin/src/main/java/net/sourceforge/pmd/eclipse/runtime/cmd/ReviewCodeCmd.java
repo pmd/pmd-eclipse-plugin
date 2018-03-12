@@ -158,12 +158,14 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
     private boolean checkForMisconfiguredRules() {
 
         RuleSet ruleSet = currentRules();
-        if (ruleSet.getRules().isEmpty())
+        if (ruleSet.getRules().isEmpty()) {
             return true;
+        }
 
         Map<Rule, String> faultsByRule = misconfiguredRulesIn(ruleSet);
-        if (faultsByRule.isEmpty())
+        if (faultsByRule.isEmpty()) {
             return true;
+        }
 
         return MessageDialog.openConfirm(Display.getDefault().getActiveShell(), "Rule configuration problem",
                 "Continue anyways?");
@@ -176,8 +178,9 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
     public void execute() throws CommandException {
 
         boolean doReview = checkForMisconfiguredRules();
-        if (!doReview)
+        if (!doReview) {
             return;
+        }
 
         LOG.info("ReviewCode command starting.");
         try {
@@ -216,8 +219,9 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
                 // holding locks
                 // for too long
                 for (IFile file : markersByFile.keySet()) {
-                    if (isCanceled())
+                    if (isCanceled()) {
                         break;
+                    }
                     MarkerUtil.deleteAllMarkersIn(file);
                 }
 
@@ -610,8 +614,9 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
 
         try {
             for (IFile file : markersByFile.keySet()) {
-                if (isCanceled())
+                if (isCanceled()) {
                     break;
+                }
                 currentFile = file.getName();
                 Set<MarkerInfo2> markerInfoSet = markersByFile.get(file);
                 for (MarkerInfo2 markerInfo : markerInfoSet) {
@@ -622,8 +627,8 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
                 worked(1);
             }
         } catch (CoreException e) {
-            LOG.warn("CoreException when setting marker for file " + currentFile + " : " + e.getMessage()); // TODO:
-                                                                                                            // NLS
+            // TODO: NLS
+            LOG.warn("CoreException when setting marker for file " + currentFile + " : " + e.getMessage());
         } finally {
             timer.stop();
             int count = markersByFile.size();

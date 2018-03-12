@@ -77,7 +77,7 @@ public class BasicTableManager <T extends Object> extends AbstractTableManager<T
 	
 	private TableColumn columnFor(ColumnDescriptor desc) {
 	   	for (TableColumn column : tableViewer.getTable().getColumns()) {
-	   		if ((column.getData(AbstractColumnDescriptor.DescriptorKey)) == desc) return column;
+	   		if ((column.getData(AbstractColumnDescriptor.DESCRIPTOR_KEY)) == desc) return column;
 	    	}
 	   	return null;
 	}

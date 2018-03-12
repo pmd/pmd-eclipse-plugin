@@ -1,3 +1,4 @@
+
 package net.sourceforge.pmd.eclipse.ui;
 
 /**
@@ -6,11 +7,11 @@ package net.sourceforge.pmd.eclipse.ui;
  */
 public interface ColumnDescriptor {
 
-	String id();
-	
-	String label();
+    String id();
 
-	String tooltip();
-	
-	int defaultWidth();
+    String label();
+
+    String tooltip();
+
+    int defaultWidth();
 }

@@ -33,6 +33,7 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package net.sourceforge.pmd.eclipse.runtime.properties.impl;
 
 import java.io.ByteArrayInputStream;
@@ -44,7 +45,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.xml.bind.DataBindingException;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
@@ -73,13 +73,14 @@ import net.sourceforge.pmd.eclipse.runtime.properties.PropertiesException;
 import net.sourceforge.pmd.eclipse.ui.actions.RuleSetUtil;
 
 /**
- * This class manages the persistence of the ProjectProperies information structure
+ * This class manages the persistence of the ProjectProperies information
+ * structure
  *
  * @author Philippe Herlin
  *
  */
 public class ProjectPropertiesManagerImpl implements IProjectPropertiesManager {
-    private static final Logger log = Logger.getLogger(ProjectPropertiesManagerImpl.class);
+    private static final Logger LOG = Logger.getLogger(ProjectPropertiesManagerImpl.class);
 
     private static final String PROPERTIES_FILE = ".pmd";
 
@@ -94,17 +95,19 @@ public class ProjectPropertiesManagerImpl implements IProjectPropertiesManager {
             throw new RuntimeException(e);
         }
     }
+
     /**
      * Load a project properties
      *
-     * @param project a project
+     * @param project
+     *            a project
      */
     public IProjectProperties loadProjectProperties(final IProject project) throws PropertiesException {
-        log.debug("Loading project properties for project " + project.getName());
+        LOG.debug("Loading project properties for project " + project.getName());
         try {
             IProjectProperties projectProperties = this.projectsProperties.get(project);
             if (projectProperties == null) {
-            	log.debug("Creating new poject properties for " + project.getName());
+                LOG.debug("Creating new poject properties for " + project.getName());
                 projectProperties = new PropertiesFactoryImpl().newProjectProperties(project, this);
                 final ProjectPropertiesTO to = readProjectProperties(project);
                 fillProjectProperties(projectProperties, to);
@@ -114,10 +117,8 @@ public class ProjectPropertiesManagerImpl implements IProjectPropertiesManager {
             // if the ruleset is stored in the project always reload it
             if (projectProperties.isRuleSetStoredInProject()) {
                 loadRuleSetFromProject(projectProperties);
-            }
-
-            // else resynchronize the ruleset
-            else {
+            } else {
+                // else resynchronize the ruleset
                 final boolean needRebuild = synchronizeRuleSet(projectProperties);
                 projectProperties.setNeedRebuild(projectProperties.isNeedRebuild() || needRebuild);
             }
@@ -125,7 +126,8 @@ public class ProjectPropertiesManagerImpl implements IProjectPropertiesManager {
             return projectProperties;
 
         } catch (CoreException e) {
-            throw new PropertiesException("Core Exception when loading project properties for project " + project.getName(), e);
+            throw new PropertiesException(
+                    "Core Exception when loading project properties for project " + project.getName(), e);
         }
     }
 
@@ -133,7 +135,7 @@ public class ProjectPropertiesManagerImpl implements IProjectPropertiesManager {
      * @see net.sourceforge.pmd.eclipse.runtime.properties.IProjectPropertiesManager#storeProjectProperties(net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties)
      */
     public void storeProjectProperties(IProjectProperties projectProperties) throws PropertiesException {
-        log.debug("Storing project properties for project " + projectProperties.getProject().getName());
+        LOG.debug("Storing project properties for project " + projectProperties.getProject().getName());
         try {
             if (projectProperties.isPmdEnabled()) {
                 PMDNature.addPMDNature(projectProperties.getProject(), null);
@@ -145,7 +147,8 @@ public class ProjectPropertiesManagerImpl implements IProjectPropertiesManager {
             projectsProperties.put(projectProperties.getProject(), projectProperties);
 
         } catch (CoreException e) {
-            throw new PropertiesException("Core Exception when storing project properties for project " + projectProperties.getProject().getName(), e);
+            throw new PropertiesException("Core Exception when storing project properties for project "
+                    + projectProperties.getProject().getName(), e);
         }
 
     }
@@ -161,16 +164,17 @@ public class ProjectPropertiesManagerImpl implements IProjectPropertiesManager {
      */
     private void loadRuleSetFromProject(IProjectProperties projectProperties) throws PropertiesException {
         if (projectProperties.isRuleSetFileExist() && projectProperties.isNeedRebuild()) {
-            log.debug("Loading ruleset from project ruleset file: " + projectProperties.getRuleSetFile());
+            LOG.debug("Loading ruleset from project ruleset file: " + projectProperties.getRuleSetFile());
             try {
                 final RuleSetFactory factory = new RuleSetFactory();
                 final File ruleSetFile = projectProperties.getResolvedRuleSetFile();
                 projectProperties.setProjectRuleSet(factory.createRuleSets(ruleSetFile.getPath()).getAllRuleSets()[0]);
                 projectProperties.setNeedRebuild(false);
             } catch (RuleSetNotFoundException e) {
-                PMDPlugin.getDefault().logError(
-                        "Project RuleSet cannot be loaded for project " + projectProperties.getProject().getName()
-                                + " using RuleSet file name " + projectProperties.getRuleSetFile() + ". Using the rules from properties.", e);
+                PMDPlugin.getDefault()
+                        .logError("Project RuleSet cannot be loaded for project "
+                                + projectProperties.getProject().getName() + " using RuleSet file name "
+                                + projectProperties.getRuleSetFile() + ". Using the rules from properties.", e);
             }
         }
     }
@@ -178,7 +182,8 @@ public class ProjectPropertiesManagerImpl implements IProjectPropertiesManager {
     public ProjectPropertiesTO convertProjectPropertiesFromString(String properties) {
         try {
             Source source = new StreamSource(new StringReader(properties));
-            JAXBElement<ProjectPropertiesTO> element = JAXB_CONTEXT.createUnmarshaller().unmarshal(source, ProjectPropertiesTO.class);
+            JAXBElement<ProjectPropertiesTO> element = JAXB_CONTEXT.createUnmarshaller().unmarshal(source,
+                    ProjectPropertiesTO.class);
             return element.getValue();
         } catch (JAXBException e) {
             throw new DataBindingException(e);
@@ -188,7 +193,8 @@ public class ProjectPropertiesManagerImpl implements IProjectPropertiesManager {
     /**
      * Read a project properties from properties file
      *
-     * @param project a project
+     * @param project
+     *            a project
      */
     private ProjectPropertiesTO readProjectProperties(final IProject project) throws PropertiesException {
         ProjectPropertiesTO projectProperties = null;
@@ -212,13 +218,15 @@ public class ProjectPropertiesManagerImpl implements IProjectPropertiesManager {
     /**
      * Fill a properties information structure from a transfer object
      *
-     * @param projectProperties a project properties data structure
-     * @param to a project properties transfer object
+     * @param projectProperties
+     *            a project properties data structure
+     * @param to
+     *            a project properties transfer object
      */
-    private void fillProjectProperties(IProjectProperties projectProperties, ProjectPropertiesTO to) throws PropertiesException,
-            CoreException {
+    private void fillProjectProperties(IProjectProperties projectProperties, ProjectPropertiesTO to)
+            throws PropertiesException, CoreException {
         if (to == null) {
-            log.info("Project properties not found. Use default.");
+            LOG.info("Project properties not found. Use default.");
         } else {
             final IWorkingSetManager workingSetManager = PlatformUI.getWorkbench().getWorkingSetManager();
             projectProperties.setProjectWorkingSet(workingSetManager.getWorkingSet(to.getWorkingSetName()));
@@ -236,29 +244,32 @@ public class ProjectPropertiesManagerImpl implements IProjectPropertiesManager {
                 setRuleSetFromProperties(projectProperties, to.getRules());
             }
 
-            log.debug("Project properties loaded");
+            LOG.debug("Project properties loaded");
         }
     }
 
     /**
      * Set the rule set from rule specs found in properties file
      *
-     * @param rules array of selected rules
+     * @param rules
+     *            array of selected rules
      */
-    private void setRuleSetFromProperties(IProjectProperties projectProperties, RuleSpecTO[] rules) throws PropertiesException {
+    private void setRuleSetFromProperties(IProjectProperties projectProperties, RuleSpecTO[] rules)
+            throws PropertiesException {
         final RuleSet pluginRuleSet = PMDPlugin.getDefault().getPreferencesManager().getRuleSet();
-        int n = rules==null?0:rules.length;
+        int n = rules == null ? 0 : rules.length;
         List<Rule> rulesToAdd = new ArrayList<Rule>();
         for (int i = 0; i < n; i++) {
             final Rule rule = pluginRuleSet.getRuleByName(rules[i].getName());
             if (rule != null) {
                 rulesToAdd.add(rule);
             } else {
-                log.debug("The rule " + rules[i].getName() + " cannot be found. ignore.");
+                LOG.debug("The rule " + rules[i].getName() + " cannot be found. ignore.");
             }
         }
 
-        RuleSet ruleSet = RuleSetUtil.newEmpty(RuleSetUtil.DEFAULT_RULESET_NAME, RuleSetUtil.DEFAULT_RULESET_DESCRIPTION);
+        RuleSet ruleSet = RuleSetUtil.newEmpty(RuleSetUtil.DEFAULT_RULESET_NAME,
+                RuleSetUtil.DEFAULT_RULESET_DESCRIPTION);
         ruleSet = RuleSetUtil.addRules(ruleSet, rulesToAdd);
         ruleSet = RuleSetUtil.setExcludePatterns(ruleSet, pluginRuleSet.getExcludePatterns());
         ruleSet = RuleSetUtil.setIncludePatterns(ruleSet, pluginRuleSet.getIncludePatterns());
@@ -286,9 +297,12 @@ public class ProjectPropertiesManagerImpl implements IProjectPropertiesManager {
     /**
      * Save project properties
      *
-     * @param project a project
-     * @param projectProperties the project properties to save
-     * @param monitor a progress monitor
+     * @param project
+     *            a project
+     * @param projectProperties
+     *            the project properties to save
+     * @param monitor
+     *            a progress monitor
      * @throws DAOException
      */
     private void writeProjectProperties(final IProject project, final ProjectPropertiesTO projectProperties)
@@ -316,20 +330,23 @@ public class ProjectPropertiesManagerImpl implements IProjectPropertiesManager {
         final ProjectPropertiesTO bean = new ProjectPropertiesTO();
         bean.setRuleSetStoredInProject(projectProperties.isRuleSetStoredInProject());
         bean.setRuleSetFile(projectProperties.getRuleSetFile());
-        bean.setWorkingSetName(projectProperties.getProjectWorkingSet() == null ? null : projectProperties.getProjectWorkingSet().getName());
+        bean.setWorkingSetName(projectProperties.getProjectWorkingSet() == null ? null
+                : projectProperties.getProjectWorkingSet().getName());
         bean.setIncludeDerivedFiles(projectProperties.isIncludeDerivedFiles());
         bean.setViolationsAsErrors(projectProperties.violationsAsErrors());
         bean.setFullBuildEnabled(projectProperties.isFullBuildEnabled());
 
         if (!projectProperties.isRuleSetStoredInProject()) {
-        	final RuleSet ruleSet = projectProperties.getProjectRuleSet();
+            final RuleSet ruleSet = projectProperties.getProjectRuleSet();
             final List<RuleSpecTO> rules = new ArrayList<RuleSpecTO>();
-            for (Rule rule: ruleSet.getRules()) {
+            for (Rule rule : ruleSet.getRules()) {
                 rules.add(new RuleSpecTO(rule.getName(), rule.getRuleSetName())); // NOPMD:AvoidInstantiatingObjectInLoop
             }
             bean.setRules(rules.toArray(new RuleSpecTO[rules.size()]));
-            bean.setExcludePatterns(ruleSet.getExcludePatterns().toArray(new String[ruleSet.getExcludePatterns().size()]));
-            bean.setIncludePatterns(ruleSet.getIncludePatterns().toArray(new String[ruleSet.getIncludePatterns().size()]));
+            bean.setExcludePatterns(
+                    ruleSet.getExcludePatterns().toArray(new String[ruleSet.getExcludePatterns().size()]));
+            bean.setIncludePatterns(
+                    ruleSet.getIncludePatterns().toArray(new String[ruleSet.getIncludePatterns().size()]));
         }
 
         return bean;
@@ -343,39 +360,43 @@ public class ProjectPropertiesManagerImpl implements IProjectPropertiesManager {
      *
      */
     private boolean synchronizeRuleSet(IProjectProperties projectProperties) throws PropertiesException {
-        log.debug("Synchronizing the project ruleset with the plugin ruleset");
+        LOG.debug("Synchronizing the project ruleset with the plugin ruleset");
         final RuleSet pluginRuleSet = PMDPlugin.getDefault().getPreferencesManager().getRuleSet();
         final RuleSet projectRuleSet = projectProperties.getProjectRuleSet();
         boolean flChanged = false;
 
         if (!projectRuleSet.getRules().equals(pluginRuleSet.getRules())) {
-            log.debug("The project ruleset is different from the plugin ruleset; synchronizing.");
+            LOG.debug("The project ruleset is different from the plugin ruleset; synchronizing.");
 
-            // 1-If rules have been deleted from preferences, delete them also from the project ruleset
+            // 1-If rules have been deleted from preferences, delete them also
+            // from the project ruleset
             // 2-For all other rules, replace the current one by the plugin one
             RuleSet newRuleSet = RuleSetUtil.newEmpty(projectRuleSet.getName(), projectRuleSet.getDescription());
             List<Rule> newRules = new ArrayList<Rule>();
             List<Rule> haystack = new ArrayList<Rule>(pluginRuleSet.getRules());
-            for (Rule projectRule: projectRuleSet.getRules()) {
+            for (Rule projectRule : projectRuleSet.getRules()) {
                 final Rule pluginRule = RuleSetUtil.findSameRule(haystack, projectRule);
                 if (pluginRule == null) {
-                    log.debug("The rule " + projectRule.getName() + " is not defined in the plugin ruleset. Remove it.");
+                    LOG.debug(
+                            "The rule " + projectRule.getName() + " is not defined in the plugin ruleset. Remove it.");
                 } else {
                     // log.debug("Keeping rule " + projectRule.getName());
                     newRules.add(pluginRule);
-                    // consider the found rule as handled - there is no need, to find the same rule twice.
+                    // consider the found rule as handled - there is no need, to
+                    // find the same rule twice.
                     haystack.remove(pluginRule);
                 }
             }
             newRuleSet = RuleSetUtil.addRules(newRuleSet, newRules);
 
             if (!newRuleSet.getRules().equals(projectRuleSet.getRules())) {
-                log.info("Set the project ruleset according to preferences.");
+                LOG.info("Set the project ruleset according to preferences.");
                 projectProperties.setProjectRuleSet(newRuleSet);
                 flChanged = true;
             }
 
-            log.debug("Ruleset for project " + projectProperties.getProject().getName() + " is now synchronized. " + (flChanged ? "Ruleset has changed" : "Ruleset has not changed"));
+            LOG.debug("Ruleset for project " + projectProperties.getProject().getName() + " is now synchronized. "
+                    + (flChanged ? "Ruleset has changed" : "Ruleset has not changed"));
         }
 
         return flChanged;

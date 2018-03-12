@@ -25,7 +25,7 @@ public class ImageColumnDescriptor extends AbstractRuleColumnDescriptor {
            return RuleUIUtil.indexedPropertyStringFrom(rule);	// notes indices of non-default values in the string for emphasis during later rendering
         }
     	public Comparable<?> valueFor(RuleCollection collection) {
-    		return IndexedString.Empty;
+    		return IndexedString.EMPTY;
 //    		int count = RuleUtil.countNonOccurrencesOf(collection, this, IndexedString.Empty);
 //    		if (count == 0) return IndexedString.Empty;
 //    		return new IndexedString("(rules with properties: " + count + ")");

@@ -44,7 +44,14 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import name.herlin.command.CommandException;
+import org.apache.log4j.Logger;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.IPropertyListener;
+
 import net.sourceforge.pmd.cpd.CPD;
 import net.sourceforge.pmd.cpd.CPDConfiguration;
 import net.sourceforge.pmd.cpd.Language;
@@ -58,13 +65,7 @@ import net.sourceforge.pmd.eclipse.runtime.properties.PropertiesException;
 import net.sourceforge.pmd.eclipse.util.IOUtil;
 import net.sourceforge.pmd.util.StringUtil;
 
-import org.apache.log4j.Logger;
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.IPropertyListener;
+import name.herlin.command.CommandException;
 
 /**
  * This command produces a report of the Cut And Paste detector
@@ -82,7 +83,7 @@ public class DetectCutAndPasteCmd extends AbstractProjectCommand {
     private List<IPropertyListener> listeners;
 
     private static final long serialVersionUID = 1L;
-    private static final Logger log = Logger.getLogger(DetectCutAndPasteCmd.class);
+    private static final Logger LOG = Logger.getLogger(DetectCutAndPasteCmd.class);
 
     /**
      * Default Constructor
@@ -134,10 +135,10 @@ public class DetectCutAndPasteCmd extends AbstractProjectCommand {
                 }
             }
         } catch (CoreException e) {
-            log.debug("Core Exception: " + e.getMessage(), e);
+            LOG.debug("Core Exception: " + e.getMessage(), e);
             throw new CommandException(e);
         } catch (PropertiesException e) {
-            log.debug("Properties Exception: " + e.getMessage(), e);
+            LOG.debug("Properties Exception: " + e.getMessage(), e);
             throw new CommandException(e);
         } finally {
             setTerminated(true);
@@ -220,18 +221,8 @@ public class DetectCutAndPasteCmd extends AbstractProjectCommand {
      */
     @Override
     public boolean isReadyToExecute() {
-        return super.isReadyToExecute() && language != null && (!createReport // need
-                                                                              // a
-                                                                              // renderer
-                                                                              // and
-                                                                              // reportName
-                                                                              // if
-                                                                              // a
-                                                                              // report
-                                                                              // should
-                                                                              // be
-                                                                              // created
-                || canRenderReport());
+        // need a renderer and reportName if a report should be created
+        return super.isReadyToExecute() && language != null && (!createReport || canRenderReport());
     }
 
     /**
@@ -264,7 +255,7 @@ public class DetectCutAndPasteCmd extends AbstractProjectCommand {
      * @throws CoreException
      */
     private CPD detectCutAndPaste(final List<File> files) {
-        log.debug("Searching for project files");
+        LOG.debug("Searching for project files");
 
         final CPD cpd = newCPD();
 
@@ -276,13 +267,13 @@ public class DetectCutAndPasteCmd extends AbstractProjectCommand {
                 cpd.add(file);
                 worked(1);
             } catch (IOException e) {
-                log.warn("IOException when adding file " + file.getName() + " to CPD. Continuing.", e);
+                LOG.warn("IOException when adding file " + file.getName() + " to CPD. Continuing.", e);
             }
         }
 
         if (!isCanceled()) {
             subTask("Performing CPD");
-            log.debug("Performing CPD");
+            LOG.debug("Performing CPD");
             cpd.go();
             worked(getStepCount());
         }
@@ -310,32 +301,32 @@ public class DetectCutAndPasteCmd extends AbstractProjectCommand {
         InputStream contentsStream = null;
 
         try {
-            log.debug("Rendering CPD report");
+            LOG.debug("Rendering CPD report");
             subTask("Rendering CPD report");
             final String reportString = renderer.render(matches);
 
             // Create the report folder if not already existing
-            log.debug("Create the report folder");
+            LOG.debug("Create the report folder");
             final IFolder folder = getProjectFolder(PMDRuntimeConstants.REPORT_FOLDER);
             if (!folder.exists()) {
                 folder.create(true, true, getMonitor());
             }
 
             // Create the report file
-            log.debug("Create the report file");
+            LOG.debug("Create the report file");
             final IFile reportFile = folder.getFile(reportName);
             contentsStream = new ByteArrayInputStream(reportString.getBytes());
             if (reportFile.exists()) {
-                log.debug("   Overwriting report file");
+                LOG.debug("   Overwriting report file");
                 reportFile.setContents(contentsStream, true, false, getMonitor());
             } else {
-                log.debug("   Creating report file");
+                LOG.debug("   Creating report file");
                 reportFile.create(contentsStream, true, getMonitor());
             }
             reportFile.refreshLocal(IResource.DEPTH_INFINITE, getMonitor());
 
         } catch (CoreException e) {
-            log.debug("Core Exception: " + e.getMessage(), e);
+            LOG.debug("Core Exception: " + e.getMessage(), e);
             throw new CommandException(e);
         } finally {
             IOUtil.closeQuietly(contentsStream);

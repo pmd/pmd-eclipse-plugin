@@ -50,6 +50,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IProject;
@@ -79,7 +80,6 @@ import net.sourceforge.pmd.eclipse.ui.actions.RuleSetUtil;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
 import net.sourceforge.pmd.eclipse.ui.priority.PriorityDescriptor;
 import net.sourceforge.pmd.eclipse.util.IOUtil;
-import net.sourceforge.pmd.util.StringUtil;
 
 /**
  * This class implements the preferences management services
@@ -89,12 +89,6 @@ import net.sourceforge.pmd.util.StringUtil;
  */
 
 class PreferencesManagerImpl implements IPreferencesManager {
-
-    private IPreferences preferences;
-    private IPreferenceStore storePreferencesStore = PMDPlugin.getDefault().getPreferenceStore();
-    private IPreferenceStore loadPreferencesStore;
-
-    private RuleSet ruleSet;
 
     private static final Logger LOG = Logger.getLogger(PreferencesManagerImpl.class);
 
@@ -120,36 +114,42 @@ class PreferencesManagerImpl implements IPreferencesManager {
 
     private static final String PREFERENCE_RULESET_FILE = "/ruleset.xml";
 
-    private static final Map<RulePriority, PriorityDescriptor> DefaultDescriptorsByPriority = new HashMap<RulePriority, PriorityDescriptor>(
+    private static final Map<RulePriority, PriorityDescriptor> DEFAULT_DESCRIPTORS_BY_PRIORITY = new HashMap<RulePriority, PriorityDescriptor>(
             5);
-    private static final Map<RulePriority, String> StoreKeysByPriority = new HashMap<RulePriority, String>(5);
+    private static final Map<RulePriority, String> STORE_KEYS_BY_PRIORITY = new HashMap<RulePriority, String>(5);
 
     static {
-        DefaultDescriptorsByPriority.put(RulePriority.HIGH,
+        DEFAULT_DESCRIPTORS_BY_PRIORITY.put(RulePriority.HIGH,
                 new PriorityDescriptor(RulePriority.HIGH, StringKeys.VIEW_FILTER_PRIORITY_1,
                         StringKeys.VIEW_TOOLTIP_FILTER_PRIORITY, null, Shape.triangleRight, new RGB(255, 0, 0), 13)); // red
-        DefaultDescriptorsByPriority.put(RulePriority.MEDIUM_HIGH,
+        DEFAULT_DESCRIPTORS_BY_PRIORITY.put(RulePriority.MEDIUM_HIGH,
                 new PriorityDescriptor(RulePriority.MEDIUM_HIGH, StringKeys.VIEW_FILTER_PRIORITY_2,
                         StringKeys.VIEW_TOOLTIP_FILTER_PRIORITY, null, Shape.triangleRight, new RGB(0, 255, 255), 13)); // yellow
-        DefaultDescriptorsByPriority.put(RulePriority.MEDIUM,
+        DEFAULT_DESCRIPTORS_BY_PRIORITY.put(RulePriority.MEDIUM,
                 new PriorityDescriptor(RulePriority.MEDIUM, StringKeys.VIEW_FILTER_PRIORITY_3,
                         StringKeys.VIEW_TOOLTIP_FILTER_PRIORITY, null, Shape.triangleRight, new RGB(0, 255, 0), 13)); // green
-        DefaultDescriptorsByPriority.put(RulePriority.MEDIUM_LOW,
+        DEFAULT_DESCRIPTORS_BY_PRIORITY.put(RulePriority.MEDIUM_LOW,
                 new PriorityDescriptor(RulePriority.MEDIUM_LOW, StringKeys.VIEW_FILTER_PRIORITY_4,
                         StringKeys.VIEW_TOOLTIP_FILTER_PRIORITY, null, Shape.triangleRight, new RGB(255, 0, 255), 13)); // purple
-        DefaultDescriptorsByPriority.put(RulePriority.LOW,
+        DEFAULT_DESCRIPTORS_BY_PRIORITY.put(RulePriority.LOW,
                 new PriorityDescriptor(RulePriority.LOW, StringKeys.VIEW_FILTER_PRIORITY_5,
                         StringKeys.VIEW_TOOLTIP_FILTER_PRIORITY, null, Shape.triangleRight, new RGB(0, 0, 255), 13)); // blue
 
-        StoreKeysByPriority.put(RulePriority.HIGH, PMDPlugin.PLUGIN_ID + ".priority_descriptor_1");
-        StoreKeysByPriority.put(RulePriority.MEDIUM_HIGH, PMDPlugin.PLUGIN_ID + ".priority_descriptor_2");
-        StoreKeysByPriority.put(RulePriority.MEDIUM, PMDPlugin.PLUGIN_ID + ".priority_descriptor_3");
-        StoreKeysByPriority.put(RulePriority.MEDIUM_LOW, PMDPlugin.PLUGIN_ID + ".priority_descriptor_4");
-        StoreKeysByPriority.put(RulePriority.LOW, PMDPlugin.PLUGIN_ID + ".priority_descriptor_5");
+        STORE_KEYS_BY_PRIORITY.put(RulePriority.HIGH, PMDPlugin.PLUGIN_ID + ".priority_descriptor_1");
+        STORE_KEYS_BY_PRIORITY.put(RulePriority.MEDIUM_HIGH, PMDPlugin.PLUGIN_ID + ".priority_descriptor_2");
+        STORE_KEYS_BY_PRIORITY.put(RulePriority.MEDIUM, PMDPlugin.PLUGIN_ID + ".priority_descriptor_3");
+        STORE_KEYS_BY_PRIORITY.put(RulePriority.MEDIUM_LOW, PMDPlugin.PLUGIN_ID + ".priority_descriptor_4");
+        STORE_KEYS_BY_PRIORITY.put(RulePriority.LOW, PMDPlugin.PLUGIN_ID + ".priority_descriptor_5");
     }
 
+    private IPreferences preferences;
+    private IPreferenceStore storePreferencesStore = PMDPlugin.getDefault().getPreferenceStore();
+    private IPreferenceStore loadPreferencesStore;
+
+    private RuleSet ruleSet;
+
     public PriorityDescriptor defaultDescriptorFor(RulePriority priority) {
-        return DefaultDescriptorsByPriority.get(priority);
+        return DEFAULT_DESCRIPTORS_BY_PRIORITY.get(priority);
     }
 
     /**
@@ -352,10 +352,10 @@ class PreferencesManagerImpl implements IPreferencesManager {
 
     private void loadRulePriorityDescriptors() {
 
-        for (Map.Entry<RulePriority, String> entry : StoreKeysByPriority.entrySet()) {
+        for (Map.Entry<RulePriority, String> entry : STORE_KEYS_BY_PRIORITY.entrySet()) {
             PriorityDescriptor desc = defaultDescriptorFor(entry.getKey());
             loadPreferencesStore.setDefault(entry.getValue(), desc.storeString());
-            String storeKey = StoreKeysByPriority.get(entry.getKey());
+            String storeKey = STORE_KEYS_BY_PRIORITY.get(entry.getKey());
             preferences.setPriorityDescriptor(entry.getKey(),
                     PriorityDescriptor.from(loadPreferencesStore.getString(storeKey)));
         }
@@ -367,8 +367,9 @@ class PreferencesManagerImpl implements IPreferencesManager {
         Set<String> valueSet = new HashSet<String>(values.length);
         for (int i = 0; i < values.length; i++) {
             String name = values[i].trim();
-            if (StringUtil.isEmpty(name))
+            if (StringUtils.isBlank(name)) {
                 continue;
+            }
             valueSet.add(name);
         }
         return valueSet;
@@ -376,8 +377,9 @@ class PreferencesManagerImpl implements IPreferencesManager {
 
     private static String asDelimitedString(Set<String> values, String delimiter) {
 
-        if (values == null || values.isEmpty())
+        if (values == null || values.isEmpty()) {
             return "";
+        }
 
         StringBuilder sb = new StringBuilder();
 
@@ -452,7 +454,7 @@ class PreferencesManagerImpl implements IPreferencesManager {
 
     private void storePriorityDescriptors() {
 
-        for (Map.Entry<RulePriority, String> entry : StoreKeysByPriority.entrySet()) {
+        for (Map.Entry<RulePriority, String> entry : STORE_KEYS_BY_PRIORITY.entrySet()) {
             PriorityDescriptor desc = preferences.getPriorityDescriptor(entry.getKey());
             storePreferencesStore.setValue(entry.getValue(), desc.storeString());
         }

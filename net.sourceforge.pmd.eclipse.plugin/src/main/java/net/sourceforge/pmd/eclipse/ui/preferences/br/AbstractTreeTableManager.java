@@ -425,7 +425,7 @@ public abstract class AbstractTreeTableManager <T extends Object> extends Abstra
     
 	private TreeColumn columnFor(ColumnDescriptor desc) {
 	   	for (TreeColumn column : treeViewer().getTree().getColumns()) {
-	   		if ((column.getData(AbstractColumnDescriptor.DescriptorKey)) == desc) return column;
+	   		if ((column.getData(AbstractColumnDescriptor.DESCRIPTOR_KEY)) == desc) return column;
 	    	}
 	   	return null;
 	}

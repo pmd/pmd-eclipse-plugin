@@ -1,3 +1,4 @@
+
 package net.sourceforge.pmd.eclipse.ui;
 
 /**
@@ -6,5 +7,5 @@ package net.sourceforge.pmd.eclipse.ui;
  */
 public interface ModifyListener {
 
-	void setModified();
+    void setModified();
 }

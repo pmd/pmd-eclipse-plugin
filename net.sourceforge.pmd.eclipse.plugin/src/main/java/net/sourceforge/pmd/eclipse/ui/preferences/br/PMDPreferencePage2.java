@@ -124,7 +124,7 @@ public class PMDPreferencePage2 extends AbstractPMDPreferencePage implements Rul
 		layoutControls(composite);
 
 		tableManager.populateRuleTable();
-		int i =  PreferenceUIStore.instance.selectedPropertyTab() ;
+		int i =  PreferenceUIStore.INSTANCE.selectedPropertyTab() ;
 		tabFolder.setSelection( i );
 
 		return composite;
@@ -502,10 +502,10 @@ public class PMDPreferencePage2 extends AbstractPMDPreferencePage implements Rul
 	private void saveUIState() {
 		tableManager.saveUIState();
 		int i =  tabFolder.getSelectionIndex();
-		PreferenceUIStore.instance.selectedPropertyTab( i );
-		PreferenceUIStore.instance.globalRuleManagement( globalRuleManagementCheckButton.getSelection() );
+		PreferenceUIStore.INSTANCE.selectedPropertyTab( i );
+		PreferenceUIStore.INSTANCE.globalRuleManagement( globalRuleManagementCheckButton.getSelection() );
 		preferences.setGlobalRuleManagement( globalRuleManagementCheckButton.getSelection() );
-		PreferenceUIStore.instance.save();
+		PreferenceUIStore.INSTANCE.save();
 	}
 
 	private void storeActiveRules() {

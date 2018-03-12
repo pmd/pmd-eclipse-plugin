@@ -4,14 +4,14 @@ package net.sourceforge.pmd.eclipse.ui;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
-
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Display;
+
+import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 
 /**
  * 
@@ -179,7 +179,8 @@ public class ShapePainter {
             }
         }
         }
-        if (optionalText != null)
+        if (optionalText != null) {
             gc.drawString(optionalText, x, y);
+        }
     }
 }

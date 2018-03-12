@@ -1,15 +1,15 @@
 
 package net.sourceforge.pmd.eclipse.ui;
 
-import net.sourceforge.pmd.eclipse.ui.preferences.br.SortListener;
-import net.sourceforge.pmd.eclipse.ui.preferences.br.ValueFormatter;
-
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
+
+import net.sourceforge.pmd.eclipse.ui.preferences.br.SortListener;
+import net.sourceforge.pmd.eclipse.ui.preferences.br.ValueFormatter;
 
 /**
  * 

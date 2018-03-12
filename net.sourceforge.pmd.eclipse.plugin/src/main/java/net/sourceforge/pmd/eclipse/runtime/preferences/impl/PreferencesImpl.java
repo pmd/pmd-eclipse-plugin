@@ -41,6 +41,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.log4j.Level;
+
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.RuleSet;
@@ -49,8 +51,6 @@ import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.runtime.preferences.IPreferences;
 import net.sourceforge.pmd.eclipse.runtime.preferences.IPreferencesManager;
 import net.sourceforge.pmd.eclipse.ui.priority.PriorityDescriptor;
-
-import org.apache.log4j.Level;
 
 /**
  * Implements the preferences information structure
@@ -88,15 +88,16 @@ class PreferencesImpl implements IPreferences {
      * 
      * @param preferencesManager
      */
-    public PreferencesImpl(IPreferencesManager preferencesManager) {
+    PreferencesImpl(IPreferencesManager preferencesManager) {
         super();
         this.preferencesManager = preferencesManager;
     }
 
     public boolean boolFor(String prefId) {
         Boolean value = booleansById.get(prefId);
-        if (value == null)
+        if (value == null) {
             throw new IllegalArgumentException("Unknown pref id: " + prefId);
+        }
         return value;
     }
 

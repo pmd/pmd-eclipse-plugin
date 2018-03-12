@@ -43,18 +43,19 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import name.herlin.command.AbstractProcessableCommand;
-import name.herlin.command.CommandException;
-import name.herlin.command.CommandProcessor;
-import name.herlin.command.Timer;
-import name.herlin.command.UnsetInputPropertiesException;
-import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
-
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+
+import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
+
+import name.herlin.command.AbstractProcessableCommand;
+import name.herlin.command.CommandException;
+import name.herlin.command.CommandProcessor;
+import name.herlin.command.Timer;
+import name.herlin.command.UnsetInputPropertiesException;
 
 /**
  * This is a particular processor for Eclipse in order to handle long running
@@ -64,7 +65,7 @@ import org.eclipse.core.runtime.jobs.Job;
  *
  */
 public class JobCommandProcessor implements CommandProcessor {
-    private static final Logger log = Logger.getLogger(JobCommandProcessor.class);
+    private static final Logger LOG = Logger.getLogger(JobCommandProcessor.class);
     private final Map<AbstractProcessableCommand, Job> jobs = Collections
             .synchronizedMap(new HashMap<AbstractProcessableCommand, Job>());
 
@@ -75,7 +76,7 @@ public class JobCommandProcessor implements CommandProcessor {
      * @see name.herlin.command.CommandProcessor#processCommand(name.herlin.command.AbstractProcessableCommand)
      */
     public void processCommand(final AbstractProcessableCommand aCommand) throws CommandException {
-        log.debug("Begining job command " + aCommand.getName());
+        LOG.debug("Begining job command " + aCommand.getName());
 
         if (!aCommand.isReadyToExecute()) {
             throw new UnsetInputPropertiesException();
@@ -121,7 +122,7 @@ public class JobCommandProcessor implements CommandProcessor {
             }
         }
         this.addJob(aCommand, job);
-        log.debug("Ending job command " + aCommand.getName());
+        LOG.debug("Ending job command " + aCommand.getName());
     }
 
     /**

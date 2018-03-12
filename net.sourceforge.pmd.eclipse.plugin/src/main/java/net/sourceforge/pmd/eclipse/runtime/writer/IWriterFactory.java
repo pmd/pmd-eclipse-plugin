@@ -20,6 +20,7 @@
  *   
  * </copyright>
  */
+
 package net.sourceforge.pmd.eclipse.runtime.writer;
 
 /**
@@ -29,7 +30,7 @@ package net.sourceforge.pmd.eclipse.runtime.writer;
  *
  */
 public interface IWriterFactory {
-    
+
     /**
      * @return a ruleset writer
      */

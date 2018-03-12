@@ -78,7 +78,7 @@ public class RuleEditorView extends ViewPart
         layoutControls(composite);
 
         tableManager.populateRuleTable();
-        int i = PreferenceUIStore.instance.selectedPropertyTab();
+        int i = PreferenceUIStore.INSTANCE.selectedPropertyTab();
         tabFolder.setSelection(i);
 
     }
@@ -293,8 +293,8 @@ public class RuleEditorView extends ViewPart
     private void saveUIState() {
         tableManager.saveUIState();
         int i = tabFolder.getSelectionIndex();
-        PreferenceUIStore.instance.selectedPropertyTab(i);
-        PreferenceUIStore.instance.save();
+        PreferenceUIStore.INSTANCE.selectedPropertyTab(i);
+        PreferenceUIStore.INSTANCE.save();
     }
 
     /**

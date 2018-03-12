@@ -33,15 +33,16 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package net.sourceforge.pmd.eclipse.runtime.properties;
 
 import java.io.File;
 import java.util.Set;
 
-import net.sourceforge.pmd.RuleSet;
-
 import org.eclipse.core.resources.IProject;
 import org.eclipse.ui.IWorkingSet;
+
+import net.sourceforge.pmd.RuleSet;
 
 /**
  * This interface specifies what is the model for the PMD related project
@@ -55,14 +56,15 @@ public interface IProjectProperties {
      * @return the related project
      */
     IProject getProject();
-    
+
     /**
      * @return Returns whether PMD is enabled for that project.
      */
     boolean isPmdEnabled() throws PropertiesException;
-    
+
     /**
-     * @param pmdEnabled Enable or disable PMD for that project.
+     * @param pmdEnabled
+     *            Enable or disable PMD for that project.
      */
     void setPmdEnabled(boolean pmdEnabled) throws PropertiesException;
 
@@ -72,19 +74,20 @@ public interface IProjectProperties {
     RuleSet getProjectRuleSet() throws PropertiesException;
 
     /**
-     * @param projectRuleSet The project Rule Set to set.
+     * @param projectRuleSet
+     *            The project Rule Set to set.
      */
     void setProjectRuleSet(RuleSet projectRuleSet) throws PropertiesException;
 
     /**
      * @return Returns the whether the project rule set is stored as a file
-     * inside the project.
+     *         inside the project.
      */
     boolean isRuleSetStoredInProject() throws PropertiesException;
 
     /**
-     * @param ruleSetStoredInProject Specify whether the rule set is stored in
-     * the project.
+     * @param ruleSetStoredInProject
+     *            Specify whether the rule set is stored in the project.
      */
     void setRuleSetStoredInProject(boolean ruleSetStoredInProject) throws PropertiesException;
 
@@ -94,12 +97,14 @@ public interface IProjectProperties {
     String getRuleSetFile() throws PropertiesException;
 
     /**
-     * @param ruleSetFile The rule set file.
+     * @param ruleSetFile
+     *            The rule set file.
      */
     void setRuleSetFile(String ruleSetFile) throws PropertiesException;
-    
+
     /**
-     * @return Returns the resolved RuleSet File suitable for loading a rule set.
+     * @return Returns the resolved RuleSet File suitable for loading a rule
+     *         set.
      */
     File getResolvedRuleSetFile() throws PropertiesException;
 
@@ -109,7 +114,8 @@ public interface IProjectProperties {
     IWorkingSet getProjectWorkingSet() throws PropertiesException;
 
     /**
-     * @param projectWorkingSet The project Working Set to set.
+     * @param projectWorkingSet
+     *            The project Working Set to set.
      */
     void setProjectWorkingSet(IWorkingSet projectWorkingSet) throws PropertiesException;
 
@@ -124,44 +130,50 @@ public interface IProjectProperties {
     void setNeedRebuild(boolean needRebuild) throws PropertiesException;
 
     /**
-     * @return in case the rule set is stored inside the project, whether
-     * the ruleset file exists.
+     * @return in case the rule set is stored inside the project, whether the
+     *         ruleset file exists.
      */
     boolean isRuleSetFileExist() throws PropertiesException;
-    
+
     /**
      * Create a project ruleset file from the current configured rules
      *
      */
     void createDefaultRuleSetFile() throws PropertiesException;
-    
+
     /**
      * @return whether derived files should be checked
      */
     boolean isIncludeDerivedFiles() throws PropertiesException;
 
     /**
-     * @param excludeDerivedFiles whether derived files should be checked
+     * @param excludeDerivedFiles
+     *            whether derived files should be checked
      */
     void setIncludeDerivedFiles(boolean excludeDerivedFiles) throws PropertiesException;
-    
+
     /**
-     * @return whether high priority violations should be handled as Eclipse errors
-     */    
+     * @return whether high priority violations should be handled as Eclipse
+     *         errors
+     */
     boolean violationsAsErrors() throws PropertiesException;
 
     /**
-     * @param violationsAsErrors whether high priority violations should be handled as Eclipse errors
+     * @param violationsAsErrors
+     *            whether high priority violations should be handled as Eclipse
+     *            errors
      */
     void setViolationsAsErrors(boolean violationsAsErrors) throws PropertiesException;
-    
+
     /**
-     * @return Returns whether PMD should be run for full build for that project.
+     * @return Returns whether PMD should be run for full build for that
+     *         project.
      */
     boolean isFullBuildEnabled() throws PropertiesException;
-    
+
     /**
-     * @param pmdEnabled Enable or disable PMD for full build for that project.
+     * @param pmdEnabled
+     *            Enable or disable PMD for full build for that project.
      */
     void setFullBuildEnabled(boolean fullBuildEnabled) throws PropertiesException;
 
@@ -172,15 +184,17 @@ public interface IProjectProperties {
     void sync() throws PropertiesException;
 
     /**
-     * The exclude patterns determined from the project's build path.
-     * Note: not persisted.
+     * The exclude patterns determined from the project's build path. Note: not
+     * persisted.
+     * 
      * @return exclude patterns
      */
     Set<String> getBuildPathExcludePatterns();
 
     /**
-     * The include patterns determined from the project's build path.
-     * Note: not persisted.
+     * The include patterns determined from the project's build path. Note: not
+     * persisted.
+     * 
      * @return include patterns
      */
     Set<String> getBuildPathIncludePatterns();

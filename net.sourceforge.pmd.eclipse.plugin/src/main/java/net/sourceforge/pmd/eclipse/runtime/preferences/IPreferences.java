@@ -38,10 +38,10 @@ package net.sourceforge.pmd.eclipse.runtime.preferences;
 
 import java.util.Set;
 
+import org.apache.log4j.Level;
+
 import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.eclipse.ui.priority.PriorityDescriptor;
-
-import org.apache.log4j.Level;
 
 /**
  * This interface models the PMD Plugin preferences
@@ -53,7 +53,7 @@ import org.apache.log4j.Level;
 public interface IPreferences {
 
     // General Preferences
-    
+
     boolean PROJECT_BUILD_PATH_ENABLED_DEFAULT = true;
     boolean PMD_PERSPECTIVE_ENABLED_DEFAULT = true;
     boolean PMD_CHECK_AFTER_SAVE_DEFAULT = false;
@@ -78,15 +78,15 @@ public interface IPreferences {
     String getDefaultActiveRules();
 
     boolean boolFor(String prefId);
-    
+
     void boolFor(String prefId, boolean newValue);
-    
+
     boolean isActive(String rulename);
-    
+
     void isActive(String ruleName, boolean flag);
-    
+
     boolean isActiveRenderer(String rendererName);
-    
+
     boolean getGlobalRuleManagement();
 
     void setGlobalRuleManagement(boolean b);
@@ -99,92 +99,97 @@ public interface IPreferences {
      * Should the Project Build Path be used?
      */
     boolean isProjectBuildPathEnabled();
-    
+
     /**
      * Set whether using the Project Build Path?
      */
     void setProjectBuildPathEnabled(boolean projectBuildPathEnabled);
-    
+
     /**
-     * Should the plugin switch to the PMD perspective when a manual
-     * code review is launched ?
+     * Should the plugin switch to the PMD perspective when a manual code review
+     * is launched ?
      */
     boolean isPmdPerspectiveEnabled();
-    
+
     /**
      * Should the plugin scan any newly-saved code?
      */
     boolean isCheckAfterSaveEnabled();
-    
+
     boolean useCustomPriorityNames();
-    
+
     void useCustomPriorityNames(boolean flag);
-    
+
     /**
      * Should the plugin scan any newly-saved code?
      */
     void isCheckAfterSaveEnabled(boolean flag);
-    
+
     /**
-     * Set whether the plugin switch to the PMD perspective when a manual
-     * code review is launched
+     * Set whether the plugin switch to the PMD perspective when a manual code
+     * review is launched
      */
     void setPmdPerspectiveEnabled(boolean pmdPerspectiveEnabled);
-    
+
     /**
-     * Get the maximum number of violations per file per rule reported by the plugin.
-     * This parameter is used to improve performances
+     * Get the maximum number of violations per file per rule reported by the
+     * plugin. This parameter is used to improve performances
      */
     int getMaxViolationsPerFilePerRule();
-    
+
     /**
-     * Set the maximum number of violations per file per rule reported by the plugin
+     * Set the maximum number of violations per file per rule reported by the
+     * plugin
+     * 
      * @param maxViolationPerFilePerRule
      */
     void setMaxViolationsPerFilePerRule(int maxViolationPerFilePerRule);
-    
+
     /**
      * Get the review additional comment. This comment is a text appended to the
-     * review comment that is inserted into the code when a violation is reviewed.
-     * This string follows the MessageFormat syntax and could contain 2 variable fields.
-     * The 1st field is replaced by the current used id and the second by the current date.
+     * review comment that is inserted into the code when a violation is
+     * reviewed. This string follows the MessageFormat syntax and could contain
+     * 2 variable fields. The 1st field is replaced by the current used id and
+     * the second by the current date.
      */
     String getReviewAdditionalComment();
-    
+
     /**
      * Set the review additional comment.
+     * 
      * @param reviewAdditionalComment
      */
     void setReviewAdditionalComment(String reviewAdditionalComment);
-    
+
     /**
      * Does the review comment should be the PMD style (// NOPMD comment) or the
      * plugin style (// @PMD:REVIEW...) which was implemented before.
      */
     boolean isReviewPmdStyleEnabled();
-    
+
     /**
-     * Set whether the PMD review comment should be used instead of the plugin comment.
+     * Set whether the PMD review comment should be used instead of the plugin
+     * comment.
      */
     void setReviewPmdStyleEnabled(boolean reviewPmdStyleEnabled);
 
     void setPriorityDescriptor(RulePriority priority, PriorityDescriptor pd);
-    
+
     PriorityDescriptor getPriorityDescriptor(RulePriority priority);
-    
+
     // CPD Preferences
-    
+
     /**
-     * Get the CPD minimum tile size, ie. the number of lines that could be duplicated.
-     * ie. lower it is, more duplicated will be found.
+     * Get the CPD minimum tile size, ie. the number of lines that could be
+     * duplicated. ie. lower it is, more duplicated will be found.
      */
     int getMinTileSize();
-    
+
     /**
      * Set the CPD minimul tile size
      */
     void setMinTileSize(int minTileSize);
-    
+
     /**
      * Get the log filename
      */
@@ -194,56 +199,57 @@ public interface IPreferences {
      * Set the log filename
      */
     void setLogFileName(String logFileName);
-    
+
     /**
      * Return the log level
      */
     Level getLogLevel();
-    
+
     /**
      * Set the log level
      */
     void setLogLevel(Level level);
-    
+
     // Globally configured rules
-    
+
     // later...
-    
+
     /**
      * 
      */
     Set<String> activeReportRenderers();
-    
+
     /**
      * 
      * @param names
      */
     void activeReportRenderers(Set<String> names);
-    
+
     /**
      * 
      */
     Set<String> activeExclusionPatterns();
-    
+
     /**
      * 
      * @param names
      */
     void activeExclusionPatterns(Set<String> filterPatterns);
-    
+
     /**
      * 
      */
     Set<String> activeInclusionPatterns();
-    
+
     /**
      * 
      * @param names
      */
     void activeInclusionPatterns(Set<String> filterPatterns);
+
     /**
      * Synchronize the preferences with the preferences store
      */
     void sync();
-    
+
 }

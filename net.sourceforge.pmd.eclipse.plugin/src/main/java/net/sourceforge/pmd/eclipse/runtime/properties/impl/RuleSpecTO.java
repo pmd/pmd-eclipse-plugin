@@ -33,6 +33,7 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package net.sourceforge.pmd.eclipse.runtime.properties.impl;
 
 import javax.xml.bind.annotation.XmlElement;
@@ -40,20 +41,20 @@ import javax.xml.bind.annotation.XmlType;
 
 /**
  * This class is a simple data bean to help serialize project properties. Is
- * used by the ProjectPropertiesTO to handle project selected rules. This
- * class holds single rule information.
+ * used by the ProjectPropertiesTO to handle project selected rules. This class
+ * holds single rule information.
  * 
  * @author Philippe Herlin
- *  
+ * 
  */
-@XmlType(propOrder = {"name", "ruleSetName"})
+@XmlType(propOrder = { "name", "ruleSetName" })
 public class RuleSpecTO {
     private String name;
     private String ruleSetName;
 
     /**
      * Default constructor
-     *  
+     * 
      */
     public RuleSpecTO() {
         super();

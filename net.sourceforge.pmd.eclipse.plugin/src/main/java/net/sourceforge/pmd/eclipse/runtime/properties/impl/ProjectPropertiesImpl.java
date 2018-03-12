@@ -86,8 +86,7 @@ public class ProjectPropertiesImpl implements IProjectProperties {
     private IWorkingSet projectWorkingSet;
     private boolean includeDerivedFiles;
     private boolean violationsAsErrors = true;
-    private boolean fullBuildEnabled = true; // default in case didn't come from
-                                             // properties
+    private boolean fullBuildEnabled = true; // default in case didn't come from properties
     private Set<String> buildPathExcludePatterns = new HashSet<String>();
     private Set<String> buildPathIncludePatterns = new HashSet<String>();
 
@@ -177,8 +176,8 @@ public class ProjectPropertiesImpl implements IProjectProperties {
     public void setProjectRuleSet(final RuleSet projectRuleSet) throws PropertiesException {
         LOG.debug("Set a rule set for project " + this.project.getName());
         if (projectRuleSet == null) {
-            throw new PropertiesException("Setting a project rule set to null"); // TODO
-                                                                                 // NLS
+            //TODO: NLS
+            throw new PropertiesException("Setting a project rule set to null");
         }
 
         this.needRebuild |= !this.projectRuleSet.getRules().equals(projectRuleSet.getRules());
@@ -208,9 +207,9 @@ public class ProjectPropertiesImpl implements IProjectProperties {
         this.ruleSetStoredInProject = ruleSetStoredInProject;
         if (this.ruleSetStoredInProject) {
             if (!isRuleSetFileExist()) {
-                throw new PropertiesException(
-                        "The project ruleset file cannot be found for project " + this.project.getName()); // TODO
-                                                                                                           // NLS
+                //TODO: NLS
+                throw new PropertiesException("The project ruleset file cannot be found for project "
+                        + this.project.getName());
             }
             File f = getResolvedRuleSetFile();
             if (f != null) {
@@ -236,9 +235,9 @@ public class ProjectPropertiesImpl implements IProjectProperties {
         this.ruleSetFile = ruleSetFile;
         if (ruleSetStoredInProject) {
             if (!isRuleSetFileExist()) {
-                throw new PropertiesException(
-                        "The project ruleset file cannot be found for project " + project.getName()); // TODO
-                                                                                                      // NLS
+                // TODO: NLS
+                throw new PropertiesException("The project ruleset file cannot be found for project "
+                        + project.getName());
             }
             File f = getResolvedRuleSetFile();
             if (f != null) {

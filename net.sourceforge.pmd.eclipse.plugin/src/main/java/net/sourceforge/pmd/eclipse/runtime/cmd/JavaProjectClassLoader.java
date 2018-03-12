@@ -21,7 +21,7 @@ import org.eclipse.jdt.core.JavaModelException;
  * This is a ClassLoader for the Build Path of an IJavaProject.
  */
 public class JavaProjectClassLoader extends URLClassLoader {
-    private static final Logger log = Logger.getLogger(JavaProjectClassLoader.class);
+    private static final Logger LOG = Logger.getLogger(JavaProjectClassLoader.class);
 
     private Set<IJavaProject> javaProjects = new HashSet<IJavaProject>();
     private IWorkspaceRoot workspaceRoot;
@@ -51,8 +51,9 @@ public class JavaProjectClassLoader extends URLClassLoader {
 
     private void addURLs(IJavaProject javaProject, boolean exportsOnly) {
 
-        if (javaProjects.contains(javaProject))
+        if (javaProjects.contains(javaProject)) {
             return;
+        }
 
         javaProjects.add(javaProject);
 
@@ -93,12 +94,13 @@ public class JavaProjectClassLoader extends URLClassLoader {
                     // because we've asked for resolved entries.
                     case IClasspathEntry.CPE_VARIABLE:
                     case IClasspathEntry.CPE_CONTAINER:
+                    default:
                         break;
                     }
                 }
             }
         } catch (JavaModelException e) {
-            log.debug("MalformedURLException occurred: " + e.getLocalizedMessage(), e);
+            LOG.debug("MalformedURLException occurred: " + e.getLocalizedMessage(), e);
         }
     }
 
@@ -116,7 +118,7 @@ public class JavaProjectClassLoader extends URLClassLoader {
             URL url = path.toFile().getAbsoluteFile().toURI().toURL();
             addURL(url);
         } catch (MalformedURLException e) {
-            log.debug("MalformedURLException occurred: " + e.getLocalizedMessage(), e);
+            LOG.debug("MalformedURLException occurred: " + e.getLocalizedMessage(), e);
         }
     }
 }
