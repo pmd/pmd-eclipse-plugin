@@ -31,6 +31,7 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package net.sourceforge.pmd.eclipse.ui.actions;
 
 import java.io.ByteArrayInputStream;
@@ -38,16 +39,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Iterator;
-
-import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
-import net.sourceforge.pmd.eclipse.runtime.writer.IAstWriter;
-import net.sourceforge.pmd.eclipse.runtime.writer.WriterException;
-import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
-import net.sourceforge.pmd.eclipse.util.IOUtil;
-import net.sourceforge.pmd.lang.ast.JavaCharStream;
-import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
-import net.sourceforge.pmd.lang.java.ast.JavaParser;
-import net.sourceforge.pmd.lang.java.ast.ParseException;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IContainer;
@@ -68,16 +59,25 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.PlatformUI;
 
+import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
+import net.sourceforge.pmd.eclipse.runtime.writer.IAstWriter;
+import net.sourceforge.pmd.eclipse.runtime.writer.WriterException;
+import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
+import net.sourceforge.pmd.eclipse.util.IOUtil;
+import net.sourceforge.pmd.lang.ast.JavaCharStream;
+import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
+import net.sourceforge.pmd.lang.java.ast.JavaParser;
+import net.sourceforge.pmd.lang.java.ast.ParseException;
+
 /**
- * Process PMDGenerateAST action menu.
- * Generate a AST from the selected file.
+ * Process PMDGenerateAST action menu. Generate a AST from the selected file.
  *
  * @author Philippe Herlin
  *
  */
 public class PMDGenerateASTAction extends AbstractUIAction implements IRunnableWithProgress {
-	
-    private static final Logger log = Logger.getLogger(PMDGenerateASTAction.class);
+
+    private static final Logger LOG = Logger.getLogger(PMDGenerateASTAction.class);
 
     private IStructuredSelection structuredSelection;
 
@@ -85,39 +85,38 @@ public class PMDGenerateASTAction extends AbstractUIAction implements IRunnableW
      * @see org.eclipse.ui.IActionDelegate#run(IAction)
      */
     public void run(IAction action) {
-        log.info("Generation AST action requested");
+        LOG.info("Generation AST action requested");
 
         // If action is selected from a view, process the selection
         if (isViewPart()) {
             ISelection sel = targetSelection();
             if (sel instanceof IStructuredSelection) {
                 this.structuredSelection = (IStructuredSelection) sel;
-                ProgressMonitorDialog dialog =
-                    new ProgressMonitorDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell());
+                ProgressMonitorDialog dialog = new ProgressMonitorDialog(
+                        PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell());
                 try {
                     dialog.run(false, false, this);
                 } catch (InvocationTargetException e) {
                     showErrorById(StringKeys.ERROR_INVOCATIONTARGET_EXCEPTION, e);
                 } catch (InterruptedException e) {
-                    showErrorById( StringKeys.ERROR_INTERRUPTED_EXCEPTION, e);
+                    showErrorById(StringKeys.ERROR_INTERRUPTED_EXCEPTION, e);
                 }
             }
         }
 
-        // If action is selected from an editor, process the file currently edited
+        // If action is selected from an editor, process the file currently
+        // edited
         if (isEditorPart()) {
             IEditorInput editorInput = ((IEditorPart) targetPart()).getEditorInput();
             if (editorInput instanceof IFileEditorInput) {
                 generateAST(((IFileEditorInput) editorInput).getFile());
             } else {
-                log.debug("The kind of editor input is not supported. The editor input if of type: "
+                LOG.debug("The kind of editor input is not supported. The editor input if of type: "
                         + editorInput.getClass().getName());
             }
-        }
-
-        // else this is not supported
-        else {
-            log.debug("This action is not supported on this kind of part. This part type is: " + targetPartClassName());
+        } else {
+            // else this is not supported
+            LOG.debug("This action is not supported on this kind of part. This part type is: " + targetPartClassName());
         }
     }
 
@@ -129,10 +128,12 @@ public class PMDGenerateASTAction extends AbstractUIAction implements IRunnableW
 
     /**
      * Generate a AST for a file
-     * @param file a file
+     * 
+     * @param file
+     *            a file
      */
     private void generateAST(IFile file) {
-        log.info("Generating AST for file " + file.getName());
+        LOG.info("Generating AST for file " + file.getName());
         ByteArrayOutputStream byteArrayOutputStream = null;
         ByteArrayInputStream astInputStream = null;
         try {
@@ -159,36 +160,36 @@ public class PMDGenerateASTAction extends AbstractUIAction implements IRunnableW
         } catch (ParseException e) {
             showErrorById(StringKeys.ERROR_PMD_EXCEPTION, e);
         } catch (WriterException e) {
-            showErrorById( StringKeys.ERROR_PMD_EXCEPTION, e);
+            showErrorById(StringKeys.ERROR_PMD_EXCEPTION, e);
         } catch (IOException e) {
             showErrorById(StringKeys.ERROR_IO_EXCEPTION, e);
         } finally {
-        	IOUtil.closeQuietly(byteArrayOutputStream);
-        	IOUtil.closeQuietly(astInputStream);
+            IOUtil.closeQuietly(byteArrayOutputStream);
+            IOUtil.closeQuietly(astInputStream);
         }
     }
 
-	private static IFile createASTFile(IFile file) {
+    private static IFile createASTFile(IFile file) {
 
-		String astName = astNameFor(file);
+        String astName = astNameFor(file);
 
-		IFile astFile = null;
-		IContainer parent = file.getParent();
-		if (parent instanceof IFolder) {
-		    astFile = ((IFolder) parent).getFile(astName);
-		} else if (parent instanceof IProject) {
-		    astFile = ((IProject) parent).getFile(astName);
-		}
-		return astFile;
-	}
+        IFile astFile = null;
+        IContainer parent = file.getParent();
+        if (parent instanceof IFolder) {
+            astFile = ((IFolder) parent).getFile(astName);
+        } else if (parent instanceof IProject) {
+            astFile = ((IProject) parent).getFile(astName);
+        }
+        return astFile;
+    }
 
-	private static String astNameFor(IFile file) {
-	
-		String name = file.getName();
-		int dotPosition = name.indexOf('.');
-		String astName = name.substring(0, dotPosition) + ".ast";
-		return astName;
-	}
+    private static String astNameFor(IFile file) {
+
+        String name = file.getName();
+        int dotPosition = name.indexOf('.');
+        String astName = name.substring(0, dotPosition) + ".ast";
+        return astName;
+    }
 
     /**
      * @see org.eclipse.jface.operation.IRunnableWithProgress#run(org.eclipse.core.runtime.IProgressMonitor)
@@ -205,12 +206,12 @@ public class PMDGenerateASTAction extends AbstractUIAction implements IRunnableW
                     generateAST((IFile) resource);
                     monitor.worked(1);
                 } else {
-                    log.warn("The selected object cannot adapt to a resource");
-                    log.debug("   -> selected object : " + element);
+                    LOG.warn("The selected object cannot adapt to a resource");
+                    LOG.debug("   -> selected object : " + element);
                 }
             } else {
-                log.warn("The selected object is not adaptable");
-                log.debug("   -> selected object : " + element);
+                LOG.warn("The selected object is not adaptable");
+                LOG.debug("   -> selected object : " + element);
             }
         }
     }

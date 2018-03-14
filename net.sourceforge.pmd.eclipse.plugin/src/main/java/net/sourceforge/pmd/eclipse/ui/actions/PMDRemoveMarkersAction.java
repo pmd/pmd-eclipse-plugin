@@ -31,14 +31,10 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package net.sourceforge.pmd.eclipse.ui.actions;
 
 import java.util.Iterator;
-
-import net.sourceforge.pmd.eclipse.runtime.builder.MarkerUtil;
-import net.sourceforge.pmd.eclipse.ui.model.AbstractPMDRecord;
-import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
-import net.sourceforge.pmd.eclipse.ui.views.ViolationOverview;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IResource;
@@ -55,18 +51,23 @@ import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.IViewActionDelegate;
 import org.eclipse.ui.IViewPart;
 
+import net.sourceforge.pmd.eclipse.runtime.builder.MarkerUtil;
+import net.sourceforge.pmd.eclipse.ui.model.AbstractPMDRecord;
+import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
+import net.sourceforge.pmd.eclipse.ui.views.ViolationOverview;
+
 /**
  * Process "Delete PMD Markers" action menu
  * 
  * @author phherlin
  * 
  */
-public class PMDRemoveMarkersAction  extends AbstractUIAction implements IViewActionDelegate {
- 
-	private static final String VIEW_ACTION = "net.sourceforge.pmd.eclipse.ui.pmdRemoveAllMarkersAction";
+public class PMDRemoveMarkersAction extends AbstractUIAction implements IViewActionDelegate {
+
+    private static final String VIEW_ACTION = "net.sourceforge.pmd.eclipse.ui.pmdRemoveAllMarkersAction";
     private static final String OBJECT_ACTION = "net.sourceforge.pmd.eclipse.ui.pmdRemoveMarkersAction";
-    private static final Logger log = Logger.getLogger(PMDRemoveMarkersAction.class);
- 
+    private static final Logger LOG = Logger.getLogger(PMDRemoveMarkersAction.class);
+
     /**
      * @see org.eclipse.ui.IViewActionDelegate#init(IViewPart)
      */
@@ -78,16 +79,16 @@ public class PMDRemoveMarkersAction  extends AbstractUIAction implements IViewAc
      * @see org.eclipse.ui.IActionDelegate#run(IAction)
      */
     public void run(IAction action) {
-        log.info("Remove Markers action requested");
+        LOG.info("Remove Markers action requested");
         try {
             if (action.getId().equals(VIEW_ACTION)) {
-            	final IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-            	MarkerUtil.deleteAllMarkersIn(root);
-                log.debug("Remove markers over the whole workspace");
+                final IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
+                MarkerUtil.deleteAllMarkersIn(root);
+                LOG.debug("Remove markers over the whole workspace");
             } else if (action.getId().equals(OBJECT_ACTION)) {
                 processResource();
             } else { // else action id not supported
-                log.warn("Cannot remove markers, action ID is not supported");
+                LOG.warn("Cannot remove markers, action ID is not supported");
             }
         } catch (CoreException e) {
             showErrorById(StringKeys.ERROR_CORE_EXCEPTION, e);
@@ -105,10 +106,10 @@ public class PMDRemoveMarkersAction  extends AbstractUIAction implements IViewAc
      * Process removing of makers on a resource selection (project or file)
      */
     private void processResource() {
-        log.debug("Processing a resource");
+        LOG.debug("Processing a resource");
         try {
             if (isViewPart()) {
-                // if action is run from a view, process the selected resources                
+                // if action is run from a view, process the selected resources
                 final ISelection sel = targetSelection();
 
                 if (sel instanceof IStructuredSelection) {
@@ -118,52 +119,51 @@ public class PMDRemoveMarkersAction  extends AbstractUIAction implements IViewAc
                         processElement(element);
                     }
                 } else {
-                    log.warn("The view part selection is not a structured selection !");
+                    LOG.warn("The view part selection is not a structured selection !");
                 }
-            }
-
-            // if action is run from an editor, process the file currently edited
-            else if (isEditorPart()) {
+            } else if (isEditorPart()) {
+                // if action is run from an editor, process the file currently
+                // edited
                 final IEditorInput editorInput = ((IEditorPart) targetPart()).getEditorInput();
                 if (editorInput instanceof IFileEditorInput) {
                     MarkerUtil.deleteAllMarkersIn(((IFileEditorInput) editorInput).getFile());
-                    log.debug("Remove markers on currently edited file " + ((IFileEditorInput) editorInput).getFile().getName());
+                    LOG.debug("Remove markers on currently edited file "
+                            + ((IFileEditorInput) editorInput).getFile().getName());
                 } else {
-                    log.debug("The kind of editor input is not supported. The editor input type: " + editorInput.getClass().getName());
+                    LOG.debug("The kind of editor input is not supported. The editor input type: "
+                            + editorInput.getClass().getName());
                 }
-            }
-
-            // else, this is not supported
-            else {
-                log.debug("This action is not supported on that part. This part type is: " + targetPartClassName());
+            } else {
+                // else, this is not supported
+                LOG.debug("This action is not supported on that part. This part type is: " + targetPartClassName());
             }
         } catch (CoreException e) {
             showErrorById(StringKeys.ERROR_CORE_EXCEPTION, e);
         }
     }
-    
+
     private void processElement(Object element) throws CoreException {
         if (element instanceof AbstractPMDRecord) {
             final AbstractPMDRecord record = (AbstractPMDRecord) element;
             final IResource resource = record.getResource();
             if (isViolationOverview()) {
-                ((ViolationOverview)targetPart()).deleteMarkers(record);
+                ((ViolationOverview) targetPart()).deleteMarkers(record);
             }
-            
-            log.debug("Remove markers on resource " + resource.getName());
+
+            LOG.debug("Remove markers on resource " + resource.getName());
         } else if (element instanceof IAdaptable) {
             final IAdaptable adaptable = (IAdaptable) element;
             final IResource resource = (IResource) adaptable.getAdapter(IResource.class);
             if (resource == null) {
-                log.warn("The selected object cannot adapt to a resource");
-                log.debug("   -> selected object : " + element);
+                LOG.warn("The selected object cannot adapt to a resource");
+                LOG.debug("   -> selected object : " + element);
             } else {
                 MarkerUtil.deleteAllMarkersIn(resource);
-                log.debug("Remove markers on resrouce " + resource.getName());
+                LOG.debug("Remove markers on resrouce " + resource.getName());
             }
         } else {
-            log.warn("The selected object is not adaptable");
-            log.debug("   -> selected object : " + element);
+            LOG.warn("The selected object is not adaptable");
+            LOG.debug("   -> selected object : " + element);
         }
     }
 

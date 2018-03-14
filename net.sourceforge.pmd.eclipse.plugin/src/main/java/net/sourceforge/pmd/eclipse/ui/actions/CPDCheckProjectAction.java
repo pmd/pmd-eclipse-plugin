@@ -2,19 +2,6 @@ package net.sourceforge.pmd.eclipse.ui.actions;
 
 import java.util.Iterator;
 
-import name.herlin.command.CommandException;
-import net.sourceforge.pmd.cpd.CSVRenderer;
-import net.sourceforge.pmd.cpd.LanguageFactory;
-import net.sourceforge.pmd.cpd.Renderer;
-import net.sourceforge.pmd.cpd.SimpleRenderer;
-import net.sourceforge.pmd.cpd.XMLRenderer;
-import net.sourceforge.pmd.eclipse.runtime.PMDRuntimeConstants;
-import net.sourceforge.pmd.eclipse.runtime.cmd.DetectCutAndPasteCmd;
-import net.sourceforge.pmd.eclipse.ui.PMDUiConstants;
-import net.sourceforge.pmd.eclipse.ui.dialogs.CPDCheckDialog;
-import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
-import net.sourceforge.pmd.eclipse.ui.views.cpd2.CPDView2;
-
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IAdaptable;
@@ -28,6 +15,20 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPartSite;
 import org.eclipse.ui.PartInitException;
 
+import net.sourceforge.pmd.cpd.CSVRenderer;
+import net.sourceforge.pmd.cpd.LanguageFactory;
+import net.sourceforge.pmd.cpd.Renderer;
+import net.sourceforge.pmd.cpd.SimpleRenderer;
+import net.sourceforge.pmd.cpd.XMLRenderer;
+import net.sourceforge.pmd.eclipse.runtime.PMDRuntimeConstants;
+import net.sourceforge.pmd.eclipse.runtime.cmd.DetectCutAndPasteCmd;
+import net.sourceforge.pmd.eclipse.ui.PMDUiConstants;
+import net.sourceforge.pmd.eclipse.ui.dialogs.CPDCheckDialog;
+import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
+import net.sourceforge.pmd.eclipse.ui.views.cpd2.CPDView2;
+
+import name.herlin.command.CommandException;
+
 /**
  * Process CPD action menu. Run CPD against the selected project.
  * 
@@ -37,7 +38,7 @@ import org.eclipse.ui.PartInitException;
  * 
  */
 public class CPDCheckProjectAction extends AbstractUIAction {
-    private static final Logger log = Logger.getLogger(CPDCheckProjectAction.class);
+    private static final Logger LOG = Logger.getLogger(CPDCheckProjectAction.class);
    
     private static final String XML_KEY = "XML";
     private static final String SIMPLE_KEY = "Simple Text";
@@ -53,9 +54,9 @@ public class CPDCheckProjectAction extends AbstractUIAction {
         final String[] languages = LanguageFactory.supportedLanguages;
         
         final String[] formats = {
-                SIMPLE_KEY,
-                XML_KEY,
-                CSV_KEY
+            SIMPLE_KEY,
+            XML_KEY,
+            CSV_KEY,
         };
         
         final CPDCheckDialog dialog = new CPDCheckDialog(shell, languages, formats);
@@ -70,14 +71,14 @@ public class CPDCheckProjectAction extends AbstractUIAction {
                     final IProject project = (IProject) adaptable.getAdapter(IProject.class);
                     
                     if (project == null) {
-                        log.warn("The selected object cannot adapt to a project");
-                        log.debug("   -> selected object : " + obj);
+                        LOG.warn("The selected object cannot adapt to a project");
+                        LOG.debug("   -> selected object : " + obj);
                     } else {
                         this.detectCutAndPaste(project, dialog);
                     }
                 } else {
-                    log.warn("The selected object is not adaptable");
-                    log.debug("   -> selected object : " + obj);
+                    LOG.warn("The selected object is not adaptable");
+                    LOG.debug("   -> selected object : " + obj);
                 }
             }           
         }
@@ -99,7 +100,6 @@ public class CPDCheckProjectAction extends AbstractUIAction {
      * @throws CommandException 
      */
     private void detectCutAndPaste(final IProject project, CPDCheckDialog dialog) {
-    	
         final String selectedLanguage = dialog.getSelectedLanguage();
         final int tilesize = dialog.getTileSize();
         final boolean createReport = dialog.isCreateReportSelected();
@@ -133,7 +133,7 @@ public class CPDCheckProjectAction extends AbstractUIAction {
             final IWorkbenchPage workbenchPage = targetPartSite().getPage();
             view = (CPDView2) workbenchPage.showView(PMDUiConstants.ID_CPDVIEW2);
         } catch (PartInitException pie) {
-            logError( getString(StringKeys.ERROR_VIEW_EXCEPTION), pie);
+            logError(getString(StringKeys.ERROR_VIEW_EXCEPTION), pie);
         } 
         return view;
     }

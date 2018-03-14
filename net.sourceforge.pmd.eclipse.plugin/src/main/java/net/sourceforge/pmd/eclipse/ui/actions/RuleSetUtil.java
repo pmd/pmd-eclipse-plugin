@@ -1,3 +1,4 @@
+
 package net.sourceforge.pmd.eclipse.ui.actions;
 
 import java.util.ArrayList;
@@ -19,31 +20,34 @@ import net.sourceforge.pmd.lang.rule.RuleReference;
  */
 public class RuleSetUtil {
 
-	private RuleSetUtil() {}
+    private RuleSetUtil() {
+    }
 
-	public static RuleSet newCopyOf(RuleSet original) {
-	    RuleSetFactory factory = new RuleSetFactory();
-	    return factory.createRuleSetCopy(original);
-	}
+    public static RuleSet newCopyOf(RuleSet original) {
+        RuleSetFactory factory = new RuleSetFactory();
+        return factory.createRuleSetCopy(original);
+    }
 
-	public static final String DEFAULT_RULESET_NAME = "pmd-eclipse";
-	public static final String DEFAULT_RULESET_DESCRIPTION = "PMD Plugin preferences rule set";
+    public static final String DEFAULT_RULESET_NAME = "pmd-eclipse";
+    public static final String DEFAULT_RULESET_DESCRIPTION = "PMD Plugin preferences rule set";
 
-	/**
-	 * This should not really work but the ruleset hands out its 
-	 * internal container....oops!  :)
-	 * 
-	 * @param ruleSet
-	 * @param wantedRuleNames
-	 * @return 
-	 */
-	public static RuleSet retainOnly(RuleSet ruleSet, Collection<Rule> wantedRules) {
-		RuleSetFactory factory = new RuleSetFactory();
-		return factory.createNewRuleSet(ruleSet.getName(), ruleSet.getDescription(),
-		        ruleSet.getFileName(), ruleSet.getExcludePatterns(), ruleSet.getIncludePatterns(), wantedRules);
-	}
+    /**
+     * This should not really work but the ruleset hands out its internal
+     * container....oops! :)
+     * 
+     * @param ruleSet
+     * @param wantedRuleNames
+     * @return
+     */
+    public static RuleSet retainOnly(RuleSet ruleSet, Collection<Rule> wantedRules) {
+        RuleSetFactory factory = new RuleSetFactory();
+        return factory.createNewRuleSet(ruleSet.getName(), ruleSet.getDescription(), ruleSet.getFileName(),
+                ruleSet.getExcludePatterns(), ruleSet.getIncludePatterns(), wantedRules);
+    }
+
     /**
      * Removes the rule with the same name from the ruleset.
+     * 
      * @param ruleSet
      * @param removedRule
      * @return
@@ -98,9 +102,8 @@ public class RuleSetUtil {
             rules.add(ruleRef);
         }
         RuleSetFactory factory = new RuleSetFactory();
-        return factory.createNewRuleSet(ruleSet.getName(), ruleSet.getDescription(),
-                ruleSet.getFileName(), ruleSet.getExcludePatterns(), ruleSet.getIncludePatterns(),
-                rules);
+        return factory.createNewRuleSet(ruleSet.getName(), ruleSet.getDescription(), ruleSet.getFileName(),
+                ruleSet.getExcludePatterns(), ruleSet.getIncludePatterns(), rules);
     }
 
     public static RuleSet addRules(RuleSet ruleSet, Collection<Rule> newRules) {
@@ -108,9 +111,8 @@ public class RuleSetUtil {
         Collection<Rule> allRules = new ArrayList<Rule>();
         allRules.addAll(ruleSet.getRules());
         allRules.addAll(newRules);
-        return factory.createNewRuleSet(ruleSet.getName(), ruleSet.getDescription(),
-                ruleSet.getFileName(), ruleSet.getExcludePatterns(), ruleSet.getIncludePatterns(),
-                allRules);
+        return factory.createNewRuleSet(ruleSet.getName(), ruleSet.getDescription(), ruleSet.getFileName(),
+                ruleSet.getExcludePatterns(), ruleSet.getIncludePatterns(), allRules);
     }
 
     public static RuleSet addRule(RuleSet ruleSet, Rule newRule) {
@@ -131,8 +133,8 @@ public class RuleSetUtil {
 
     public static RuleSet setNameDescription(RuleSet ruleSet, String name, String description) {
         RuleSetFactory factory = new RuleSetFactory();
-        return factory.createNewRuleSet(name, description, ruleSet.getFileName(),
-                ruleSet.getExcludePatterns(), ruleSet.getIncludePatterns(), ruleSet.getRules());
+        return factory.createNewRuleSet(name, description, ruleSet.getFileName(), ruleSet.getExcludePatterns(),
+                ruleSet.getIncludePatterns(), ruleSet.getRules());
     }
 
     public static RuleSet setFileName(RuleSet ruleSet, String fileName) {
@@ -158,7 +160,8 @@ public class RuleSetUtil {
 
     public static Rule findSameRule(Collection<Rule> haystack, Rule search) {
         for (Rule rule : haystack) {
-            if (rule == search || rule.getName().equals(search.getName()) && rule.getLanguage() == search.getLanguage()) {
+            if (rule == search
+                    || rule.getName().equals(search.getName()) && rule.getLanguage() == search.getLanguage()) {
                 return rule;
             }
         }

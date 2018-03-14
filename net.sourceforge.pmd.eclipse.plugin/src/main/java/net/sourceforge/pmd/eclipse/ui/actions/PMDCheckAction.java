@@ -31,17 +31,10 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package net.sourceforge.pmd.eclipse.ui.actions;
 
 import java.util.Iterator;
-
-import name.herlin.command.CommandException;
-import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
-import net.sourceforge.pmd.eclipse.runtime.cmd.AbstractDefaultCommand;
-import net.sourceforge.pmd.eclipse.runtime.cmd.ReviewCodeCmd;
-import net.sourceforge.pmd.eclipse.ui.model.AbstractPMDRecord;
-import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
-import org.eclipse.ui.IWorkingSet;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IFile;
@@ -55,6 +48,15 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IFileEditorInput;
+import org.eclipse.ui.IWorkingSet;
+
+import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
+import net.sourceforge.pmd.eclipse.runtime.cmd.AbstractDefaultCommand;
+import net.sourceforge.pmd.eclipse.runtime.cmd.ReviewCodeCmd;
+import net.sourceforge.pmd.eclipse.ui.model.AbstractPMDRecord;
+import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
+
+import name.herlin.command.CommandException;
 
 /**
  * Implements action on the "Check code with PMD" action menu on a file
@@ -63,40 +65,41 @@ import org.eclipse.ui.IFileEditorInput;
  *
  */
 public class PMDCheckAction extends AbstractUIAction {
-	
-    private static final Logger log = Logger.getLogger(PMDCheckAction.class);
+
+    private static final Logger LOG = Logger.getLogger(PMDCheckAction.class);
 
     /**
      * @see org.eclipse.ui.IActionDelegate#run(IAction)
      */
     public void run(IAction action) {
-        log.info("Check PMD action requested");
+        LOG.info("Check PMD action requested");
 
         try {
 
-            // Execute PMD on a range of selected resource if action selected from a view part
+            // Execute PMD on a range of selected resource if action selected
+            // from a view part
             if (isViewPart()) {
                 ISelection selection = targetSelection();
                 if (selection instanceof IStructuredSelection) {
                     reviewSelectedResources((IStructuredSelection) selection);
                 } else {
-                    log.debug("The selection is not an instance of IStructuredSelection. This is not supported: " + selection.getClass().getName());
+                    LOG.debug("The selection is not an instance of IStructuredSelection. This is not supported: "
+                            + selection.getClass().getName());
                 }
-            }
-
-            // If action is selected from an editor, run PMD on the file currently edited
-            else if (isEditorPart()) {
+            } else if (isEditorPart()) {
+                // If action is selected from an editor, run PMD on the file
+                // currently edited
                 IEditorInput editorInput = ((IEditorPart) targetPart()).getEditorInput();
                 if (editorInput instanceof IFileEditorInput) {
                     reviewSingleResource(((IFileEditorInput) editorInput).getFile());
                 } else {
-                    log.debug("The kind of editor input is not supported. The editor input if of type: " + editorInput.getClass().getName());
+                    LOG.debug("The kind of editor input is not supported. The editor input if of type: "
+                            + editorInput.getClass().getName());
                 }
-            }
-
-            // Else, this is not supported for now
-            else {
-                log.debug("Running PMD from this kind of part is not supported. Part is of type " + targetPartClassName());
+            } else {
+                // Else, this is not supported for now
+                LOG.debug("Running PMD from this kind of part is not supported. Part is of type "
+                        + targetPartClassName());
             }
 
         } catch (CommandException e) {
@@ -125,66 +128,67 @@ public class PMDCheckAction extends AbstractUIAction {
     }
 
     private void setupAndExecute(ReviewCodeCmd cmd, int count) throws CommandException {
-    	cmd.setStepCount(count);
-    	cmd.setTaskMarker(true);
+        cmd.setStepCount(count);
+        cmd.setTaskMarker(true);
         cmd.setOpenPmdPerspective(PMDPlugin.getDefault().loadPreferences().isPmdPerspectiveEnabled());
         cmd.setUserInitiated(true);
         cmd.setRunAlways(true);
         cmd.performExecute();
     }
-    
+
     /**
      * Prepare and run the reviewCode command for all selected resources
      *
-     * @param selection the selected resources
+     * @param selection
+     *            the selected resources
      */
-	private void reviewSelectedResources(IStructuredSelection selection)
-			throws CommandException {
-		ReviewCodeCmd cmd = new ReviewCodeCmd();
+    private void reviewSelectedResources(IStructuredSelection selection) throws CommandException {
+        ReviewCodeCmd cmd = new ReviewCodeCmd();
 
-		// Add selected resources to the list of resources to be reviewed
-		for (Iterator<?> i = selection.iterator(); i.hasNext();) {
-			Object element = i.next();
-			if (element instanceof AbstractPMDRecord) {
-				IResource resource = ((AbstractPMDRecord) element).getResource();
-				if (resource != null) {
-					cmd.addResource(resource);
-				} else {
-					log.warn("The selected object has no resource");
-					log.debug("  -> selected object : " + element);
-				}
-			} else if (element instanceof IWorkingSet) {
-				IWorkingSet set = (IWorkingSet) element;
-				for (IAdaptable adaptable : set.getElements()) {
-					addAdaptable(cmd, adaptable);
-				}
-			} else if (element instanceof IAdaptable) {
-				IAdaptable adaptable = (IAdaptable) element;
-				addAdaptable(cmd, adaptable);
-			} else {
-				log.warn("The selected object is not adaptable");
-				log.debug("   -> selected object : " + element);
-			}
-		}
+        // Add selected resources to the list of resources to be reviewed
+        for (Iterator<?> i = selection.iterator(); i.hasNext();) {
+            Object element = i.next();
+            if (element instanceof AbstractPMDRecord) {
+                IResource resource = ((AbstractPMDRecord) element).getResource();
+                if (resource != null) {
+                    cmd.addResource(resource);
+                } else {
+                    LOG.warn("The selected object has no resource");
+                    LOG.debug("  -> selected object : " + element);
+                }
+            } else if (element instanceof IWorkingSet) {
+                IWorkingSet set = (IWorkingSet) element;
+                for (IAdaptable adaptable : set.getElements()) {
+                    addAdaptable(cmd, adaptable);
+                }
+            } else if (element instanceof IAdaptable) {
+                IAdaptable adaptable = (IAdaptable) element;
+                addAdaptable(cmd, adaptable);
+            } else {
+                LOG.warn("The selected object is not adaptable");
+                LOG.debug("   -> selected object : " + element);
+            }
+        }
 
-		// Run the command
-		setupAndExecute(cmd, countElements(selection));
-	}
+        // Run the command
+        setupAndExecute(cmd, countElements(selection));
+    }
 
-	private void addAdaptable(ReviewCodeCmd cmd, IAdaptable adaptable) {
-		IResource resource = (IResource) adaptable.getAdapter(IResource.class);
-		if (resource != null) {
-			cmd.addResource(resource);
-		} else {
-			log.warn("The selected object cannot adapt to a resource");
-			log.debug("   -> selected object : " + adaptable);
-		}
-	}
-	
+    private void addAdaptable(ReviewCodeCmd cmd, IAdaptable adaptable) {
+        IResource resource = (IResource) adaptable.getAdapter(IResource.class);
+        if (resource != null) {
+            cmd.addResource(resource);
+        } else {
+            LOG.warn("The selected object cannot adapt to a resource");
+            LOG.debug("   -> selected object : " + adaptable);
+        }
+    }
+
     /**
      * Count the number of resources of a selection
      *
-     * @param selection a selection
+     * @param selection
+     *            a selection
      * @return the element count
      */
     private int countElements(IStructuredSelection selection) {
@@ -200,12 +204,12 @@ public class PMDCheckAction extends AbstractUIAction {
                     if (resource != null) {
                         resource.accept(visitor);
                     } else {
-                        log.warn("The selected object cannot adapt to a resource");
-                        log.debug("   -> selected object : " + element);
+                        LOG.warn("The selected object cannot adapt to a resource");
+                        LOG.debug("   -> selected object : " + element);
                     }
                 } else {
-                    log.warn("The selected object is not adaptable");
-                    log.debug("   -> selected object : " + element);
+                    LOG.warn("The selected object is not adaptable");
+                    LOG.debug("   -> selected object : " + element);
                 }
             } catch (CoreException e) {
                 // Ignore any exception

@@ -36,10 +36,6 @@
 
 package net.sourceforge.pmd.eclipse.ui.dialogs;
 
-import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
-import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
-import net.sourceforge.pmd.eclipse.ui.preferences.editors.SWTUtil;
-
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
@@ -57,13 +53,17 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Spinner;
 
+import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
+import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
+import net.sourceforge.pmd.eclipse.ui.preferences.editors.SWTUtil;
+
 /**
  *
  * @author Sven, Brian Remedios
  */
 
 public class CPDCheckDialog extends Dialog {
-	
+
     private final String[] languages;
     private final String[] formats;
     private int selectedFormat;
@@ -76,7 +76,7 @@ public class CPDCheckDialog extends Dialog {
     private Spinner minTileSizeSpinner = null;
     private Combo formatCombo = null;
     private int tileSize = defaultMinTileSize();
-    
+
     public CPDCheckDialog(Shell parentShell, String[] languages, String[] formats) {
         super(parentShell);
         this.languages = languages;
@@ -89,7 +89,9 @@ public class CPDCheckDialog extends Dialog {
     }
 
     /*
-     * @see org.eclipse.jface.dialogs.Dialog#createDialogArea(org.eclipse.swt.widgets.Composite)
+     * @see
+     * org.eclipse.jface.dialogs.Dialog#createDialogArea(org.eclipse.swt.widgets
+     * .Composite)
      */
     protected Control createDialogArea(Composite parent) {
         final Composite container = (Composite) super.createDialogArea(parent);
@@ -98,7 +100,9 @@ public class CPDCheckDialog extends Dialog {
     }
 
     /*
-     * @see org.eclipse.jface.window.Window#configureShell(org.eclipse.swt.widgets.Shell)
+     * @see
+     * org.eclipse.jface.window.Window#configureShell(org.eclipse.swt.widgets.
+     * Shell)
      */
     protected void configureShell(Shell newShell) {
         super.configureShell(newShell);
@@ -107,6 +111,7 @@ public class CPDCheckDialog extends Dialog {
 
     /**
      * Gets the selected language.
+     * 
      * @return language as String
      */
     public String getSelectedLanguage() {
@@ -114,11 +119,12 @@ public class CPDCheckDialog extends Dialog {
     }
 
     private int defaultMinTileSize() {
-    	return PMDPlugin.getDefault().loadPreferences().getMinTileSize();
+        return PMDPlugin.getDefault().loadPreferences().getMinTileSize();
     }
 
     /**
      * Gets the selected format
+     * 
      * @return format as string
      */
     public String getSelectedFormat() {
@@ -130,11 +136,12 @@ public class CPDCheckDialog extends Dialog {
     }
 
     public int getTileSize() {
-    	return tileSize;
+        return tileSize;
     }
-    
+
     /**
      * Initializes the container.
+     * 
      * @param container
      */
     private void initialize(Composite container) {
@@ -156,7 +163,7 @@ public class CPDCheckDialog extends Dialog {
         gridLayout1.makeColumnsEqualWidth = false;
         container.setLayout(gridLayout1);
 
-        final Label helpLabel = new Label(container,SWT.NONE);
+        final Label helpLabel = new Label(container, SWT.NONE);
         helpLabel.setText(getString(StringKeys.DIALOG_CPD_HELP_LABEL));
         helpLabel.setLayoutData(gridData4);
 
@@ -169,41 +176,42 @@ public class CPDCheckDialog extends Dialog {
         final Label minimumTileSizeLabel = new Label(container, SWT.NONE);
         minimumTileSizeLabel.setText(getString(StringKeys.DIALOG_CPD_MIN_TILESIZE_LABEL));
         minimumTileSizeLabel.setLayoutData(gridData7);
-        
+
         createTileSizeSpinner(container);
-       
+
         createReportGroup(container);
     }
-    
+
     private void createTileSizeSpinner(Composite container) {
-    	
+
         final GridData gridData5 = new GridData();
         gridData5.horizontalAlignment = GridData.FILL;
         gridData5.grabExcessHorizontalSpace = true;
         gridData5.horizontalIndent = 10;
         gridData5.heightHint = -1;
         gridData5.verticalAlignment = GridData.CENTER;
-        
+
         minTileSizeSpinner = new Spinner(container, SWT.BORDER);
         minTileSizeSpinner.setLayoutData(gridData5);
-        minTileSizeSpinner.setToolTipText(getString(StringKeys.DIALOG_TOOLTIP_CPD_MIN_TILESIZE));   
+        minTileSizeSpinner.setToolTipText(getString(StringKeys.DIALOG_TOOLTIP_CPD_MIN_TILESIZE));
         minTileSizeSpinner.setMinimum(tileSize);
         minTileSizeSpinner.setTextLimit(3);
 
         minTileSizeSpinner.addModifyListener(new ModifyListener() {
             public void modifyText(ModifyEvent e) {
-                tileSize = Integer.parseInt( minTileSizeSpinner.getText() );
+                tileSize = Integer.parseInt(minTileSizeSpinner.getText());
             }
         });
     }
-    
+
     /**
      * This method initializes reportGroup
+     * 
      * @param container
      *
      */
     private void createReportGroup(Composite container) {
-    	
+
         final GridData gridData7 = new GridData();
         gridData7.horizontalAlignment = GridData.BEGINNING;
         gridData7.horizontalIndent = 30;
@@ -241,6 +249,7 @@ public class CPDCheckDialog extends Dialog {
                 formatCombo.setEnabled(createReportCheckbox.getSelection());
                 createReport = createReportCheckbox.getSelection();
             }
+
             public void widgetSelected(SelectionEvent e) {
                 formatCombo.setEnabled(createReportCheckbox.getSelection());
                 createReport = createReportCheckbox.getSelection();
@@ -254,6 +263,7 @@ public class CPDCheckDialog extends Dialog {
 
     /**
      * This method initializes languageCombo
+     * 
      * @param container
      *
      */
@@ -291,6 +301,7 @@ public class CPDCheckDialog extends Dialog {
             public void widgetDefaultSelected(SelectionEvent e) {
                 selectedFormat = formatCombo.getSelectionIndex();
             }
+
             public void widgetSelected(SelectionEvent e) {
                 selectedFormat = formatCombo.getSelectionIndex();
             }
@@ -299,7 +310,9 @@ public class CPDCheckDialog extends Dialog {
 
     /**
      * Helper method to shorten message access
-     * @param key a message key
+     * 
+     * @param key
+     *            a message key
      * @return requested message
      */
     private String getString(String key) {

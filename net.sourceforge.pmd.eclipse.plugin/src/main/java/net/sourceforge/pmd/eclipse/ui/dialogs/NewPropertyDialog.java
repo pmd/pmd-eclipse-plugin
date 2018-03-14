@@ -61,10 +61,9 @@ public class NewPropertyDialog extends TitleAreaDialog implements SizeChangeList
 
     // these are the ones we've tested, the others may work but might not make
     // sense in the xpath source context...
-    private static final Class<?>[] validEditorTypes = new Class[] { String.class, Integer.class, Boolean.class,
+    private static final Class<?>[] VALID_EDITOR_TYPES = new Class[] { String.class, Integer.class, Boolean.class,
         Class.class, Method.class };
-    private static final Class<?> defaultEditorType = validEditorTypes[0]; // first
-                                                                           // one
+    private static final Class<?> DEFAULT_EDITOR_TYPE = VALID_EDITOR_TYPES[0]; // first one
 
     /**
      * Constructor for RuleDialog. Supply a working descriptor with name &
@@ -80,7 +79,7 @@ public class NewPropertyDialog extends TitleAreaDialog implements SizeChangeList
 
         propertySource = theSource;
         changeListener = theChangeListener;
-        editorFactoriesByValueType = withOnly(theEditorFactoriesByValueType, validEditorTypes);
+        editorFactoriesByValueType = withOnly(theEditorFactoriesByValueType, VALID_EDITOR_TYPES);
     }
 
     /**
@@ -195,8 +194,9 @@ public class NewPropertyDialog extends TitleAreaDialog implements SizeChangeList
     private boolean isPreExistingLabel(String labelCandidate) {
 
         for (PropertyDescriptor<?> desc : propertySource.getPropertyDescriptors()) {
-            if (desc.description().equalsIgnoreCase(labelCandidate))
+            if (desc.description().equalsIgnoreCase(labelCandidate)) {
                 return false;
+            }
         }
         return true;
     }
@@ -234,8 +234,9 @@ public class NewPropertyDialog extends TitleAreaDialog implements SizeChangeList
     private EditorFactory factoryFor(String label) {
 
         for (Entry<Class<?>, EditorFactory> entry : editorFactoriesByValueType.entrySet()) {
-            if (label.equals(labelFor(entry.getKey())))
+            if (label.equals(labelFor(entry.getKey()))) {
                 return entry.getValue();
+            }
         }
 
         return null;
@@ -283,8 +284,9 @@ public class NewPropertyDialog extends TitleAreaDialog implements SizeChangeList
         List<String> names = Util.fragmentsWithin(xpath, positions);
 
         for (String name : names) {
-            if (ruleHasPropertyName(name))
+            if (ruleHasPropertyName(name)) {
                 continue;
+            }
             nameField.setText(name);
             return;
         }
@@ -293,24 +295,24 @@ public class NewPropertyDialog extends TitleAreaDialog implements SizeChangeList
 
     private void setInitialType() {
 
-        String editorLabel = labelFor(defaultEditorType);
+        String editorLabel = labelFor(DEFAULT_EDITOR_TYPE);
         typeField.select(Util.indexOf(typeField.getItems(), editorLabel));
         factory(factoryFor(editorLabel));
     }
 
     private void cleanFactoryStuff() {
-        if (factoryControls != null)
-            for (Control control : factoryControls)
+        if (factoryControls != null) {
+            for (Control control : factoryControls) {
                 control.dispose();
+            }
+        }
     }
 
     private void factory(EditorFactory theFactory) {
 
         factory = theFactory;
-
-        descriptor = factory.createDescriptor("??", "??", null); // dummy values
-                                                                 // that will be
-                                                                 // replaced
+        // dummy values that will be replaced
+        descriptor = factory.createDescriptor("??", "??", null); 
         labelField.setText(descriptor.description());
         cleanFactoryStuff();
 
@@ -348,8 +350,9 @@ public class NewPropertyDialog extends TitleAreaDialog implements SizeChangeList
     private boolean validateForm() {
         boolean isOk = validateName() && validateLabel();
         Control button = getButton(IDialogConstants.OK_ID);
-        if (button != null)
+        if (button != null) {
             button.setEnabled(isOk);
+        }
         return isOk;
     }
 

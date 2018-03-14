@@ -16,7 +16,9 @@ import org.eclipse.swt.events.ModifyListener;
 /**
  * This class manages the syntax coloring and styling data
  */
-public class SyntaxManager {
+public final class SyntaxManager {
+    
+    private SyntaxManager() { }
 
     private static Map<String, SyntaxData> syntaxByExtension = new Hashtable<String, SyntaxData>();
 
@@ -55,8 +57,9 @@ public class SyntaxManager {
         if (sd == null) {
             // Not in cache; load it and put in cache
             sd = loadSyntaxData(extension);
-            if (sd != null)
+            if (sd != null) {
                 syntaxByExtension.put(sd.getExtension(), sd);
+            }
         }
         return sd;
     }

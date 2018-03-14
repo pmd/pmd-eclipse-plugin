@@ -31,6 +31,7 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package net.sourceforge.pmd.eclipse.ui.actions;
 
 import java.io.BufferedReader;
@@ -41,11 +42,6 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Iterator;
-
-import net.sourceforge.pmd.eclipse.runtime.PMDRuntimeConstants;
-import net.sourceforge.pmd.eclipse.runtime.cmd.AbstractDefaultCommand;
-import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
-import net.sourceforge.pmd.eclipse.util.IOUtil;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IFile;
@@ -69,6 +65,11 @@ import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.IViewActionDelegate;
 import org.eclipse.ui.IViewPart;
 
+import net.sourceforge.pmd.eclipse.runtime.PMDRuntimeConstants;
+import net.sourceforge.pmd.eclipse.runtime.cmd.AbstractDefaultCommand;
+import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
+import net.sourceforge.pmd.eclipse.util.IOUtil;
+
 /**
  * Implements the clear reviews action
  *
@@ -76,22 +77,22 @@ import org.eclipse.ui.IViewPart;
  *
  */
 public class ClearReviewsAction extends AbstractUIAction implements IResourceVisitor, IViewActionDelegate {
-	
-    private static final Logger log = Logger.getLogger(ClearReviewsAction.class);
+
+    private static final Logger LOG = Logger.getLogger(ClearReviewsAction.class);
     private IProgressMonitor monitor;
 
     /**
      * @see org.eclipse.ui.IViewActionDelegate#init(org.eclipse.ui.IViewPart)
      */
     public void init(IViewPart view) {
-        setActivePart(null, view.getSite().getPage().getActivePart() );
+        setActivePart(null, view.getSite().getPage().getActivePart());
     }
 
     /**
      * @see org.eclipse.ui.IActionDelegate#run(org.eclipse.jface.action.IAction)
      */
     public void run(IAction action) {
-        log.info("Remove violation reviews requested.");
+        LOG.info("Remove violation reviews requested.");
         ProgressMonitorDialog monitorDialog = new ProgressMonitorDialog(Display.getCurrent().getActiveShell());
         try {
             monitorDialog.run(false, false, new IRunnableWithProgress() {
@@ -109,7 +110,8 @@ public class ClearReviewsAction extends AbstractUIAction implements IResourceVis
     }
 
     /**
-     * @see org.eclipse.ui.IActionDelegate#selectionChanged(org.eclipse.jface.action.IAction, org.eclipse.jface.viewers.ISelection)
+     * @see org.eclipse.ui.IActionDelegate#selectionChanged(org.eclipse.jface.action.IAction,
+     *      org.eclipse.jface.viewers.ISelection)
      */
     public void selectionChanged(IAction action, ISelection selection) {
     }
@@ -158,7 +160,8 @@ public class ClearReviewsAction extends AbstractUIAction implements IResourceVis
     protected void clearReviews() {
 
         try {
-            // If action is started from a view, the process all selected resource
+            // If action is started from a view, the process all selected
+            // resource
             if (isViewPart()) {
                 ISelection selection = targetSelection();
 
@@ -178,35 +181,35 @@ public class ClearReviewsAction extends AbstractUIAction implements IResourceVis
                                 IAdaptable adaptable = (IAdaptable) object;
                                 resource = (IResource) adaptable.getAdapter(IResource.class);
                             } else {
-                                log.warn("The selected object is not adaptable");
-                                log.debug("   -> selected object = " + object);
+                                LOG.warn("The selected object is not adaptable");
+                                LOG.debug("   -> selected object = " + object);
                             }
 
                             if (resource != null) {
                                 resource.accept(this);
                             } else {
-                                log.warn("The selected object cannot adapt to a resource.");
-                                log.debug("   -> selected object" + object);
+                                LOG.warn("The selected object cannot adapt to a resource.");
+                                LOG.debug("   -> selected object" + object);
                             }
                         }
                     }
                 }
             }
 
-            // If action is started from an editor, process the file currently edited
+            // If action is started from an editor, process the file currently
+            // edited
             if (isEditorPart()) {
                 IEditorInput editorInput = ((IEditorPart) this.targetPart()).getEditorInput();
                 if (editorInput instanceof IFileEditorInput) {
                     ((IFileEditorInput) editorInput).getFile().accept(this);
                 } else {
-                    log.debug("The kind of editor input is not supported. The editor input if of type: "
+                    LOG.debug("The kind of editor input is not supported. The editor input if of type: "
                             + editorInput.getClass().getName());
                 }
-            }
-
-            // else this is not supported
-            else {
-                log.debug("This action is not supported on this kind of part. This part type is: " + targetPartClassName());
+            } else {
+                // else this is not supported
+                LOG.debug("This action is not supported on this kind of part. This part type is: "
+                        + targetPartClassName());
             }
         } catch (CoreException e) {
             logError("Core Exception when clearing violations reviews", e);
@@ -230,11 +233,13 @@ public class ClearReviewsAction extends AbstractUIAction implements IResourceVis
     }
 
     private static boolean isReviewable(IFile file) {
-    	
-    	if (AbstractDefaultCommand.isJavaFile(file)) return true;
-    	return file.getName().toLowerCase().endsWith(".jsp");
+
+        if (AbstractDefaultCommand.isJavaFile(file)) {
+            return true;
+        }
+        return file.getName().toLowerCase().endsWith(".jsp");
     }
-    
+
     /**
      * remove reviews from file content
      *
@@ -242,9 +247,11 @@ public class ClearReviewsAction extends AbstractUIAction implements IResourceVis
      * @return
      */
     private String removeReviews(IFile file) {
-    	
-    	if (!isReviewable(file)) return null;
-    	
+
+        if (!isReviewable(file)) {
+            return null;
+        }
+
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintWriter out = null;
         boolean noChange = true;
@@ -256,7 +263,9 @@ public class ClearReviewsAction extends AbstractUIAction implements IResourceVis
             while (reader.ready()) {
                 String origLine = reader.readLine();
                 String line = origLine.trim();
-                if (line == null) break;
+                if (line == null) {
+                    break;
+                }
                 int index = origLine.indexOf(PMDRuntimeConstants.PMD_STYLE_REVIEW_COMMENT);
                 int quoteIndex = origLine.indexOf('"');
 
@@ -270,7 +279,8 @@ public class ClearReviewsAction extends AbstractUIAction implements IResourceVis
                     out.println(origLine);
                 } else if (!comment && line.startsWith(PMDRuntimeConstants.PLUGIN_STYLE_REVIEW_COMMENT)) {
                     noChange = false;
-                } else if (!comment && index != -1 && !(quoteIndex != -1 && quoteIndex < index && index < origLine.lastIndexOf('"'))) {
+                } else if (!comment && index != -1
+                        && !(quoteIndex != -1 && quoteIndex < index && index < origLine.lastIndexOf('"'))) {
                     noChange = false;
                     out.println(origLine.substring(0, index));
                 } else {
@@ -284,9 +294,9 @@ public class ClearReviewsAction extends AbstractUIAction implements IResourceVis
             logError(StringKeys.ERROR_CORE_EXCEPTION, e);
         } catch (IOException e) {
             logError(StringKeys.ERROR_IO_EXCEPTION, e);
-        } finally{
-        	IOUtil.closeQuietly(baos);
-        	IOUtil.closeQuietly(out);
+        } finally {
+            IOUtil.closeQuietly(baos);
+            IOUtil.closeQuietly(out);
         }
 
         return noChange ? null : baos.toString();
