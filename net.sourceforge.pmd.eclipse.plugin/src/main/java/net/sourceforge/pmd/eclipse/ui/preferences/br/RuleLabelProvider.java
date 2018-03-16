@@ -1,10 +1,11 @@
+
 package net.sourceforge.pmd.eclipse.ui.preferences.br;
+
+import org.eclipse.swt.graphics.Image;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.eclipse.ui.preferences.AbstractTableLabelProvider;
 import net.sourceforge.pmd.util.StringUtil;
-
-import org.eclipse.swt.graphics.Image;
 
 /**
  *
@@ -16,88 +17,99 @@ public class RuleLabelProvider extends AbstractTableLabelProvider {
 
     /**
      * Constructor for RuleLabelProvider.
-     * @param columns RuleColumnDescriptor[]
+     * 
+     * @param columns
+     *            RuleColumnDescriptor[]
      */
     public RuleLabelProvider(RuleColumnDescriptor[] columns) {
-    	columnDescriptors = columns;
+        columnDescriptors = columns;
     }
 
     public String getDetailText(Object element, int columnIndex) {
 
-    	if (columnIndex <= 0) return "";
-    	    	
-    	if (element instanceof Rule) {
-        	Rule rule = (Rule) element;
-        	String problem = rule.dysfunctionReason();
-        	if (StringUtil.isNotEmpty(problem)) {
-        		return "Problem in " + rule.getName() + " rule: " + problem;
-        	}
-        	return columnDescriptors[columnIndex-1].detailStringFor(rule);
-        }
-
-    	if (element instanceof RuleGroup) {
-        	RuleGroup group = (RuleGroup) element;
-        	return columnDescriptors[columnIndex-1].detailStringFor(group);
-        }
-    	
-    	return "??";
-    }
-
-    /**
-     * @see org.eclipse.jface.viewers.ITableLabelProvider#getColumnText(Object, int)
-     */
-    public String getColumnText(Object element, int columnIndex) {
-
-    	if (columnIndex <= 0) return "";
-    	
-        if (element instanceof RuleCollection) {
-        	if (columnIndex == 1) {
-        		RuleGroup rg = (RuleGroup)element;
-            	String label = rg.label();
-            	return standardized(label, rg.ruleCount());
-        	}
-        	return columnDescriptors[columnIndex-1].stringValueFor((RuleCollection)element);
+        if (columnIndex <= 0) {
+            return "";
         }
 
         if (element instanceof Rule) {
-        	RuleColumnDescriptor rcd = columnDescriptors[columnIndex-1];
-        	String text = rcd.stringValueFor((Rule) element);
-        	return columnIndex == 1 ? "   " + text : text;
+            Rule rule = (Rule) element;
+            String problem = rule.dysfunctionReason();
+            if (StringUtil.isNotEmpty(problem)) {
+                return "Problem in " + rule.getName() + " rule: " + problem;
+            }
+            return columnDescriptors[columnIndex - 1].detailStringFor(rule);
+        }
+
+        if (element instanceof RuleGroup) {
+            RuleGroup group = (RuleGroup) element;
+            return columnDescriptors[columnIndex - 1].detailStringFor(group);
         }
 
         return "??";
     }
 
     /**
-     * @see org.eclipse.jface.viewers.ITableLabelProvider#getColumnImage(Object, int)
+     * @see org.eclipse.jface.viewers.ITableLabelProvider#getColumnText(Object,
+     *      int)
      */
-    public Image getColumnImage(Object element, int columnIndex) {
-    	
-    	if (columnIndex <= 0) return null;
-    	
+    public String getColumnText(Object element, int columnIndex) {
+
+        if (columnIndex <= 0) {
+            return "";
+        }
+
         if (element instanceof RuleCollection) {
-            return columnDescriptors[columnIndex-1].imageFor((RuleCollection)element);
+            if (columnIndex == 1) {
+                RuleGroup rg = (RuleGroup) element;
+                String label = rg.label();
+                return standardized(label, rg.ruleCount());
+            }
+            return columnDescriptors[columnIndex - 1].stringValueFor((RuleCollection) element);
         }
 
         if (element instanceof Rule) {
-            return columnDescriptors[columnIndex-1].imageFor((Rule) element);
+            RuleColumnDescriptor rcd = columnDescriptors[columnIndex - 1];
+            String text = rcd.stringValueFor((Rule) element);
+            return columnIndex == 1 ? "   " + text : text;
         }
-            
-        return null;	// should never get here
+
+        return "??";
     }
 
     /**
-     * @param rawLabel String
-     * @param count int
+     * @see org.eclipse.jface.viewers.ITableLabelProvider#getColumnImage(Object,
+     *      int)
+     */
+    public Image getColumnImage(Object element, int columnIndex) {
+
+        if (columnIndex <= 0) {
+            return null;
+        }
+
+        if (element instanceof RuleCollection) {
+            return columnDescriptors[columnIndex - 1].imageFor((RuleCollection) element);
+        }
+
+        if (element instanceof Rule) {
+            return columnDescriptors[columnIndex - 1].imageFor((Rule) element);
+        }
+
+        return null; // should never get here
+    }
+
+    /**
+     * @param rawLabel
+     *            String
+     * @param count
+     *            int
      * @return String
      */
     private String standardized(String rawLabel, int count) {
 
-    	int rulesPos = rawLabel.indexOf(" Rules");
-    	String filteredLabel = rulesPos > 0 ?
-    			rawLabel.substring(0, rulesPos) : rawLabel;
+        int rulesPos = rawLabel.indexOf(" Rules");
+        String filteredLabel = rulesPos > 0 ? rawLabel.substring(0, rulesPos) : rawLabel;
 
-    	return filteredLabel + "  (" + count + ")";
+        return filteredLabel + "  (" + count + ")";
     }
 
 }

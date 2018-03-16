@@ -48,12 +48,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 
-import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
-import net.sourceforge.pmd.eclipse.runtime.PMDRuntimeConstants;
-import net.sourceforge.pmd.eclipse.runtime.builder.MarkerUtil;
-import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
-import net.sourceforge.pmd.eclipse.util.IOUtil;
-
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
@@ -63,6 +57,12 @@ import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 
+import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
+import net.sourceforge.pmd.eclipse.runtime.PMDRuntimeConstants;
+import net.sourceforge.pmd.eclipse.runtime.builder.MarkerUtil;
+import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
+import net.sourceforge.pmd.eclipse.util.IOUtil;
+
 /**
  * AbstractPMDRecord for Files
  *
@@ -70,22 +70,24 @@ import org.eclipse.jdt.core.JavaModelException;
  *
  */
 public class FileRecord extends AbstractPMDRecord {
-    
+
     private AbstractPMDRecord[] children;
     private final IResource resource;
     private final AbstractPMDRecord parent;
     private int numberOfLOC;
     private int numberOfMethods;
-    
+
     /**
-     * Constructor (not for use with the Model, no PackageRecord is provided here)
+     * Constructor (not for use with the Model, no PackageRecord is provided
+     * here)
      *
-     * @param javaResource the given File
+     * @param javaResource
+     *            the given File
      */
     public FileRecord(IResource javaResource) {
-    	super();
-    	
-    	if (javaResource == null) {
+        super();
+
+        if (javaResource == null) {
             throw new IllegalArgumentException("javaResource cannot be null");
         }
 
@@ -95,7 +97,7 @@ public class FileRecord extends AbstractPMDRecord {
         this.numberOfMethods = 0;
         this.children = createChildren();
     }
-    
+
     /**
      * Constructor (for use with the Model)
      *
@@ -115,7 +117,7 @@ public class FileRecord extends AbstractPMDRecord {
         this.numberOfMethods = 0;
         this.children = createChildren();
     }
-    
+
     /**
      * Constructor (for use with the Model)
      *
@@ -137,11 +139,11 @@ public class FileRecord extends AbstractPMDRecord {
     }
 
     public long getTimestamp() {
-    	return resource.getLocalTimeStamp();
+        return resource.getLocalTimeStamp();
     }
 
     /**
-     *  @see net.sourceforge.pmd.eclipse.ui.model.AbstractPMDRecord#getParent()
+     * @see net.sourceforge.pmd.eclipse.ui.model.AbstractPMDRecord#getParent()
      */
     @Override
     public AbstractPMDRecord getParent() {
@@ -153,7 +155,7 @@ public class FileRecord extends AbstractPMDRecord {
      */
     @Override
     public AbstractPMDRecord[] getChildren() {
-        return children;  // NOPMD by Sven on 13.11.06 11:57
+        return children; // NOPMD by Sven on 13.11.06 11:57
     }
 
     /**
@@ -181,8 +183,10 @@ public class FileRecord extends AbstractPMDRecord {
 
         try { // get all markers
             final List<IMarker> markers = Arrays.asList(findMarkers());
-            if (markers.isEmpty()) return EMPTY_RECORDS;
-            
+            if (markers.isEmpty()) {
+                return EMPTY_RECORDS;
+            }
+
             final Iterator<IMarker> markerIterator = markers.iterator();
 
             // put all markers in a map with key = rulename
@@ -193,10 +197,8 @@ public class FileRecord extends AbstractPMDRecord {
                 MarkerRecord markerRecord = allMarkerMap.get(MarkerUtil.ruleNameFor(marker));
                 if (markerRecord == null) {
                     String ruleName = MarkerUtil.ruleNameFor(marker);
-                    markerRecord = new MarkerRecord(this,  // NOPMD by Sven on 13.11.06 11:57
-                            ruleName,
-                            MarkerUtil.rulePriorityFor(marker)
-                            );
+                    markerRecord = new MarkerRecord(this,
+                            ruleName, MarkerUtil.rulePriorityFor(marker));
                     markerRecord.addViolation(marker);
                     allMarkerMap.put(ruleName, markerRecord);
                 } else {
@@ -230,7 +232,7 @@ public class FileRecord extends AbstractPMDRecord {
      */
     @Override
     public final IMarker[] findMarkers() {
-        
+
         try {
             // this is the overwritten Function from AbstractPMDRecord
             // we simply call the IResource-function to find Markers
@@ -250,7 +252,7 @@ public class FileRecord extends AbstractPMDRecord {
      * @return an Array of markers
      */
     public IMarker[] findDFAMarkers() {
-        
+
         try {
             // we can only find Markers for a file
             // we use the DFA-Marker-ID set for Dataflow Anomalies
@@ -294,8 +296,8 @@ public class FileRecord extends AbstractPMDRecord {
     }
 
     /**
-     * Calculates the Number of Code-Lines this File has.
-     * The Function is adapted from the Eclipse Metrics-Plugin available at:
+     * Calculates the Number of Code-Lines this File has. The Function is
+     * adapted from the Eclipse Metrics-Plugin available at:
      * http://www.sourceforge.net/projects/metrics
      *
      */
@@ -312,41 +314,41 @@ public class FileRecord extends AbstractPMDRecord {
     }
 
     // TODO migrate to utility class
-	public static int linesOfCodeIn(final String source, boolean ignoreSingleBrackets) {
-		
-		int loc = 0;
-		int ignoredLines = 0;
-		final int firstCurly = source.indexOf('{');
-		if (firstCurly != -1) {
-		    final String body = source.substring(firstCurly+1, source.length()-1).trim();
-		    final StringTokenizer lines = new StringTokenizer(body, "\n");
-		    while (lines.hasMoreTokens()) {
-		        String trimmed = lines.nextToken().trim();
-		        if (trimmed.length() > 0 && trimmed.startsWith("/*")) {
-		            while (trimmed.indexOf("*/") == -1) {
-		                trimmed = lines.nextToken().trim();
-		            }
-		            if (lines.hasMoreTokens()) { // NOPMD by Sven on 13.11.06 12:04
-		                trimmed = lines.nextToken().trim();
-		            }
-		        }
+    public static int linesOfCodeIn(final String source, boolean ignoreSingleBrackets) {
 
-		        if (ignoreSingleBrackets) {
-		        	if ("{".equals(trimmed) || "}".equals(trimmed)) {
-		        		ignoredLines++;
-		        		continue;
-		        	}
-		        }
-		        
-		        if (!trimmed.startsWith("//")) {
-		            loc++;
-		        }
-		    }
-		}
-//		System.out.println("ignored lines: " + ignoredLines);
-		
-		return loc;
-	}
+        int loc = 0;
+        int ignoredLines = 0;
+        final int firstCurly = source.indexOf('{');
+        if (firstCurly != -1) {
+            final String body = source.substring(firstCurly + 1, source.length() - 1).trim();
+            final StringTokenizer lines = new StringTokenizer(body, "\n");
+            while (lines.hasMoreTokens()) {
+                String trimmed = lines.nextToken().trim();
+                if (trimmed.length() > 0 && trimmed.startsWith("/*")) {
+                    while (trimmed.indexOf("*/") == -1) {
+                        trimmed = lines.nextToken().trim();
+                    }
+                    if (lines.hasMoreTokens()) {
+                        trimmed = lines.nextToken().trim();
+                    }
+                }
+
+                if (ignoreSingleBrackets) {
+                    if ("{".equals(trimmed) || "}".equals(trimmed)) {
+                        ignoredLines++;
+                        continue;
+                    }
+                }
+
+                if (!trimmed.startsWith("//")) {
+                    loc++;
+                }
+            }
+        }
+        // System.out.println("ignored lines: " + ignoredLines);
+
+        return loc;
+    }
 
     /**
      * Gets the Number of Code-Lines this File has.
@@ -361,7 +363,8 @@ public class FileRecord extends AbstractPMDRecord {
     /**
      * Reads a Resource's File and return the Code as String.
      *
-     * @param resource a resource to read ; the resource must be accessible.
+     * @param resource
+     *            a resource to read ; the resource must be accessible.
      * @return a String which is the Files Content
      */
     protected String resourceToString(IResource resource) {
@@ -376,12 +379,12 @@ public class FileRecord extends AbstractPMDRecord {
                 fileContents.append(bReader.readLine()).append('\n');
             }
         } catch (FileNotFoundException fnfe) {
-            PMDPlugin.getDefault().logError(
-                    StringKeys.ERROR_FILE_NOT_FOUND + resource.toString() + " in " + this.toString(), fnfe);
+            PMDPlugin.getDefault()
+                    .logError(StringKeys.ERROR_FILE_NOT_FOUND + resource.toString() + " in " + this.toString(), fnfe);
         } catch (IOException ioe) {
             PMDPlugin.getDefault().logError(StringKeys.ERROR_IO_EXCEPTION + this.toString(), ioe);
         } finally {
-        	IOUtil.closeQuietly(bReader);
+            IOUtil.closeQuietly(bReader);
         }
 
         return fileContents.toString();
@@ -399,16 +402,16 @@ public class FileRecord extends AbstractPMDRecord {
 
             if (element instanceof ICompilationUnit) {
                 try {
-                    // ITypes can be Package Declarations or other Java Stuff too
+                    // ITypes can be Package Declarations or other Java Stuff
+                    // too
                     IType[] types = ((ICompilationUnit) element).getTypes();
                     for (IType type : types) {
                         // only if it is an IType itself, it's a Class
                         // from which we can get its Methods
-                        methods.addAll( Arrays.asList(type.getMethods() ));
+                        methods.addAll(Arrays.asList(type.getMethods()));
                     }
                 } catch (JavaModelException jme) {
-                    PMDPlugin.getDefault().logError(
-                            StringKeys.ERROR_JAVAMODEL_EXCEPTION + toString(), jme);
+                    PMDPlugin.getDefault().logError(StringKeys.ERROR_JAVAMODEL_EXCEPTION + toString(), jme);
                 }
             }
             if (!methods.isEmpty()) {
@@ -428,7 +431,7 @@ public class FileRecord extends AbstractPMDRecord {
     }
 
     /**
-     *  @see net.sourceforge.pmd.eclipse.ui.model.AbstractPMDRecord#addResource(org.eclipse.core.resources.IResource)
+     * @see net.sourceforge.pmd.eclipse.ui.model.AbstractPMDRecord#addResource(org.eclipse.core.resources.IResource)
      */
     @Override
     public AbstractPMDRecord addResource(IResource resource) {
@@ -436,7 +439,7 @@ public class FileRecord extends AbstractPMDRecord {
     }
 
     /**
-     *  @see net.sourceforge.pmd.eclipse.ui.model.AbstractPMDRecord#removeResource(org.eclipse.core.resources.IResource)
+     * @see net.sourceforge.pmd.eclipse.ui.model.AbstractPMDRecord#removeResource(org.eclipse.core.resources.IResource)
      */
     @Override
     public AbstractPMDRecord removeResource(IResource resource) {
@@ -452,13 +455,12 @@ public class FileRecord extends AbstractPMDRecord {
     }
 
     public String authorName() {
-    	
-    	return RepositoryUtil.hasRepositoryAccess() ?
-    		RepositoryUtil.authorNameFor(resource) :
-    		null;
+
+        return RepositoryUtil.hasRepositoryAccess() ? RepositoryUtil.authorNameFor(resource) : null;
     }
+
     /**
-     *  @see net.sourceforge.pmd.eclipse.ui.model.AbstractPMDRecord#getResourceType()
+     * @see net.sourceforge.pmd.eclipse.ui.model.AbstractPMDRecord#getResourceType()
      */
     @Override
     public int getResourceType() {

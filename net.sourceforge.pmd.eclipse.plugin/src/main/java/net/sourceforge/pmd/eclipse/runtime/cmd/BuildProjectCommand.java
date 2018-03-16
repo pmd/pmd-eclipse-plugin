@@ -54,7 +54,7 @@ public class BuildProjectCommand extends AbstractProjectCommand {
     private static final long serialVersionUID = 1L;
 
     /**
-     * @param name
+     * @param NAME
      */
     public BuildProjectCommand() {
         super("BuildProject", "Rebuild a project.");

@@ -1,3 +1,4 @@
+
 package net.sourceforge.pmd.eclipse.ui.preferences.br;
 
 import net.sourceforge.pmd.properties.PropertyDescriptor;
@@ -8,5 +9,5 @@ import net.sourceforge.pmd.properties.PropertyDescriptor;
  */
 public interface PropertyChangeListener {
 
-	void changed(PropertyDescriptor<?> descriptor, Object newValue);
+    void changed(PropertyDescriptor<?> descriptor, Object newValue);
 }

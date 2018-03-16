@@ -97,7 +97,7 @@ public class RuleTableManager extends AbstractTreeTableManager<Rule> implements 
             ValueResetHandler aResetHandler) {
         super(theWidgetId, thePreferences, theColumns);
 
-        columnSorter = RuleFieldAccessor.name;
+        columnSorter = RuleFieldAccessor.NAME;
         checkedColumnAccessor = createCheckedItemAccessor();
         resetHandler = aResetHandler;
     }
@@ -258,8 +258,9 @@ public class RuleTableManager extends AbstractTreeTableManager<Rule> implements 
 
             int result = dialog.open();
 
-            if (result != Window.OK)
+            if (result != Window.OK) {
                 return;
+            }
 
             Rule addedRule = wiz.rule();
             ruleSet = RuleSetUtil.addRule(ruleSet, addedRule);
@@ -301,12 +302,14 @@ public class RuleTableManager extends AbstractTreeTableManager<Rule> implements 
 
     protected void removeSelectedItems() {
 
-        if (ruleSelection == null)
+        if (ruleSelection == null) {
             return;
+        }
 
         int removeCount = ruleSelection.removeAllFrom(ruleSet);
-        if (removeCount == 0)
+        if (removeCount == 0) {
             return;
+        }
 
         List<Rule> removedRules = ruleSelection.allRules();
         for (Rule r : removedRules) {
@@ -427,10 +430,10 @@ public class RuleTableManager extends AbstractTreeTableManager<Rule> implements 
     private RuleColumnDescriptor[] ruleImportColumns() {
 
         return new RuleColumnDescriptor[] { newDupeIndicatorColumn(),
-            new SimpleColumnDescriptor("a", RuleTableColumns.name.label(), SWT.LEFT, 210,
-                    RuleTableColumns.name.accessor(), true, null),
-            new SimpleColumnDescriptor("a", RuleTableColumns.language.label(), SWT.LEFT, 40,
-                    RuleTableColumns.language.accessor(), true, null), };
+            new SimpleColumnDescriptor("a", RuleTableColumns.NAME.label(), SWT.LEFT, 210,
+                    RuleTableColumns.NAME.accessor(), true, null),
+            new SimpleColumnDescriptor("a", RuleTableColumns.LANGUAGE.label(), SWT.LEFT, 40,
+                    RuleTableColumns.LANGUAGE.accessor(), true, null), };
     }
 
     /**
@@ -474,8 +477,9 @@ public class RuleTableManager extends AbstractTreeTableManager<Rule> implements 
     public boolean isDuplicate(Rule otherRule) {
 
         for (Rule rule : ruleSet.getRules()) {
-            if (areSemanticEquals(rule, otherRule))
+            if (areSemanticEquals(rule, otherRule)) {
                 return true;
+            }
         }
         return false;
     }
@@ -540,9 +544,9 @@ public class RuleTableManager extends AbstractTreeTableManager<Rule> implements 
 
         final Combo combo = new Combo(panel, SWT.READ_ONLY);
         combo.setItems(SWTUtil.i18lLabelsIn(groupingChoices, 1));
-        combo.select(groupingChoices.length - 1); // picks last one by default
-                                                  // TODO make it a persistent
-                                                  // preference
+        // picks last one by default
+        // TODO make it a persistent preference
+        combo.select(groupingChoices.length - 1); 
 
         combo.addSelectionListener(new SelectionAdapter() {
             public void widgetSelected(SelectionEvent e) {
@@ -713,8 +717,9 @@ public class RuleTableManager extends AbstractTreeTableManager<Rule> implements 
         // TODO enhance to recognize default values
 
         for (Rule rule : selection.allRules()) {
-            if (newValue != null) { // non-reliable update behaviour, alternate
-                                    // trigger option - weird
+            if (newValue != null) {
+                // non-reliable update behaviour, alternate
+                // trigger option - weird
                 treeViewer.getTree().redraw();
                 // System.out.println("doing redraw");
             } else {
@@ -764,8 +769,9 @@ public class RuleTableManager extends AbstractTreeTableManager<Rule> implements 
 
             public boolean isGrayed(Object item) {
 
-                if (item instanceof Rule)
+                if (item instanceof Rule) {
                     return false;
+                }
                 if (item instanceof RuleGroup) {
                     SelectionStats stats = selectionRatioIn(((RuleGroup) item).rules());
                     return (stats.selectedCount > 0) && (!stats.allSelected());
@@ -836,10 +842,12 @@ public class RuleTableManager extends AbstractTreeTableManager<Rule> implements 
 
         List<ColumnDescriptor> visibleColumns = new ArrayList<ColumnDescriptor>(availableColumns.length);
         for (ColumnDescriptor desc : availableColumns) {
-            if (desc == chosenColumn)
+            if (desc == chosenColumn) {
                 continue; // redundant, don't include it
-            if (isHidden(desc))
+            }
+            if (isHidden(desc)) {
                 continue;
+            }
             visibleColumns.add(desc);
         }
 
@@ -907,8 +915,9 @@ public class RuleTableManager extends AbstractTreeTableManager<Rule> implements 
 
         Set<String> names = PreferenceUIStore.INSTANCE.selectedRuleNames();
         List<Rule> rules = new ArrayList<Rule>();
-        for (String name : names)
+        for (String name : names) {
             rules.add(ruleSet.getRuleByName(name));
+        }
 
         IStructuredSelection selection = new StructuredSelection(rules);
         treeViewer.setSelection(selection);
@@ -934,8 +943,9 @@ public class RuleTableManager extends AbstractTreeTableManager<Rule> implements 
 
         List<String> ruleNames = new ArrayList<String>();
         for (Object item : selection.toList()) {
-            if (item instanceof Rule)
+            if (item instanceof Rule) {
                 ruleNames.add(((Rule) item).getName());
+            }
         }
 
         PreferenceUIStore.INSTANCE.selectedRuleNames(ruleNames);
@@ -954,10 +964,12 @@ public class RuleTableManager extends AbstractTreeTableManager<Rule> implements 
 
         boolean hasSelections = items.length > 0;
 
-        if (removeRuleButton != null)
+        if (removeRuleButton != null) {
             removeRuleButton.setEnabled(hasSelections);
-        if (exportRuleSetButton != null)
+        }
+        if (exportRuleSetButton != null) {
             exportRuleSetButton.setEnabled(hasSelections);
+        }
     }
 
     private class SelectionStats {
@@ -965,7 +977,7 @@ public class RuleTableManager extends AbstractTreeTableManager<Rule> implements 
         public int totalCount;
         public int dysfunctionCount;
 
-        public SelectionStats(int theSelectedCount, int theTotalCount, int theDysfunctionCount) {
+        SelectionStats(int theSelectedCount, int theTotalCount, int theDysfunctionCount) {
             selectedCount = theSelectedCount;
             totalCount = theTotalCount;
             dysfunctionCount = theDysfunctionCount;
@@ -983,8 +995,9 @@ public class RuleTableManager extends AbstractTreeTableManager<Rule> implements 
         for (Rule rule : rules) {
             if (isActive(rule.getName())) {
                 selectedCount++;
-                if (StringUtil.isNotEmpty(rule.dysfunctionReason()))
+                if (StringUtil.isNotEmpty(rule.dysfunctionReason())) {
                     dysfunctionCount++;
+                }
             }
         }
         return new SelectionStats(selectedCount, rules.length, dysfunctionCount);
@@ -1055,8 +1068,9 @@ public class RuleTableManager extends AbstractTreeTableManager<Rule> implements 
         checkSelections();
 
         TreeColumn[] columns = ruleTree.getColumns();
-        for (TreeColumn column : columns)
+        for (TreeColumn column : columns) {
             column.pack();
+        }
     }
 
     private RuleFieldAccessor columnSorter() {
@@ -1073,8 +1087,9 @@ public class RuleTableManager extends AbstractTreeTableManager<Rule> implements 
 
     private boolean activeRulesHaveIssues(Rule[] rules) {
         for (Rule rule : rules) {
-            if (isActive(rule.getName()) && StringUtil.isNotEmpty(rule.dysfunctionReason()))
+            if (isActive(rule.getName()) && StringUtil.isNotEmpty(rule.dysfunctionReason())) {
                 return true;
+            }
         }
         return false;
     }

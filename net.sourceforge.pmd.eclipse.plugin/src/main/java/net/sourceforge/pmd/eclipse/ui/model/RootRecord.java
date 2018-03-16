@@ -105,10 +105,7 @@ public class RootRecord extends AbstractPMDRecord {
 
         // ... and create Records for them
         for (IProject project : projects) {
-            projectList.add(new ProjectRecord(project, this)); // NOPMD by
-                                                                    // Herlin on
-                                                                    // 09/10/06
-                                                                    // 00:57
+            projectList.add(new ProjectRecord(project, this));
         }
 
         // return the Array of children
@@ -120,12 +117,7 @@ public class RootRecord extends AbstractPMDRecord {
      */
     @Override
     public AbstractPMDRecord addResource(IResource resource) {
-        return resource instanceof IProject ? addProject((IProject) resource) : null; // NOPMD
-                                                                                        // by
-                                                                                        // Herlin
-                                                                                        // on
-                                                                                        // 09/10/06
-                                                                                        // 00:58
+        return resource instanceof IProject ? addProject((IProject) resource) : null;
     }
 
     /**
@@ -133,12 +125,7 @@ public class RootRecord extends AbstractPMDRecord {
      */
     @Override
     public AbstractPMDRecord removeResource(IResource resource) {
-        return resource instanceof IProject ? removeProject((IProject) resource) : null; // NOPMD
-                                                                                            // by
-                                                                                            // Herlin
-                                                                                            // on
-                                                                                            // 09/10/06
-                                                                                            // 00:59
+        return resource instanceof IProject ? removeProject((IProject) resource) : null;
     }
 
     /**
@@ -197,12 +184,7 @@ public class RootRecord extends AbstractPMDRecord {
             if (proj.equals(project)) {
                 projects.remove(projectRec);
 
-                children = new AbstractPMDRecord[projects.size()]; // NOPMD
-                                                                        // by
-                                                                        // Herlin
-                                                                        // on
-                                                                        // 09/10/06
-                                                                        // 01:01
+                children = new AbstractPMDRecord[projects.size()];
                 projects.toArray(children);
                 removedProject = projectRec;
             }

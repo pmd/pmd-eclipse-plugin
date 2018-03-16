@@ -128,20 +128,22 @@ public class FolderRecord extends AbstractPMDRecord {
      */
     @Override
     public AbstractPMDRecord addResource(IResource resource) {
-        //final ICompilationUnit unit = this.packageFragment.getCompilationUnit(resource.getName());
+        // final ICompilationUnit unit =
+        // this.packageFragment.getCompilationUnit(resource.getName());
         FileRecord file;
 
-        // TODO This should be more question of whether PMD is interested in the File!
+        // TODO This should be more question of whether PMD is interested in the
+        // File!
         // we want the File to be a java-File
-//        if (unit != null) {
-            // we create a new FileRecord and add it to the List
-            file = new FileRecord(resource, this);
-            final List<AbstractPMDRecord> files = getChildrenAsList();
-            files.add(file);
+        // if (unit != null) {
+        // we create a new FileRecord and add it to the List
+        file = new FileRecord(resource, this);
+        final List<AbstractPMDRecord> files = getChildrenAsList();
+        files.add(file);
 
-            children = new AbstractPMDRecord[files.size()];
-            files.toArray(this.children);
-//        }
+        children = new AbstractPMDRecord[files.size()];
+        files.toArray(this.children);
+        // }
 
         return file;
     }
@@ -222,7 +224,9 @@ public class FolderRecord extends AbstractPMDRecord {
         return number;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see net.sourceforge.pmd.eclipse.ui.model.AbstractPMDRecord#getLOC()
      */
     @Override
@@ -235,8 +239,12 @@ public class FolderRecord extends AbstractPMDRecord {
         return number;
     }
 
-    /* (non-Javadoc)
-     * @see net.sourceforge.pmd.eclipse.ui.model.AbstractPMDRecord#getNumberOfMethods()
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * net.sourceforge.pmd.eclipse.ui.model.AbstractPMDRecord#getNumberOfMethods
+     * ()
      */
     @Override
     public int getNumberOfMethods() {

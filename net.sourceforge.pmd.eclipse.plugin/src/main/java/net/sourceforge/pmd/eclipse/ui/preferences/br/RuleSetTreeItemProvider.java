@@ -8,12 +8,12 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.eclipse.jface.viewers.ITreeContentProvider;
+import org.eclipse.jface.viewers.Viewer;
+
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.eclipse.util.Util;
-
-import org.eclipse.jface.viewers.ITreeContentProvider;
-import org.eclipse.jface.viewers.Viewer;
 
 /**
  * @author Brian Remedios
@@ -52,8 +52,9 @@ public class RuleSetTreeItemProvider implements ITreeContentProvider {
 
     private Object[] sort(Collection<Rule> ruleColl) {
         Object[] rules = ruleColl.toArray();
-        if (comparator == null)
+        if (comparator == null) {
             return rules;
+        }
 
         Arrays.sort(rules, comparator);
         return rules;
@@ -111,8 +112,9 @@ public class RuleSetTreeItemProvider implements ITreeContentProvider {
         RuleGroup[] groups = ruleGroups.values().toArray(new RuleGroup[ruleGroups.size()]);
 
         // TODO sort within groups
-        for (RuleGroup group : groups)
+        for (RuleGroup group : groups) {
             group.sortBy(comparator);
+        }
 
         Arrays.sort(groups);
         return groups;
@@ -120,8 +122,9 @@ public class RuleSetTreeItemProvider implements ITreeContentProvider {
 
     private RuleGroup groupFor(Rule rule) {
 
-        if (fieldAccessor == null)
+        if (fieldAccessor == null) {
             return null;
+        }
 
         Comparable<?> groupId = fieldAccessor.valueFor(rule);
         return ruleGroups.get(groupId);
@@ -137,11 +140,13 @@ public class RuleSetTreeItemProvider implements ITreeContentProvider {
      */
     public Object getParent(Object element) {
 
-        if (element instanceof RuleGroup)
+        if (element instanceof RuleGroup) {
             return null;
+        }
 
-        if (element instanceof Rule)
+        if (element instanceof Rule) {
             return groupFor((Rule) element);
+        }
 
         return null;
     }

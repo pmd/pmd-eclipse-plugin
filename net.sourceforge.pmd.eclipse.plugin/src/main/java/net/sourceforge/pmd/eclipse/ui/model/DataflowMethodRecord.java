@@ -39,18 +39,18 @@ package net.sourceforge.pmd.eclipse.ui.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.util.StringUtil;
-import net.sourceforge.pmd.eclipse.runtime.PMDRuntimeConstants;
-import net.sourceforge.pmd.eclipse.runtime.builder.MarkerUtil;
-import net.sourceforge.pmd.eclipse.ui.PMDUiConstants;
-import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
-import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
-
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IMethod;
+
+import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
+import net.sourceforge.pmd.eclipse.runtime.PMDRuntimeConstants;
+import net.sourceforge.pmd.eclipse.runtime.builder.MarkerUtil;
+import net.sourceforge.pmd.eclipse.ui.PMDUiConstants;
+import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
+import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.util.StringUtil;
 
 /**
  * This class holds information for use with the dataflow view. It contains a
@@ -67,8 +67,10 @@ public class DataflowMethodRecord {
     /**
      * Constructor
      *
-     * @param javaMethod, the Method of the JavaModel
-     * @param pmdMethod, the corresponding PMD-SimpleNode / ASTMethodDeclaration
+     * @param javaMethod,
+     *            the Method of the JavaModel
+     * @param pmdMethod,
+     *            the corresponding PMD-SimpleNode / ASTMethodDeclaration
      */
     public DataflowMethodRecord(IMethod javaMethod, Node pmdMethod) {
         if (javaMethod == null) {
@@ -110,14 +112,15 @@ public class DataflowMethodRecord {
      * @return a List of Anomalies
      */
     public IMarker[] getMarkers() {
-    	// TODO optimize this to avoid creation when no results found
+        // TODO optimize this to avoid creation when no results found
         final List<IMarker> markers = new ArrayList<IMarker>();
         try {
             if (method.getResource().isAccessible()) {
 
                 // we can only find Markers for a file
                 // we use the DFA-Marker-ID set for Dataflow Anomalies
-                final IMarker[] allMarkers = MarkerUtil.findMarkers(method.getResource(), PMDRuntimeConstants.PMD_DFA_MARKER);
+                final IMarker[] allMarkers = MarkerUtil.findMarkers(method.getResource(),
+                        PMDRuntimeConstants.PMD_DFA_MARKER);
 
                 // we only want to get the Markers for this Method,
                 // so we need to "extract" them from the whole List
@@ -197,13 +200,11 @@ public class DataflowMethodRecord {
 
                 // if it is a String, it has to be the Variable
                 // or Message, which shouldn't be empty
-                if (values[k] instanceof String && StringUtil.isEmpty((String)values[k])) {
+                if (values[k] instanceof String && StringUtil.isEmpty((String) values[k])) {
                     isValid = false;
-                }
-
-                // else it is one of the Lines (Line, Line2)
-                // and they also should not be 0
-                else if (values[k] instanceof Number && ((Number) values[k]).intValue() == 0) {
+                } else if (values[k] instanceof Number && ((Number) values[k]).intValue() == 0) {
+                    // else it is one of the Lines (Line, Line2)
+                    // and they also should not be 0
                     isValid = false;
                 }
             }
@@ -237,11 +238,10 @@ public class DataflowMethodRecord {
                 boolean markersAreEqual = true;
                 for (int j = 0; j < listAttr.length; j++) {
                     // compare the String- and Integer-Values
-                    if (markerAttr[j] instanceof String && !((String) markerAttr[j]).equalsIgnoreCase((String) listAttr[j])) {
+                    if (markerAttr[j] instanceof String
+                            && !((String) markerAttr[j]).equalsIgnoreCase((String) listAttr[j])) {
                         markersAreEqual = false;
-                    }
-
-                    else if (markerAttr[j] instanceof Integer && !((Integer) markerAttr[j]).equals(listAttr[j])) {
+                    } else if (markerAttr[j] instanceof Integer && !((Integer) markerAttr[j]).equals(listAttr[j])) {
                         markersAreEqual = false;
                     }
                 }

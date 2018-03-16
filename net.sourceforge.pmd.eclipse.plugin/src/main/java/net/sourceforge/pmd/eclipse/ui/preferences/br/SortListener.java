@@ -6,5 +6,5 @@ package net.sourceforge.pmd.eclipse.ui.preferences.br;
  */
 public interface SortListener {
 
-	void sortBy(Object accessor, Object context);
+    void sortBy(Object accessor, Object context);
 }

@@ -1,3 +1,4 @@
+
 package net.sourceforge.pmd.eclipse.ui.preferences.br;
 
 import net.sourceforge.pmd.Rule;
@@ -8,12 +9,12 @@ import net.sourceforge.pmd.Rule;
  */
 public interface RuleVisitor {
 
-	/**
-	 * Process the rule provided and return whether to continue
-	 * processing other rules.
-	 * 
-	 * @param rule
-	 * @return boolean
-	 */
-	public boolean accept(Rule rule);
+    /**
+     * Process the rule provided and return whether to continue processing other
+     * rules.
+     * 
+     * @param rule
+     * @return boolean
+     */
+    boolean accept(Rule rule);
 }

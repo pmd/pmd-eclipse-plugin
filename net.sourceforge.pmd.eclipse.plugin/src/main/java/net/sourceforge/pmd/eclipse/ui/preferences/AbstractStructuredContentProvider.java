@@ -1,3 +1,4 @@
+
 package net.sourceforge.pmd.eclipse.ui.preferences;
 
 import org.eclipse.jface.viewers.IStructuredContentProvider;
@@ -11,15 +12,16 @@ import org.eclipse.jface.viewers.Viewer;
  */
 public abstract class AbstractStructuredContentProvider implements IStructuredContentProvider {
 
-	/**
-	 * @see org.eclipse.jface.viewers.IContentProvider#dispose()
-	 */
-	public void dispose() {
-	}
+    /**
+     * @see org.eclipse.jface.viewers.IContentProvider#dispose()
+     */
+    public void dispose() {
+    }
 
-	/**
-	 * @see org.eclipse.jface.viewers.IContentProvider#inputChanged(Viewer, Object, Object)
-	 */
-	public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-	}
+    /**
+     * @see org.eclipse.jface.viewers.IContentProvider#inputChanged(Viewer,
+     *      Object, Object)
+     */
+    public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+    }
 }

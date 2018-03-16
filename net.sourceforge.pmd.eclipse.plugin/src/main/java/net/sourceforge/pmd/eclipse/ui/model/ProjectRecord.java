@@ -40,9 +40,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
-import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
-
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
@@ -54,6 +51,9 @@ import org.eclipse.jdt.core.IPackageFragment;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
+
+import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
+import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
 
 /**
  * AbstractPMDRecord for Projects creates Packages when instantiated
@@ -70,8 +70,10 @@ public class ProjectRecord extends AbstractPMDRecord {
     /**
      * Constructor
      *
-     * @param proj, the Project
-     * @param record, the RootRecord
+     * @param proj,
+     *            the Project
+     * @param record,
+     *            the RootRecord
      */
     public ProjectRecord(IProject project, RootRecord record) {
         super();
@@ -87,14 +89,13 @@ public class ProjectRecord extends AbstractPMDRecord {
 
         this.project = project;
         this.parent = record;
-        
+
         try {
-			isJavaProject = project.hasNature(JavaCore.NATURE_ID);
-		}
-		catch (CoreException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+            isJavaProject = project.hasNature(JavaCore.NATURE_ID);
+        } catch (CoreException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
 
         if (project.isAccessible()) {
             children = createChildren();
@@ -141,26 +142,26 @@ public class ProjectRecord extends AbstractPMDRecord {
                 public boolean visit(IResource resource) throws CoreException {
                     boolean visitChildren;
                     switch (resource.getType()) {
-	                    case IResource.FOLDER:
-	                        visitChildren = (ProjectRecord.this.isJavaProject) ? visitAsPackages(resource) : visitAsFolders(resource);
-	                        break;
-	                    case IResource.PROJECT:
-	                        visitChildren = true;
-	                        break;
-	                    default:
-	                        visitChildren = false;
+                    case IResource.FOLDER:
+                        visitChildren = (ProjectRecord.this.isJavaProject) ? visitAsPackages(resource)
+                                : visitAsFolders(resource);
+                        break;
+                    case IResource.PROJECT:
+                        visitChildren = true;
+                        break;
+                    default:
+                        visitChildren = false;
                     }
-                    
+
                     return visitChildren;
                 }
-                
+
                 private Boolean visitAsPackages(IResource resource) {
-                	IJavaElement javaMember = JavaCore.create(resource);
-                	
-                	if(javaMember == null) {
-                		return true;
-                	}
-                	else {
+                    IJavaElement javaMember = JavaCore.create(resource);
+
+                    if (javaMember == null) {
+                        return true;
+                    } else {
                         if (javaMember instanceof IPackageFragmentRoot) {
                             // if the Element is the Root of all Packages
                             // get all packages from it and add them to the
@@ -174,17 +175,17 @@ public class ProjectRecord extends AbstractPMDRecord {
                             // if the Element is a Package get its Root and
                             // do the same as above
                             final IPackageFragment fragment = (IPackageFragment) javaMember;
-                            packages.addAll(createPackagesFromFragmentRoot((IPackageFragmentRoot) fragment.getParent()));
+                            packages.addAll(
+                                    createPackagesFromFragmentRoot((IPackageFragmentRoot) fragment.getParent()));
                         }
-                        
+
                         return false;
-                	}
+                    }
                 }
-                
-                
+
                 private Boolean visitAsFolders(IResource resource) {
-                	IFolder folder = (IFolder) resource;
-                	packages.addAll(createPackagesFromFolderRoot(folder));
+                    IFolder folder = (IFolder) resource;
+                    packages.addAll(createPackagesFromFolderRoot(folder));
                     return false;
                 }
             });
@@ -195,9 +196,6 @@ public class ProjectRecord extends AbstractPMDRecord {
         // return the List as an Array of Packages
         return packages.toArray(new AbstractPMDRecord[packages.size()]);
     }
-    
-    
-    
 
     /**
      * Search for the Packages to a given FragmentRoot (Package-Root) and create
@@ -216,12 +214,7 @@ public class ProjectRecord extends AbstractPMDRecord {
                 if (fragment instanceof IPackageFragment) {
                     // create a PackageRecord for the Fragment
                     // and add it to the list
-                    packages.add(new PackageRecord((IPackageFragment) fragment, this)); // NOPMD
-                                                                                            // by
-                                                                                            // Herlin
-                                                                                            // on
-                                                                                            // 09/10/06
-                                                                                            // 00:47
+                    packages.add(new PackageRecord((IPackageFragment) fragment, this));
                 }
             }
         } catch (JavaModelException jme) {
@@ -235,15 +228,14 @@ public class ProjectRecord extends AbstractPMDRecord {
         final Set<FolderRecord> folder = new HashSet<FolderRecord>();
 
         try {
-			for (IResource resource : rootFolder.members()) {
-			    if (resource instanceof IFolder) {
-			        folder.add(new FolderRecord((IFolder) resource, this)); // NOPMD
-			    }
-			}
-		}
-		catch (CoreException e) {
-			e.printStackTrace();
-		}
+            for (IResource resource : rootFolder.members()) {
+                if (resource instanceof IFolder) {
+                    folder.add(new FolderRecord((IFolder) resource, this)); // NOPMD
+                }
+            }
+        } catch (CoreException e) {
+            e.printStackTrace();
+        }
 
         return folder;
     }
@@ -282,12 +274,11 @@ public class ProjectRecord extends AbstractPMDRecord {
 
         // we only care about Files
         if (resource instanceof IFile) {
-        	if(isJavaProject) {
-        		added = addToJavaProject(resource);
-        	}
-        	else {
-        		added = addToOtherProject(resource);
-        	}
+            if (isJavaProject) {
+                added = addToJavaProject(resource);
+            } else {
+                added = addToOtherProject(resource);
+            }
         }
 
         return added;
@@ -302,23 +293,21 @@ public class ProjectRecord extends AbstractPMDRecord {
 
         // we only care about Files
         if (resource instanceof IFile) {
-        	if(isJavaProject) {
-        		removed = removeFromJavaProject(resource);
-        	}
-        	else {
-        		removed = removeFromOtherProject(resource);
-        	}
+            if (isJavaProject) {
+                removed = removeFromJavaProject(resource);
+            } else {
+                removed = removeFromOtherProject(resource);
+            }
         }
 
         return removed;
     }
-    
-    
+
     private AbstractPMDRecord removeFromJavaProject(IResource resource) {
-    	AbstractPMDRecord removedResource = null;
-    	
-    	IPackageFragment fragment;
-    	
+        AbstractPMDRecord removedResource = null;
+
+        IPackageFragment fragment;
+
         final IJavaElement element = JavaCore.create(resource.getParent());
         if (element instanceof IPackageFragment) {
             fragment = (IPackageFragment) element;
@@ -341,32 +330,26 @@ public class ProjectRecord extends AbstractPMDRecord {
                     final List<AbstractPMDRecord> packages = getChildrenAsList();
                     packages.remove(packageRec);
 
-                    children = new AbstractPMDRecord[packages.size()]; // NOPMD
-                                                                            // by
-                                                                            // Herlin
-                                                                            // on
-                                                                            // 09/10/06
-                                                                            // 00:54
+                    children = new AbstractPMDRecord[packages.size()];
                     packages.toArray(children);
                 }
 
                 removedResource = fileRec;
             }
         }
-        
+
         return removedResource;
     }
-    
-    
+
     private AbstractPMDRecord removeFromOtherProject(IResource resource) {
-    	AbstractPMDRecord removedResource = null;
-    	
-    	IFolder folder = (IFolder) resource.getParent();
+        AbstractPMDRecord removedResource = null;
+
+        IFolder folder = (IFolder) resource.getParent();
         FolderRecord folderRec;
 
         // like above we compare Fragments to find the right Package
         for (int k = 0; k < children.length && removedResource == null; k++) {
-        	folderRec = (FolderRecord) children[k];
+            folderRec = (FolderRecord) children[k];
             if (folderRec.getFolder().equals(folder)) {
 
                 // if we found it, we remove the File
@@ -377,27 +360,21 @@ public class ProjectRecord extends AbstractPMDRecord {
                     final List<AbstractPMDRecord> packages = getChildrenAsList();
                     packages.remove(folderRec);
 
-                    children = new AbstractPMDRecord[packages.size()]; // NOPMD
-                                                                            // by
-                                                                            // Herlin
-                                                                            // on
-                                                                            // 09/10/06
-                                                                            // 00:54
+                    children = new AbstractPMDRecord[packages.size()];
                     packages.toArray(children);
                 }
 
                 removedResource = fileRec;
             }
         }
-        
+
         return removedResource;
     }
-    
-    
+
     private AbstractPMDRecord addToJavaProject(IResource resource) {
-		AbstractPMDRecord addedResource = null;
-    	
-		IJavaElement javaMember = JavaCore.create(resource.getParent());
+        AbstractPMDRecord addedResource = null;
+
+        IJavaElement javaMember = JavaCore.create(resource.getParent());
         if (javaMember instanceof IPackageFragmentRoot) {
             javaMember = ((IPackageFragmentRoot) javaMember).getPackageFragment("");
         }
@@ -407,13 +384,13 @@ public class ProjectRecord extends AbstractPMDRecord {
         // we search int the children Packages for the File's Package
         // by comparing their Fragments
         for (int k = 0; k < children.length && addedResource == null; k++) {
-    		final PackageRecord packageRec = (PackageRecord) children[k];
-			if (packageRec.getFragment().equals(fragment)) {
-				// if the Package exists
-				// we delegate to its addResource-function
-				addedResource = packageRec.addResource(resource);
-			}
-    	}
+            final PackageRecord packageRec = (PackageRecord) children[k];
+            if (packageRec.getFragment().equals(fragment)) {
+                // if the Package exists
+                // we delegate to its addResource-function
+                addedResource = packageRec.addResource(resource);
+            }
+        }
 
         // ... else we create a new Record for the new Package
         if (addedResource == null) {
@@ -425,27 +402,26 @@ public class ProjectRecord extends AbstractPMDRecord {
             children = new AbstractPMDRecord[packages.size()];
             packages.toArray(children);
             addedResource = packageRec.addResource(resource);
-         }
-        
+        }
+
         return addedResource;
     }
-    
-    
+
     private AbstractPMDRecord addToOtherProject(IResource resource) {
-    	AbstractPMDRecord addedResource = null;
-    	
-		IFolder folder = (IFolder) resource.getParent();
+        AbstractPMDRecord addedResource = null;
+
+        IFolder folder = (IFolder) resource.getParent();
 
         // we search int the children Packages for the File's Package
         // by comparing their Fragments
         for (int k = 0; k < children.length && addedResource == null; k++) {
-    		final FolderRecord folderRec = (FolderRecord) children[k];
-			if (folderRec.getFolder().equals(folder)) {
-				// if the Package exists
-				// we delegate to its addResource-function
-				addedResource = folderRec.addResource(resource);
-			}
-    	}
+            final FolderRecord folderRec = (FolderRecord) children[k];
+            if (folderRec.getFolder().equals(folder)) {
+                // if the Package exists
+                // we delegate to its addResource-function
+                addedResource = folderRec.addResource(resource);
+            }
+        }
 
         // ... else we create a new Record for the new Package
         if (addedResource == null) {
@@ -457,8 +433,8 @@ public class ProjectRecord extends AbstractPMDRecord {
             children = new AbstractPMDRecord[packages.size()];
             packages.toArray(children);
             addedResource = packageRec.addResource(resource);
-         }
-        
+        }
+
         return addedResource;
     }
 
@@ -493,7 +469,9 @@ public class ProjectRecord extends AbstractPMDRecord {
     /*
      * (non-Javadoc)
      *
-     * @see net.sourceforge.pmd.eclipse.ui.model.AbstractPMDRecord#getNumberOfMethods()
+     * @see
+     * net.sourceforge.pmd.eclipse.ui.model.AbstractPMDRecord#getNumberOfMethods
+     * ()
      */
     @Override
     public int getNumberOfMethods() {

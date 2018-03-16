@@ -1,3 +1,4 @@
+
 package net.sourceforge.pmd.eclipse.ui.preferences.br;
 
 /**
@@ -6,7 +7,5 @@ package net.sourceforge.pmd.eclipse.ui.preferences.br;
  */
 public enum ImplementationType {
 
-	XPath,
-	Java,
-	Mixed
+    XPath, Java, Mixed
 }

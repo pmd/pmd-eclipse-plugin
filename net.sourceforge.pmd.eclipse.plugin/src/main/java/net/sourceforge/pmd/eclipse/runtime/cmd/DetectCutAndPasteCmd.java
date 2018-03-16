@@ -163,7 +163,7 @@ public class DetectCutAndPasteCmd extends AbstractProjectCommand {
     }
 
     /**
-     * @param language
+     * @param LANGUAGE
      *            The language to set.
      */
     public void setLanguage(String theLanguage) {

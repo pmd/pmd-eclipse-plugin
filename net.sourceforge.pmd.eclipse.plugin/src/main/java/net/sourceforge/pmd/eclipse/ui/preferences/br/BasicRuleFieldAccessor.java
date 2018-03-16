@@ -26,8 +26,9 @@ public class BasicRuleFieldAccessor implements RuleFieldAccessor {
 
     public Comparable<?> valueFor(RuleCollection collection) {
         Comparable<?> aspect = RuleUtil.commonAspect(collection, this);
-        if (aspect != null)
+        if (aspect != null) {
             return aspect;
+        }
         return asString(RuleUtil.uniqueAspects(collection, this));
     }
 
@@ -42,8 +43,9 @@ public class BasicRuleFieldAccessor implements RuleFieldAccessor {
     protected String asString(Set<Comparable<?>> items) {
 
         Iterator<Comparable<?>> iter = items.iterator();
-        if (items.size() == 1)
+        if (items.size() == 1) {
             return format(iter.next());
+        }
 
         StringBuilder sb = new StringBuilder(format(iter.next()));
         while (iter.hasNext()) {

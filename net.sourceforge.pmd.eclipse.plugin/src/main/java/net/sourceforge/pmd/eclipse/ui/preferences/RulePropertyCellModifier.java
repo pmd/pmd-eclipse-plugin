@@ -1,3 +1,4 @@
+
 package net.sourceforge.pmd.eclipse.ui.preferences;
 
 import org.apache.log4j.Logger;
@@ -13,9 +14,9 @@ import org.eclipse.swt.widgets.TableItem;
  *
  */
 public class RulePropertyCellModifier implements ICellModifier {
-    private static final Logger log = Logger.getLogger(RulePropertyCellModifier.class);
+    private static final Logger LOG = Logger.getLogger(RulePropertyCellModifier.class);
     private TableViewer tableViewer;
-    
+
     /**
      * Constructor
      */
@@ -39,28 +40,29 @@ public class RulePropertyCellModifier implements ICellModifier {
             RuleProperty ruleProperty = (RuleProperty) element;
             if (property.equalsIgnoreCase(PMDPreferencePage.PROPERTY_PROPERTY)) {
                 result = ruleProperty.getProperty();
-                log.debug("Interrogation de la propriété : " + result);
+                LOG.debug("Interrogation de la propriété : " + result);
             } else if (property.equalsIgnoreCase(PMDPreferencePage.PROPERTY_VALUE)) {
                 result = ruleProperty.getValue();
-                log.debug("Interrogation de la valeur de la propriété : " + result);
+                LOG.debug("Interrogation de la valeur de la propriété : " + result);
             }
         }
         return result;
     }
 
     /**
-     * @see org.eclipse.jface.viewers.ICellModifier#modify(Object, String, Object)
+     * @see org.eclipse.jface.viewers.ICellModifier#modify(Object, String,
+     *      Object)
      */
     public void modify(Object element, String property, Object value) {
         TableItem item = (TableItem) element;
-        
+
         if (item.getData() instanceof RuleProperty) {
             RuleProperty ruleProperty = (RuleProperty) item.getData();
             if (property.equalsIgnoreCase(PMDPreferencePage.PROPERTY_VALUE)) {
                 ruleProperty.setValue((String) value);
-                tableViewer.update(ruleProperty, new String[] {PMDPreferencePage.PROPERTY_VALUE});
+                tableViewer.update(ruleProperty, new String[] { PMDPreferencePage.PROPERTY_VALUE });
                 PMDPreferencePage.getActiveInstance().setModified(true);
-                log.debug("modification de la valeur de la propriété : " + value);
+                LOG.debug("modification de la valeur de la propriété : " + value);
             }
         }
     }

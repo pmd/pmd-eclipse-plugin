@@ -37,9 +37,9 @@ public class PreferenceUIStore {
     private static final char STRING_SEPARATOR = ',';
 
     private static final RuleColumnDescriptor[] DEFAULT_HIDDEN_COLUMNS = new RuleColumnDescriptor[] {
-        RuleTableColumns.externalURL, RuleTableColumns.minLangVers, RuleTableColumns.fixCount,
-        RuleTableColumns.exampleCount, RuleTableColumns.maxLangVers, RuleTableColumns.since,
-        RuleTableColumns.modCount };
+        RuleTableColumns.EXTERNAL_URL, RuleTableColumns.MIN_LANGUAGE_VERSION, RuleTableColumns.FIX_COUNT,
+        RuleTableColumns.EXAMPLE_COUNT, RuleTableColumns.MAX_LANGUAGE_VERSION, RuleTableColumns.SINCE,
+        RuleTableColumns.MOD_COUNT };
 
     private static final boolean DEFAULT_SORT_UP = false;
 

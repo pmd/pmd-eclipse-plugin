@@ -1,3 +1,4 @@
+
 package net.sourceforge.pmd.eclipse.ui.preferences.br;
 
 import java.lang.reflect.InvocationTargetException;
@@ -51,115 +52,121 @@ import net.sourceforge.pmd.properties.PropertySource;
  * 
  * @author Brian Remedios
  */
-public class PMDPreferencePage2 extends AbstractPMDPreferencePage implements RuleSelectionListener, ModifyListener, ValueChangeListener, ValueResetHandler {
+public class PMDPreferencePage2 extends AbstractPMDPreferencePage
+        implements RuleSelectionListener, ModifyListener, ValueChangeListener, ValueResetHandler {
 
-	private TabFolder 		     	tabFolder;
-	private RulePropertyManager[]   rulePropertyManagers;
-	private RuleTableManager		tableManager;
-	private Button                  globalRuleManagementCheckButton;
-    	
-	// columns shown in the rule treetable in the desired order
-	public static final RuleColumnDescriptor[] availableColumns = new RuleColumnDescriptor[] {
-		RuleTableColumns.name,
-		//PreferenceTableColumns.priorityName,
-	//	IconColumnDescriptor.priority,
-		RuleTableColumns.imgPriority,
-	//	PreferenceTableColumns.fixCount,
-		RuleTableColumns.since,
-		RuleTableColumns.ruleSetName,
-		RuleTableColumns.ruleType,
-		RuleTableColumns.minLangVers,
-		RuleTableColumns.maxLangVers,
-		RuleTableColumns.language,
-		RuleTableColumns.filterViolationRegex,    // regex text -> compact color squares (for comparison)
-		RuleTableColumns.filterViolationXPath,    // xpath text -> compact color circles (for comparison)
-		RuleTableColumns.modCount,
-	//	PreferenceTableColumns.properties		
-		RuleTableColumns.imgProperties
-		};
+    private TabFolder tabFolder;
+    private RulePropertyManager[] rulePropertyManagers;
+    private RuleTableManager tableManager;
+    private Button globalRuleManagementCheckButton;
 
-	// last item in this list is the grouping used at startup
-	public static final Object[][] groupingChoices = new Object[][] {
-		{ RuleTableColumns.ruleSetName,       	StringKeys.PREF_RULESET_COLUMN_RULESET},
-		{ RuleTableColumns.since,             	StringKeys.PREF_RULESET_GROUPING_PMD_VERSION },
-		{ RuleTableColumns.priorityName,      	StringKeys.PREF_RULESET_COLUMN_PRIORITY },
-		{ RuleTableColumns.ruleType,          	StringKeys.PREF_RULESET_COLUMN_RULE_TYPE },
-		{ RuleTableColumns.language,		  		StringKeys.PREF_RULESET_COLUMN_LANGUAGE },
-        { RuleTableColumns.filterViolationRegex,	StringKeys.PREF_RULESET_GROUPING_REGEX },
-		{ null, 								  	StringKeys.PREF_RULESET_GROUPING_NONE }
-		};
+    // columns shown in the rule treetable in the desired order
+    public static final RuleColumnDescriptor[] AVAILABLE_COLUMNS = new RuleColumnDescriptor[] { RuleTableColumns.NAME,
+        // PreferenceTableColumns.priorityName,
+        // IconColumnDescriptor.priority,
+        RuleTableColumns.IMG_PRIORITY,
+        // PreferenceTableColumns.fixCount,
+        RuleTableColumns.SINCE, RuleTableColumns.RULE_SET_NAME, RuleTableColumns.RULE_TYPE, RuleTableColumns.MIN_LANGUAGE_VERSION,
+        RuleTableColumns.MAX_LANGUAGE_VERSION, RuleTableColumns.LANGUAGE,
+        // regex text -> compact color squares (for comparison)
+        RuleTableColumns.FILTER_VIOLATION_REGEX,
+        // xpath text -> compact color circles (for comparison)
+        RuleTableColumns.FILTER_VIOLATION_XPATH, 
+        RuleTableColumns.MOD_COUNT,
+        // PreferenceTableColumns.properties
+        RuleTableColumns.IMG_PROPERTIES };
 
-	public PMDPreferencePage2() {
+    // last item in this list is the grouping used at startup
+    public static final Object[][] GROUPING_CHOICES = new Object[][] {
+        { RuleTableColumns.RULE_SET_NAME, StringKeys.PREF_RULESET_COLUMN_RULESET },
+        { RuleTableColumns.SINCE, StringKeys.PREF_RULESET_GROUPING_PMD_VERSION },
+        { RuleTableColumns.PRIORITY_NAME, StringKeys.PREF_RULESET_COLUMN_PRIORITY },
+        { RuleTableColumns.RULE_TYPE, StringKeys.PREF_RULESET_COLUMN_RULE_TYPE },
+        { RuleTableColumns.LANGUAGE, StringKeys.PREF_RULESET_COLUMN_LANGUAGE },
+        { RuleTableColumns.FILTER_VIOLATION_REGEX, StringKeys.PREF_RULESET_GROUPING_REGEX },
+        { null, StringKeys.PREF_RULESET_GROUPING_NONE } };
 
-	}
+    public PMDPreferencePage2() {
 
-	public static RulePropertyManager[] buildPropertyManagersOn(TabFolder folder, ValueChangeListener listener) {
-		
-		return new RulePropertyManager[] {
-			    buildFullViewTab(folder,    0, SWTUtil.stringFor(StringKeys.PREF_RULESET_TAB_FULLVIEW), listener),
-				buildRuleTab(folder,    	1, SWTUtil.stringFor(StringKeys.PREF_RULESET_TAB_RULE), listener),
-//			    buildDescriptionTab(folder, 2, SWTUtil.stringFor(StringKeys.PREF_RULESET_TAB_DESCRIPTION), listener),
-			    buildPropertyTab(folder,    2, SWTUtil.stringFor(StringKeys.PREF_RULESET_TAB_PROPERTIES), listener),
-			    buildExclusionTab(folder,   3, SWTUtil.stringFor(StringKeys.PREF_RULESET_TAB_EXCLUSIONS), listener),
-			    buildXPathTab(folder,       4, SWTUtil.stringFor(StringKeys.PREF_RULESET_TAB_XPATH), listener),
-//			    buildQuickFixTab(folder,    6, SWTUtil.stringFor(StringKeys.MSGKEY_PREF_RULESET_TAB_FIXES), listener),
-//			    buildExampleTab(folder,     6, SWTUtil.stringFor(StringKeys.PREF_RULESET_TAB_EXAMPLES), listener),
-			    };
-	}
+    }
 
-	protected String descriptionId() {
-		return StringKeys.PREF_RULESET_TITLE;
-	}
+    public static RulePropertyManager[] buildPropertyManagersOn(TabFolder folder, ValueChangeListener listener) {
 
-	@Override
-	protected Control createContents(Composite parent) {
+        return new RulePropertyManager[] {
+            buildFullViewTab(folder, 0, SWTUtil.stringFor(StringKeys.PREF_RULESET_TAB_FULLVIEW), listener),
+            buildRuleTab(folder, 1, SWTUtil.stringFor(StringKeys.PREF_RULESET_TAB_RULE), listener),
+            // buildDescriptionTab(folder, 2,
+            // SWTUtil.stringFor(StringKeys.PREF_RULESET_TAB_DESCRIPTION),
+            // listener),
+            buildPropertyTab(folder, 2, SWTUtil.stringFor(StringKeys.PREF_RULESET_TAB_PROPERTIES), listener),
+            buildExclusionTab(folder, 3, SWTUtil.stringFor(StringKeys.PREF_RULESET_TAB_EXCLUSIONS), listener),
+            buildXPathTab(folder, 4, SWTUtil.stringFor(StringKeys.PREF_RULESET_TAB_XPATH), listener),
+            // buildQuickFixTab(folder, 6,
+            // SWTUtil.stringFor(StringKeys.MSGKEY_PREF_RULESET_TAB_FIXES),
+            // listener),
+            // buildExampleTab(folder, 6,
+            // SWTUtil.stringFor(StringKeys.PREF_RULESET_TAB_EXAMPLES),
+            // listener),
+        };
+    }
 
-		tableManager = new RuleTableManager("rules", availableColumns, PMDPlugin.getDefault().loadPreferences(), this);
-		tableManager.modifyListener(this);
-		tableManager.selectionListener(this);
+    protected String descriptionId() {
+        return StringKeys.PREF_RULESET_TITLE;
+    }
 
-	    populateRuleset();
+    @Override
+    protected Control createContents(Composite parent) {
 
-		Composite composite = new Composite(parent, SWT.NULL);
-		layoutControls(composite);
+        tableManager = new RuleTableManager("rules", AVAILABLE_COLUMNS, PMDPlugin.getDefault().loadPreferences(), this);
+        tableManager.modifyListener(this);
+        tableManager.selectionListener(this);
 
-		tableManager.populateRuleTable();
-		int i =  PreferenceUIStore.INSTANCE.selectedPropertyTab() ;
-		tabFolder.setSelection( i );
+        populateRuleset();
 
-		return composite;
-	}
+        Composite composite = new Composite(parent, SWT.NULL);
+        layoutControls(composite);
 
-	public void createControl(Composite parent) {
-		super.createControl(parent);
+        tableManager.populateRuleTable();
+        int i = PreferenceUIStore.INSTANCE.selectedPropertyTab();
+        tabFolder.setSelection(i);
 
-		setModified(false);
-	}
-	/**
-	 * Create buttons for rule properties table management
-	 * @param parent Composite
-	 * @return Composite
-	 */
-	public static Composite buildRulePropertiesTableButtons(Composite parent) {
-		Composite composite = new Composite(parent, SWT.NULL);
-		RowLayout rowLayout = new RowLayout();
-		rowLayout.type = SWT.VERTICAL;
-		rowLayout.wrap = false;
-		rowLayout.pack = false;
-		composite.setLayout(rowLayout);
+        return composite;
+    }
 
-		return composite;
-	}
+    public void createControl(Composite parent) {
+        super.createControl(parent);
 
-	private Composite createRuleSection(Composite parent) {
+        setModified(false);
+    }
 
-	    Composite ruleSection = new Composite(parent, SWT.NULL);
+    /**
+     * Create buttons for rule properties table management
+     * 
+     * @param parent
+     *            Composite
+     * @return Composite
+     */
+    public static Composite buildRulePropertiesTableButtons(Composite parent) {
+        Composite composite = new Composite(parent, SWT.NULL);
+        RowLayout rowLayout = new RowLayout();
+        rowLayout.type = SWT.VERTICAL;
+        rowLayout.wrap = false;
+        rowLayout.pack = false;
+        composite.setLayout(rowLayout);
 
-	    // Create the controls (order is important !)
-        Composite groupCombo = tableManager.buildGroupCombo(ruleSection, StringKeys.PREF_RULESET_RULES_GROUPED_BY, groupingChoices);
+        return composite;
+    }
 
-	    Tree ruleTree = tableManager.buildRuleTreeViewer(ruleSection);
-	    tableManager.groupBy(null);
+    private Composite createRuleSection(Composite parent) {
+
+        Composite ruleSection = new Composite(parent, SWT.NULL);
+
+        // Create the controls (order is important !)
+        Composite groupCombo = tableManager.buildGroupCombo(ruleSection, StringKeys.PREF_RULESET_RULES_GROUPED_BY,
+                GROUPING_CHOICES);
+
+        Tree ruleTree = tableManager.buildRuleTreeViewer(ruleSection);
+        tableManager.groupBy(null);
 
         Composite ruleTableButtons = tableManager.buildRuleTableButtons(ruleSection);
         Composite rulePropertiesTableButtons = buildRulePropertiesTableButtons(ruleSection);
@@ -173,206 +180,229 @@ public class PMDPreferencePage2 extends AbstractPMDPreferencePage implements Rul
         groupCombo.setLayoutData(data);
 
         data = new GridData();
-        data.heightHint = 200;                          data.widthHint = 350;
+        data.heightHint = 200;
+        data.widthHint = 350;
         data.horizontalSpan = 1;
-        data.horizontalAlignment = GridData.FILL;       data.verticalAlignment = GridData.FILL;
-        data.grabExcessHorizontalSpace = true;          data.grabExcessVerticalSpace = true;
+        data.horizontalAlignment = GridData.FILL;
+        data.verticalAlignment = GridData.FILL;
+        data.grabExcessHorizontalSpace = true;
+        data.grabExcessVerticalSpace = true;
         ruleTree.setLayoutData(data);
 
         data = new GridData();
         data.horizontalSpan = 1;
-        data.horizontalAlignment = GridData.FILL;       data.verticalAlignment = GridData.FILL;
+        data.horizontalAlignment = GridData.FILL;
+        data.verticalAlignment = GridData.FILL;
         ruleTableButtons.setLayoutData(data);
 
         data = new GridData();
         data.horizontalSpan = 1;
-        data.horizontalAlignment = GridData.FILL;       data.verticalAlignment = GridData.FILL;
+        data.horizontalAlignment = GridData.FILL;
+        data.verticalAlignment = GridData.FILL;
         rulePropertiesTableButtons.setLayoutData(data);
 
         return ruleSection;
-	}
-
-	/**
-	 * Method buildTabFolder.
-	 * @param parent Composite
-	 * @return TabFolder
-	 */
-	private TabFolder buildTabFolder(Composite parent) {
-
-		tabFolder = new TabFolder(parent, SWT.TOP);
-
-		rulePropertyManagers = buildPropertyManagersOn(tabFolder, this);
-
-		tabFolder.pack();
-		return tabFolder;
-	}
-
-	/**
-	 * @param parent TabFolder
-	 * @param index int
-	 */
-	private static RulePropertyManager buildRuleTab(TabFolder parent, int index, String title, ValueChangeListener listener) {
-
-	    TabItem tab = new TabItem(parent, 0, index);
-	    tab.setText(title);
-
-		RulePanelManager manager = new RulePanelManager(title, EditorUsageMode.Editing, listener, null);
-		tab.setControl(
-		    manager.setupOn(parent)
-		    );
-		manager.tab(tab);
-		return manager;
-	}
-	
-	/**
-	 * @param parent TabFolder
-	 * @param index int
-	 */
-	private static RulePropertyManager buildPropertyTab(TabFolder parent, int index, String title, ValueChangeListener listener) {
-
-	    TabItem tab = new TabItem(parent, 0, index);
-	    tab.setText(title);
-
-		PerRulePropertyPanelManager manager = new PerRulePropertyPanelManager(title, EditorUsageMode.Editing, listener);
-		tab.setControl(
-		    manager.setupOn(parent)
-		    );
-		manager.tab(tab);
-		return manager;
-	}
-
-	/**
-	 * @param parent TabFolder
-	 * @param index int
-	 */
-	private static RulePropertyManager buildDescriptionTab(TabFolder parent, int index, String title, ValueChangeListener listener) {
-
-		TabItem tab = new TabItem(parent, 0, index);
-		tab.setText(title);
-
-        DescriptionPanelManager manager = new DescriptionPanelManager(title, EditorUsageMode.Editing, listener);
-        tab.setControl(
-            manager.setupOn(parent)
-            );
-        manager.tab(tab);
-        return manager;
-	}
+    }
 
     /**
-     * @param parent TabFolder
-     * @param index int
+     * Method buildTabFolder.
+     * 
+     * @param parent
+     *            Composite
+     * @return TabFolder
      */
-    private static RulePropertyManager buildXPathTab(TabFolder parent, int index, String title, ValueChangeListener listener) {
+    private TabFolder buildTabFolder(Composite parent) {
+
+        tabFolder = new TabFolder(parent, SWT.TOP);
+
+        rulePropertyManagers = buildPropertyManagersOn(tabFolder, this);
+
+        tabFolder.pack();
+        return tabFolder;
+    }
+
+    /**
+     * @param parent
+     *            TabFolder
+     * @param index
+     *            int
+     */
+    private static RulePropertyManager buildRuleTab(TabFolder parent, int index, String title,
+            ValueChangeListener listener) {
+
+        TabItem tab = new TabItem(parent, 0, index);
+        tab.setText(title);
+
+        RulePanelManager manager = new RulePanelManager(title, EditorUsageMode.Editing, listener, null);
+        tab.setControl(manager.setupOn(parent));
+        manager.tab(tab);
+        return manager;
+    }
+
+    /**
+     * @param parent
+     *            TabFolder
+     * @param index
+     *            int
+     */
+    private static RulePropertyManager buildPropertyTab(TabFolder parent, int index, String title,
+            ValueChangeListener listener) {
+
+        TabItem tab = new TabItem(parent, 0, index);
+        tab.setText(title);
+
+        PerRulePropertyPanelManager manager = new PerRulePropertyPanelManager(title, EditorUsageMode.Editing, listener);
+        tab.setControl(manager.setupOn(parent));
+        manager.tab(tab);
+        return manager;
+    }
+
+    /**
+     * @param parent
+     *            TabFolder
+     * @param index
+     *            int
+     */
+    private static RulePropertyManager buildDescriptionTab(TabFolder parent, int index, String title,
+            ValueChangeListener listener) {
+
+        TabItem tab = new TabItem(parent, 0, index);
+        tab.setText(title);
+
+        DescriptionPanelManager manager = new DescriptionPanelManager(title, EditorUsageMode.Editing, listener);
+        tab.setControl(manager.setupOn(parent));
+        manager.tab(tab);
+        return manager;
+    }
+
+    /**
+     * @param parent
+     *            TabFolder
+     * @param index
+     *            int
+     */
+    private static RulePropertyManager buildXPathTab(TabFolder parent, int index, String title,
+            ValueChangeListener listener) {
 
         TabItem tab = new TabItem(parent, 0, index);
         tab.setText(title);
 
         XPathPanelManager manager = new XPathPanelManager(title, EditorUsageMode.Editing, listener);
-        tab.setControl(
-            manager.setupOn(parent)
-            );
+        tab.setControl(manager.setupOn(parent));
         manager.tab(tab);
         return manager;
     }
 
     /**
-     * @param parent TabFolder
-     * @param index int
+     * @param parent
+     *            TabFolder
+     * @param index
+     *            int
      */
-    private static RulePropertyManager buildFullViewTab(TabFolder parent, int index, String title, ValueChangeListener listener) {
+    private static RulePropertyManager buildFullViewTab(TabFolder parent, int index, String title,
+            ValueChangeListener listener) {
 
         TabItem tab = new TabItem(parent, 0, index);
         tab.setText(title);
 
         SummaryPanelManager manager = new SummaryPanelManager("asdf", title, EditorUsageMode.Editing, listener);
-        tab.setControl(
-            manager.setupOn(parent)
-            );
-        manager.tab(tab);
-        return manager;
-    }
-    
-	/**
-     * @param parent TabFolder
-     * @param index int
-     */
-    private static RulePropertyManager buildExampleTab(TabFolder parent, int index, String title, ValueChangeListener listener) {
-
-        TabItem tab = new TabItem(parent, 0, index);
-        tab.setText(title);
-
-        ExamplePanelManager manager = new ExamplePanelManager(title, EditorUsageMode.Editing, listener);
-        tab.setControl(
-            manager.setupOn(parent)
-            );
+        tab.setControl(manager.setupOn(parent));
         manager.tab(tab);
         return manager;
     }
 
     /**
-     * @param parent TabFolder
-     * @param index int
+     * @param parent
+     *            TabFolder
+     * @param index
+     *            int
      */
-//    private static RulePropertyManager buildQuickFixTab(TabFolder parent, int index, String title, ValueChangeListener listener) {
-//
-//        TabItem tab = new TabItem(parent, 0, index);
-//        tab.setText(title);
-//
-//        QuickFixPanelManager manager = new QuickFixPanelManager(title, EditorUsageMode.Editing, listener);
-//        tab.setControl(
-//            manager.setupOn(parent)
-//            );
-//        manager.tab(tab);
-//        return manager;
-//    }
+    private static RulePropertyManager buildExampleTab(TabFolder parent, int index, String title,
+            ValueChangeListener listener) {
 
-	/**
-	 *
-	 * @param parent TabFolder
-	 * @param index int
-	 * @param title String
-	 */
-	private static RulePropertyManager buildExclusionTab(TabFolder parent, int index, String title, ValueChangeListener listener) {
+        TabItem tab = new TabItem(parent, 0, index);
+        tab.setText(title);
 
-		TabItem tab = new TabItem(parent, 0, index);
-		tab.setText(title);
+        ExamplePanelManager manager = new ExamplePanelManager(title, EditorUsageMode.Editing, listener);
+        tab.setControl(manager.setupOn(parent));
+        manager.tab(tab);
+        return manager;
+    }
 
-		ExclusionPanelManager manager = new ExclusionPanelManager(title, EditorUsageMode.Editing, listener, true);
-		tab.setControl(
-			manager.setupOn(parent)
-			);
-		manager.tab(tab);
-		return manager;
-	}
+    /**
+     * @param parent
+     *            TabFolder
+     * @param index
+     *            int
+     */
+    // private static RulePropertyManager buildQuickFixTab(TabFolder parent, int
+    // index, String title, ValueChangeListener listener) {
+    //
+    // TabItem tab = new TabItem(parent, 0, index);
+    // tab.setText(title);
+    //
+    // QuickFixPanelManager manager = new QuickFixPanelManager(title,
+    // EditorUsageMode.Editing, listener);
+    // tab.setControl(
+    // manager.setupOn(parent)
+    // );
+    // manager.tab(tab);
+    // return manager;
+    // }
 
-	public void changed(PropertySource source, PropertyDescriptor<?> desc, Object newValue) {
-	        // TODO enhance to recognize default values
-	     setModified();
-	     tableManager.updated(source);
-	}
+    /**
+     *
+     * @param parent
+     *            TabFolder
+     * @param index
+     *            int
+     * @param title
+     *            String
+     */
+    private static RulePropertyManager buildExclusionTab(TabFolder parent, int index, String title,
+            ValueChangeListener listener) {
 
-	public void changed(RuleSelection selection, PropertyDescriptor<?> desc, Object newValue) {
-			// TODO enhance to recognize default values
+        TabItem tab = new TabItem(parent, 0, index);
+        tab.setText(title);
 
-		for (Rule rule : selection.allRules()) {
-			if (newValue != null) {		// non-reliable update behaviour, alternate trigger option - weird
-				tableManager.changed(selection, desc, newValue);
-			//		System.out.println("doing redraw");
-			} else {
-				tableManager.changed(rule, desc, newValue);
-			//		System.out.println("viewer update");
-			}
-		}
-		for (RulePropertyManager manager : rulePropertyManagers) {
-		    manager.validate();
-		}
+        ExclusionPanelManager manager = new ExclusionPanelManager(title, EditorUsageMode.Editing, listener, true);
+        tab.setControl(manager.setupOn(parent));
+        manager.tab(tab);
+        return manager;
+    }
 
-		setModified();
-	}
+    public void changed(PropertySource source, PropertyDescriptor<?> desc, Object newValue) {
+        // TODO enhance to recognize default values
+        setModified();
+        tableManager.updated(source);
+    }
 
-	/**
+    public void changed(RuleSelection selection, PropertyDescriptor<?> desc, Object newValue) {
+        // TODO enhance to recognize default values
+
+        for (Rule rule : selection.allRules()) {
+            if (newValue != null) {
+                // non-reliable update behaviour, alternate
+                // trigger option - weird
+                tableManager.changed(selection, desc, newValue);
+                // System.out.println("doing redraw");
+            } else {
+                tableManager.changed(rule, desc, newValue);
+                // System.out.println("viewer update");
+            }
+        }
+        for (RulePropertyManager manager : rulePropertyManagers) {
+            manager.validate();
+        }
+
+        setModified();
+    }
+
+    /**
      * Main layout
-     * @param parent Composite
+     * 
+     * @param parent
+     *            Composite
      */
     private void layoutControls(Composite parent) {
         GridLayout layout = new GridLayout(1, false);
@@ -409,22 +439,23 @@ public class PMDPreferencePage2 extends AbstractPMDPreferencePage implements Rul
         explanation.setLayoutData(rowData);
         explanation.setText(SWTUtil.stringFor(StringKeys.PREF_RULESET_BUTTON_GLOBALRULEMANAGEMENT_EXPL));
 
-        int ruleTableFraction = 55;	//PreferenceUIStore.instance.tableFraction();
+        int ruleTableFraction = 55; // PreferenceUIStore.instance.tableFraction();
 
         // Create the sash first, so the other controls can be attached to it.
         final Sash sash = new Sash(contentPanel, SWT.HORIZONTAL);
         FormData data = new FormData();
-        data.left = new FormAttachment(0, 0);                   // attach to left
-        data.right = new FormAttachment(100, 0);                // attach to right
+        data.left = new FormAttachment(0, 0); // attach to left
+        data.right = new FormAttachment(100, 0); // attach to right
         data.top = new FormAttachment(ruleTableFraction, 0);
         sash.setLayoutData(data);
         sash.addSelectionListener(new SelectionAdapter() {
-          public void widgetSelected(SelectionEvent event) {
-            // Re-attach to the top edge, and we use the y value of the event to determine the offset from the top
-            ((FormData)sash.getLayoutData()).top = new FormAttachment(0, event.y);
-//            PreferenceUIStore.instance.tableFraction(event.y);
-            contentPanel.layout();
-          }
+            public void widgetSelected(SelectionEvent event) {
+                // Re-attach to the top edge, and we use the y value of the
+                // event to determine the offset from the top
+                ((FormData) sash.getLayoutData()).top = new FormAttachment(0, event.y);
+                // PreferenceUIStore.instance.tableFraction(event.y);
+                contentPanel.layout();
+            }
         });
 
         // Create the first text box and attach its bottom edge to the sash
@@ -448,100 +479,103 @@ public class PMDPreferencePage2 extends AbstractPMDPreferencePage implements Rul
         SWTUtil.setEnabledRecursive(contentPanel.getChildren(), checkButton.getSelection());
     }
 
-	/**
-	 * @see org.eclipse.jface.preference.IPreferencePage#performOk()
-	 */
-	@Override
+    /**
+     * @see org.eclipse.jface.preference.IPreferencePage#performOk()
+     */
+    @Override
     public boolean performOk() {
 
-		saveUIState();
+        saveUIState();
 
-		if (isModified()) {
-			updateRuleSet();
-			rebuildProjects();
-			storeActiveRules();
-		}
+        if (isModified()) {
+            updateRuleSet();
+            rebuildProjects();
+            storeActiveRules();
+        }
 
-		return super.performOk();
-	}
+        return super.performOk();
+    }
 
-	@Override
-	public boolean performCancel() {
+    @Override
+    public boolean performCancel() {
 
-		saveUIState();
-		return super.performCancel();
-	}
+        saveUIState();
+        return super.performCancel();
+    }
 
-	/**
-	 * @see org.eclipse.jface.preference.PreferencePage#performDefaults()
-	 */
-	@Override
+    /**
+     * @see org.eclipse.jface.preference.PreferencePage#performDefaults()
+     */
+    @Override
     protected void performDefaults() {
-		tableManager.populateRuleTable();
-		super.performDefaults();
-	}
+        tableManager.populateRuleTable();
+        super.performDefaults();
+    }
 
-	private void populateRuleset() {
+    private void populateRuleset() {
 
-	    RuleSet defaultRuleSet = plugin.getPreferencesManager().getRuleSet();
+        RuleSet defaultRuleSet = plugin.getPreferencesManager().getRuleSet();
         RuleSet ruleSet = RuleSetUtil.newCopyOf(defaultRuleSet);
 
         tableManager.useRuleSet(ruleSet);
-	}
+    }
 
-	public void selection(RuleSelection selection) {
+    public void selection(RuleSelection selection) {
 
-		if (rulePropertyManagers == null) return;
-		
-		for (RulePropertyManager manager : rulePropertyManagers) {
-			manager.manage(selection);
-		    manager.validate();
-		}
-	}
+        if (rulePropertyManagers == null) {
+            return;
+        }
 
-	private void saveUIState() {
-		tableManager.saveUIState();
-		int i =  tabFolder.getSelectionIndex();
-		PreferenceUIStore.INSTANCE.selectedPropertyTab( i );
-		PreferenceUIStore.INSTANCE.globalRuleManagement( globalRuleManagementCheckButton.getSelection() );
-		preferences.setGlobalRuleManagement( globalRuleManagementCheckButton.getSelection() );
-		PreferenceUIStore.INSTANCE.save();
-	}
+        for (RulePropertyManager manager : rulePropertyManagers) {
+            manager.manage(selection);
+            manager.validate();
+        }
+    }
 
-	private void storeActiveRules() {
+    private void saveUIState() {
+        tableManager.saveUIState();
+        int i = tabFolder.getSelectionIndex();
+        PreferenceUIStore.INSTANCE.selectedPropertyTab(i);
+        PreferenceUIStore.INSTANCE.globalRuleManagement(globalRuleManagementCheckButton.getSelection());
+        preferences.setGlobalRuleManagement(globalRuleManagementCheckButton.getSelection());
+        PreferenceUIStore.INSTANCE.save();
+    }
 
-		List<Rule> chosenRules = tableManager.activeRules();
-		Set<String> activeRules = new HashSet<String>();
-		for (Rule rule : chosenRules) {
-		    activeRules.add(rule.getName());
-		}
+    private void storeActiveRules() {
 
-		// override all the active rules
-		preferences.setActiveRuleNames(activeRules);
+        List<Rule> chosenRules = tableManager.activeRules();
+        Set<String> activeRules = new HashSet<String>();
+        for (Rule rule : chosenRules) {
+            activeRules.add(rule.getName());
+        }
 
-//		System.out.println("Active rules: " + preferences.getActiveRuleNames());
-	}
+        // override all the active rules
+        preferences.setActiveRuleNames(activeRules);
 
-	private void updateRuleSet() {
-		try {
-			ProgressMonitorDialog monitorDialog = new ProgressMonitorDialog(getShell());
-			monitorDialog.run(true, true, new IRunnableWithProgress() {
-				public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-					plugin.getPreferencesManager().setRuleSet(tableManager.ruleSet());
-				}
-			});
-		} catch (Exception e) {
-			plugin.logError("Exception updating all projects after a preference change", e);
-		}
-	}
+        // System.out.println("Active rules: " +
+        // preferences.getActiveRuleNames());
+    }
 
-	public void resetValuesIn(RuleSelection rules) {
-		
-		rules.useDefaultValues();
-		tableManager.refresh();
-		for (RulePropertyManager rpm : rulePropertyManagers) {
-			rpm.loadValues();
-		}
-	}
+    private void updateRuleSet() {
+        try {
+            ProgressMonitorDialog monitorDialog = new ProgressMonitorDialog(getShell());
+            monitorDialog.run(true, true, new IRunnableWithProgress() {
+                public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+                    plugin.getPreferencesManager().setRuleSet(tableManager.ruleSet());
+                }
+            });
+        } catch (Exception e) {
+            plugin.logError("Exception updating all projects after a preference change", e);
+        }
+    }
+
+    public void resetValuesIn(RuleSelection rules) {
+
+        rules.useDefaultValues();
+        tableManager.refresh();
+        for (RulePropertyManager rpm : rulePropertyManagers) {
+            rpm.loadValues();
+        }
+    }
 
 }

@@ -52,10 +52,10 @@ public class ViolationOutlinePageBR extends Page implements IPage, ISelectionCha
     private Integer[] sorterProperties;
     private BasicTableManager<IMarker> tableManager;
 
-    private ItemColumnDescriptor<?, IMarker>[] initialColumns = new ItemColumnDescriptor[] { MarkerColumnsUI.priority,
-        MarkerColumnsUI.lineNumber,
+    private ItemColumnDescriptor<?, IMarker>[] initialColumns = new ItemColumnDescriptor[] { MarkerColumnsUI.PRIORITY,
+        MarkerColumnsUI.LINE_NUMBER,
         // MarkerColumnsUI.done,
-        MarkerColumnsUI.created, MarkerColumnsUI.ruleName, MarkerColumnsUI.message };
+        MarkerColumnsUI.CREATED, MarkerColumnsUI.RULE_NAME, MarkerColumnsUI.MESSAGE };
 
     /**
      * Constructor

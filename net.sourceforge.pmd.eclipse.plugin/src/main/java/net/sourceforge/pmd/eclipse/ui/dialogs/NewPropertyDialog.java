@@ -175,7 +175,7 @@ public class NewPropertyDialog extends TitleAreaDialog implements SizeChangeList
         final Text text = new Text(parent, SWT.SINGLE | SWT.BORDER);
         setFieldLayoutData(text);
 
-        text.addVerifyListener(RuleUIUtil.RuleNameVerifier);
+        text.addVerifyListener(RuleUIUtil.RULE_NAME_VERIFIER);
 
         text.addListener(SWT.Modify, new Listener() {
             public void handleEvent(Event event) {
@@ -209,7 +209,7 @@ public class NewPropertyDialog extends TitleAreaDialog implements SizeChangeList
         final Text text = new Text(parent, SWT.SINGLE | SWT.BORDER);
         setFieldLayoutData(text);
 
-        text.addVerifyListener(RuleUIUtil.RuleLabelVerifier);
+        text.addVerifyListener(RuleUIUtil.RULE_LABEL_VERIFIER);
 
         text.addListener(SWT.Modify, new Listener() {
             public void handleEvent(Event event) {

@@ -1,27 +1,10 @@
+
 package net.sourceforge.pmd.eclipse.ui.preferences;
 
 import java.text.MessageFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
-
-import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.RulePriority;
-import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
-import net.sourceforge.pmd.eclipse.plugin.UISettings;
-import net.sourceforge.pmd.eclipse.runtime.builder.MarkerUtil;
-import net.sourceforge.pmd.eclipse.runtime.preferences.IPreferences;
-import net.sourceforge.pmd.eclipse.ui.BasicTableLabelProvider;
-import net.sourceforge.pmd.eclipse.ui.RuleLabelDecorator;
-import net.sourceforge.pmd.eclipse.ui.Shape;
-import net.sourceforge.pmd.eclipse.ui.ShapePicker;
-import net.sourceforge.pmd.eclipse.ui.model.RootRecord;
-import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
-import net.sourceforge.pmd.eclipse.ui.preferences.br.BasicTableManager;
-import net.sourceforge.pmd.eclipse.ui.priority.PriorityColumnUI;
-import net.sourceforge.pmd.eclipse.ui.priority.PriorityDescriptor;
-import net.sourceforge.pmd.eclipse.ui.priority.PriorityDescriptorCache;
-import net.sourceforge.pmd.util.StringUtil;
 
 import org.apache.log4j.Level;
 import org.eclipse.core.resources.IFile;
@@ -63,6 +46,24 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.dialogs.PreferencesUtil;
 
+import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.RulePriority;
+import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
+import net.sourceforge.pmd.eclipse.plugin.UISettings;
+import net.sourceforge.pmd.eclipse.runtime.builder.MarkerUtil;
+import net.sourceforge.pmd.eclipse.runtime.preferences.IPreferences;
+import net.sourceforge.pmd.eclipse.ui.BasicTableLabelProvider;
+import net.sourceforge.pmd.eclipse.ui.RuleLabelDecorator;
+import net.sourceforge.pmd.eclipse.ui.Shape;
+import net.sourceforge.pmd.eclipse.ui.ShapePicker;
+import net.sourceforge.pmd.eclipse.ui.model.RootRecord;
+import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
+import net.sourceforge.pmd.eclipse.ui.preferences.br.BasicTableManager;
+import net.sourceforge.pmd.eclipse.ui.priority.PriorityColumnUI;
+import net.sourceforge.pmd.eclipse.ui.priority.PriorityDescriptor;
+import net.sourceforge.pmd.eclipse.ui.priority.PriorityDescriptorCache;
+import net.sourceforge.pmd.util.StringUtil;
+
 /**
  * The top-level page for PMD preferences
  *
@@ -73,35 +74,35 @@ import org.eclipse.ui.dialogs.PreferencesUtil;
  * @author Brian Remedios
  */
 public class GeneralPreferencesPage extends PreferencePage implements IWorkbenchPreferencePage {
-	
+
     private static final String[] LOG_LEVELS = { "OFF", "FATAL", "ERROR", "WARN", "INFO", "DEBUG", "ALL" };
-    private static final RGB SHAPE_COLOR = new RGB(255,255,255);
-    
-    private Text		additionalCommentText;
-    private Label		sampleLabel;
-    private Button		showPerspectiveBox;
-    private Button		useProjectBuildPath;
-    private Button		checkCodeOnSave;
-    private Button		useCustomPriorityNames;    
-    private Spinner		maxViolationsPerFilePerRule;
-    private Button		reviewPmdStyleBox;
-    private Text		logFileNameText;
-    private Scale		logLevelScale;
-    private Label		logLevelValueLabel;
-    private Button		browseButton;
+    private static final RGB SHAPE_COLOR = new RGB(255, 255, 255);
+
+    private Text additionalCommentText;
+    private Label sampleLabel;
+    private Button showPerspectiveBox;
+    private Button useProjectBuildPath;
+    private Button checkCodeOnSave;
+    private Button useCustomPriorityNames;
+    private Spinner maxViolationsPerFilePerRule;
+    private Button reviewPmdStyleBox;
+    private Text logFileNameText;
+    private Scale logLevelScale;
+    private Label logLevelValueLabel;
+    private Button browseButton;
     private TableViewer tableViewer;
     private IPreferences preferences;
     private BasicTableManager priorityTableMgr;
-    
-    private Control[]	nameFields;
-    
+
+    private Control[] nameFields;
+
     /**
      * Initialize the page
      *
      * @see PreferencePage#init
      */
     public void init(IWorkbench arg0) {
-   //     setDescription(getMessage(StringKeys.MSGKEY_PREF_GENERAL_TITLE));
+        // setDescription(getMessage(StringKeys.MSGKEY_PREF_GENERAL_TITLE));
         preferences = PMDPlugin.getDefault().loadPreferences();
     }
 
@@ -141,7 +142,9 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
 
     /**
      * Build the group of general preferences
-     * @param parent the parent composite
+     * 
+     * @param parent
+     *            the parent composite
      * @return the group widget
      */
     private Group buildGeneralGroup(final Composite parent) {
@@ -178,38 +181,40 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
 
         return group;
     }
-  
+
     private Link createPreferenceLink(Composite parent, String label, final String prefPageId) {
-    	
-    	 Link link = new Link(parent, SWT.None);
-         link.setText(label);
-         link.addSelectionListener (new SelectionAdapter () {
- 			public void widgetSelected(SelectionEvent se) {
- 				PreferenceDialog pref = PreferencesUtil.createPreferenceDialogOn(
- 						getShell(), prefPageId,
- 						new String[] {}, null
- 						);
- 				if (pref != null) {
- 					pref.open();
- 				}
- 			}
- 		});
-         
-         return link;
+
+        Link link = new Link(parent, SWT.None);
+        link.setText(label);
+        link.addSelectionListener(new SelectionAdapter() {
+            public void widgetSelected(SelectionEvent se) {
+                PreferenceDialog pref = PreferencesUtil.createPreferenceDialogOn(getShell(), prefPageId,
+                        new String[] {}, null);
+                if (pref != null) {
+                    pref.open();
+                }
+            }
+        });
+
+        return link;
     }
-    
+
     private void useCustomPriorityNames(boolean flag) {
-    	
-    	priorityTableMgr.visible(PriorityColumnUI.name, flag);
-    	priorityTableMgr.visible(PriorityColumnUI.pmdName, !flag);
-    	
-    	UISettings.useCustomPriorityLabels(flag);
-    	for (Control field : nameFields) field.setEnabled(flag);
+
+        priorityTableMgr.visible(PriorityColumnUI.name, flag);
+        priorityTableMgr.visible(PriorityColumnUI.pmdName, !flag);
+
+        UISettings.useCustomPriorityLabels(flag);
+        for (Control field : nameFields) {
+            field.setEnabled(flag);
+        }
     }
-    
-	/**
+
+    /**
      * Build the group of priority preferences
-     * @param parent the parent composite
+     * 
+     * @param parent
+     *            the parent composite
      * @return the group widget
      */
     private Group buildPriorityGroup(final Composite parent) {
@@ -218,159 +223,179 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
         group.setText(getMessage(StringKeys.PREF_GENERAL_GROUP_PRIORITIES));
         group.setLayout(new GridLayout(2, false));
 
-        Link link = createPreferenceLink(group, 
-        		"PMD folder annotations can be enabled on the <A>label decorations</A> page", 
-        		"org.eclipse.ui.preferencePages.Decorators"
-        		);
-        link.setLayoutData( new GridData(GridData.BEGINNING, GridData.CENTER, false, false, 1, 1) );
-        
+        Link link = createPreferenceLink(group,
+                "PMD folder annotations can be enabled on the <A>label decorations</A> page",
+                "org.eclipse.ui.preferencePages.Decorators");
+        link.setLayoutData(new GridData(GridData.BEGINNING, GridData.CENTER, false, false, 1, 1));
+
         useCustomPriorityNames = buildUseCustomPriorityNamesButton(group);
-        useCustomPriorityNames.setLayoutData( new GridData(GridData.END, GridData.CENTER, false, false, 1, 1) );
-        
+        useCustomPriorityNames.setLayoutData(new GridData(GridData.END, GridData.CENTER, false, false, 1, 1));
+
         IStructuredContentProvider contentProvider = new IStructuredContentProvider() {
-			public void dispose() {	}
-			public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {	}
-			public Object[] getElements(Object inputElement) { return (RulePriority[])inputElement;	}        	
+            public void dispose() {
+            }
+
+            public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+            }
+
+            public Object[] getElements(Object inputElement) {
+                return (RulePriority[]) inputElement;
+            }
         };
         BasicTableLabelProvider labelProvider = new BasicTableLabelProvider(PriorityColumnUI.VisibleColumns);
-        
-        priorityTableMgr = new BasicTableManager("prio", null, PriorityColumnUI.VisibleColumns);   
+
+        priorityTableMgr = new BasicTableManager("prio", null, PriorityColumnUI.VisibleColumns);
         tableViewer = priorityTableMgr.buildTableViewer(group);
         priorityTableMgr.setupColumns(PriorityColumnUI.VisibleColumns);
-        
+
         Table table = tableViewer.getTable();
-        table.setLayoutData( new GridData(GridData.FILL, GridData.CENTER, true, true, 2, 1) );
-        
+        table.setLayoutData(new GridData(GridData.FILL, GridData.CENTER, true, true, 2, 1));
+
         tableViewer.setLabelProvider(labelProvider);
         tableViewer.setContentProvider(contentProvider);
         table.setHeaderVisible(true);
-   //     labelProvider.addColumnsTo(table);
-        tableViewer.setInput( UISettings.currentPriorities(true) );
-        
-//        TableColumn[] columns = table.getColumns();
-//		for (TableColumn column : columns) column.pack();
-        
+        // labelProvider.addColumnsTo(table);
+        tableViewer.setInput(UISettings.currentPriorities(true));
+
+        // TableColumn[] columns = table.getColumns();
+        // for (TableColumn column : columns) column.pack();
+
         Composite editorPanel = new Composite(group, SWT.None);
-        editorPanel.setLayoutData( new GridData(GridData.FILL, GridData.CENTER, true, true) );
+        editorPanel.setLayoutData(new GridData(GridData.FILL, GridData.CENTER, true, true));
         editorPanel.setLayout(new GridLayout(6, false));
-        
+
         Label shapeLabel = new Label(editorPanel, SWT.None);
-        shapeLabel.setLayoutData( new GridData());
+        shapeLabel.setLayoutData(new GridData());
         shapeLabel.setText("Shape:");
-        
+
         final ShapePicker<Shape> ssc = new ShapePicker<Shape>(editorPanel, SWT.None, 14);
-        ssc.setLayoutData( new GridData(SWT.LEFT, SWT.CENTER, true, false, 1, 1));
+        ssc.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false, 1, 1));
         ssc.setSize(280, 30);
-		ssc.setShapeMap(UISettings.shapeSet(SHAPE_COLOR, 10));
-		ssc.setItems( UISettings.allShapes() );
-		
+        ssc.setShapeMap(UISettings.shapeSet(SHAPE_COLOR, 10));
+        ssc.setItems(UISettings.allShapes());
+
         Label colourLabel = new Label(editorPanel, SWT.None);
-        colourLabel.setLayoutData( new GridData(SWT.BEGINNING, SWT.CENTER, false, false, 1, 1));
+        colourLabel.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false, 1, 1));
         colourLabel.setText("Color:");
-        
+
         final ColorSelector colorPicker = new ColorSelector(editorPanel);
-        
+
         Label nameLabel = new Label(editorPanel, SWT.None);
-        nameLabel.setLayoutData( new GridData());
+        nameLabel.setLayoutData(new GridData());
         nameLabel.setText("Name:");
-        
+
         final Text priorityName = new Text(editorPanel, SWT.BORDER);
-        priorityName.setLayoutData( new GridData(GridData.FILL, GridData.CENTER, true, true) );
+        priorityName.setLayoutData(new GridData(GridData.FILL, GridData.CENTER, true, true));
 
         nameFields = new Control[] { nameLabel, priorityName };
-        
-//        final Label descLabel = new Label(editorPanel, SWT.None);
-//        descLabel.setLayoutData( new GridData(GridData.FILL, GridData.CENTER, false, true, 1, 1));
-//        descLabel.setText("Description:");
-        
-//        final Text priorityDesc = new Text(editorPanel, SWT.BORDER);
-//        priorityDesc.setLayoutData( new GridData(GridData.FILL, GridData.CENTER, true, true, 5, 1) );
-        
+
+        // final Label descLabel = new Label(editorPanel, SWT.None);
+        // descLabel.setLayoutData( new GridData(GridData.FILL, GridData.CENTER,
+        // false, true, 1, 1));
+        // descLabel.setText("Description:");
+
+        // final Text priorityDesc = new Text(editorPanel, SWT.BORDER);
+        // priorityDesc.setLayoutData( new GridData(GridData.FILL,
+        // GridData.CENTER, true, true, 5, 1) );
+
         tableViewer.addSelectionChangedListener(new ISelectionChangedListener() {
-			public void selectionChanged(SelectionChangedEvent event) {
-				IStructuredSelection selection = (IStructuredSelection)event.getSelection();
-				selectedPriorities(selection.toList(), ssc, colorPicker, priorityName);
-			}} );
-        
-		ssc.addSelectionChangedListener(new ISelectionChangedListener() {
-			public void selectionChanged(SelectionChangedEvent event) {
-				IStructuredSelection selection = (IStructuredSelection)event.getSelection();
-				setShape((Shape)selection.getFirstElement());
-			}} );
-		
-		colorPicker.addListener(new IPropertyChangeListener() {
-			public void propertyChange(PropertyChangeEvent event) {
-				setColor((RGB)event.getNewValue());
-			}} );
-		
-		priorityName.addFocusListener(new FocusAdapter() {
-			public void focusLost(FocusEvent e) {
-				setName( priorityName.getText() );	
-			}} );
-		
-		// only set this once the name fields are built
-		useCustomPriorityNames.setSelection(preferences.useCustomPriorityNames());
-		
+            public void selectionChanged(SelectionChangedEvent event) {
+                IStructuredSelection selection = (IStructuredSelection) event.getSelection();
+                selectedPriorities(selection.toList(), ssc, colorPicker, priorityName);
+            }
+        });
+
+        ssc.addSelectionChangedListener(new ISelectionChangedListener() {
+            public void selectionChanged(SelectionChangedEvent event) {
+                IStructuredSelection selection = (IStructuredSelection) event.getSelection();
+                setShape((Shape) selection.getFirstElement());
+            }
+        });
+
+        colorPicker.addListener(new IPropertyChangeListener() {
+            public void propertyChange(PropertyChangeEvent event) {
+                setColor((RGB) event.getNewValue());
+            }
+        });
+
+        priorityName.addFocusListener(new FocusAdapter() {
+            public void focusLost(FocusEvent e) {
+                setName(priorityName.getText());
+            }
+        });
+
+        // only set this once the name fields are built
+        useCustomPriorityNames.setSelection(preferences.useCustomPriorityNames());
+
         return group;
     }
-    
-    private void setShape(Shape shape) {
-    	
-    	if (shape == null) return;	// renderers can't handle this
-    	    	
-    	for (PriorityDescriptor pd : selectedDescriptors()) {
-    		pd.shape.shape = shape;
-    	}
-    	
-//    	PriorityDescriptorCache.instance.dump(System.out);
-    	
-    	tableViewer.refresh();
-    }
-    
-    private void setColor(RGB clr) {
-    	for (PriorityDescriptor pd : selectedDescriptors()) {
-    		pd.shape.rgbColor = clr;
-    	}
-    	tableViewer.refresh();
-    }
-    
-    private void setName(String newName) {
-    	
-    	if (StringUtil.isEmpty(newName)) return;
-    	
-    	for (PriorityDescriptor pd : selectedDescriptors()) {
-    		pd.label = newName;
-    	}
-    	tableViewer.refresh();
-    }
-    
-    private PriorityDescriptor[] selectedDescriptors() {
-    	
-    	Object[] items = ((IStructuredSelection)tableViewer.getSelection()).toArray();
-    	PriorityDescriptor[] descs = new PriorityDescriptor[items.length];
-    	for (int i=0; i<descs.length; i++) descs[i] = PriorityDescriptorCache.instance.descriptorFor((RulePriority)items[i]);
-    	return descs;
-    }
-    
-    private static void selectedPriorities(List<RulePriority> items, ShapePicker<Shape> ssc, ColorSelector colorPicker, Text nameField) {
 
-    	if (items.size() != 1 ) {
-    		ssc.setSelection((Shape)null);
-    		nameField.setText("");
-    		return;
-    	}
-    	
-    	RulePriority priority = items.get(0);
-    	PriorityDescriptor desc = PriorityDescriptorCache.instance.descriptorFor(priority);
-    	
-    	ssc.setSelection( desc.shape.shape );
-    	nameField.setText( desc.label);
-    	colorPicker.setColorValue( desc.shape.rgbColor );
+    private void setShape(Shape shape) {
+
+        if (shape == null) {
+            return; // renderers can't handle this
+        }
+
+        for (PriorityDescriptor pd : selectedDescriptors()) {
+            pd.shape.shape = shape;
+        }
+
+        // PriorityDescriptorCache.instance.dump(System.out);
+
+        tableViewer.refresh();
     }
-    
+
+    private void setColor(RGB clr) {
+        for (PriorityDescriptor pd : selectedDescriptors()) {
+            pd.shape.rgbColor = clr;
+        }
+        tableViewer.refresh();
+    }
+
+    private void setName(String newName) {
+
+        if (StringUtil.isEmpty(newName)) {
+            return;
+        }
+
+        for (PriorityDescriptor pd : selectedDescriptors()) {
+            pd.label = newName;
+        }
+        tableViewer.refresh();
+    }
+
+    private PriorityDescriptor[] selectedDescriptors() {
+
+        Object[] items = ((IStructuredSelection) tableViewer.getSelection()).toArray();
+        PriorityDescriptor[] descs = new PriorityDescriptor[items.length];
+        for (int i = 0; i < descs.length; i++) {
+            descs[i] = PriorityDescriptorCache.instance.descriptorFor((RulePriority) items[i]);
+        }
+        return descs;
+    }
+
+    private static void selectedPriorities(List<RulePriority> items, ShapePicker<Shape> ssc, ColorSelector colorPicker,
+            Text nameField) {
+
+        if (items.size() != 1) {
+            ssc.setSelection((Shape) null);
+            nameField.setText("");
+            return;
+        }
+
+        RulePriority priority = items.get(0);
+        PriorityDescriptor desc = PriorityDescriptorCache.instance.descriptorFor(priority);
+
+        ssc.setSelection(desc.shape.shape);
+        nameField.setText(desc.label);
+        colorPicker.setColorValue(desc.shape.rgbColor);
+    }
+
     /**
      * Build the group of review preferences
-     * @param parent the parent composite
+     * 
+     * @param parent
+     *            the parent composite
      * @return the group widget
      */
     private Group buildReviewGroup(final Composite parent) {
@@ -414,8 +439,8 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
     }
 
     /**
-     * Build the log group.
-     * Note that code is a cut & paste from the Eclipse Visual Editor
+     * Build the log group. Note that code is a cut & paste from the Eclipse
+     * Visual Editor
      *
      */
     private Group buildLoggingGroup(Composite parent) {
@@ -455,6 +480,7 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
             public void widgetSelected(SelectionEvent event) {
                 browseLogFile();
             }
+
             public void widgetDefaultSelected(SelectionEvent event) {
                 // do nothing
             }
@@ -478,6 +504,7 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
             public void widgetSelected(SelectionEvent event) {
                 updateLogLevelValueLabel();
             }
+
             public void widgetDefaultSelected(SelectionEvent event) {
                 updateLogLevelValueLabel();
             }
@@ -504,10 +531,10 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
         aboutGroup.setLayout(gridLayout);
 
         StringBuilder aboutText = new StringBuilder();
-        aboutText.append(getMessage(StringKeys.PREF_GENERAL_LABEL_PMD_ECLIPSE_VERSION))
-            .append(" ").append(PMDPlugin.version).append("\n");
-        aboutText.append(getMessage(StringKeys.PREF_GENERAL_LABEL_PMD_VERSION))
-            .append(" ").append(PMD.VERSION).append("\n");
+        aboutText.append(getMessage(StringKeys.PREF_GENERAL_LABEL_PMD_ECLIPSE_VERSION)).append(" ")
+                .append(PMDPlugin.version).append("\n");
+        aboutText.append(getMessage(StringKeys.PREF_GENERAL_LABEL_PMD_VERSION)).append(" ").append(PMD.VERSION)
+                .append("\n");
 
         Label aboutLabel = new Label(aboutGroup, SWT.NONE);
         aboutLabel.setText(aboutText.toString());
@@ -555,24 +582,29 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
 
     /**
      * Build the check box for showing the PMD perspective
-     * @param viewGroup the parent composite
+     * 
+     * @param viewGroup
+     *            the parent composite
      *
      */
     private Button buildUseCustomPriorityNamesButton(Composite parent) {
         Button button = new Button(parent, SWT.CHECK);
-        button.setLayoutData( new GridData(GridData.END, GridData.CENTER, false, false, 1, 1) );
+        button.setLayoutData(new GridData(GridData.END, GridData.CENTER, false, false, 1, 1));
         button.setText("Use custom names");
         button.setSelection(preferences.useCustomPriorityNames());
-        button.addSelectionListener( new SelectionAdapter() {
-        	public void widgetSelected(SelectionEvent se) {
-        		useCustomPriorityNames(((Button)se.getSource()).getSelection());
-        	}} );
+        button.addSelectionListener(new SelectionAdapter() {
+            public void widgetSelected(SelectionEvent se) {
+                useCustomPriorityNames(((Button) se.getSource()).getSelection());
+            }
+        });
         return button;
     }
-    
+
     /**
      * Build the check box for showing the PMD perspective
-     * @param viewGroup the parent composite
+     * 
+     * @param viewGroup
+     *            the parent composite
      *
      */
     private Button buildCheckCodeOnSaveButton(Composite viewGroup) {
@@ -581,10 +613,12 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
         button.setSelection(preferences.isCheckAfterSaveEnabled());
         return button;
     }
-    
+
     /**
      * Build the check box for showing the PMD perspective
-     * @param viewGroup the parent composite
+     * 
+     * @param viewGroup
+     *            the parent composite
      *
      */
     private Button buildShowPerspectiveBoxButton(Composite viewGroup) {
@@ -596,7 +630,9 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
 
     /**
      * Build the check box for enabling using Project Build Path
-     * @param viewGroup the parent composite
+     * 
+     * @param viewGroup
+     *            the parent composite
      */
     private Button buildUseProjectBuildPathButton(Composite viewGroup) {
         Button button = new Button(viewGroup, SWT.CHECK);
@@ -612,15 +648,17 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
      * @return
      */
     private Spinner buildMaxViolationsPerFilePerRuleText(Composite parent) {
-    	
-    	Composite comp = new Composite(parent, 0);
-    	comp.setLayout(new GridLayout(2, false));
-    	
+
+        Composite comp = new Composite(parent, 0);
+        comp.setLayout(new GridLayout(2, false));
+
         Label label = buildLabel(comp, StringKeys.PREF_GENERAL_LABEL_MAX_VIOLATIONS_PFPR);
-        label.setLayoutData( new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING, GridData.VERTICAL_ALIGN_CENTER, false, false, 1, 1));
-        
+        label.setLayoutData(
+                new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING, GridData.VERTICAL_ALIGN_CENTER, false, false, 1, 1));
+
         final Spinner spinner = new Spinner(comp, SWT.BORDER);
-        spinner.setLayoutData( new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING, GridData.VERTICAL_ALIGN_CENTER, true, false, 1, 1));
+        spinner.setLayoutData(
+                new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING, GridData.VERTICAL_ALIGN_CENTER, true, false, 1, 1));
         spinner.setMinimum(preferences.getMaxViolationsPerFilePerRule());
         spinner.setToolTipText(getMessage(StringKeys.PREF_GENERAL_TOOLTIP_MAX_VIOLATIONS_PFPR));
         return spinner;
@@ -628,7 +666,9 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
 
     /**
      * Build the check box for enabling PMD review style
-     * @param viewGroup the parent composite
+     * 
+     * @param viewGroup
+     *            the parent composite
      *
      */
     private Button buildReviewPmdStyleBoxButton(final Composite parent) {
@@ -640,27 +680,31 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
     }
 
     public static void setSelection(Button button, boolean flag) {
-    	if (button == null || button.isDisposed()) return;
-    	button.setSelection(flag);
+        if (button == null || button.isDisposed()) {
+            return;
+        }
+        button.setSelection(flag);
     }
-    
+
     public static void setText(Text field, String txt) {
-    	if (field == null || field.isDisposed()) return;
-    	field.setText(txt);
+        if (field == null || field.isDisposed()) {
+            return;
+        }
+        field.setText(txt);
     }
-    
+
     /**
      * @see org.eclipse.jface.preference.PreferencePage#performDefaults()
      */
     protected void performDefaults() {
-    	
+
         setText(additionalCommentText, IPreferences.REVIEW_ADDITIONAL_COMMENT_DEFAULT);
 
-        setSelection(showPerspectiveBox, 	IPreferences.PMD_PERSPECTIVE_ENABLED_DEFAULT);
-        setSelection(checkCodeOnSave , 		IPreferences.PMD_CHECK_AFTER_SAVE_DEFAULT);        
-        setSelection(useCustomPriorityNames,IPreferences.PMD_USE_CUSTOM_PRIORITY_NAMES_DEFAULT);        
-        setSelection(useProjectBuildPath, 	IPreferences.PROJECT_BUILD_PATH_ENABLED_DEFAULT);
-        setSelection(reviewPmdStyleBox, 	IPreferences.REVIEW_PMD_STYLE_ENABLED_DEFAULT);
+        setSelection(showPerspectiveBox, IPreferences.PMD_PERSPECTIVE_ENABLED_DEFAULT);
+        setSelection(checkCodeOnSave, IPreferences.PMD_CHECK_AFTER_SAVE_DEFAULT);
+        setSelection(useCustomPriorityNames, IPreferences.PMD_USE_CUSTOM_PRIORITY_NAMES_DEFAULT);
+        setSelection(useProjectBuildPath, IPreferences.PROJECT_BUILD_PATH_ENABLED_DEFAULT);
+        setSelection(reviewPmdStyleBox, IPreferences.REVIEW_PMD_STYLE_ENABLED_DEFAULT);
 
         if (maxViolationsPerFilePerRule != null) {
             maxViolationsPerFilePerRule.setMinimum(IPreferences.MAX_VIOLATIONS_PFPR_DEFAULT);
@@ -680,7 +724,8 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
     protected void updateSampleLabel() {
         String pattern = additionalCommentText.getText();
         try {
-            String commentText = MessageFormat.format(pattern, new Object[] { System.getProperty("user.name", ""), new Date() });
+            String commentText = MessageFormat.format(pattern,
+                    new Object[] { System.getProperty("user.name", ""), new Date() });
 
             sampleLabel.setText(commentText);
             setMessage(getMessage(StringKeys.PREF_GENERAL_HEADER), NONE);
@@ -701,7 +746,8 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
     }
 
     /**
-     * Display a file selection dialog in order to let the user select a log file
+     * Display a file selection dialog in order to let the user select a log
+     * file
      *
      */
     protected void browseLogFile() {
@@ -714,41 +760,43 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
     }
 
     private void updateMarkerIcons() {
-    	
-    	if (!PriorityDescriptorCache.instance.hasChanges()) {
-    		return;
-    	}
-    	
-    	// TODO show in UI...could take a while to update
-    	
-System.out.println("updating icons");
 
-    	PriorityDescriptorCache.instance.storeInPreferences();
+        if (!PriorityDescriptorCache.instance.hasChanges()) {
+            return;
+        }
+
+        // TODO show in UI...could take a while to update
+
+        System.out.println("updating icons");
+
+        PriorityDescriptorCache.instance.storeInPreferences();
         UISettings.createRuleMarkerIcons(getShell().getDisplay());
-    	UISettings.reloadPriorities();
-    	
-    	// ensure that the decorator gets these new images...
-    	RuleLabelDecorator decorator = PMDPlugin.getDefault().ruleLabelDecorator();
-    	if (decorator != null) decorator.reloadDecorators();
-    	
-    	RootRecord root = new RootRecord(ResourcesPlugin.getWorkspace().getRoot());
-    	Set<IFile> files = MarkerUtil.allMarkedFiles(root);
-    	PMDPlugin.getDefault().changedFiles(files);
+        UISettings.reloadPriorities();
+
+        // ensure that the decorator gets these new images...
+        RuleLabelDecorator decorator = PMDPlugin.getDefault().ruleLabelDecorator();
+        if (decorator != null) {
+            decorator.reloadDecorators();
+        }
+
+        RootRecord root = new RootRecord(ResourcesPlugin.getWorkspace().getRoot());
+        Set<IFile> files = MarkerUtil.allMarkedFiles(root);
+        PMDPlugin.getDefault().changedFiles(files);
     }
-    
+
     public boolean performCancel() {
-    	// clear out any changes for next possible usage
-    	PriorityDescriptorCache.instance.loadFromPreferences();
+        // clear out any changes for next possible usage
+        PriorityDescriptorCache.instance.loadFromPreferences();
         return true;
     }
-    
+
     /**
      * @see org.eclipse.jface.preference.IPreferencePage#performOk()
      */
     public boolean performOk() {
-    	
-    	updateMarkerIcons();
-    	
+
+        updateMarkerIcons();
+
         if (additionalCommentText != null) {
             preferences.setReviewAdditionalComment(additionalCommentText.getText());
         }
@@ -758,21 +806,22 @@ System.out.println("updating icons");
         }
 
         if (checkCodeOnSave != null) {
-        	boolean doCheck = checkCodeOnSave.getSelection();
+            boolean doCheck = checkCodeOnSave.getSelection();
             preferences.isCheckAfterSaveEnabled(doCheck);
             PMDPlugin.getDefault().fileChangeListenerEnabled(doCheck);
         }
-        
+
         if (useCustomPriorityNames != null) {
             preferences.useCustomPriorityNames(useCustomPriorityNames.getSelection());
         }
-        
+
         if (useProjectBuildPath != null) {
             preferences.setProjectBuildPathEnabled(useProjectBuildPath.getSelection());
         }
 
         if (maxViolationsPerFilePerRule != null) {
-            preferences.setMaxViolationsPerFilePerRule(Integer.valueOf(maxViolationsPerFilePerRule.getText()).intValue());
+            preferences
+                    .setMaxViolationsPerFilePerRule(Integer.valueOf(maxViolationsPerFilePerRule.getText()).intValue());
         }
 
         if (reviewPmdStyleBox != null) {
@@ -788,7 +837,7 @@ System.out.println("updating icons");
         }
 
         preferences.sync();
-        
+
         PMDPlugin.getDefault().applyLogPreferences(preferences);
 
         return true;
@@ -822,7 +871,9 @@ System.out.println("updating icons");
 
     /**
      * Helper method to shorten message access
-     * @param key a message key
+     * 
+     * @param key
+     *            a message key
      * @return requested message
      */
     private String getMessage(String key) {

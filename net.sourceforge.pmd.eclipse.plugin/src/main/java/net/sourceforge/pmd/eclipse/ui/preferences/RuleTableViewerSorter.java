@@ -36,10 +36,10 @@ package net.sourceforge.pmd.eclipse.ui.preferences;
 
 import java.util.Comparator;
 
-import net.sourceforge.pmd.Rule;
-
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
+
+import net.sourceforge.pmd.Rule;
 
 /**
  * Sorter for the rule table in the PMD Preference page
@@ -55,11 +55,11 @@ public class RuleTableViewerSorter extends ViewerSorter {
      */
     public static final Comparator<Rule> RULE_DEFAULT_COMPARATOR = new Comparator<Rule>() {
         public int compare(Rule r1, Rule r2) {
-        	int cmp = RULE_RULESET_NAME_COMPARATOR.compare(r1, r2);
-        	if (cmp == 0) {
-        		cmp = RULE_NAME_COMPARATOR.compare(r1, r2);
-        	}
-        	return cmp;
+            int cmp = RULE_RULESET_NAME_COMPARATOR.compare(r1, r2);
+            if (cmp == 0) {
+                cmp = RULE_NAME_COMPARATOR.compare(r1, r2);
+            }
+            return cmp;
         }
     };
 
@@ -77,7 +77,7 @@ public class RuleTableViewerSorter extends ViewerSorter {
      */
     public static final Comparator<Rule> RULE_RULESET_NAME_COMPARATOR = new Comparator<Rule>() {
         public int compare(Rule r1, Rule r2) {
-        	return compareStrings(r1.getRuleSetName(), r2.getRuleSetName());
+            return compareStrings(r1.getRuleSetName(), r2.getRuleSetName());
         }
     };
 
@@ -86,7 +86,7 @@ public class RuleTableViewerSorter extends ViewerSorter {
      */
     public static final Comparator<Rule> RULE_NAME_COMPARATOR = new Comparator<Rule>() {
         public int compare(Rule r1, Rule r2) {
-        	return compareStrings(r1.getName(), r2.getName());
+            return compareStrings(r1.getName(), r2.getName());
         }
     };
 
@@ -95,9 +95,9 @@ public class RuleTableViewerSorter extends ViewerSorter {
      */
     public static final Comparator<Rule> RULE_SINCE_COMPARATOR = new Comparator<Rule>() {
         public int compare(Rule r1, Rule r2) {
-        	return compareStrings(r1.getSince(), r2.getSince());
+            return compareStrings(r1.getSince(), r2.getSince());
         }
-    };   
+    };
 
     /**
      * Rule Priority comparator for tabular display of Rules.
@@ -106,53 +106,58 @@ public class RuleTableViewerSorter extends ViewerSorter {
         public int compare(Rule r1, Rule r2) {
             return r1.getPriority().getPriority() - r2.getPriority().getPriority();
         }
-    };   
+    };
 
     /**
      * Rule Description comparator for tabular display of Rules.
      */
     public static final Comparator<Rule> RULE_DESCRIPTION_COMPARATOR = new Comparator<Rule>() {
         public int compare(Rule r1, Rule r2) {
-        	return compareStrings(r1.getDescription(), r2.getDescription());
-            }
+            return compareStrings(r1.getDescription(), r2.getDescription());
+        }
     };
 
     private Comparator<Rule> comparator;
     private boolean sortDescending = false;
-    
+
     /**
      * Constructor
-     * @param comparator the initial comparator
+     * 
+     * @param comparator
+     *            the initial comparator
      */
     public RuleTableViewerSorter(Comparator<Rule> comparator) {
         this.comparator = comparator;
     }
-    
+
     /**
      * @return Returns the sortDescending.
      */
     public boolean isSortDescending() {
         return sortDescending;
     }
-    
+
     /**
-     * @param sortDescending The sortDescending to set.
+     * @param sortDescending
+     *            The sortDescending to set.
      */
     public void setSortDescending(boolean sortDescending) {
         this.sortDescending = sortDescending;
     }
-    
+
     /**
      * @return Returns the comparator.
      */
     public Comparator<Rule> getComparator() {
         return comparator;
     }
-    
+
     /**
-     * Set a comparator. If the same comparator is already set, then change
-     * the sorting order.
-     * @param comparator The comparator to set.
+     * Set a comparator. If the same comparator is already set, then change the
+     * sorting order.
+     * 
+     * @param comparator
+     *            The comparator to set.
      */
     public void setComparator(Comparator<Rule> comparator) {
         if (this.comparator != comparator) {
@@ -163,10 +168,11 @@ public class RuleTableViewerSorter extends ViewerSorter {
     }
 
     /**
-     * @see org.eclipse.jface.viewers.ViewerSorter#compare(org.eclipse.jface.viewers.Viewer, java.lang.Object, java.lang.Object)
+     * @see org.eclipse.jface.viewers.ViewerSorter#compare(org.eclipse.jface.viewers.Viewer,
+     *      java.lang.Object, java.lang.Object)
      */
     public int compare(Viewer viewer, Object e1, Object e2) {
-        int result = comparator.compare((Rule)e1,(Rule)e2);
+        int result = comparator.compare((Rule) e1, (Rule) e2);
         return sortDescending ? 0 - result : result;
     }
 
@@ -178,8 +184,8 @@ public class RuleTableViewerSorter extends ViewerSorter {
      * @return int
      */
     private static int compareStrings(String s1, String s2) {
-    	String str1 = s1 == null ? "" : s1.trim().toUpperCase();
-    	String str2 = s2 == null ? "" : s2.trim().toUpperCase();
-     	return str1.compareTo(str2);
+        String str1 = s1 == null ? "" : s1.trim().toUpperCase();
+        String str2 = s2 == null ? "" : s2.trim().toUpperCase();
+        return str1.compareTo(str2);
     }
 }

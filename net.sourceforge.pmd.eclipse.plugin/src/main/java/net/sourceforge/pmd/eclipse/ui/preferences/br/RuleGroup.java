@@ -51,8 +51,9 @@ public class RuleGroup implements RuleCollection, Comparable<RuleGroup> {
     public boolean rulesDo(RuleVisitor visitor) {
 
         for (Rule rule : rules) {
-            if (!visitor.accept(rule))
+            if (!visitor.accept(rule)) {
                 return false;
+            }
         }
 
         return true;
@@ -77,23 +78,26 @@ public class RuleGroup implements RuleCollection, Comparable<RuleGroup> {
      */
     public String label() {
 
-        if (label != null)
+        if (label != null) {
             return label;
+        }
         return id == null ? "" : id.toString();
     }
 
     @SuppressWarnings("rawtypes")
     public void sortBy(Comparator ruleComparator) {
 
-        if (!hasRules())
+        if (!hasRules()) {
             return;
+        }
 
         Object[] sortedRules = rules.toArray();
 
         Arrays.sort(sortedRules, ruleComparator);
         rules.clear();
-        for (Object rule : sortedRules)
+        for (Object rule : sortedRules) {
             rules.add((Rule) rule);
+        }
     }
 
     /**
@@ -128,13 +132,15 @@ public class RuleGroup implements RuleCollection, Comparable<RuleGroup> {
     // TODO make this into a Generic method
     public String commonStringProperty(StringProperty desc) {
 
-        if (rules.isEmpty())
+        if (rules.isEmpty()) {
             return null;
+        }
 
         String value = rules.get(0).getProperty(desc);
         for (int i = 1; i < rules.size(); i++) {
-            if (!StringUtil.areSemanticEquals(rules.get(i).getProperty(desc), value))
+            if (!StringUtil.areSemanticEquals(rules.get(i).getProperty(desc), value)) {
                 return null;
+            }
         }
         return value;
     }
@@ -149,12 +155,14 @@ public class RuleGroup implements RuleCollection, Comparable<RuleGroup> {
 
     public int compareTo(RuleGroup otherGroup) {
 
-        if (id == null)
+        if (id == null) {
             return -1;
-        if (otherGroup.id() == null)
+        }
+        if (otherGroup.id() == null) {
             return -1;
+        }
 
         return id.compareTo(otherGroup.id());
-    };
+    }
 
 }

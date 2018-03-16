@@ -1,3 +1,4 @@
+
 package net.sourceforge.pmd.eclipse.ui.preferences;
 
 /**
@@ -7,15 +8,16 @@ package net.sourceforge.pmd.eclipse.ui.preferences;
  */
 public class RuleSetExcludeIncludePatternLabelProvider extends AbstractTableLabelProvider {
 
-	/**
-     * @see org.eclipse.jface.viewers.ITableLabelProvider#getColumnText(Object, int)
+    /**
+     * @see org.eclipse.jface.viewers.ITableLabelProvider#getColumnText(Object,
+     *      int)
      */
     public String getColumnText(Object element, int columnIndex) {
         String result = "";
         if (element instanceof RuleSetExcludeIncludePattern) {
-        	RuleSetExcludeIncludePattern pattern = (RuleSetExcludeIncludePattern) element;
+            RuleSetExcludeIncludePattern pattern = (RuleSetExcludeIncludePattern) element;
             if (columnIndex == 0) {
-            	return pattern.getPattern();
+                return pattern.getPattern();
             }
         }
         return result;

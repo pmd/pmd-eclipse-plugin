@@ -1,3 +1,4 @@
+
 package net.sourceforge.pmd.eclipse.ui.preferences.br;
 
 import java.lang.reflect.Method;
@@ -18,123 +19,123 @@ import net.sourceforge.pmd.util.ClassUtil;
  */
 public interface ValueFormatter {
 
-    ValueFormatter StringFormatter = new BasicValueFormatter(null) {
+    ValueFormatter STRING_FORMATTER = new BasicValueFormatter(null) {
         public void format(Object value, StringBuilder target) {
             target.append(value == null ? "" : value);
         }
+
         public String format(Object value) {
-        	return value == null ? "" : value.toString();
+            return value == null ? "" : value.toString();
         }
     };
 
-    ValueFormatter MultiStringFormatter = new BasicValueFormatter(null) {
+    ValueFormatter MULTI_STRING_FORMATTER = new BasicValueFormatter(null) {
         public void format(Object value, StringBuilder target) {
             target.append('[');
-            Util.asString((Object[])value, ", ", target);
+            Util.asString((Object[]) value, ", ", target);
             target.append(']');
         }
     };
 
-    ValueFormatter NumberFormatter = new BasicValueFormatter(null) {
+    ValueFormatter NUMBER_FORMATTER = new BasicValueFormatter(null) {
         public void format(Object value, StringBuilder target) {
             target.append(value == null ? "?" : value);
         }
     };
 
-    ValueFormatter BooleanFormatter = new BasicValueFormatter(null) {
+    ValueFormatter BOOLEAN_FORMATTER = new BasicValueFormatter(null) {
         public void format(Object value, StringBuilder target) {
             target.append(value == null ? "?" : value);
         }
     };
 
-    ValueFormatter TypeFormatter = new BasicValueFormatter(null) {
+    ValueFormatter TYPE_FORMATTER = new BasicValueFormatter(null) {
         public void format(Object value, StringBuilder target) {
-            target.append(value == null ? "" : ClassUtil.asShortestName((Class<?>)value));
+            target.append(value == null ? "" : ClassUtil.asShortestName((Class<?>) value));
         }
     };
 
-    ValueFormatter MultiTypeFormatter = new BasicValueFormatter(null) {
+    ValueFormatter MULTI_TYPE_FORMATTER = new BasicValueFormatter(null) {
         public void format(Object value, StringBuilder target) {
             target.append('[');
-            Util.asString(MultiTypeEditorFactory.shortNamesFor((Class<?>[])value), ", ", target);
+            Util.asString(MultiTypeEditorFactory.shortNamesFor((Class<?>[]) value), ", ", target);
             target.append(']');
         }
     };
 
-    ValueFormatter MethodFormatter = new BasicValueFormatter(null) {
+    ValueFormatter METHOD_FORMATTER = new BasicValueFormatter(null) {
         public void format(Object value, StringBuilder target) {
-            if (value == null) return;
-            target.append(
-               Util.signatureFor((Method) value, MethodEditorFactory.UnwantedPrefixes)
-               );
+            if (value == null) {
+                return;
+            }
+            target.append(Util.signatureFor((Method) value, MethodEditorFactory.UnwantedPrefixes));
         }
     };
 
-    ValueFormatter MultiMethodFormatter = new BasicValueFormatter(null) {
+    ValueFormatter MULTI_METHOD_FORMATTER = new BasicValueFormatter(null) {
         public void format(Object value, StringBuilder target) {
             target.append('[');
-            Object[] methods = ((Object[])value);
+            Object[] methods = ((Object[]) value);
             if (methods == null || methods.length == 0) {
                 target.append(']');
                 return;
             }
-            MethodFormatter.format(methods[0], target);
-            for (int i=1; i<methods.length; i++) {
+            METHOD_FORMATTER.format(methods[0], target);
+            for (int i = 1; i < methods.length; i++) {
                 target.append(',');
-                MethodFormatter.format(methods[i], target);
+                METHOD_FORMATTER.format(methods[i], target);
             }
             target.append(']');
         }
     };
 
-    ValueFormatter ObjectFormatter = new BasicValueFormatter(null) {
+    ValueFormatter OBJECT_FORMATTER = new BasicValueFormatter(null) {
         public void format(Object value, StringBuilder target) {
-          target.append(value == null ? "" : value);
+            target.append(value == null ? "" : value);
         }
     };
 
-    ValueFormatter ObjectArrayFormatter = new BasicValueFormatter(null) {
+    ValueFormatter OBJECT_ARRAY_FORMATTER = new BasicValueFormatter(null) {
         public void format(Object value, StringBuilder target) {
-           target.append('[');
-           Util.asString((Object[])value, ", ", target);
-           target.append(']');
-        }
-    };
-    
-// =================================================================
-    
-    ValueFormatter PriorityFormatter = new BasicValueFormatter(null) {
-        public String format(Object value) {
-           return UISettings.labelFor((RulePriority)value);
-        }
-    };
-    
-    ValueFormatter LanguageFormatter = new BasicValueFormatter(null) {
-        public String format(Object value) {
-           return ((Language)value).getName();
-        }
-    };
-    
-    ValueFormatter LanguageVersionFormatter = new BasicValueFormatter(null) {
-        public String format(Object value) {
-           return ((LanguageVersion)value).getName();
-        }
-    };
-    
-    
-    ValueFormatter DateFromLongFormatter = new BasicValueFormatter("Date") {
-        public String format(Object value) {
-           return new Date((Long)value).toString();
-        }
-    };
-    
-    ValueFormatter TimeFromLongFormatter = new BasicValueFormatter("Time") {
-        public String format(Object value) {
-           return new Date((Long)value).toString();
+            target.append('[');
+            Util.asString((Object[]) value, ", ", target);
+            target.append(']');
         }
     };
 
-    ValueFormatter[] TimeFormatters = new ValueFormatter[] { DateFromLongFormatter };
+    // =================================================================
+
+    ValueFormatter PRIORITY_FORMATTER = new BasicValueFormatter(null) {
+        public String format(Object value) {
+            return UISettings.labelFor((RulePriority) value);
+        }
+    };
+
+    ValueFormatter LANGUAGE_FORMATTER = new BasicValueFormatter(null) {
+        public String format(Object value) {
+            return ((Language) value).getName();
+        }
+    };
+
+    ValueFormatter LANGUAGE_VERSION_FORMATTER = new BasicValueFormatter(null) {
+        public String format(Object value) {
+            return ((LanguageVersion) value).getName();
+        }
+    };
+
+    ValueFormatter DATE_FROM_LONG_FORMATTER = new BasicValueFormatter("Date") {
+        public String format(Object value) {
+            return new Date((Long) value).toString();
+        }
+    };
+
+    ValueFormatter TIME_FROM_LONG_FORMATTER = new BasicValueFormatter("Time") {
+        public String format(Object value) {
+            return new Date((Long) value).toString();
+        }
+    };
+
+    ValueFormatter[] TIME_FORMATTERS = new ValueFormatter[] { DATE_FROM_LONG_FORMATTER };
 
     String format(Object value);
 

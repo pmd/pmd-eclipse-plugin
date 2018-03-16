@@ -52,10 +52,10 @@ public class RuleEditorView extends ViewPart
     protected static PMDPlugin plugin = PMDPlugin.getDefault();
 
     // columns shown in the rule treetable in the desired order
-    private static final RuleColumnDescriptor[] availableColumns = PMDPreferencePage2.availableColumns;
+    private static final RuleColumnDescriptor[] availableColumns = PMDPreferencePage2.AVAILABLE_COLUMNS;
 
     // last item in this list is the grouping used at startup
-    private static final Object[][] groupingChoices = PMDPreferencePage2.groupingChoices;
+    private static final Object[][] groupingChoices = PMDPreferencePage2.GROUPING_CHOICES;
 
     public RuleEditorView() {
 

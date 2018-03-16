@@ -160,7 +160,7 @@ public class RulePanelManager extends AbstractRulePanelManager {
 
 	private Set<Comparable<?>> uniquePriorities() {
 		if (rules == null) return Collections.emptySet();
-		return RuleUtil.uniqueAspects(rules, RuleFieldAccessor.priority);
+		return RuleUtil.uniqueAspects(rules, RuleFieldAccessor.PRIORITY);
 	}
 	
 	private String commonLanguageMinVersionName() {
@@ -175,7 +175,7 @@ public class RulePanelManager extends AbstractRulePanelManager {
 
 		if (rules == null) return null;
 
-		LanguageVersion version = (LanguageVersion)RuleUtil.commonAspect(rules, RuleFieldAccessor.maxLanguageVersion);
+		LanguageVersion version = (LanguageVersion)RuleUtil.commonAspect(rules, RuleFieldAccessor.MAX_LANGUAGE_VERSION);
 		
 		return version == null ? null : version.getName();
 	}

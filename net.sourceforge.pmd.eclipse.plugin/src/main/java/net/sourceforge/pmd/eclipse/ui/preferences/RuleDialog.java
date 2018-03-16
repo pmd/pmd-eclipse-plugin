@@ -1,18 +1,9 @@
+
 package net.sourceforge.pmd.eclipse.ui.preferences;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Iterator;
-
-import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.RulePriority;
-import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
-import net.sourceforge.pmd.eclipse.plugin.UISettings;
-import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
-import net.sourceforge.pmd.eclipse.ui.preferences.br.RuleUtil;
-import net.sourceforge.pmd.lang.rule.RuleReference;
-import net.sourceforge.pmd.lang.rule.XPathRule;
-import net.sourceforge.pmd.util.StringUtil;
 
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -34,6 +25,16 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.browser.IWebBrowser;
 
+import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.RulePriority;
+import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
+import net.sourceforge.pmd.eclipse.plugin.UISettings;
+import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
+import net.sourceforge.pmd.eclipse.ui.preferences.br.RuleUtil;
+import net.sourceforge.pmd.lang.rule.RuleReference;
+import net.sourceforge.pmd.lang.rule.XPathRule;
+import net.sourceforge.pmd.util.StringUtil;
+
 /**
  * Implements a dialog for adding or editing a rule. When editing, the rule is
  * automatically updated. The caller has no need to test if the dialog was OK or
@@ -53,7 +54,7 @@ public class RuleDialog extends Dialog {
     private Rule rule;
     private Text ruleSetNameText;
     private Button ruleReferenceButton;
-//    private Text sinceText;
+    // private Text sinceText;
     private Text nameText;
     private Button xpathRuleButton;
     private Text messageText;
@@ -126,16 +127,17 @@ public class RuleDialog extends Dialog {
 
         ruleReferenceButton = buildRuleReferenceButton(dlgArea);
 
-//        Label sinceLabel = buildLabel(dlgArea, StringKeys.MSGKEY_PREF_RULEEDIT_LABEL_SINCE);
-//        data = new GridData();
-//        data.horizontalSpan = 1;
-//        sinceLabel.setLayoutData(data);
+        // Label sinceLabel = buildLabel(dlgArea,
+        // StringKeys.MSGKEY_PREF_RULEEDIT_LABEL_SINCE);
+        // data = new GridData();
+        // data.horizontalSpan = 1;
+        // sinceLabel.setLayoutData(data);
 
-//        sinceText = buildSinceText(dlgArea);
-//        data = new GridData();
-//        data.horizontalSpan = 3;
-//        data.grabExcessHorizontalSpace = false;
-//        sinceText.setLayoutData(data);
+        // sinceText = buildSinceText(dlgArea);
+        // data = new GridData();
+        // data.horizontalSpan = 3;
+        // data.grabExcessHorizontalSpace = false;
+        // sinceText.setLayoutData(data);
 
         Label nameLabel = buildLabel(dlgArea, StringKeys.PREF_RULEEDIT_LABEL_NAME);
         data = new GridData();
@@ -276,17 +278,17 @@ public class RuleDialog extends Dialog {
     private Text buildRuleSetNameText(Composite parent) {
         Text text = new Text(parent, SWT.SINGLE | SWT.BORDER);
         if (mode == MODE_ADD) {
-        	text.setText("pmd-eclipse");
-        	text.setEnabled(false);
+            text.setText("pmd-eclipse");
+            text.setEnabled(false);
         }
 
         if (mode == MODE_EDIT) {
-       		text.setText(editedRule.getRuleSetName());
+            text.setText(editedRule.getRuleSetName());
             text.setEnabled(false);
         }
 
         if (mode == MODE_VIEW) {
-       		text.setText(editedRule.getRuleSetName());
+            text.setText(editedRule.getRuleSetName());
             text.setEnabled(false);
         }
 
@@ -307,30 +309,30 @@ public class RuleDialog extends Dialog {
     /**
      * Build the since text
      */
-//    private Text buildSinceText(Composite parent) {
-//        Text text = new Text(parent, SWT.SINGLE | SWT.BORDER);
-//    	text.setEnabled(false);
-//
-//    	String since = "n/a";
-//    	if (editedRule != null && editedRule.getSince() != null)
-//    	{
-//    		since = editedRule.getSince();
-//    	}
-//
-//    	if (mode == MODE_ADD) {
-//        	text.setText(since);
-//        }
-//
-//        if (mode == MODE_EDIT) {
-//        	text.setText(since);
-//        }
-//
-//        if (mode == MODE_VIEW) {
-//        	text.setText(since);
-//        }
-//
-//        return text;
-//    }
+    // private Text buildSinceText(Composite parent) {
+    // Text text = new Text(parent, SWT.SINGLE | SWT.BORDER);
+    // text.setEnabled(false);
+    //
+    // String since = "n/a";
+    // if (editedRule != null && editedRule.getSince() != null)
+    // {
+    // since = editedRule.getSince();
+    // }
+    //
+    // if (mode == MODE_ADD) {
+    // text.setText(since);
+    // }
+    //
+    // if (mode == MODE_EDIT) {
+    // text.setText(since);
+    // }
+    //
+    // if (mode == MODE_VIEW) {
+    // text.setText(since);
+    // }
+    //
+    // return text;
+    // }
 
     /**
      * Build the rule name text
@@ -342,7 +344,7 @@ public class RuleDialog extends Dialog {
         }
 
         if (mode == MODE_EDIT) {
-       		text.setText(editedRule.getName());
+            text.setText(editedRule.getName());
             text.setEnabled(false);
         }
 
@@ -416,7 +418,7 @@ public class RuleDialog extends Dialog {
         }
 
         if (mode == MODE_ADD) {
-        	text.setText(XPathRule.class.getName());
+            text.setText(XPathRule.class.getName());
             text.setEnabled(false);
         }
 
@@ -446,25 +448,24 @@ public class RuleDialog extends Dialog {
      */
     private Combo buildPriorityCombo(Composite parent) {
         Combo combo = new Combo(parent, SWT.BORDER);
-    	String[] labels = UISettings.getPriorityLabels();
-    	int index = 3-1;
-		if (editedRule != null && editedRule.getPriority().getPriority() >= 0 && editedRule.getPriority().getPriority() <= labels.length) {
-			index = editedRule.getPriority().getPriority() - 1;
-		}
-    	for (String label : labels) {
-    		combo.add(label);
-    	}
-    	combo.select(index);
+        String[] labels = UISettings.getPriorityLabels();
+        int index = 3 - 1;
+        if (editedRule != null && editedRule.getPriority().getPriority() >= 0
+                && editedRule.getPriority().getPriority() <= labels.length) {
+            index = editedRule.getPriority().getPriority() - 1;
+        }
+        for (String label : labels) {
+            combo.add(label);
+        }
+        combo.select(index);
 
         if (mode == MODE_VIEW) {
-    		combo.setEnabled(false);
+            combo.setEnabled(false);
+        } else if (mode == MODE_EDIT) {
+            combo.setEnabled(true);
+        } else if (mode == MODE_ADD) {
+            combo.setEnabled(true);
         }
-        else if (mode == MODE_EDIT) {
-    		combo.setEnabled(true);
-        }
-	    else if (mode == MODE_ADD) {
-    		combo.setEnabled(true);
-	    }
         return combo;
     }
 
@@ -520,7 +521,7 @@ public class RuleDialog extends Dialog {
 
         String description = null;
         if (editedRule != null) {
-        	description = editedRule.getDescription();
+            description = editedRule.getDescription();
         }
         if (description == null) {
             description = "";
@@ -542,10 +543,10 @@ public class RuleDialog extends Dialog {
 
         String externalInfoUrl = null;
         if (editedRule != null) {
-        	externalInfoUrl = editedRule.getExternalInfoUrl();
+            externalInfoUrl = editedRule.getExternalInfoUrl();
         }
         if (externalInfoUrl == null) {
-        	externalInfoUrl = "";
+            externalInfoUrl = "";
         }
         text.setText(externalInfoUrl.trim());
 
@@ -566,19 +567,19 @@ public class RuleDialog extends Dialog {
         button.addSelectionListener(new SelectionAdapter() {
             @Override
             public void widgetSelected(SelectionEvent event) {
-            	String url = externalInfoUrlText.getText().trim();
-            	if (url.length() > 0) {
-            		try {
-						IWebBrowser browser = PlatformUI.getWorkbench().getBrowserSupport().getExternalBrowser();
-						browser.openURL(new URL(url));
-					} catch (PartInitException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					} catch (MalformedURLException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-            	}
+                String url = externalInfoUrlText.getText().trim();
+                if (url.length() > 0) {
+                    try {
+                        IWebBrowser browser = PlatformUI.getWorkbench().getBrowserSupport().getExternalBrowser();
+                        browser.openURL(new URL(url));
+                    } catch (PartInitException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    } catch (MalformedURLException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
+                }
             }
         });
 
@@ -636,49 +637,52 @@ public class RuleDialog extends Dialog {
         }
 
         if (mode == MODE_EDIT) {
-        	//if (editedRule.hasDescriptor(XPathRule.XPATH_DESCRIPTOR)) {
-        	if (RuleUtil.isXPathRule(editedRule)) {
+            // if (editedRule.hasDescriptor(XPathRule.XPATH_DESCRIPTOR)) {
+            if (RuleUtil.isXPathRule(editedRule)) {
                 text.setText(editedRule.getProperty(XPathRule.XPATH_DESCRIPTOR).trim());
                 text.setEditable(true);
-        	}
+            }
         }
 
         if (mode == MODE_VIEW) {
             text.setEditable(false);
-        	//if (editedRule.hasDescriptor(XPathRule.XPATH_DESCRIPTOR)) {
-        	if (RuleUtil.isXPathRule(editedRule)) {
+            // if (editedRule.hasDescriptor(XPathRule.XPATH_DESCRIPTOR)) {
+            if (RuleUtil.isXPathRule(editedRule)) {
                 text.setText(editedRule.getProperty(XPathRule.XPATH_DESCRIPTOR).trim());
-        	}
+            }
         }
 
         return text;
     }
 
     /**
-     * Based on current settings of a RuleReference being edited, update the visual
-     * indicators of whether an override of the underlying Rule is occurring
-     * or not.
+     * Based on current settings of a RuleReference being edited, update the
+     * visual indicators of whether an override of the underlying Rule is
+     * occurring or not.
      */
     protected void refreshOverridden() {
-    	if (mode == MODE_EDIT || mode == MODE_VIEW) {
-    		if (editedRule instanceof RuleReference) {
-    			RuleReference ruleReference = (RuleReference)editedRule;
-    			Color lightBlue = new Color(null, 196, 196, 255);
-    			nameText.setBackground(ruleReference.getOverriddenName() != null ? lightBlue: null);
-    			messageText.setBackground(ruleReference.getOverriddenMessage() != null ? lightBlue: null);
-    			priorityCombo.setBackground(ruleReference.getOverriddenPriority() != null ? lightBlue: null);
-    			descriptionText.setBackground(ruleReference.getOverriddenDescription() != null ? lightBlue: null);
-    			externalInfoUrlText.setBackground(ruleReference.getOverriddenExternalInfoUrl() != null ? lightBlue: null);
-    			exampleText.setBackground(ruleReference.getOverriddenExamples() != null ? lightBlue: null);
-    			xpathText.setBackground(ruleReference.hasOverriddenProperty(XPathRule.XPATH_DESCRIPTOR) ? lightBlue: null);
-    		}
-    	}
+        if (mode == MODE_EDIT || mode == MODE_VIEW) {
+            if (editedRule instanceof RuleReference) {
+                RuleReference ruleReference = (RuleReference) editedRule;
+                Color lightBlue = new Color(null, 196, 196, 255);
+                nameText.setBackground(ruleReference.getOverriddenName() != null ? lightBlue : null);
+                messageText.setBackground(ruleReference.getOverriddenMessage() != null ? lightBlue : null);
+                priorityCombo.setBackground(ruleReference.getOverriddenPriority() != null ? lightBlue : null);
+                descriptionText.setBackground(ruleReference.getOverriddenDescription() != null ? lightBlue : null);
+                externalInfoUrlText
+                        .setBackground(ruleReference.getOverriddenExternalInfoUrl() != null ? lightBlue : null);
+                exampleText.setBackground(ruleReference.getOverriddenExamples() != null ? lightBlue : null);
+                xpathText.setBackground(
+                        ruleReference.hasOverriddenProperty(XPathRule.XPATH_DESCRIPTOR) ? lightBlue : null);
+            }
+        }
     }
 
     /**
      * Helper method to shorten message access
      *
-     * @param key a message key
+     * @param key
+     *            a message key
      * @return requested message
      */
     private String getMessage(String key) {
@@ -773,24 +777,24 @@ public class RuleDialog extends Dialog {
                     rule.setMessage(messageText.getText().trim());
                     rule.setDescription(descriptionText.getText());
                     rule.getExamples().add(exampleText.getText());
-                    rule.setPriority(RulePriority.valueOf(priorityCombo.getSelectionIndex()+1));
+                    rule.setPriority(RulePriority.valueOf(priorityCombo.getSelectionIndex() + 1));
                     rule.setExternalInfoUrl(externalInfoUrlText.getText());
                     if (usesTypeResolutionButton.getSelection()) {
-                    	rule.setUsesTypeResolution();
+                        rule.setUsesTypeResolution();
                     }
                     if (usesDfaButton.getSelection()) {
-                    	rule.setUsesDFA();
+                        rule.setUsesDFA();
                     }
                     if (rule instanceof XPathRule) {
-                    	String xpath = xpathText.getText().trim();
-                    	if (xpath.length() != 0) {
+                        String xpath = xpathText.getText().trim();
+                        if (xpath.length() != 0) {
                             rule.setProperty(XPathRule.XPATH_DESCRIPTOR, xpath);
-                    	} else {
+                        } else {
                             MessageDialog.openWarning(getShell(), getMessage(StringKeys.WARNING_TITLE),
                                     getMessage(StringKeys.WARNING_XPATH_MANDATORY));
                             xpathText.setFocus();
                             flValid = false;
-                    	}
+                        }
                     }
                 } else {
                     flClassError = true;
@@ -802,9 +806,8 @@ public class RuleDialog extends Dialog {
             } catch (IllegalAccessException e) {
                 flClassError = true;
             }
-        }
-        // else only modify appropriate fields (edit mode)
-        else {
+        } else {
+            // else only modify appropriate fields (edit mode)
             editedRule.setMessage(messageText.getText().trim());
             editedRule.setPriority(RulePriority.valueOf(priorityCombo.getSelectionIndex() + 1));
             editedRule.setDescription(descriptionText.getText());
@@ -812,7 +815,7 @@ public class RuleDialog extends Dialog {
             editedRule.addExample(this.exampleText.getText());
             String xpath = xpathText.getText().trim();
             if (xpath.length() > 0) {
-            	editedRule.setProperty(XPathRule.XPATH_DESCRIPTOR, xpath);
+                editedRule.setProperty(XPathRule.XPATH_DESCRIPTOR, xpath);
             }
         }
 

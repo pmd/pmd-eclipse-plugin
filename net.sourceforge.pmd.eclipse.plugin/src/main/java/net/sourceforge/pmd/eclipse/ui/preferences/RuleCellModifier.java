@@ -1,12 +1,12 @@
 package net.sourceforge.pmd.eclipse.ui.preferences;
 
-import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.RulePriority;
-import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
-
 import org.eclipse.jface.viewers.ICellModifier;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.widgets.TableItem;
+
+import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.RulePriority;
+import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 
 /**
  * Implements a cell modifier for rule properties editing in the rule table

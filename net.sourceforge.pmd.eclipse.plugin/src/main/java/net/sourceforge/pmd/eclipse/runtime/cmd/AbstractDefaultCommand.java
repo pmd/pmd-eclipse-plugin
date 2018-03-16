@@ -236,7 +236,7 @@ public abstract class AbstractDefaultCommand extends AbstractProcessableCommand 
     /**
      * delegate method to monitor.done()
      * 
-     * @see org.eclipse.core.runtime.IProgressMonitor#done
+     * @see org.eclipse.core.runtime.IProgressMonitor#DONE
      */
     protected void done() {
         if (monitor != null) {

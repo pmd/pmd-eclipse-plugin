@@ -1,3 +1,4 @@
+
 package net.sourceforge.pmd.eclipse.ui.preferences.br;
 
 /**
@@ -6,5 +7,5 @@ package net.sourceforge.pmd.eclipse.ui.preferences.br;
  */
 public interface ValueResetHandler {
 
-	void resetValuesIn(RuleSelection rules);
+    void resetValuesIn(RuleSelection rules);
 }

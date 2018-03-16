@@ -1,10 +1,7 @@
+
 package net.sourceforge.pmd.eclipse.ui.preferences;
 
-import net.sourceforge.pmd.cpd.GUI;
-import net.sourceforge.pmd.eclipse.runtime.preferences.IPreferences;
-import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
-import net.sourceforge.pmd.eclipse.ui.preferences.br.AbstractPMDPreferencePage;
-
+import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -17,6 +14,11 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Spinner;
 
+import net.sourceforge.pmd.cpd.GUI;
+import net.sourceforge.pmd.eclipse.runtime.preferences.IPreferences;
+import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
+import net.sourceforge.pmd.eclipse.ui.preferences.br.AbstractPMDPreferencePage;
+
 /**
  * Preference page for CPD properties
  *
@@ -25,15 +27,17 @@ import org.eclipse.swt.widgets.Spinner;
  *
  */
 public class CPDPreferencePage extends AbstractPMDPreferencePage {
-	
-    private Spinner	 	minTileSizeSpinner;
-    private Label 		minTileLabel;
+
+    private Spinner minTileSizeSpinner;
+    private Label minTileLabel;
 
     protected String descriptionId() {
-    	return StringKeys.PREF_CPD_TITLE;
+        return StringKeys.PREF_CPD_TITLE;
     }
+
     /**
      * Insert the method's description here.
+     * 
      * @see PreferencePage#createContents
      */
     protected Control createContents(Composite parent) {
@@ -51,43 +55,46 @@ public class CPDPreferencePage extends AbstractPMDPreferencePage {
         generalGroup.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
         buildCPDLauncherButton(composite);
-        
+
         return composite;
     }
 
-	public void createControl(Composite parent) {
-		super.createControl(parent);
-		
-		setModified(false);		
-	}
-	
-	/**
-	 * Build the CPD launcher button
-	 * @param parent Composite
-	 * @return Button
-	 */
-	private Button buildCPDLauncherButton(Composite parent) {
-		Button button = new Button(parent, SWT.PUSH | SWT.LEFT);
-		button.setText("Launch CPD...");
+    public void createControl(Composite parent) {
+        super.createControl(parent);
 
-		button.addSelectionListener(new SelectionAdapter() {
-			@Override
+        setModified(false);
+    }
+
+    /**
+     * Build the CPD launcher button
+     * 
+     * @param parent
+     *            Composite
+     * @return Button
+     */
+    private Button buildCPDLauncherButton(Composite parent) {
+        Button button = new Button(parent, SWT.PUSH | SWT.LEFT);
+        button.setText("Launch CPD...");
+
+        button.addSelectionListener(new SelectionAdapter() {
+            @Override
             public void widgetSelected(SelectionEvent event) {
-				new Thread(new Runnable() {
-					public void run() {
-						GUI.main(new String[] { "-noexitonclose" });
-					}
-				}).start();
-			}
-		});
+                new Thread(new Runnable() {
+                    public void run() {
+                        GUI.main(new String[] { "-noexitonclose" });
+                    }
+                }).start();
+            }
+        });
 
-		return button;
-	}
-    
-    
+        return button;
+    }
+
     /**
      * Build the group of general preferences
-     * @param parent the parent composite
+     * 
+     * @param parent
+     *            the parent composite
      * @return the group widget
      */
     private Group buildGeneralGroup(final Composite parent) {
@@ -124,7 +131,7 @@ public class CPDPreferencePage extends AbstractPMDPreferencePage {
      */
     public boolean performOk() {
         preferences.setMinTileSize(Integer.valueOf(minTileSizeSpinner.getText()).intValue());
-       
+
         return super.performOk();
     }
 

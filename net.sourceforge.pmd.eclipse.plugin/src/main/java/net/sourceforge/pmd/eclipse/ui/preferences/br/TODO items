@@ -1,21 +1,23 @@
-ToDo items:     							March 21st 2010
+# ToDo items:
+
+March 21st 2010
 
 Finish remaining editors and the Add Property dialog
 Add selection column selected rules in per-project rule settings table
 Work on support for fixes
 Format description text
 Additional property types?
-	 Date properties? (i.e. to reference file timestamp?)
-	 File (path) property types - used by the DuplicateLiterals rule that can ref an external file (URL type too then?)
+*   Date properties? (i.e. to reference file timestamp?)
+*   File (path) property types - used by the DuplicateLiterals rule that can ref an external file (URL type too then?)
 Cleanup icons
 Remember settings for:
-	chosen grouping selection (or none)
-	sort column & order
-	rule table screen fraction
+*   chosen grouping selection (or none)
+*   sort column & order
+*   rule table screen fraction
 Fix:
-	new property dialog, use JFace dialog
+*   new property dialog, use JFace dialog
 Finish new Filter preferences page
-	
+
 Items needing support in PMD itself:
 
 Enable non-intrinsic property field removal

@@ -41,28 +41,28 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.Properties;
 
-import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
-import net.sourceforge.pmd.eclipse.util.IOUtil;
-
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Path;
 
+import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
+import net.sourceforge.pmd.eclipse.util.IOUtil;
+
 /**
- * This class implements a string table.
- * This let the UI loads all displayed strings from national properties.
+ * This class implements a string table. This let the UI loads all displayed
+ * strings from national properties.
  * 
  * @author Herlin
  *
  */
 
 public class StringTable {
-    private static final Logger log = Logger.getLogger(StringTable.class);
+    private static final Logger LOG = Logger.getLogger(StringTable.class);
     private Properties table = null;
-    
+
     /**
-     * Get a string from the string table from its key.
-     * Return the key if not found.
+     * Get a string from the string table from its key. Return the key if not
+     * found.
      */
     public String getString(String key) {
         String string = null;
@@ -70,32 +70,36 @@ public class StringTable {
         if (table != null) {
             string = table.getProperty(key, key);
         }
-        
+
         return string;
     }
-    
+
     /**
      * Lazy load the string table
+     * 
      * @return the string table
      */
     private Properties getTable() {
-    	
-    	if (table != null) return table;
-    	
-    	InputStream is = null;
+
+        if (table != null) {
+            return table;
+        }
+
+        InputStream is = null;
         try {
             table = new Properties();
-            final URL messageTableUrl = FileLocator.find(PMDPlugin.getDefault().getBundle(), new Path("$nl$/messages.properties"), null);
+            final URL messageTableUrl = FileLocator.find(PMDPlugin.getDefault().getBundle(),
+                    new Path("$nl$/messages.properties"), null);
             if (messageTableUrl != null) {
-               is = messageTableUrl.openStream();
-               table.load(is);
-               }
+                is = messageTableUrl.openStream();
+                table.load(is);
+            }
         } catch (IOException e) {
-            log.error("IO Exception when loading string table", e);
+            LOG.error("IO Exception when loading string table", e);
         } finally {
-        	IOUtil.closeQuietly(is);
-        	}
-        
+            IOUtil.closeQuietly(is);
+        }
+
         return table;
     }
 

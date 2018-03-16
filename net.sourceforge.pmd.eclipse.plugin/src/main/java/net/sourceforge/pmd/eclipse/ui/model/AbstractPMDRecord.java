@@ -60,6 +60,7 @@ public abstract class AbstractPMDRecord {
     public static final int TYPE_MARKER = 16;
 
     public static final AbstractPMDRecord[] EMPTY_RECORDS = new AbstractPMDRecord[0];
+
     /**
      * @return the Name of the Element
      */
@@ -108,7 +109,8 @@ public abstract class AbstractPMDRecord {
     /**
      * Adds a Resource to the Model and returns a new AbstractPMDRecord for it.
      *
-     * @param resource, the Element to insert
+     * @param resource,
+     *            the Element to insert
      * @return a new AbstractPMDRecord with the given Element in it or null if
      *         the Resource does not exist
      */
@@ -118,7 +120,8 @@ public abstract class AbstractPMDRecord {
      * Removes a Resource and also deletes the Record for it. Returns the
      * removed Record.
      *
-     * @param resource, the Resource to remove
+     * @param resource,
+     *            the Resource to remove
      * @return the Record for the Resource or null if the Resource does not
      *         exist
      */
@@ -127,22 +130,21 @@ public abstract class AbstractPMDRecord {
     /**
      * Gets the number of violations (markers) that belong to a priority.
      *
-     * @param prio priority to search for
+     * @param prio
+     *            priority to search for
      * @return number of found violations
      */
     public abstract int getNumberOfViolationsToPriority(int prio, boolean invertMarkerAndFileRecords);
 
     /**
-     * Gets the counted lines of code (loc).
-     * This works recursive.
+     * Gets the counted lines of code (loc). This works recursive.
      *
      * @return loc lines of code
      */
     public abstract int getLOC();
 
     /**
-     * Gets the number of methods.
-     * This works recursive.
+     * Gets the number of methods. This works recursive.
      *
      * @return number of counted methods
      */
@@ -200,15 +202,17 @@ public abstract class AbstractPMDRecord {
             }
         }
 
-        return markerList.isEmpty() ? null : markerList.toArray(new IMarker[markerList.size()]); // NOPMD by Herlin on 07/10/06 15:51
+        return markerList.isEmpty() ? null : markerList.toArray(new IMarker[0]);
     }
 
     /**
      * Finds Markers that have a given Attribute with a given Value. Finds
      * children Markers recursively (needs to be stopped by overwriting).
      *
-     * @param attributeName, the Name of the Attribute to search for
-     * @param value, the Value, the Attribute should have
+     * @param attributeName,
+     *            the Name of the Attribute to search for
+     * @param value,
+     *            the Value, the Attribute should have
      * @return a List of Markers that have the given attribute and Value or
      *         null, if no Markers were found
      */
@@ -228,10 +232,11 @@ public abstract class AbstractPMDRecord {
     }
 
     /**
-     * Finds a Resource and returns the corresponding Record. Recursively searches
-     * the children, needs to be stopped by overwriting.
+     * Finds a Resource and returns the corresponding Record. Recursively
+     * searches the children, needs to be stopped by overwriting.
      *
-     * @param resource, the Resource to search for
+     * @param resource,
+     *            the Resource to search for
      * @return the corresponding AbstractPMDRecord for the Resource or null, if
      *         the Resource could not be found
      */
@@ -245,12 +250,10 @@ public abstract class AbstractPMDRecord {
             // check the children if the Resource exists
             if (thisChild.getResource().equals(resource)) {
                 record = thisChild;
-            }
-
-            // if it is not the current children, but the Type are different
-            // it could be one of the grand children
-            // check this childs children recursively
-            else if (thisChild.getResourceType() != resource.getType()) {
+            } else if (thisChild.getResourceType() != resource.getType()) {
+                // if it is not the current children, but the Type are different
+                // it could be one of the grand children
+                // check this childs children recursively
                 final AbstractPMDRecord grandChild = thisChild.findResource(resource);
                 if (grandChild != null) {
                     record = grandChild;
@@ -265,8 +268,10 @@ public abstract class AbstractPMDRecord {
      * Finds a Resource with a given Name and Type. Checks children recursively
      * (needs to be stopped by overwriting).
      *
-     * @param name, the Name of the Resource
-     * @param type, the Type, one of ROOT, PROJECT, PACKAGE or FILE
+     * @param name,
+     *            the Name of the Resource
+     * @param type,
+     *            the Type, one of ROOT, PROJECT, PACKAGE or FILE
      * @return the Record for the Resource or null, if the Resource could not be
      *         found
      */
@@ -280,10 +285,8 @@ public abstract class AbstractPMDRecord {
             // If type and name are equals, then the record is the one we search
             if (thisChild.getResourceType() == type && thisChild.getName().equalsIgnoreCase(name)) {
                 record = thisChild;
-            }
-
-            // else we check the child's children the same way
-            else {
+            } else {
+                // else we check the child's children the same way
                 final AbstractPMDRecord grandChild = thisChild.findResourceByName(name, type);
                 if (grandChild != null) {
                     record = grandChild;
@@ -295,11 +298,13 @@ public abstract class AbstractPMDRecord {
     }
 
     /**
-     * Finds all Resources with a given Name and Type. Checks children recursively
-     * (needs to be stopped by overwriting).
+     * Finds all Resources with a given Name and Type. Checks children
+     * recursively (needs to be stopped by overwriting).
      *
-     * @param name, the Name of the Resource
-     * @param type, the Type, one of ROOT, PROJECT, PACKAGE or FILE
+     * @param name,
+     *            the Name of the Resource
+     * @param type,
+     *            the Type, one of ROOT, PROJECT, PACKAGE or FILE
      * @return all resources that match the name and type
      */
     public List<AbstractPMDRecord> findResourcesByName(String name, int type) {
@@ -307,14 +312,12 @@ public abstract class AbstractPMDRecord {
         final List<AbstractPMDRecord> thisChildren = getChildrenAsList();
 
         for (AbstractPMDRecord thisChild : thisChildren) {
-      
+
             // If type and name are equals, then the record is the one we search
             if (thisChild.getResourceType() == type && thisChild.getName().equalsIgnoreCase(name)) {
                 records.add(thisChild);
-            }
-
-            // else we check the child's children the same way
-            else {
+            } else {
+                // else we check the child's children the same way
                 final List<AbstractPMDRecord> grandChilds = thisChild.findResourcesByName(name, type);
                 records.addAll(grandChilds);
             }
