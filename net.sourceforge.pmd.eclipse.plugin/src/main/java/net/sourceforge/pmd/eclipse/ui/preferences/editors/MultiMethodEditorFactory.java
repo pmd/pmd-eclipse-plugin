@@ -25,7 +25,7 @@ import net.sourceforge.pmd.util.CollectionUtil;
  */
 public class MultiMethodEditorFactory extends AbstractMultiValueEditorFactory<Method> {
 
-    public static final MultiMethodEditorFactory instance = new MultiMethodEditorFactory();
+    public static final MultiMethodEditorFactory INSTANCE = new MultiMethodEditorFactory();
 
 
     private MultiMethodEditorFactory() { }
@@ -33,7 +33,7 @@ public class MultiMethodEditorFactory extends AbstractMultiValueEditorFactory<Me
 
     public PropertyDescriptor<List<Method>> createDescriptor(String name, String optionalDescription, Control[] otherData) {
         return new MethodMultiProperty(name, "Method value "
-            + name, new Method[] {MethodEditorFactory.stringLength}, new String[] {"java.lang"}, 0.0f);
+            + name, new Method[] {MethodEditorFactory.STRING_LENGTH}, new String[] {"java.lang"}, 0.0f);
     }
 
 
@@ -80,12 +80,12 @@ public class MultiMethodEditorFactory extends AbstractMultiValueEditorFactory<Me
     private static void allSignaturesOn(StringBuilder sb, List<Method> methods, String delimiter) {
 
         sb.append(
-            Util.signatureFor(methods.get(0), MethodEditorFactory.UnwantedPrefixes)
+            Util.signatureFor(methods.get(0), MethodEditorFactory.UNWANTED_PREFIXES)
         );
 
         for (int i = 1; i < methods.size(); i++) {
             sb.append(delimiter).append(
-                Util.signatureFor(methods.get(i), MethodEditorFactory.UnwantedPrefixes)
+                Util.signatureFor(methods.get(i), MethodEditorFactory.UNWANTED_PREFIXES)
             );
         }
     }
@@ -94,7 +94,7 @@ public class MultiMethodEditorFactory extends AbstractMultiValueEditorFactory<Me
     @Override
     protected Control addWidget(Composite parent, Method value, PropertyDescriptor<List<Method>> desc,
                                 PropertySource source) {
-        MethodPicker widget = new MethodPicker(parent, SWT.SINGLE | SWT.BORDER, MethodEditorFactory.UnwantedPrefixes);
+        MethodPicker widget = new MethodPicker(parent, SWT.SINGLE | SWT.BORDER, MethodEditorFactory.UNWANTED_PREFIXES);
         setValue(widget, value);
         return widget;
     }
@@ -141,7 +141,7 @@ public class MultiMethodEditorFactory extends AbstractMultiValueEditorFactory<Me
     public static String[] signaturesFor(Method[] methods) {
         String[] typeNames = new String[methods.length];
         for (int i = 0; i < typeNames.length; i++) {
-            typeNames[i] = Util.signatureFor(methods[i], MethodEditorFactory.UnwantedPrefixes);
+            typeNames[i] = Util.signatureFor(methods[i], MethodEditorFactory.UNWANTED_PREFIXES);
         }
         return typeNames;
     }

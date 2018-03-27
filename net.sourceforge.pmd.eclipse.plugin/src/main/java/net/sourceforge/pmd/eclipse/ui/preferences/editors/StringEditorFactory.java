@@ -20,7 +20,7 @@ import net.sourceforge.pmd.util.StringUtil;
  */
 public class StringEditorFactory extends AbstractEditorFactory<String> {
 
-    public static final StringEditorFactory instance = new StringEditorFactory();
+    public static final StringEditorFactory INSTANCE = new StringEditorFactory();
 
 
     protected StringEditorFactory() { }

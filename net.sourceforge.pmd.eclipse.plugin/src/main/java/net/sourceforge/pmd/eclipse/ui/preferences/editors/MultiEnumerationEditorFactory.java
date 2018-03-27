@@ -32,7 +32,7 @@ import net.sourceforge.pmd.util.CollectionUtil;
  */
 public class MultiEnumerationEditorFactory extends AbstractMultiValueEditorFactory<Object> {
 
-    public static final MultiEnumerationEditorFactory instance = new MultiEnumerationEditorFactory();
+    public static final MultiEnumerationEditorFactory INSTANCE = new MultiEnumerationEditorFactory();
 
 
     private MultiEnumerationEditorFactory() { }

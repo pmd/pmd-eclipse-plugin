@@ -19,8 +19,8 @@ import net.sourceforge.pmd.properties.PropertyDescriptor;
  */
 public abstract class AbstractNumericEditorFactory<T> extends AbstractEditorFactory<T> {
 
-    public static final int defaultMinimum = 0;
-    public static final int defaultMaximum = 1000;
+    public static final int DEFAULT_MINIMUM = 0;
+    public static final int DEFAULT_MAXIMUM = 1000;
 
 
     protected AbstractNumericEditorFactory() {
@@ -43,7 +43,7 @@ public abstract class AbstractNumericEditorFactory<T> extends AbstractEditorFact
         return new Control[] {
             defaultLabel, valueControl,
             minLabel, minWidget,
-            maxLabel, maxWidget
+            maxLabel, maxWidget,
         };
     }
 
@@ -117,24 +117,24 @@ public abstract class AbstractNumericEditorFactory<T> extends AbstractEditorFact
 
     protected Number defaultIn(Control[] controls) {
 
-        return controls == null ?
-               Integer.valueOf(defaultMinimum) :
-               (Number) valueFrom(controls[1]);
+        return controls == null
+                ? Integer.valueOf(DEFAULT_MINIMUM)
+                : (Number) valueFrom(controls[1]);
     }
 
 
     protected Number minimumIn(Control[] controls) {
 
-        return controls == null ?
-               Integer.valueOf(0) :
-               (Number) valueFrom(controls[3]);
+        return controls == null
+                ? Integer.valueOf(0)
+                : (Number) valueFrom(controls[3]);
     }
 
 
     protected Number maximumIn(Control[] controls) {
 
-        return controls == null ?
-               Integer.valueOf(defaultMaximum) :
-               (Number) valueFrom(controls[5]);
+        return controls == null
+                ? Integer.valueOf(DEFAULT_MAXIMUM)
+                : (Number) valueFrom(controls[5]);
     }
 }

@@ -18,7 +18,7 @@ import net.sourceforge.pmd.properties.PropertySource;
  */
 public class DoubleEditorFactory extends AbstractRealNumberEditor<Double> {
 
-    public static final DoubleEditorFactory instance = new DoubleEditorFactory();
+    public static final DoubleEditorFactory INSTANCE = new DoubleEditorFactory();
 
 
     private DoubleEditorFactory() { }
@@ -39,7 +39,7 @@ public class DoubleEditorFactory extends AbstractRealNumberEditor<Double> {
 
     protected Double valueFrom(Control valueControl) {
 
-        return ((Spinner) valueControl).getSelection() / scale;
+        return ((Spinner) valueControl).getSelection() / SCALE;
     }
 
 
@@ -50,7 +50,7 @@ public class DoubleEditorFactory extends AbstractRealNumberEditor<Double> {
 
         spinner.addModifyListener(new ModifyListener() {
             public void modifyText(ModifyEvent event) {
-                Double newValue = spinner.getSelection() / scale;
+                Double newValue = spinner.getSelection() / SCALE;
                 if (newValue.equals(valueFor(source, desc))) {
                     return;
                 }

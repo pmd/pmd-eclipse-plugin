@@ -1,8 +1,7 @@
+
 package net.sourceforge.pmd.eclipse.ui.preferences.editors;
 
-import net.sourceforge.pmd.util.ClassUtil;
-import net.sourceforge.pmd.util.StringUtil;
-
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -14,11 +13,13 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
 
+import net.sourceforge.pmd.util.ClassUtil;
+import net.sourceforge.pmd.util.StringUtil;
+
 /**
- * A custom control intended to display and accept Type values. New values are validated
- * when the widget loses focus, if the text represents a recognized class then it is
- * re-rendered with its full package name. If it isn't recognized or is a disallowed
- * primitive then the entry is cleared.
+ * A custom control intended to display and accept Type values. New values are validated when the widget loses focus, if
+ * the text represents a recognized class then it is re-rendered with its full package name. If it isn't recognized or
+ * is a disallowed primitive then the entry is cleared.
  *
  * TODO - add a grey prompt within the field when it is empty, remove when user starts typing
  *
@@ -26,9 +27,9 @@ import org.eclipse.swt.widgets.Text;
  */
 public class TypeText extends Composite {
 
-    private Text    text;
+    private Text text;
     private boolean acceptPrimitives;
-    private String  promptText;
+    private String promptText;
 
     public TypeText(Composite parent, int style, boolean primitivesOK, String thePromptText) {
         super(parent, SWT.None);
@@ -36,8 +37,10 @@ public class TypeText extends Composite {
         promptText = thePromptText;
 
         GridLayout layout = new GridLayout(1, false);
-        layout.verticalSpacing = 0;     layout.horizontalSpacing = 0;
-        layout.marginHeight = 0;        layout.marginWidth = 0;
+        layout.verticalSpacing = 0;
+        layout.horizontalSpacing = 0;
+        layout.marginHeight = 0;
+        layout.marginWidth = 0;
         setLayout(layout);
 
         text = new Text(this, style);
@@ -46,7 +49,7 @@ public class TypeText extends Composite {
         text.addModifyListener(new ModifyListener() {
             public void modifyText(ModifyEvent e) {
                 // adjust to remove prompt text if necessary
-                //TODO
+                // TODO
             }
         });
 
@@ -55,22 +58,28 @@ public class TypeText extends Composite {
 
     private boolean hasRealText() {
         String textValue = text.getText();
-        if (StringUtil.isEmpty(textValue)) return false;
-        if (textValue.equals(promptText)) return false;
+        if (StringUtils.isBlank(textValue)) {
+            return false;
+        }
+        if (textValue.equals(promptText)) {
+            return false;
+        }
 
         return true;
     }
 
     private void adjustFieldContents() {
 
-       // text.setForeground(
-       //    hasRealText() ? Color.
-       //    );
+        // text.setForeground(
+        // hasRealText() ? Color.
+        // );
     }
 
     public void addListener(int eventType, Listener listener) {
-    	super.addListener(eventType, listener);
-    	if (text == null) return;
+        super.addListener(eventType, listener);
+        if (text == null) {
+            return;
+        }
         text.addListener(eventType, listener);
     }
 
@@ -114,7 +123,9 @@ public class TypeText extends Composite {
 
         String typeStr = text.getText().trim();
         if (StringUtil.isEmpty(typeStr)) {
-            if (doCleanup) setType(null);
+            if (doCleanup) {
+                setType(null);
+            }
             return null;
         }
 
@@ -124,18 +135,23 @@ public class TypeText extends Composite {
         }
 
         if (cls != null) {
-            if (doCleanup) setType(cls);
+            if (doCleanup) {
+                setType(cls);
+            }
             return cls;
         }
 
-        // FIXME - incorporate this      
-//        IJavaProject project = getJavaProject();
-//        IStatus status = JavaConventions.validateClassFileName(typeStr, project.getOption(JavaCore.COMPILER_SOURCE, true), project.getOption(JavaCore.COMPILER_COMPLIANCE, true));
-        
+        // FIXME - incorporate this
+        // IJavaProject project = getJavaProject();
+        // IStatus status = JavaConventions.validateClassFileName(typeStr, project.getOption(JavaCore.COMPILER_SOURCE,
+        // true), project.getOption(JavaCore.COMPILER_COMPLIANCE, true));
+
         try {
             return Class.forName(typeStr);
         } catch (Exception ex) {
-            if (doCleanup) setType(null);
+            if (doCleanup) {
+                setType(null);
+            }
             return null;
         }
     }

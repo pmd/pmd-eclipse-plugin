@@ -68,7 +68,7 @@ public interface ValueFormatter {
             if (value == null) {
                 return;
             }
-            target.append(Util.signatureFor((Method) value, MethodEditorFactory.UnwantedPrefixes));
+            target.append(Util.signatureFor((Method) value, MethodEditorFactory.UNWANTED_PREFIXES));
         }
     };
 

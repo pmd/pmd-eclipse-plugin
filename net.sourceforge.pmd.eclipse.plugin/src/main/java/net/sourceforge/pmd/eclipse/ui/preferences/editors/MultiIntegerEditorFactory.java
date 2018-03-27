@@ -33,7 +33,7 @@ import net.sourceforge.pmd.util.NumericConstants;
  */
 public class MultiIntegerEditorFactory extends AbstractMultiValueEditorFactory<Integer> {
 
-    public static final MultiIntegerEditorFactory instance = new MultiIntegerEditorFactory();
+    public static final MultiIntegerEditorFactory INSTANCE = new MultiIntegerEditorFactory();
 
 
     private MultiIntegerEditorFactory() { }

@@ -22,7 +22,7 @@ import net.sourceforge.pmd.util.StringUtil;
  */
 public class MultiStringEditorFactory extends AbstractMultiValueEditorFactory<String> {
 
-    public static final MultiStringEditorFactory instance = new MultiStringEditorFactory();
+    public static final MultiStringEditorFactory INSTANCE = new MultiStringEditorFactory();
 
 
     private MultiStringEditorFactory() { }

@@ -1,8 +1,7 @@
+
 package net.sourceforge.pmd.eclipse.ui.preferences.editors;
 
 import java.io.File;
-
-import net.sourceforge.pmd.util.StringUtil;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -18,6 +17,8 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
+import net.sourceforge.pmd.util.StringUtil;
+
 /**
  * A general purpose selection widget that deals with files.
  *
@@ -25,67 +26,72 @@ import org.eclipse.swt.widgets.Text;
  */
 public class FilePicker extends Composite {
 
-    private Text    fileField;
-    private Button  pickButton;
-    private final String	dialogTitle;
-    private final String[]	filterExtensions;
-    
+    private Text fileField;
+    private Button pickButton;
+    private final String dialogTitle;
+    private final String[] filterExtensions;
+
     public FilePicker(final Composite parent, int style, String theDialogTitle, String[] theFilterExtensions) {
         super(parent, SWT.None);
 
         dialogTitle = theDialogTitle;
         filterExtensions = theFilterExtensions;
-        
+
         GridLayout layout = new GridLayout(3, true);
-        layout.verticalSpacing = 0;     layout.horizontalSpacing = 0;
-        layout.marginHeight = 0;        layout.marginWidth = 0;
+        layout.verticalSpacing = 0;
+        layout.horizontalSpacing = 0;
+        layout.marginHeight = 0;
+        layout.marginWidth = 0;
         setLayout(layout);
 
         fileField = new Text(this, style);
         fileField.addListener(SWT.FocusOut, new Listener() {
             public void handleEvent(Event event) {
-  //              reviseMethodListFor(fileField.getText());
+                // reviseMethodListFor(fileField.getText());
             }
         });
 
         fileField.addListener(SWT.Modify, new Listener() {
             public void handleEvent(Event event) {
-   //             reviseMethodListFor(fileField.getText());   // no cleanup, avoid event loop & overflow
+                // reviseMethodListFor(fileField.getText()); // no cleanup,
+                // avoid event loop & overflow
             }
         });
 
         pickButton = new Button(this, SWT.PUSH);
         pickButton.setText("...");
-        pickButton.setLayoutData( new GridData(GridData.BEGINNING, GridData.CENTER, false, false) );
-        pickButton.addSelectionListener( new SelectionAdapter() {
+        pickButton.setLayoutData(new GridData(GridData.BEGINNING, GridData.CENTER, false, false));
+        pickButton.addSelectionListener(new SelectionAdapter() {
             public void widgetSelected(SelectionEvent event) {
                 openFileDialog(parent.getShell());
             }
         });
-        
+
         GridData data = new GridData(GridData.FILL_HORIZONTAL);
         data.horizontalSpan = 2;
         fileField.setLayoutData(data);
     }
 
     public void addFocusOutListener(Listener listener) {
-    	fileField.addListener(SWT.FocusOut, listener);
+        fileField.addListener(SWT.FocusOut, listener);
     }
-    
+
     private void openFileDialog(Shell shell) {
-    	
-    	 FileDialog fd = new FileDialog(shell, SWT.OPEN);
-         fd.setText(dialogTitle);
-         fd.setFilterPath("C:/");
-        
-         if (filterExtensions != null) fd.setFilterExtensions(filterExtensions);
-         
-         String selected = fd.open();
-         
-         fileField.setText(selected == null ? "" : selected);
-         fileField.setFocus();
+
+        FileDialog fd = new FileDialog(shell, SWT.OPEN);
+        fd.setText(dialogTitle);
+        fd.setFilterPath("C:/");
+
+        if (filterExtensions != null) {
+            fd.setFilterExtensions(filterExtensions);
+        }
+
+        String selected = fd.open();
+
+        fileField.setText(selected == null ? "" : selected);
+        fileField.setFocus();
     }
-    
+
     public void setBackground(Color clr) {
         fileField.setBackground(clr);
     }
@@ -105,9 +111,9 @@ public class FilePicker extends Composite {
     }
 
     public File getFile() {
-    	
-    	String name = fileField.getText();
-    	return StringUtil.isEmpty(name) ? null : new File(name);
+
+        String name = fileField.getText();
+        return StringUtil.isEmpty(name) ? null : new File(name);
     }
 
 }

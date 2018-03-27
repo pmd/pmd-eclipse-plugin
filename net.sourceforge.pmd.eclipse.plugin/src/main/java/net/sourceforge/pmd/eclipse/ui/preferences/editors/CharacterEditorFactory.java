@@ -19,7 +19,7 @@ import net.sourceforge.pmd.util.StringUtil;
  */
 public class CharacterEditorFactory extends AbstractEditorFactory<Character> {
 
-    public static final CharacterEditorFactory instance = new CharacterEditorFactory();
+    public static final CharacterEditorFactory INSTANCE = new CharacterEditorFactory();
 
 
     private CharacterEditorFactory() { }

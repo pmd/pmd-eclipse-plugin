@@ -21,7 +21,7 @@ import net.sourceforge.pmd.properties.PropertySource;
 public class FileEditorFactory extends AbstractEditorFactory<File> {
 
 
-    public static final FileEditorFactory instance = new FileEditorFactory();
+    public static final FileEditorFactory INSTANCE = new FileEditorFactory();
 
 
     protected FileEditorFactory() { }

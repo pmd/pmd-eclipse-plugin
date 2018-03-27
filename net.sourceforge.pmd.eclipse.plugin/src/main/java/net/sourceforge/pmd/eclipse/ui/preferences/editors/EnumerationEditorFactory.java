@@ -21,7 +21,7 @@ import net.sourceforge.pmd.properties.PropertySource;
  */
 public class EnumerationEditorFactory extends AbstractEditorFactory<Object> {
 
-    public static final EnumerationEditorFactory instance = new EnumerationEditorFactory();
+    public static final EnumerationEditorFactory INSTANCE = new EnumerationEditorFactory();
 
 
     private EnumerationEditorFactory() { }

@@ -11,9 +11,9 @@ import net.sourceforge.pmd.properties.PropertySource;
  */
 public abstract class AbstractRealNumberEditor<T extends Number> extends AbstractNumericEditorFactory<T> {
 
-    protected static final int digits = 3;
+    protected static final int DIGITS = 3;
 
-    protected static final double scale = Math.pow(10, digits);
+    protected static final double SCALE = Math.pow(10, DIGITS);
 
 
     protected AbstractRealNumberEditor() {
@@ -23,15 +23,15 @@ public abstract class AbstractRealNumberEditor<T extends Number> extends Abstrac
     protected final Spinner newSpinnerFor(Composite parent, PropertySource source,
                                     NumericPropertyDescriptor<T> numDesc) {
 
-        Spinner spinner = newSpinnerFor(parent, digits);
-        int min = (int) (numDesc.lowerLimit().doubleValue() * scale);
-        int max = (int) (numDesc.upperLimit().doubleValue() * scale);
+        Spinner spinner = newSpinnerFor(parent, DIGITS);
+        int min = (int) (numDesc.lowerLimit().doubleValue() * SCALE);
+        int max = (int) (numDesc.upperLimit().doubleValue() * SCALE);
         spinner.setMinimum(min);
         spinner.setMaximum(max);
 
         Number value = valueFor(source, numDesc);
         if (value != null) {
-            int intVal = (int) (value.doubleValue() * scale);
+            int intVal = (int) (value.doubleValue() * SCALE);
             spinner.setSelection(intVal);
         }
 

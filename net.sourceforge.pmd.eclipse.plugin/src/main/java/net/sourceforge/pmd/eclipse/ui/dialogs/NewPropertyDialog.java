@@ -221,7 +221,7 @@ public class NewPropertyDialog extends TitleAreaDialog implements SizeChangeList
     }
 
     private static String labelFor(Class<?> type) {
-        return Util.signatureFor(type, MethodEditorFactory.UnwantedPrefixes);
+        return Util.signatureFor(type, MethodEditorFactory.UNWANTED_PREFIXES);
     }
 
     /**

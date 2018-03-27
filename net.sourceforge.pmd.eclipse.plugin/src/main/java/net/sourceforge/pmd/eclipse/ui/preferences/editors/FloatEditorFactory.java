@@ -18,7 +18,7 @@ import net.sourceforge.pmd.properties.PropertySource;
  */
 public class FloatEditorFactory extends AbstractRealNumberEditor<Float> {
 
-    public static final FloatEditorFactory instance = new FloatEditorFactory();
+    public static final FloatEditorFactory INSTANCE = new FloatEditorFactory();
 
 
     private FloatEditorFactory() { }
@@ -39,7 +39,7 @@ public class FloatEditorFactory extends AbstractRealNumberEditor<Float> {
 
     protected Float valueFrom(Control valueControl) {
 
-        return (float) (((Spinner) valueControl).getSelection() / scale);
+        return (float) (((Spinner) valueControl).getSelection() / SCALE);
     }
 
 
@@ -50,7 +50,7 @@ public class FloatEditorFactory extends AbstractRealNumberEditor<Float> {
 
         spinner.addModifyListener(new ModifyListener() {
             public void modifyText(ModifyEvent event) {
-                Float newValue = (float) (spinner.getSelection() / scale);
+                Float newValue = (float) (spinner.getSelection() / SCALE);
                 if (newValue.equals(valueFor(source, desc))) {
                     return;
                 }

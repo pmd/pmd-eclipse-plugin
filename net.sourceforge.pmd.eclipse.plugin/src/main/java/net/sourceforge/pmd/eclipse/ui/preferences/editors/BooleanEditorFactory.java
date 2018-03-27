@@ -18,7 +18,7 @@ import net.sourceforge.pmd.properties.PropertySource;
  */
 public class BooleanEditorFactory extends AbstractEditorFactory<Boolean> {
 
-    public static final BooleanEditorFactory instance = new BooleanEditorFactory();
+    public static final BooleanEditorFactory INSTANCE = new BooleanEditorFactory();
 
 
     private BooleanEditorFactory() { }

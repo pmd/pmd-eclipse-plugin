@@ -47,9 +47,9 @@ import net.sourceforge.pmd.util.StringUtil;
  */
 public abstract class AbstractMultiValueEditorFactory<T> extends AbstractEditorFactory<List<T>> {
 
-    protected static final String delimiter = ",";
+    protected static final String DELIMITER = ",";
 
-    private static final int WidgetsPerRow = 3;     //  numberLabel, valueWidget, +/-button
+    private static final int WIDGETS_PER_ROW = 3;     //  numberLabel, valueWidget, +/-button
 
 
     protected AbstractMultiValueEditorFactory() {
@@ -92,10 +92,10 @@ public abstract class AbstractMultiValueEditorFactory<T> extends AbstractEditorF
             public void handleEvent(Event event) {
                 if (itemsVisible) {
                     hideCollection(items);
-                    sizeListener.addedRows(items.size() / -WidgetsPerRow);
+                    sizeListener.addedRows(items.size() / -WIDGETS_PER_ROW);
                 } else {
                     items = openCollection(panel, desc, source, textWidget, changeListener, sizeListener);
-                    sizeListener.addedRows(items.size() / WidgetsPerRow);
+                    sizeListener.addedRows(items.size() / WIDGETS_PER_ROW);
                 }
                 itemsVisible = !itemsVisible;
                 textWidget.setEditable(!itemsVisible);   // no raw editing when individual items are available
@@ -265,7 +265,7 @@ public abstract class AbstractMultiValueEditorFactory<T> extends AbstractEditorF
     protected void fillWidget(Text textWidget, PropertyDescriptor<List<T>> desc, PropertySource source) {
 
         List<T> values = valueFor(source, desc);
-        textWidget.setText(values == null ? "" : StringUtil.asString(values.toArray(), delimiter + ' '));
+        textWidget.setText(values == null ? "" : StringUtil.asString(values.toArray(), DELIMITER + ' '));
         adjustRendering(source, desc, textWidget);
     }
 
@@ -278,7 +278,7 @@ public abstract class AbstractMultiValueEditorFactory<T> extends AbstractEditorF
             return Collections.emptyList();
         }
 
-        String[] valueSet = values.split(delimiter);
+        String[] valueSet = values.split(DELIMITER);
         List<String> valueList = new ArrayList<String>(valueSet.length);
 
         for (String value : valueSet) {

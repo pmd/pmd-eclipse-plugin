@@ -58,23 +58,23 @@ public class PerRulePropertyPanelManager extends AbstractRulePanelManager implem
     static {
         Map<Class<?>, EditorFactory> factoriesByPropertyType = new HashMap<Class<?>, EditorFactory>();
 
-        factoriesByPropertyType.put(Boolean.class, BooleanEditorFactory.instance);
-        factoriesByPropertyType.put(String.class, StringEditorFactory.instance);
-        factoriesByPropertyType.put(Integer.class, IntegerEditorFactory.instance);
-        factoriesByPropertyType.put(Float.class, FloatEditorFactory.instance);
-        factoriesByPropertyType.put(Double.class, DoubleEditorFactory.instance);
-        factoriesByPropertyType.put(Object.class, EnumerationEditorFactory.instance);
-        factoriesByPropertyType.put(Character.class, CharacterEditorFactory.instance);
+        factoriesByPropertyType.put(Boolean.class, BooleanEditorFactory.INSTANCE);
+        factoriesByPropertyType.put(String.class, StringEditorFactory.INSTANCE);
+        factoriesByPropertyType.put(Integer.class, IntegerEditorFactory.INSTANCE);
+        factoriesByPropertyType.put(Float.class, FloatEditorFactory.INSTANCE);
+        factoriesByPropertyType.put(Double.class, DoubleEditorFactory.INSTANCE);
+        factoriesByPropertyType.put(Object.class, EnumerationEditorFactory.INSTANCE);
+        factoriesByPropertyType.put(Character.class, CharacterEditorFactory.INSTANCE);
 
-        factoriesByPropertyType.put(Class.class, TypeEditorFactory.instance);
-        factoriesByPropertyType.put(Class[].class, MultiTypeEditorFactory.instance);
-        factoriesByPropertyType.put(Method.class, MethodEditorFactory.instance);
-        factoriesByPropertyType.put(Method[].class, MultiMethodEditorFactory.instance);
-        factoriesByPropertyType.put(String[].class, MultiStringEditorFactory.instance);
-        factoriesByPropertyType.put(Integer[].class, MultiIntegerEditorFactory.instance);
-        factoriesByPropertyType.put(Object[].class, MultiEnumerationEditorFactory.instance);
+        factoriesByPropertyType.put(Class.class, TypeEditorFactory.INSTANCE);
+        factoriesByPropertyType.put(Class[].class, MultiTypeEditorFactory.INSTANCE);
+        factoriesByPropertyType.put(Method.class, MethodEditorFactory.INSTANCE);
+        factoriesByPropertyType.put(Method[].class, MultiMethodEditorFactory.INSTANCE);
+        factoriesByPropertyType.put(String[].class, MultiStringEditorFactory.INSTANCE);
+        factoriesByPropertyType.put(Integer[].class, MultiIntegerEditorFactory.INSTANCE);
+        factoriesByPropertyType.put(Object[].class, MultiEnumerationEditorFactory.INSTANCE);
 
-        factoriesByPropertyType.put(File.class, FileEditorFactory.instance);
+        factoriesByPropertyType.put(File.class, FileEditorFactory.INSTANCE);
         // factoriesByPropertyType.put(Package.class,
         // PackageEditorFactory.instance);
 

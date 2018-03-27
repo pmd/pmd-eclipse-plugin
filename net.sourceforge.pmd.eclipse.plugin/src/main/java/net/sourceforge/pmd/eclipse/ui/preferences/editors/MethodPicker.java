@@ -1,10 +1,8 @@
+
 package net.sourceforge.pmd.eclipse.ui.preferences.editors;
 
 import java.lang.reflect.Method;
 import java.util.Arrays;
-
-import net.sourceforge.pmd.eclipse.util.Util;
-import net.sourceforge.pmd.util.StringUtil;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionListener;
@@ -17,35 +15,37 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 
+import net.sourceforge.pmd.eclipse.util.Util;
+import net.sourceforge.pmd.util.StringUtil;
+
 /**
- * A general purpose selection widget that deals with methods. Once the user types in a valid type
- * in the left-most text field, all methods that are part of it are listed in the combobox on the
- * right.
+ * A general purpose selection widget that deals with methods. Once the user types in a valid type in the left-most text
+ * field, all methods that are part of it are listed in the combobox on the right.
  *
- * Note: Uses the default class loader to lookup the class, we'll probably want to supply an
- * external one in the future?
+ * Note: Uses the default class loader to lookup the class, we'll probably want to supply an external one in the future?
  *
  * @author Brian Remedios
  */
 public class MethodPicker extends Composite {
 
-    private TypeText    typeText;
-    private Combo       methodList;
-    private Method[]    methods;
-    private String[]    unwantedPrefixes;
+    private TypeText typeText;
+    private Combo methodList;
+    private Method[] methods;
+    private String[] unwantedPrefixes;
 
     public MethodPicker(Composite parent, int style, String[] theUnwantedPrefixes) {
         super(parent, SWT.None);
 
-        unwantedPrefixes = theUnwantedPrefixes == null ?
-            StringUtil.getEmptyStrings() : theUnwantedPrefixes;
+        unwantedPrefixes = theUnwantedPrefixes == null ? StringUtil.getEmptyStrings() : theUnwantedPrefixes;
 
         GridLayout layout = new GridLayout(2, true);
-        layout.verticalSpacing = 0;     layout.horizontalSpacing = 0;
-        layout.marginHeight = 0;        layout.marginWidth = 0;
+        layout.verticalSpacing = 0;
+        layout.horizontalSpacing = 0;
+        layout.marginHeight = 0;
+        layout.marginWidth = 0;
         this.setLayout(layout);
 
-        typeText = new TypeText(this, style, false, "Enter a type name");	// TODO  i18l
+        typeText = new TypeText(this, style, false, "Enter a type name"); // TODO i18l
         typeText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
         typeText.addListener(SWT.FocusOut, new Listener() {
             public void handleEvent(Event event) {
@@ -55,7 +55,8 @@ public class MethodPicker extends Composite {
 
         typeText.addListener(SWT.Modify, new Listener() {
             public void handleEvent(Event event) {
-                reviseMethodListFor(typeText.getType(false));   // no cleanup, avoid event loop & overflow
+                // no cleanup, avoid event loop & overflow
+                reviseMethodListFor(typeText.getType(false));
             }
         });
 
@@ -75,7 +76,9 @@ public class MethodPicker extends Composite {
         methods = cls.getMethods();
         Arrays.sort(methods, Util.MethodNameComparator);
         String[] items = new String[methods.length];
-        for (int i=0; i<methods.length; i++) items[i] = Util.signatureFor(methods[i], unwantedPrefixes);
+        for (int i = 0; i < methods.length; i++) {
+            items[i] = Util.signatureFor(methods[i], unwantedPrefixes);
+        }
 
         methodList.setItems(items);
         methodList.select(0);
@@ -89,7 +92,7 @@ public class MethodPicker extends Composite {
     public Point computeSize(int wHint, int hHint, boolean changed) {
         Point pt = typeText.computeSize(wHint, hHint, changed);
         pt.x *= 2;
-        pt.y += 2;  // !@#$ combobox is taller than text box, need to avoid cropping it
+        pt.y += 2; // !@#$ combobox is taller than text box, need to avoid cropping it
         return pt;
     }
 
@@ -112,9 +115,13 @@ public class MethodPicker extends Composite {
     }
 
     private int indexOf(Method method) {
-        if (methods == null) return -1;
-        for (int i=0; i<methods.length; i++) {
-            if (methods[i].equals(method)) return i;
+        if (methods == null) {
+            return -1;
+        }
+        for (int i = 0; i < methods.length; i++) {
+            if (methods[i].equals(method)) {
+                return i;
+            }
         }
         return -1;
     }
@@ -133,9 +140,7 @@ public class MethodPicker extends Composite {
 
     public Method getMethod() {
 
-        return methods == null ?
-            null :
-            methods[methodList.getSelectionIndex()];
+        return methods == null ? null : methods[methodList.getSelectionIndex()];
     }
 
     public void addSelectionListener(SelectionListener listener) {

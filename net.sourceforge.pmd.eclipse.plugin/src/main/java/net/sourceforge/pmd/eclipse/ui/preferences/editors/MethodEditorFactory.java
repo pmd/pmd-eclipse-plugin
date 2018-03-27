@@ -21,21 +21,21 @@ import net.sourceforge.pmd.util.ClassUtil;
  */
 public class MethodEditorFactory extends AbstractEditorFactory<Method> {
 
-    public static final MethodEditorFactory instance = new MethodEditorFactory();
-    public static final String[] UnwantedPrefixes = new String[] {
+    public static final MethodEditorFactory INSTANCE = new MethodEditorFactory();
+    public static final String[] UNWANTED_PREFIXES = new String[] {
         "java.lang.reflect.",
         "java.lang.",
-        "java.util."
+        "java.util.",
     };
 
-    public static final Method stringLength = ClassUtil.methodFor(String.class, "length", ClassUtil.EMPTY_CLASS_ARRAY);
+    public static final Method STRING_LENGTH = ClassUtil.methodFor(String.class, "length", ClassUtil.EMPTY_CLASS_ARRAY);
 
 
     private MethodEditorFactory() { }
 
 
     public PropertyDescriptor<Method> createDescriptor(String name, String optionalDescription, Control[] otherData) {
-        return new MethodProperty(name, "Method value " + name, stringLength, new String[] {"java.lang"}, 0.0f);
+        return new MethodProperty(name, "Method value " + name, STRING_LENGTH, new String[] {"java.lang"}, 0.0f);
     }
 
 
@@ -48,7 +48,7 @@ public class MethodEditorFactory extends AbstractEditorFactory<Method> {
     public Control newEditorOn(Composite parent, final PropertyDescriptor<Method> desc, final PropertySource source,
                                final ValueChangeListener listener, SizeChangeListener sizeListener) {
 
-        final MethodPicker picker = new MethodPicker(parent, SWT.SINGLE | SWT.BORDER, UnwantedPrefixes);
+        final MethodPicker picker = new MethodPicker(parent, SWT.SINGLE | SWT.BORDER, UNWANTED_PREFIXES);
         picker.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
         fillWidget(picker, desc, source);

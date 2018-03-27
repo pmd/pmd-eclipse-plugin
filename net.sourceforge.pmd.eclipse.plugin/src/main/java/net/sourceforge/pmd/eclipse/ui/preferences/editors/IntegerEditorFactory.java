@@ -18,7 +18,7 @@ import net.sourceforge.pmd.properties.PropertySource;
  */
 public class IntegerEditorFactory extends AbstractNumericEditorFactory<Integer> {
 
-    public static final IntegerEditorFactory instance = new IntegerEditorFactory();
+    public static final IntegerEditorFactory INSTANCE = new IntegerEditorFactory();
 
 
     private IntegerEditorFactory() { }

@@ -27,7 +27,7 @@ import net.sourceforge.pmd.util.StringUtil;
  */
 public class MultiTypeEditorFactory extends AbstractMultiValueEditorFactory<Class> {
 
-    public static final MultiTypeEditorFactory instance = new MultiTypeEditorFactory();
+    public static final MultiTypeEditorFactory INSTANCE = new MultiTypeEditorFactory();
 
 
     private MultiTypeEditorFactory() { }
@@ -35,7 +35,7 @@ public class MultiTypeEditorFactory extends AbstractMultiValueEditorFactory<Clas
 
     public PropertyDescriptor<List<Class>> createDescriptor(String name, String optionalDescription, Control[] otherData) {
         return new TypeMultiProperty(name, "Type value "
-            + name, Arrays.asList((Class)String.class), new String[] {"java.lang"}, 0.0f);
+            + name, Arrays.asList((Class) String.class), new String[] {"java.lang"}, 0.0f);
     }
 
 
@@ -108,7 +108,7 @@ public class MultiTypeEditorFactory extends AbstractMultiValueEditorFactory<Clas
 
     private String asString(List<Class> types) {
         String[] typeNames = shortNamesFor(types.toArray(new Class<?>[types.size()]));
-        return StringUtil.asString(typeNames, delimiter + ' ');
+        return StringUtil.asString(typeNames, DELIMITER + ' ');
     }
 
 
