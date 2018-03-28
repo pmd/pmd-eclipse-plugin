@@ -129,7 +129,7 @@ public class ViolationOverview extends ViewPart implements ISelectionProvider, I
         root = (RootRecord) getInitialInput();
         contentProvider = new ViolationOverviewContentProvider(this);
         labelProvider = new ViolationOverviewLabelProvider(this);
-        priorityFilter = new PriorityFilter();
+        priorityFilter = PriorityUtil.getPriorityFilter();
         projectFilter = new ProjectFilter();
         doubleClickListener = new ViolationOverviewDoubleClickListener(this);
         menuManager = new ViolationOverviewMenuManager(this);
@@ -498,7 +498,6 @@ public class ViolationOverview extends ViewPart implements ISelectionProvider, I
         if (!priorityList.isEmpty()) {
             priorityFilter.setPriorityFilterList(priorityList);
         }
-        PriorityUtil.setPriorityFilter(priorityFilter);
         
         List<String> projectNames = memento.getStringList(PROJECT_LIST);
         if (!projectNames.isEmpty()) {
