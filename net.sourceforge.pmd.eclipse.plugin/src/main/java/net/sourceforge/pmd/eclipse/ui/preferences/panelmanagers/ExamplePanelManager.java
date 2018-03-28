@@ -4,13 +4,7 @@ package net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.eclipse.ui.editors.SyntaxManager;
-import net.sourceforge.pmd.eclipse.ui.preferences.br.ValueChangeListener;
-import net.sourceforge.pmd.lang.rule.RuleReference;
-import net.sourceforge.pmd.util.StringUtil;
-
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.events.ModifyListener;
@@ -20,6 +14,13 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
+
+import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.eclipse.ui.editors.SyntaxManager;
+import net.sourceforge.pmd.eclipse.ui.preferences.br.ValueChangeListener;
+import net.sourceforge.pmd.lang.rule.RuleReference;
+import net.sourceforge.pmd.util.StringUtil;
 
 /**
  *
@@ -81,8 +82,9 @@ public class ExamplePanelManager extends AbstractRulePanelManager {
                 String cleanValue = exampleField.getText().trim();
                 String existingValue = soleRule.getDescription();
 
-                if (StringUtil.areSemanticEquals(existingValue, cleanValue))
+                if (StringUtil.areSemanticEquals(existingValue, cleanValue)) {
                     return;
+                }
 
                 soleRule.setDescription(cleanValue);
                 valueChanged(null, cleanValue);
@@ -97,9 +99,11 @@ public class ExamplePanelManager extends AbstractRulePanelManager {
 
         String[] lines = example.split("\n");
         List<String> realLines = new ArrayList<String>(lines.length);
-        for (String line : lines)
-            if (StringUtil.isNotEmpty(line))
+        for (String line : lines) {
+            if (StringUtils.isNotBlank(line)) {
                 realLines.add(line);
+            }
+        }
         lines = realLines.toArray(new String[realLines.size()]);
 
         int trimDepth = StringUtil.maxCommonLeadingWhitespaceForAll(lines);
@@ -114,8 +118,9 @@ public class ExamplePanelManager extends AbstractRulePanelManager {
     private String examples(Rule rule) {
 
         List<String> examples = rule.getExamples();
-        if (examples.isEmpty())
+        if (examples.isEmpty()) {
             return "";
+        }
 
         StringBuilder sb = new StringBuilder();
         formatExampleOn(sb, examples.get(0));

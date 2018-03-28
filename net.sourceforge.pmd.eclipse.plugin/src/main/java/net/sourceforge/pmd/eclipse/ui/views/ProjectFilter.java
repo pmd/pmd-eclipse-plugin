@@ -4,13 +4,13 @@ package net.sourceforge.pmd.eclipse.ui.views;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.sourceforge.pmd.eclipse.ui.model.FileRecord;
-import net.sourceforge.pmd.eclipse.ui.model.AbstractPMDRecord;
-import net.sourceforge.pmd.eclipse.ui.model.MarkerRecord;
-import net.sourceforge.pmd.eclipse.ui.model.PackageRecord;
-
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
+
+import net.sourceforge.pmd.eclipse.ui.model.AbstractPMDRecord;
+import net.sourceforge.pmd.eclipse.ui.model.FileRecord;
+import net.sourceforge.pmd.eclipse.ui.model.MarkerRecord;
+import net.sourceforge.pmd.eclipse.ui.model.PackageRecord;
 
 /**
  * Allows to filter Projects in the Violation Overview

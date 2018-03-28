@@ -36,14 +36,6 @@
 
 package net.sourceforge.pmd.eclipse.ui.views;
 
-import net.sourceforge.pmd.eclipse.ui.PMDUiConstants;
-import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
-import net.sourceforge.pmd.eclipse.ui.model.FileRecord;
-import net.sourceforge.pmd.eclipse.ui.model.FileToMarkerRecord;
-import net.sourceforge.pmd.eclipse.ui.model.MarkerRecord;
-import net.sourceforge.pmd.eclipse.ui.model.PackageRecord;
-import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
-
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.jface.viewers.DoubleClickEvent;
@@ -55,6 +47,14 @@ import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.ide.IDE;
+
+import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
+import net.sourceforge.pmd.eclipse.ui.PMDUiConstants;
+import net.sourceforge.pmd.eclipse.ui.model.FileRecord;
+import net.sourceforge.pmd.eclipse.ui.model.FileToMarkerRecord;
+import net.sourceforge.pmd.eclipse.ui.model.MarkerRecord;
+import net.sourceforge.pmd.eclipse.ui.model.PackageRecord;
+import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
 
 /**
  * DoubleClickListener for the violation-overview.

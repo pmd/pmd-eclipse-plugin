@@ -47,15 +47,15 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
-import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
-import net.sourceforge.pmd.util.NumericConstants;
-import net.sourceforge.pmd.util.StringUtil;
-
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.WorkbenchException;
 import org.eclipse.ui.XMLMemento;
+
+import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
+import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
+import net.sourceforge.pmd.util.NumericConstants;
+import net.sourceforge.pmd.util.StringUtil;
 
 /**
  * Provides functions to save the state of a View during a session, even when the view is closed and re-opened 

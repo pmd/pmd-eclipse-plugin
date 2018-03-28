@@ -201,8 +201,8 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
 
     private void useCustomPriorityNames(boolean flag) {
 
-        priorityTableMgr.visible(PriorityColumnUI.name, flag);
-        priorityTableMgr.visible(PriorityColumnUI.pmdName, !flag);
+        priorityTableMgr.visible(PriorityColumnUI.NAME, flag);
+        priorityTableMgr.visible(PriorityColumnUI.PMD_NAME, !flag);
 
         UISettings.useCustomPriorityLabels(flag);
         for (Control field : nameFields) {
@@ -242,11 +242,11 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
                 return (RulePriority[]) inputElement;
             }
         };
-        BasicTableLabelProvider labelProvider = new BasicTableLabelProvider(PriorityColumnUI.VisibleColumns);
+        BasicTableLabelProvider labelProvider = new BasicTableLabelProvider(PriorityColumnUI.VISIBLE_COLUMNS);
 
-        priorityTableMgr = new BasicTableManager("prio", null, PriorityColumnUI.VisibleColumns);
+        priorityTableMgr = new BasicTableManager("prio", null, PriorityColumnUI.VISIBLE_COLUMNS);
         tableViewer = priorityTableMgr.buildTableViewer(group);
-        priorityTableMgr.setupColumns(PriorityColumnUI.VisibleColumns);
+        priorityTableMgr.setupColumns(PriorityColumnUI.VISIBLE_COLUMNS);
 
         Table table = tableViewer.getTable();
         table.setLayoutData(new GridData(GridData.FILL, GridData.CENTER, true, true, 2, 1));
@@ -369,7 +369,7 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
         Object[] items = ((IStructuredSelection) tableViewer.getSelection()).toArray();
         PriorityDescriptor[] descs = new PriorityDescriptor[items.length];
         for (int i = 0; i < descs.length; i++) {
-            descs[i] = PriorityDescriptorCache.instance.descriptorFor((RulePriority) items[i]);
+            descs[i] = PriorityDescriptorCache.INSTANCE.descriptorFor((RulePriority) items[i]);
         }
         return descs;
     }
@@ -384,7 +384,7 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
         }
 
         RulePriority priority = items.get(0);
-        PriorityDescriptor desc = PriorityDescriptorCache.instance.descriptorFor(priority);
+        PriorityDescriptor desc = PriorityDescriptorCache.INSTANCE.descriptorFor(priority);
 
         ssc.setSelection(desc.shape.shape);
         nameField.setText(desc.label);
@@ -761,7 +761,7 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
 
     private void updateMarkerIcons() {
 
-        if (!PriorityDescriptorCache.instance.hasChanges()) {
+        if (!PriorityDescriptorCache.INSTANCE.hasChanges()) {
             return;
         }
 
@@ -769,7 +769,7 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
 
         System.out.println("updating icons");
 
-        PriorityDescriptorCache.instance.storeInPreferences();
+        PriorityDescriptorCache.INSTANCE.storeInPreferences();
         UISettings.createRuleMarkerIcons(getShell().getDisplay());
         UISettings.reloadPriorities();
 
@@ -786,7 +786,7 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
 
     public boolean performCancel() {
         // clear out any changes for next possible usage
-        PriorityDescriptorCache.instance.loadFromPreferences();
+        PriorityDescriptorCache.INSTANCE.loadFromPreferences();
         return true;
     }
 

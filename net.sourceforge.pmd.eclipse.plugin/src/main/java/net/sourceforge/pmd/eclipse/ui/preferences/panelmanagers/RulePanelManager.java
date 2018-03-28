@@ -1,3 +1,4 @@
+
 package net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers;
 
 import java.util.ArrayList;
@@ -8,6 +9,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -43,7 +45,6 @@ import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.rule.XPathRule;
-import net.sourceforge.pmd.util.StringUtil;
 
 /**
  *
@@ -51,52 +52,54 @@ import net.sourceforge.pmd.util.StringUtil;
  */
 public class RulePanelManager extends AbstractRulePanelManager {
 
-    private RuleTarget  target;
+    private RuleTarget target;
 
-	private Text 		nameField;
-    private TypeText 	implementationClassField;
-    private Combo		ruleSetNameField;
+    private Text nameField;
+    private TypeText implementationClassField;
+    private Combo ruleSetNameField;
 
-    private Button  	ruleReferenceButton;
-    private Combo 		languageCombo;
-    private Combo 		priorityCombo;
+    private Button ruleReferenceButton;
+    private Combo languageCombo;
+    private Combo priorityCombo;
     private ShapePicker priorityDisplay;
-    
-    private Label		minLanguageLabel;
-    private Label		maxLanguageLabel;
-    private Combo		minLanguageVersionCombo;
-    private Combo		maxLanguageVersionCombo;
 
-    private Combo		implementationTypeCombo;
+    private Label minLanguageLabel;
+    private Label maxLanguageLabel;
+    private Combo minLanguageVersionCombo;
+    private Combo maxLanguageVersionCombo;
 
-    private Button 		usesTypeResolutionButton;
-    private Button 		usesDfaButton;
+    private Combo implementationTypeCombo;
+
+    private Button usesTypeResolutionButton;
+    private Button usesDfaButton;
     private List<Label> labels;
 
-    private boolean 	inSetup;
+    private boolean inSetup;
     private Set<String> currentRuleNames;
-    
+
     public static final String ID = "rule";
 
-	// TODO move to RuleSet class
-	public static final Comparator<RuleSet> byNameComparator = new Comparator<RuleSet>() {
+    // TODO move to RuleSet class
+    public static final Comparator<RuleSet> BY_NAME_COMPARATOR = new Comparator<RuleSet>() {
 
-		public int compare(RuleSet rsA, RuleSet rsB) {
-			return rsA.getName().compareTo(rsB.getName());
-		};
-	};
+        public int compare(RuleSet rsA, RuleSet rsB) {
+            return rsA.getName().compareTo(rsB.getName());
+        }
+    };
 
-	public RulePanelManager(String theTitle, EditorUsageMode theMode, ValueChangeListener theListener, RuleTarget theRuleSource) {
-		this(ID, theTitle, theMode, theListener, theRuleSource);
-	}
+    public RulePanelManager(String theTitle, EditorUsageMode theMode, ValueChangeListener theListener,
+            RuleTarget theRuleSource) {
+        this(ID, theTitle, theMode, theListener, theRuleSource);
+    }
 
-	public RulePanelManager(String theId, String theTitle, EditorUsageMode theMode, ValueChangeListener theListener, RuleTarget theRuleSource) {
-		super(theId, theTitle, theMode, theListener);
+    public RulePanelManager(String theId, String theTitle, EditorUsageMode theMode, ValueChangeListener theListener,
+            RuleTarget theRuleSource) {
+        super(theId, theTitle, theMode, theListener);
 
-		target = theRuleSource;
-	}
+        target = theRuleSource;
+    }
 
-	public void showControls(boolean flag) {
+    public void showControls(boolean flag) {
         nameField.setVisible(flag);
         implementationTypeCombo.setVisible(flag);
         implementationClassField.setVisible(flag);
@@ -108,14 +111,15 @@ public class RulePanelManager extends AbstractRulePanelManager {
         maxLanguageVersionCombo.setVisible(flag);
         usesDfaButton.setVisible(flag);
         usesTypeResolutionButton.setVisible(flag);
-        for (Label label : labels) label.setVisible(flag);
-	}
+        for (Label label : labels) {
+            label.setVisible(flag);
+        }
+    }
 
-
-	@Override
-	protected void clearControls() {
-		nameField.setText("");
-		ruleSetNameField.select(-1);
+    @Override
+    protected void clearControls() {
+        nameField.setText("");
+        ruleSetNameField.select(-1);
         implementationClassField.setType(null);
         ruleSetNameField.setText("");
         languageCombo.select(-1);
@@ -124,99 +128,105 @@ public class RulePanelManager extends AbstractRulePanelManager {
         usesDfaButton.setSelection(false);
         usesTypeResolutionButton.setSelection(false);
         clearLanguageVersionCombos();
-	}
+    }
 
-	private void clearLanguageVersionCombos() {
-		 SWTUtil.deselectAll(minLanguageVersionCombo);
-		 SWTUtil.deselectAll(maxLanguageVersionCombo);
-	}
-	
-	private void showLanguageVersionFields(Language language) {
+    private void clearLanguageVersionCombos() {
+        SWTUtil.deselectAll(minLanguageVersionCombo);
+        SWTUtil.deselectAll(maxLanguageVersionCombo);
+    }
 
-		int versionCount = language == null ? 0 : language.getVersions().size();
+    private void showLanguageVersionFields(Language language) {
 
-		boolean hasVersions = versionCount > 1;
+        int versionCount = language == null ? 0 : language.getVersions().size();
 
-		minLanguageLabel.setVisible(hasVersions);
-		maxLanguageLabel.setVisible(hasVersions);
-		minLanguageVersionCombo.setVisible(hasVersions);
-		maxLanguageVersionCombo.setVisible(hasVersions);
+        boolean hasVersions = versionCount > 1;
 
-		if (hasVersions) {
-			List<LanguageVersion> versions = new ArrayList<LanguageVersion>();
-			versions.add(null);		// allow no selection
-			versions.addAll(language.getVersions());
-			populate(minLanguageVersionCombo, versions);
-			populate(maxLanguageVersionCombo, versions);
-		}
-	}
+        minLanguageLabel.setVisible(hasVersions);
+        maxLanguageLabel.setVisible(hasVersions);
+        minLanguageVersionCombo.setVisible(hasVersions);
+        maxLanguageVersionCombo.setVisible(hasVersions);
 
-	private void populate(Combo field, List<LanguageVersion> versions) {
-		field.removeAll();
-		for (LanguageVersion version : versions) {
-			field.add(version == null ? "" : version.getName());
-		}
-	}
+        if (hasVersions) {
+            List<LanguageVersion> versions = new ArrayList<LanguageVersion>();
+            versions.add(null); // allow no selection
+            versions.addAll(language.getVersions());
+            populate(minLanguageVersionCombo, versions);
+            populate(maxLanguageVersionCombo, versions);
+        }
+    }
 
-	private Set<Comparable<?>> uniquePriorities() {
-		if (rules == null) return Collections.emptySet();
-		return RuleUtil.uniqueAspects(rules, RuleFieldAccessor.PRIORITY);
-	}
-	
-	private String commonLanguageMinVersionName() {
+    private void populate(Combo field, List<LanguageVersion> versions) {
+        field.removeAll();
+        for (LanguageVersion version : versions) {
+            field.add(version == null ? "" : version.getName());
+        }
+    }
 
-		if (rules == null) return null;
+    private Set<Comparable<?>> uniquePriorities() {
+        if (rules == null) {
+            return Collections.emptySet();
+        }
+        return RuleUtil.uniqueAspects(rules, RuleFieldAccessor.PRIORITY);
+    }
 
-		LanguageVersion version = RuleUtil.commonLanguageMinVersion(rules);
-		return version == null ? null : version.getName();
-	}
+    private String commonLanguageMinVersionName() {
+        if (rules == null) {
+            return null;
+        }
 
-	private String commonLanguageMaxVersionName() {
+        LanguageVersion version = RuleUtil.commonLanguageMinVersion(rules);
+        return version == null ? null : version.getName();
+    }
 
-		if (rules == null) return null;
+    private String commonLanguageMaxVersionName() {
+        if (rules == null) {
+            return null;
+        }
 
-		LanguageVersion version = (LanguageVersion)RuleUtil.commonAspect(rules, RuleFieldAccessor.MAX_LANGUAGE_VERSION);
-		
-		return version == null ? null : version.getName();
-	}
+        LanguageVersion version = (LanguageVersion) RuleUtil.commonAspect(rules,
+                RuleFieldAccessor.MAX_LANGUAGE_VERSION);
 
-	private String commonPriorityName() {
+        return version == null ? null : version.getName();
+    }
 
-		if (rules == null) return null;
+    private String commonPriorityName() {
+        if (rules == null) {
+            return null;
+        }
 
-		RulePriority priority = RuleUtil.commonPriority(rules);
-		return priority == null ? null : UISettings.labelFor(priority);
-	}
+        RulePriority priority = RuleUtil.commonPriority(rules);
+        return priority == null ? null : UISettings.labelFor(priority);
+    }
 
-	private boolean allRulesUseTypeResolution() {
+    private boolean allRulesUseTypeResolution() {
 
-		return rules != null && RuleUtil.allUseTypeResolution(rules);
-	}
+        return rules != null && RuleUtil.allUseTypeResolution(rules);
+    }
 
-	private boolean allRulesUseDfa() {
+    private boolean allRulesUseDfa() {
 
-		return rules != null && RuleUtil.allUseDfa(rules);
-	}
+        return rules != null && RuleUtil.allUseDfa(rules);
+    }
 
-	@Override
-	protected void adapt() {
+    @Override
+    protected void adapt() {
 
         show(ruleSetNameField, RuleUtil.commonRuleset(rules));
 
         Language language = RuleUtil.commonLanguage(rules);
         show(languageCombo, language == null ? "" : language.getName());
-       
+
         ImplementationType impType = rules == null ? ImplementationType.Mixed : rules.implementationType();
         implementationType(impType);
         implementationTypeCombo.setEnabled(creatingNewRule());
-        
+
         Class<?> impClass = RuleUtil.commonImplementationClass(rules);
         show(implementationClassField, impClass);
-        implementationClassField.setEnabled( impClass != null);
-        
+        implementationClassField.setEnabled(impClass != null);
+
         show(priorityCombo, commonPriorityName());
         priorityDisplay.setItems(uniquePriorities().toArray());
-        
+
         show(usesTypeResolutionButton, allRulesUseTypeResolution());
         show(usesDfaButton, allRulesUseDfa());
 
@@ -232,146 +242,148 @@ public class RulePanelManager extends AbstractRulePanelManager {
         } else {
             show(nameField, asCleanString(soleRule.getName()));
         }
-        
+
         validate();
     }
 
-	@Override
-	protected boolean canManageMultipleRules() {
-		return true;
-	}
+    @Override
+    protected boolean canManageMultipleRules() {
+        return true;
+    }
 
-	@Override
-	public Control setupOn(Composite parent) {
+    @Override
+    public Control setupOn(Composite parent) {
 
-			inSetup = true;
-			
-			labels = new ArrayList<Label>();
+        inSetup = true;
 
-		    Composite dlgArea = new Composite(parent, SWT.NONE);
+        labels = new ArrayList<Label>();
 
-	        GridLayout gridLayout = new GridLayout();
-	        gridLayout.numColumns = 6;
-	        dlgArea.setLayout(gridLayout);
+        Composite dlgArea = new Composite(parent, SWT.NONE);
 
-	        // put first if we're not creating a new rule
-	        if (!creatingNewRule()) buildPriorityControls(dlgArea);	        
-	        
-	        Label nameLabel = buildLabel(dlgArea, StringKeys.PREF_RULEEDIT_LABEL_NAME);
-	        GridData data = new GridData();
-	        data.horizontalSpan = 1;
-	        nameLabel.setLayoutData(data);
-	     
-	        nameField = buildNameText(dlgArea);
-	        data = new GridData();
-	        data.horizontalAlignment = GridData.FILL;
-	        data.horizontalSpan = 5;
-	        data.grabExcessHorizontalSpace = true;
-	        nameField.setLayoutData(data);
+        GridLayout gridLayout = new GridLayout();
+        gridLayout.numColumns = 6;
+        dlgArea.setLayout(gridLayout);
 
-	        Label ruleSetNameLabel = buildLabel(dlgArea, StringKeys.PREF_RULEEDIT_LABEL_RULESET_NAME);
-	        data = new GridData();
-	        data.horizontalSpan = 1;
-	        ruleSetNameLabel.setLayoutData(data);
-	    
-	        ruleSetNameField = buildRuleSetNameField(dlgArea);
-	        data = new GridData();
-	        data.horizontalAlignment = GridData.FILL;
-	        data.horizontalSpan = 5;
-	        data.grabExcessHorizontalSpace = true;
-	        ruleSetNameField.setLayoutData(data);
-	        
-	        Label implTypeLabel = buildLabel(dlgArea, StringKeys.PREF_RULEEDIT_LABEL_IMPLEMENTED_BY);
-	        data = new GridData();
-	        data.horizontalSpan = 1;
-	        implTypeLabel.setLayoutData(data);
-	    
-	        implementationTypeCombo = buildImplementationTypeCombo(dlgArea);
-	        data = new GridData();
-	        data.horizontalAlignment = GridData.FILL;
-	        data.horizontalSpan = 5;
-	        data.grabExcessHorizontalSpace = true;
-	        implementationTypeCombo.setLayoutData(data);
+        // put first if we're not creating a new rule
+        if (!creatingNewRule()) {
+            buildPriorityControls(dlgArea);
+        }
 
-	        Label implementationClassLabel = buildLabel(dlgArea, StringKeys.PREF_RULEEDIT_LABEL_IMPLEMENTATION_CLASS);
-	        data = new GridData();
-	        data.horizontalSpan = 1;
-	        implementationClassLabel.setLayoutData(data);
-	      
-	        implementationClassField = buildImplementationClassField(dlgArea);
-	        data = new GridData();
-	        data.horizontalAlignment = GridData.FILL;
-	        data.horizontalSpan = 5;
-	        data.grabExcessHorizontalSpace = true;
-	        implementationClassField.setLayoutData(data);
+        Label nameLabel = buildLabel(dlgArea, StringKeys.PREF_RULEEDIT_LABEL_NAME);
+        GridData data = new GridData();
+        data.horizontalSpan = 1;
+        nameLabel.setLayoutData(data);
 
-	        buildLabel(dlgArea, null);
-	        usesTypeResolutionButton = buildUsesTypeResolutionButton(dlgArea);
-	        usesDfaButton = buildUsesDfaButton(dlgArea);
-	        data = new GridData();
-	        data.horizontalAlignment = GridData.FILL;
-	        data.horizontalSpan = 4;
-	        data.grabExcessHorizontalSpace = true;
-	        usesDfaButton.setLayoutData(data);
-	  //      buildLabel(dlgArea, null);
+        nameField = buildNameText(dlgArea);
+        data = new GridData();
+        data.horizontalAlignment = GridData.FILL;
+        data.horizontalSpan = 5;
+        data.grabExcessHorizontalSpace = true;
+        nameField.setLayoutData(data);
 
-	        Label languageLabel = buildLabel(dlgArea, StringKeys.PREF_RULEEDIT_LABEL_LANGUAGE);
-	        data = new GridData();
-	        data.horizontalSpan = 1;
-	        languageLabel.setLayoutData(data);
-	       
-	        languageCombo = buildLanguageCombo(dlgArea);
-	        data = new GridData();
-	        data.horizontalAlignment = GridData.BEGINNING;
-	        data.horizontalSpan = 1;
-	        data.grabExcessHorizontalSpace = false;
-	        languageCombo.setLayoutData(data);
+        Label ruleSetNameLabel = buildLabel(dlgArea, StringKeys.PREF_RULEEDIT_LABEL_RULESET_NAME);
+        data = new GridData();
+        data.horizontalSpan = 1;
+        ruleSetNameLabel.setLayoutData(data);
 
-	        	GridData lblGD = new GridData();
-	        	lblGD.horizontalSpan = 1;
-	        	lblGD.horizontalAlignment = SWT.END;
-		        
-		        GridData cmboGD = new GridData();
-		        cmboGD.horizontalAlignment = GridData.FILL;
-		        cmboGD.horizontalSpan = 1;
-		        cmboGD.grabExcessHorizontalSpace = true;
-		        
-		        minLanguageLabel = buildLabel(dlgArea, StringKeys.PREF_RULEEDIT_LABEL_LANGUAGE_MIN);
-		        minLanguageLabel.setAlignment(SWT.RIGHT);
-		        minLanguageLabel.setLayoutData(lblGD);
-		      
-		        minLanguageVersionCombo = buildLanguageVersionCombo(dlgArea, true);
-		        minLanguageVersionCombo.setLayoutData(cmboGD);
+        ruleSetNameField = buildRuleSetNameField(dlgArea);
+        data = new GridData();
+        data.horizontalAlignment = GridData.FILL;
+        data.horizontalSpan = 5;
+        data.grabExcessHorizontalSpace = true;
+        ruleSetNameField.setLayoutData(data);
 
-		        maxLanguageLabel = buildLabel(dlgArea, StringKeys.PREF_RULEEDIT_LABEL_LANGUAGE_MAX);
-		        maxLanguageLabel.setAlignment(SWT.RIGHT);
-		        maxLanguageLabel.setLayoutData(lblGD);
-		   
-		        maxLanguageVersionCombo = buildLanguageVersionCombo(dlgArea, false);
-		        maxLanguageVersionCombo.setLayoutData(cmboGD);		        
-	        	        
-	        if (creatingNewRule()) {
-	        	buildPriorityControls(dlgArea);	// put it at the bottom when creating new rules
-	        	implementationType(ImplementationType.XPath);
-	        }
+        Label implTypeLabel = buildLabel(dlgArea, StringKeys.PREF_RULEEDIT_LABEL_IMPLEMENTED_BY);
+        data = new GridData();
+        data.horizontalSpan = 1;
+        implTypeLabel.setLayoutData(data);
 
-	        setControl(dlgArea);
-	        
-	        validate();
+        implementationTypeCombo = buildImplementationTypeCombo(dlgArea);
+        data = new GridData();
+        data.horizontalAlignment = GridData.FILL;
+        data.horizontalSpan = 5;
+        data.grabExcessHorizontalSpace = true;
+        implementationTypeCombo.setLayoutData(data);
 
-	        inSetup = false;
-	        
-	        return dlgArea;
-		}
+        Label implementationClassLabel = buildLabel(dlgArea, StringKeys.PREF_RULEEDIT_LABEL_IMPLEMENTATION_CLASS);
+        data = new GridData();
+        data.horizontalSpan = 1;
+        implementationClassLabel.setLayoutData(data);
 
-	  /**
+        implementationClassField = buildImplementationClassField(dlgArea);
+        data = new GridData();
+        data.horizontalAlignment = GridData.FILL;
+        data.horizontalSpan = 5;
+        data.grabExcessHorizontalSpace = true;
+        implementationClassField.setLayoutData(data);
+
+        buildLabel(dlgArea, null);
+        usesTypeResolutionButton = buildUsesTypeResolutionButton(dlgArea);
+        usesDfaButton = buildUsesDfaButton(dlgArea);
+        data = new GridData();
+        data.horizontalAlignment = GridData.FILL;
+        data.horizontalSpan = 4;
+        data.grabExcessHorizontalSpace = true;
+        usesDfaButton.setLayoutData(data);
+        // buildLabel(dlgArea, null);
+
+        Label languageLabel = buildLabel(dlgArea, StringKeys.PREF_RULEEDIT_LABEL_LANGUAGE);
+        data = new GridData();
+        data.horizontalSpan = 1;
+        languageLabel.setLayoutData(data);
+
+        languageCombo = buildLanguageCombo(dlgArea);
+        data = new GridData();
+        data.horizontalAlignment = GridData.BEGINNING;
+        data.horizontalSpan = 1;
+        data.grabExcessHorizontalSpace = false;
+        languageCombo.setLayoutData(data);
+
+        GridData lblGD = new GridData();
+        lblGD.horizontalSpan = 1;
+        lblGD.horizontalAlignment = SWT.END;
+
+        GridData cmboGD = new GridData();
+        cmboGD.horizontalAlignment = GridData.FILL;
+        cmboGD.horizontalSpan = 1;
+        cmboGD.grabExcessHorizontalSpace = true;
+
+        minLanguageLabel = buildLabel(dlgArea, StringKeys.PREF_RULEEDIT_LABEL_LANGUAGE_MIN);
+        minLanguageLabel.setAlignment(SWT.RIGHT);
+        minLanguageLabel.setLayoutData(lblGD);
+
+        minLanguageVersionCombo = buildLanguageVersionCombo(dlgArea, true);
+        minLanguageVersionCombo.setLayoutData(cmboGD);
+
+        maxLanguageLabel = buildLabel(dlgArea, StringKeys.PREF_RULEEDIT_LABEL_LANGUAGE_MAX);
+        maxLanguageLabel.setAlignment(SWT.RIGHT);
+        maxLanguageLabel.setLayoutData(lblGD);
+
+        maxLanguageVersionCombo = buildLanguageVersionCombo(dlgArea, false);
+        maxLanguageVersionCombo.setLayoutData(cmboGD);
+
+        if (creatingNewRule()) {
+            buildPriorityControls(dlgArea); // put it at the bottom when creating new rules
+            implementationType(ImplementationType.XPath);
+        }
+
+        setControl(dlgArea);
+
+        validate();
+
+        inSetup = false;
+
+        return dlgArea;
+    }
+
+    /**
      * Build the rule reference button
      */
     private Button buildRuleReferenceButton(Composite parent) {
         final Button button = new Button(parent, SWT.CHECK);
         button.setText(SWTUtil.stringFor(StringKeys.PREF_RULEEDIT_BUTTON_RULE_REFERENCE));
         button.setEnabled(false);
-//        button.setSelection(rule() instanceof RuleReference);
+        // button.setSelection(rule() instanceof RuleReference);
         return button;
     }
 
@@ -384,413 +396,462 @@ public class RulePanelManager extends AbstractRulePanelManager {
 
     private Text buildNameText(Composite parent) {
 
-    	int style = creatingNewRule() ? SWT.SINGLE | SWT.BORDER : SWT.READ_ONLY | SWT.BORDER;
+        int style = creatingNewRule() ? SWT.SINGLE | SWT.BORDER : SWT.READ_ONLY | SWT.BORDER;
         final Text nameField = new Text(parent, style);
         nameField.setFocus();
 
         Listener validateListener = new Listener() {
             public void handleEvent(Event event) {
                 validateRuleParams();
+            }
+        };
+
+        nameField.addListener(SWT.Modify, validateListener);
+        nameField.addListener(SWT.DefaultSelection, validateListener);
+
+        return nameField;
+    }
+
+    private Combo buildRuleSetNameField(Composite parent) {
+
+        int style = creatingNewRule() ? SWT.BORDER : SWT.READ_ONLY;
+        Combo field = new Combo(parent, style);
+
+        Collection<RuleSet> rs = PMDPlugin.getDefault().getRuleSetManager().getRegisteredRuleSets();
+        RuleSet[] ruleSets = rs.toArray(new RuleSet[rs.size()]);
+        Arrays.sort(ruleSets, BY_NAME_COMPARATOR);
+        for (RuleSet ruleSet : ruleSets) {
+            field.add(ruleSet.getName().trim());
+        }
+
+        Listener validateListener = new Listener() {
+            public void handleEvent(Event event) {
+                validateRuleParams();
+            }
+        };
+
+        field.addListener(SWT.Modify, validateListener);
+        field.addListener(SWT.DefaultSelection, validateListener);
+
+        return field;
+    }
+
+    private void implementationType(ImplementationType type) {
+
+        switch (type) {
+        case XPath: {
+            implementationClassField.setEnabled(false);
+            usesTypeResolutionButton.setEnabled(false);
+            usesTypeResolutionButton.setSelection(true);
+            usesDfaButton.setEnabled(false);
+            usesDfaButton.setSelection(false);
+            implementationTypeCombo.select(0);
+            if (creatingNewRule()) {
+                implementationClassField.setType(XPathRule.class);
+            }
+            break;
+        }
+        case Java: {
+            implementationClassField.setEnabled(true);
+            usesTypeResolutionButton.setEnabled(true);
+            usesTypeResolutionButton.setSelection(true);
+            usesDfaButton.setEnabled(true);
+            usesDfaButton.setSelection(false);
+            implementationTypeCombo.select(1);
+            if (creatingNewRule()) {
+                implementationClassField.setType(null);
+            }
+            break;
+        }
+
+        case Mixed: {
+            implementationTypeCombo.deselectAll();
+            break;
+        }
+        
+        default: {
+            throw new IllegalStateException();
+        }
+        }
+        validateRuleParams();
+    }
+
+    private Combo buildImplementationTypeCombo(Composite parent) {
+
+        final Combo combo = new Combo(parent, SWT.READ_ONLY);
+        combo.add("XPath script");
+        combo.add("Java class");
+
+        combo.addSelectionListener(new SelectionAdapter() {
+            @Override
+            public void widgetSelected(SelectionEvent event) {
+                int idx = combo.getSelectionIndex();
+                switch (idx) {
+                case 0: {
+                    implementationType(ImplementationType.XPath);
+                    break;
                 }
-         	};
+                case 1: {
+                    implementationType(ImplementationType.Java);
+                    break;
+                }
+                case -1: {
+                    implementationType(ImplementationType.Mixed);
+                    break;
+                }
+                default:
+                    throw new IllegalStateException();
+                }
+            }
+        });
 
-         nameField.addListener(SWT.Modify, validateListener);
-         nameField.addListener(SWT.DefaultSelection, validateListener);
-
-         return nameField;
-     }
-
-     private Combo buildRuleSetNameField(Composite parent) {
-
-    	 int style = creatingNewRule() ? SWT.BORDER : SWT.READ_ONLY;
-         Combo field = new Combo(parent, style);
-
-         Collection<RuleSet> rs = PMDPlugin.getDefault().getRuleSetManager().getRegisteredRuleSets();
-         RuleSet[] ruleSets = rs.toArray(new RuleSet[rs.size()]);
-         Arrays.sort(ruleSets, byNameComparator);
-         for (RuleSet ruleSet : ruleSets) {
-        	 field.add(ruleSet.getName().trim());
-         }
-
-         Listener validateListener = new Listener() {
-             public void handleEvent(Event event) {
-                 validateRuleParams();
-                 }
-          	};
-
-         field.addListener(SWT.Modify, validateListener);
-         field.addListener(SWT.DefaultSelection, validateListener);
-
-         return field;
-     }
-
-     private void implementationType(ImplementationType type) {
-
-    	 switch (type) {
-	    	 case XPath: {
-	    		 implementationClassField.setEnabled(false);
-	             usesTypeResolutionButton.setEnabled(false);
-	             usesTypeResolutionButton.setSelection(true);
-	             usesDfaButton.setEnabled(false);
-	             usesDfaButton.setSelection(false);
-	             implementationTypeCombo.select(0);
-	             if (creatingNewRule()) {
-	            	 implementationClassField.setType(XPathRule.class);
-	             }
-	    		 break;
-	    	 }
-	    	 case Java: {
-	    		 implementationClassField.setEnabled(true);
-	             usesTypeResolutionButton.setEnabled(true);
-	             usesTypeResolutionButton.setSelection(true);
-	             usesDfaButton.setEnabled(true);
-	             usesDfaButton.setSelection(false);
-	             implementationTypeCombo.select(1);
-	             if (creatingNewRule()) {
-	            	 implementationClassField.setType(null);
-	             }
-	    		 break;
-	    	 }
-
-	    	 case Mixed: {
-	    		 implementationTypeCombo.deselectAll();
-	    	 }
-    	 }
-    	 validateRuleParams();
-     }
-
-     private Combo buildImplementationTypeCombo(Composite parent) {
-
-         final Combo combo = new Combo(parent, SWT.READ_ONLY);
-     	 combo.add("XPath script");
-     	 combo.add("Java class");
-
-         combo.addSelectionListener(new SelectionAdapter() {
-             @Override
-             public void widgetSelected(SelectionEvent event) {
-            	 int idx = combo.getSelectionIndex();
-            	 switch (idx) {
-            	 case 0:  { implementationType(ImplementationType.XPath); break; }
-            	 case 1:  { implementationType(ImplementationType.Java);  break; }
-            	 case -1: { implementationType(ImplementationType.Mixed); break; }
-            	 }
-             }
-         });
-
-     	combo.select(0);
+        combo.select(0);
 
         return combo;
-     }
-     
-	private Combo buildLanguageCombo(Composite parent) {
+    }
 
-		final List<Language> languages = LanguageRegistry.findWithRuleSupport();
+    private Combo buildLanguageCombo(Composite parent) {
 
-		final Combo combo = new Combo(parent, SWT.READ_ONLY);
+        final List<Language> languages = LanguageRegistry.findWithRuleSupport();
 
-		Language deflt = LanguageRegistry.getDefaultLanguage();
-		int selectionIndex = -1;
+        final Combo combo = new Combo(parent, SWT.READ_ONLY);
 
-		for (int i = 0; i < languages.size(); i++) {
-			if (languages.get(i) == deflt) selectionIndex = i;
-			combo.add(languages.get(i).getName());
-		}
-		combo.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent event) {
-				if (rules == null) return;
-				Language language = languages.get(combo.getSelectionIndex());
-				rules.setLanguage(language);
-				updateLanguageVersionComboSelections(language);
-				changed(null, language.getName());
-			}
-		});
+        Language deflt = LanguageRegistry.getDefaultLanguage();
+        int selectionIndex = -1;
 
-		combo.select(selectionIndex);
+        for (int i = 0; i < languages.size(); i++) {
+            if (languages.get(i) == deflt) {
+                selectionIndex = i;
+            }
+            combo.add(languages.get(i).getName());
+        }
+        combo.addSelectionListener(new SelectionAdapter() {
+            public void widgetSelected(SelectionEvent event) {
+                if (rules == null) {
+                    return;
+                }
+                Language language = languages.get(combo.getSelectionIndex());
+                rules.setLanguage(language);
+                updateLanguageVersionComboSelections(language);
+                changed(null, language.getName());
+            }
+        });
 
-		return combo;
-	}
+        combo.select(selectionIndex);
 
-     private void updateLanguageVersionComboSelections(Language language) {
+        return combo;
+    }
 
-    	 List<LanguageVersion> versions = language.getVersions();
+    private void updateLanguageVersionComboSelections(Language language) {
 
-    	 if (versions.size() > 1) {
-    		 showLanguageVersionFields(language);
-	    	 show(minLanguageVersionCombo, commonLanguageMinVersionName());
-	    	 show(maxLanguageVersionCombo, commonLanguageMaxVersionName());
-    	 } else {
-    		 showLanguageVersionFields(null);
-    	 }
-     }
+        List<LanguageVersion> versions = language.getVersions();
 
-     private Language selectedLanguage() {
-    	 int index = languageCombo.getSelectionIndex();
-    	 if (index < 0) return null;	// should never happen!
-    	 return LanguageRegistry.findWithRuleSupport().get(index);
-     }
+        if (versions.size() > 1) {
+            showLanguageVersionFields(language);
+            show(minLanguageVersionCombo, commonLanguageMinVersionName());
+            show(maxLanguageVersionCombo, commonLanguageMaxVersionName());
+        } else {
+            showLanguageVersionFields(null);
+        }
+    }
 
-     private LanguageVersion selectedVersionIn(Combo versionCombo) {
-    	 int index = versionCombo.getSelectionIndex();
-    	 if (index < 0) return null;
-    	 return selectedLanguage().getVersions().get(index);
-     }
+    private Language selectedLanguage() {
+        int index = languageCombo.getSelectionIndex();
+        if (index < 0) {
+            return null; // should never happen!
+        }
+        return LanguageRegistry.findWithRuleSupport().get(index);
+    }
 
-     private Combo buildLanguageVersionCombo(Composite parent, final boolean isMinVersion) {
+    private LanguageVersion selectedVersionIn(Combo versionCombo) {
+        int index = versionCombo.getSelectionIndex();
+        if (index < 0) {
+            return null;
+        }
+        return selectedLanguage().getVersions().get(index);
+    }
 
-    	 int style = creatingNewRule() ? SWT.SINGLE | SWT.BORDER : SWT.READ_ONLY | SWT.BORDER;
-         final Combo combo = new Combo(parent, style);
+    private Combo buildLanguageVersionCombo(Composite parent, final boolean isMinVersion) {
 
-         combo.addSelectionListener(new SelectionAdapter() {
- 			public void widgetSelected(SelectionEvent event) {
- 				if (rules == null) return;
+        int style = creatingNewRule() ? SWT.SINGLE | SWT.BORDER : SWT.READ_ONLY | SWT.BORDER;
+        final Combo combo = new Combo(parent, style);
 
- 				final int selIdx = combo.getSelectionIndex();
- 				final LanguageVersion version = selIdx == 0 ? 
- 					null :
- 					selectedLanguage().getVersions().get(selIdx-1);
+        combo.addSelectionListener(new SelectionAdapter() {
+            public void widgetSelected(SelectionEvent event) {
+                if (rules == null) {
+                    return;
+                }
 
- 				RuleVisitor visitor = new RuleVisitor() {
- 					public boolean accept(Rule rule) {
- 						if (isMinVersion) {
- 							rule.setMinimumLanguageVersion(version);
- 						} else {
- 							rule.setMaximumLanguageVersion(version);
- 						}
- 						return true;
- 					}
- 				};
+                final int selIdx = combo.getSelectionIndex();
+                final LanguageVersion version = selIdx == 0 ? null : selectedLanguage().getVersions().get(selIdx - 1);
 
- 				rules.rulesDo(visitor);
+                RuleVisitor visitor = new RuleVisitor() {
+                    public boolean accept(Rule rule) {
+                        if (isMinVersion) {
+                            rule.setMinimumLanguageVersion(version);
+                        } else {
+                            rule.setMaximumLanguageVersion(version);
+                        }
+                        return true;
+                    }
+                };
 
- 				valueChanged(null, version == null ? "" : version.getName());
- 			}
- 		});
+                rules.rulesDo(visitor);
 
-         return combo;
-     }
+                valueChanged(null, version == null ? "" : version.getName());
+            }
+        });
 
+        return combo;
+    }
 
-     private Combo buildPriorityCombo(Composite parent) {
+    private Combo buildPriorityCombo(Composite parent) {
 
         final Combo combo = new Combo(parent, SWT.READ_ONLY | SWT.BORDER);
-     //   combo.setEditable(false);
-     	final RulePriority[] priorities = RulePriority.values();
+        // combo.setEditable(false);
+        final RulePriority[] priorities = RulePriority.values();
 
-     	for (RulePriority rulePriority : priorities) {
-     		combo.add(UISettings.labelFor(rulePriority));
-     	}
+        for (RulePriority rulePriority : priorities) {
+            combo.add(UISettings.labelFor(rulePriority));
+        }
 
-     	if (rules != null) {
-	     	RulePriority priority = RuleUtil.commonPriority(rules);
-	     	int index = priority == null ? -1 : priority.getPriority() - 1;
-	     	combo.select(index);
-     	}
+        if (rules != null) {
+            RulePriority priority = RuleUtil.commonPriority(rules);
+            int index = priority == null ? -1 : priority.getPriority() - 1;
+            combo.select(index);
+        }
 
-     	combo.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent event) {
-				setPriority(priorities[ combo.getSelectionIndex() ]);
-				validateRuleParams();
-			}
-		});
-
-     	 combo.setLayoutData( new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
-	      
-        return combo;
-     }
-
-     private void setPriority(RulePriority priority) {
-    	 priorityDisplay.setItems(new Object[] {priority});
-    	 if (rules != null) rules.setPriority(priority);
-    	 valueChanged(null, priority);
-     }
-     
-     private Button buildUsesTypeResolutionButton(Composite parent) {
-
-         final Button button = new Button(parent, SWT.CHECK);
-         button.setText(SWTUtil.stringFor(StringKeys.PREF_RULEEDIT_BUTTON_USES_TYPE_RESOLUTION));
-         return button;
-     }
-
-     private Button buildUsesDfaButton(Composite parent) {
-
-         final Button button = new Button(parent, SWT.CHECK);
-         button.setText(SWTUtil.stringFor(StringKeys.PREF_RULEEDIT_BUTTON_USES_DFA));
-         return button;
-     }
-
-     private boolean hasValidRuleType() {
-    	 
-    	 if (!implementationClassField.isEnabled()) return true;
-    	 
-     	 Class<?> newType = implementationClassField.getType(false);
-         return newType != null && Rule.class.isAssignableFrom(newType);
-     }
-
-     private String nameFieldValue() {
-    	 return nameField.getText().trim();
-     }
-     
-     private void buildPriorityControls(Composite parent) {
-    	 
-	    Label priorityLabel = buildLabel(parent, StringKeys.PREF_RULEEDIT_LABEL_PRIORITY);
-	    GridData data = new GridData();
-	    data.horizontalSpan = 1;
-	    priorityLabel.setLayoutData(data);
-	 	 
-    	 priorityCombo = buildPriorityCombo(parent);
-    	 
-	     priorityDisplay = new ShapePicker(parent, SWT.NONE, 14);
-	     priorityDisplay.setLayoutData( new GridData(SWT.LEFT, SWT.CENTER, true, false, 4, 1));		     
-	     priorityDisplay.setShapeMap(UISettings.shapesByPriority());
-	     priorityDisplay.tooltipProvider( new LabelProvider() { 
-	      	public String labelFor(Object item) { 
-	       		return UISettings.labelFor((RulePriority)item); 
-	       		} 
-	       	} );
-	     priorityDisplay.setSize(120, 25);
-     }
-     
-     private boolean hasValidRuleName() {
-
-    	 if (creatingNewRule() && !isValidRuleName(nameFieldValue())) return false;   
-
-    	 if (rules == null || rules.hasMultipleRules()) return true;
-
-    	 return isValidRuleName(nameFieldValue());
-     }
-     
-     private boolean hasExistingRuleName() {
-    	 if (currentRuleNames == null) currentRuleNames = MarkerUtil.currentRuleNames();
-    	 return currentRuleNames.contains(nameFieldValue());
-     }
-
-     private boolean hasValidRulesetName() {
-     	String name = ruleSetNameField.getText();
-     	return isValidRulesetName(name);
-     }
-
-     private static boolean hasNoSelection(Combo combo) {
-    	 return combo.getSelectionIndex() < 0;
-     }
-     
-     private boolean hasValidChoice(Combo combo) {
-    	 
-    	 if (creatingNewRule() && hasNoSelection(combo)) return false;    	 
-    	 if (rules == null || rules.hasMultipleRules()) return true;
-    	 return priorityCombo.getSelectionIndex() >= 0;
-     }
-     
-     protected List<String> fieldErrors() {
-    	 
-    	 List<String> errors = new ArrayList<String>();
-    	 
-    	 if (!hasValidRuleType()) errors.add("Invalid rule class");
-    	 if (!hasValidRuleName()) errors.add("Invalid rule name");
-    	 if (creatingNewRule() && hasExistingRuleName()) errors.add("Rule name is already in use");
-    	 if (!hasValidRulesetName()) errors.add("Invalid ruleset name");
-    	 if (!hasValidChoice(priorityCombo)) errors.add("No priority selected");
-    	 if (!hasValidChoice(languageCombo)) errors.add("No language selected");
-    	 
-    	 return errors;
-     }
-     
-     private void validateRuleParams() {
-
-     	boolean isOk = validate();
-
-     	if (isOk && creatingNewRule()) {
-     		populateRuleInstance();
-     	}
-
-     	if (inSetup) return;
-     	
-     	if (target != null) {
-     		target.rule(
-     				isOk ? 
-     					rules.soleRule() : 
-     					null
-     					);
-     	}
-     }
-
-     private void copyLocalValuesTo(Rule rule) {
-
-     	rule.setName(nameFieldValue());
-     	rule.setRuleSetName(ruleSetNameField.getText());
-
-     	Language language = selectedLanguage();
-     	rule.setLanguage(language);
-
-     	rule.setPriority(
-     			RulePriority.valueOf(priorityCombo.getSelectionIndex()+1)
-     			);
-         if (usesTypeResolutionButton.getSelection()) {
-         	rule.setUsesTypeResolution();
-         }
-         if (usesDfaButton.getSelection()) {
-         	rule.setUsesDFA();
-         }
-
-         rule.setMinimumLanguageVersion(selectedVersionIn(minLanguageVersionCombo));
-         rule.setMaximumLanguageVersion(selectedVersionIn(maxLanguageVersionCombo));
-     }
-
-     private void populateRuleInstance() {
-
-     	Class<Rule> ruleType = (Class<Rule>)implementationClassField.getType(true);
-
-     	try {
-     		Rule newRule = ruleType.newInstance();
-
-     		if (rules == null) {
-     			rules = new RuleSelection(newRule);
-     		} else {
-     			if (newRule.getClass() != soleRule().getClass()) {
-     				rules.soleRule(newRule);
-     			}
-     		}
-
-     		copyLocalValuesTo(rules.soleRule());
-
- 		} catch (InstantiationException e) {
- 			e.printStackTrace();
- 		} catch (IllegalAccessException e) {
- 			e.printStackTrace();
- 		}
-     }
-
- 	private TypeText buildImplementationClassField(Composite parent) {
-
-    	int style = creatingNewRule() ? SWT.SINGLE | SWT.BORDER : SWT.READ_ONLY | SWT.BORDER;
- 		final TypeText classField = new TypeText(parent, style, true, "");
-
- 	    classField.setEnabled(false);
-
-         Listener validateListener = new Listener() {
-             public void handleEvent(Event event) {
+        combo.addSelectionListener(new SelectionAdapter() {
+            public void widgetSelected(SelectionEvent event) {
+                setPriority(priorities[combo.getSelectionIndex()]);
                 validateRuleParams();
-                }
-          	};
+            }
+        });
 
-       	classField.addListener(SWT.FocusOut, validateListener);
+        combo.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
+
+        return combo;
+    }
+
+    private void setPriority(RulePriority priority) {
+        priorityDisplay.setItems(new Object[] { priority });
+        if (rules != null) {
+            rules.setPriority(priority);
+        }
+        valueChanged(null, priority);
+    }
+
+    private Button buildUsesTypeResolutionButton(Composite parent) {
+
+        final Button button = new Button(parent, SWT.CHECK);
+        button.setText(SWTUtil.stringFor(StringKeys.PREF_RULEEDIT_BUTTON_USES_TYPE_RESOLUTION));
+        return button;
+    }
+
+    private Button buildUsesDfaButton(Composite parent) {
+
+        final Button button = new Button(parent, SWT.CHECK);
+        button.setText(SWTUtil.stringFor(StringKeys.PREF_RULEEDIT_BUTTON_USES_DFA));
+        return button;
+    }
+
+    private boolean hasValidRuleType() {
+
+        if (!implementationClassField.isEnabled()) {
+            return true;
+        }
+
+        Class<?> newType = implementationClassField.getType(false);
+        return newType != null && Rule.class.isAssignableFrom(newType);
+    }
+
+    private String nameFieldValue() {
+        return nameField.getText().trim();
+    }
+
+    private void buildPriorityControls(Composite parent) {
+
+        Label priorityLabel = buildLabel(parent, StringKeys.PREF_RULEEDIT_LABEL_PRIORITY);
+        GridData data = new GridData();
+        data.horizontalSpan = 1;
+        priorityLabel.setLayoutData(data);
+
+        priorityCombo = buildPriorityCombo(parent);
+
+        priorityDisplay = new ShapePicker(parent, SWT.NONE, 14);
+        priorityDisplay.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false, 4, 1));
+        priorityDisplay.setShapeMap(UISettings.shapesByPriority());
+        priorityDisplay.tooltipProvider(new LabelProvider() {
+            public String labelFor(Object item) {
+                return UISettings.labelFor((RulePriority) item);
+            }
+        });
+        priorityDisplay.setSize(120, 25);
+    }
+
+    private boolean hasValidRuleName() {
+
+        if (creatingNewRule() && !isValidRuleName(nameFieldValue())) {
+            return false;
+        }
+
+        if (rules == null || rules.hasMultipleRules()) {
+            return true;
+        }
+
+        return isValidRuleName(nameFieldValue());
+    }
+
+    private boolean hasExistingRuleName() {
+        if (currentRuleNames == null) {
+            currentRuleNames = MarkerUtil.currentRuleNames();
+        }
+        return currentRuleNames.contains(nameFieldValue());
+    }
+
+    private boolean hasValidRulesetName() {
+        String name = ruleSetNameField.getText();
+        return isValidRulesetName(name);
+    }
+
+    private static boolean hasNoSelection(Combo combo) {
+        return combo.getSelectionIndex() < 0;
+    }
+
+    private boolean hasValidChoice(Combo combo) {
+
+        if (creatingNewRule() && hasNoSelection(combo)) {
+            return false;
+        }
+        if (rules == null || rules.hasMultipleRules()) {
+            return true;
+        }
+        return priorityCombo.getSelectionIndex() >= 0;
+    }
+
+    protected List<String> fieldErrors() {
+
+        List<String> errors = new ArrayList<String>();
+
+        if (!hasValidRuleType()) {
+            errors.add("Invalid rule class");
+        }
+        if (!hasValidRuleName()) {
+            errors.add("Invalid rule name");
+        }
+        if (creatingNewRule() && hasExistingRuleName()) {
+            errors.add("Rule name is already in use");
+        }
+        if (!hasValidRulesetName()) {
+            errors.add("Invalid ruleset name");
+        }
+        if (!hasValidChoice(priorityCombo)) {
+            errors.add("No priority selected");
+        }
+        if (!hasValidChoice(languageCombo)) {
+            errors.add("No language selected");
+        }
+
+        return errors;
+    }
+
+    private void validateRuleParams() {
+
+        boolean isOk = validate();
+
+        if (isOk && creatingNewRule()) {
+            populateRuleInstance();
+        }
+
+        if (inSetup) {
+            return;
+        }
+
+        if (target != null) {
+            target.rule(isOk ? rules.soleRule() : null);
+        }
+    }
+
+    private void copyLocalValuesTo(Rule rule) {
+
+        rule.setName(nameFieldValue());
+        rule.setRuleSetName(ruleSetNameField.getText());
+
+        Language language = selectedLanguage();
+        rule.setLanguage(language);
+
+        rule.setPriority(RulePriority.valueOf(priorityCombo.getSelectionIndex() + 1));
+        if (usesTypeResolutionButton.getSelection()) {
+            rule.setTypeResolution(true);
+        }
+        if (usesDfaButton.getSelection()) {
+            rule.setDfa(true);
+        }
+
+        rule.setMinimumLanguageVersion(selectedVersionIn(minLanguageVersionCombo));
+        rule.setMaximumLanguageVersion(selectedVersionIn(maxLanguageVersionCombo));
+    }
+
+    private void populateRuleInstance() {
+
+        Class<Rule> ruleType = (Class<Rule>) implementationClassField.getType(true);
+
+        try {
+            Rule newRule = ruleType.newInstance();
+
+            if (rules == null) {
+                rules = new RuleSelection(newRule);
+            } else {
+                if (newRule.getClass() != soleRule().getClass()) {
+                    rules.soleRule(newRule);
+                }
+            }
+
+            copyLocalValuesTo(rules.soleRule());
+
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private TypeText buildImplementationClassField(Composite parent) {
+
+        int style = creatingNewRule() ? SWT.SINGLE | SWT.BORDER : SWT.READ_ONLY | SWT.BORDER;
+        final TypeText classField = new TypeText(parent, style, true, "");
+
+        classField.setEnabled(false);
+
+        Listener validateListener = new Listener() {
+            public void handleEvent(Event event) {
+                validateRuleParams();
+            }
+        };
+
+        classField.addListener(SWT.FocusOut, validateListener);
         classField.addListener(SWT.DefaultSelection, validateListener);
 
- 	    return classField;
- 	}
+        return classField;
+    }
 
- 	private static boolean isValidRuleName(String candidateName) {
+    private static boolean isValidRuleName(String candidateName) {
 
- 		if (StringUtil.isEmpty(candidateName)) return false;
- 		// TODO
+        if (StringUtils.isBlank(candidateName)) {
+            return false;
+        }
+        // TODO
 
- 		return true;
- 	}
+        return true;
+    }
 
- 	private static boolean isValidRulesetName(String candidateName) {
+    private static boolean isValidRulesetName(String candidateName) {
 
- 		if (StringUtil.isEmpty(candidateName)) return false;
- 		// TODO
+        if (StringUtils.isBlank(candidateName)) {
+            return false;
+        }
+        // TODO
 
- 		return true;
- 	}
+        return true;
+    }
 }

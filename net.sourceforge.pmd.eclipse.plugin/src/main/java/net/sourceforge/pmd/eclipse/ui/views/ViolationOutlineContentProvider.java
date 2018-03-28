@@ -4,10 +4,6 @@ package net.sourceforge.pmd.eclipse.ui.views;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.sourceforge.pmd.eclipse.runtime.builder.MarkerUtil;
-import net.sourceforge.pmd.eclipse.ui.model.FileRecord;
-import net.sourceforge.pmd.eclipse.util.Util;
-
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IMarkerDelta;
 import org.eclipse.core.resources.IResourceChangeEvent;
@@ -16,6 +12,10 @@ import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
+
+import net.sourceforge.pmd.eclipse.runtime.builder.MarkerUtil;
+import net.sourceforge.pmd.eclipse.ui.model.FileRecord;
+import net.sourceforge.pmd.eclipse.util.Util;
 
 /**
  * Provides the ViolationOutlinePages with Content
@@ -80,13 +80,15 @@ public class ViolationOutlineContentProvider implements IStructuredContentProvid
      */
     public void resourceChanged(IResourceChangeEvent event) {
 
-        if (resource == null || !resource.getResource().exists())
+        if (resource == null || !resource.getResource().exists()) {
             return;
+        }
 
         List<IMarkerDelta> markerDeltas = MarkerUtil.markerDeltasIn(event);
 
-        if (markerDeltas.isEmpty())
+        if (markerDeltas.isEmpty()) {
             return;
+        }
 
         // we search for removed, added or changed Markers
         final List<IMarker> additions = new ArrayList<IMarker>();
@@ -94,8 +96,9 @@ public class ViolationOutlineContentProvider implements IStructuredContentProvid
         final List<IMarker> changes = new ArrayList<IMarker>();
 
         for (IMarkerDelta delta : markerDeltas) {
-            if (!delta.getResource().equals(resource.getResource()))
+            if (!delta.getResource().equals(resource.getResource())) {
                 continue;
+            }
             IMarker marker = delta.getMarker();
             switch (delta.getKind()) {
             case IResourceDelta.ADDED:
@@ -106,6 +109,9 @@ public class ViolationOutlineContentProvider implements IStructuredContentProvid
                 break;
             case IResourceDelta.CHANGED:
                 changes.add(marker);
+                break;
+            default:
+                //TODO: do we need to handle other changes?
                 break;
             }
         }

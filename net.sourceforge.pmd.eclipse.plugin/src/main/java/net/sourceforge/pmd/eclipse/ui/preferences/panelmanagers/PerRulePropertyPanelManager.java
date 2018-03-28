@@ -50,10 +50,10 @@ public class PerRulePropertyPanelManager extends AbstractRulePanelManager implem
     private int widgetRowCount;
     private List<String> unreferencedVariables;
 
-    private static final int MaxWidgetHeight = 30; // TODO derive this instead
+    private static final int MAX_WIDGET_HEIGHT = 30; // TODO derive this instead
     public static final String ID = "perRuleProperties";
 
-    public static final Map<Class<?>, EditorFactory> editorFactoriesByPropertyType;
+    public static final Map<Class<?>, EditorFactory> EDITOR_FACTORIES_BY_PROPERTY_TYPE;
 
     static {
         Map<Class<?>, EditorFactory> factoriesByPropertyType = new HashMap<Class<?>, EditorFactory>();
@@ -78,7 +78,7 @@ public class PerRulePropertyPanelManager extends AbstractRulePanelManager implem
         // factoriesByPropertyType.put(Package.class,
         // PackageEditorFactory.instance);
 
-        editorFactoriesByPropertyType = Collections.unmodifiableMap(factoriesByPropertyType);
+        EDITOR_FACTORIES_BY_PROPERTY_TYPE = Collections.unmodifiableMap(factoriesByPropertyType);
     }
 
     public PerRulePropertyPanelManager(String theTitle, EditorUsageMode theMode, ValueChangeListener theListener) {
@@ -96,8 +96,9 @@ public class PerRulePropertyPanelManager extends AbstractRulePanelManager implem
 
         // alternate approach for now
         for (PropertyDescriptor<?> desc : rule.getPropertyDescriptors()) {
-            if (desc.equals(XPathRule.XPATH_DESCRIPTOR))
+            if (desc.equals(XPathRule.XPATH_DESCRIPTOR)) {
                 return true;
+            }
         }
 
         return !Configuration.filteredPropertiesOf(rule).isEmpty();
@@ -144,7 +145,7 @@ public class PerRulePropertyPanelManager extends AbstractRulePanelManager implem
         sComposite.setExpandHorizontal(true);
         sComposite.setExpandVertical(true);
 
-        formArranger = new FormArranger(composite, editorFactoriesByPropertyType, chainedListener(), this);
+        formArranger = new FormArranger(composite, EDITOR_FACTORIES_BY_PROPERTY_TYPE, chainedListener(), this);
 
         return sComposite;
     }
@@ -155,7 +156,7 @@ public class PerRulePropertyPanelManager extends AbstractRulePanelManager implem
     }
 
     private void adjustMinimumHeight() {
-        sComposite.setMinSize(composite.computeSize(500, widgetRowCount * MaxWidgetHeight));
+        sComposite.setMinSize(composite.computeSize(500, widgetRowCount * MAX_WIDGET_HEIGHT));
     }
 
     protected void adapt() {
@@ -163,21 +164,20 @@ public class PerRulePropertyPanelManager extends AbstractRulePanelManager implem
         widgetRowCount = formArranger.arrangeFor(soleRule());
         validate();
 
-        if (widgetRowCount < 0)
+        if (widgetRowCount < 0) {
             return;
+        }
 
         adjustMinimumHeight();
     }
 
     public boolean validate() {
-        if (!super.validate())
+        if (!super.validate()) {
             return false;
+        }
 
-        unreferencedVariables = formArranger.updateDeleteButtons(); // any
-                                                                    // unref'd
-                                                                    // vars are
-                                                                    // not real
-                                                                    // errors
+        // any unref'd vars are not real errors
+        unreferencedVariables = formArranger.updateDeleteButtons(); 
 
         return true;
     }

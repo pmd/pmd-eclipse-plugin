@@ -39,6 +39,15 @@ package net.sourceforge.pmd.eclipse.ui.views;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IMenuListener;
+import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.action.IToolBarManager;
+import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.action.Separator;
+import org.eclipse.swt.widgets.Tree;
+import org.eclipse.ui.IWorkbenchActionConstants;
+
 import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.plugin.UISettings;
@@ -50,15 +59,6 @@ import net.sourceforge.pmd.eclipse.ui.views.actions.CollapseAllAction;
 import net.sourceforge.pmd.eclipse.ui.views.actions.PriorityFilterAction;
 import net.sourceforge.pmd.eclipse.ui.views.actions.ProjectFilterAction;
 import net.sourceforge.pmd.eclipse.ui.views.actions.ViolationPresentationTypeAction;
-
-import org.eclipse.jface.action.Action;
-import org.eclipse.jface.action.IMenuListener;
-import org.eclipse.jface.action.IMenuManager;
-import org.eclipse.jface.action.IToolBarManager;
-import org.eclipse.jface.action.MenuManager;
-import org.eclipse.jface.action.Separator;
-import org.eclipse.swt.widgets.Tree;
-import org.eclipse.ui.IWorkbenchActionConstants;
 
 /**
  *
@@ -79,12 +79,11 @@ public class ViolationOverviewMenuManager {
      * Setup the Actions for the ActionBars
      */
     public void setupActions() {
-    	
         RulePriority[] priorities = UISettings.currentPriorities(true);
         priorityActions = new PriorityFilterAction[priorities.length];
 
         // create the Actions for the PriorityFilter
-        for (int i=0; i<priorities.length; i++) {
+        for (int i = 0; i < priorities.length; i++) {
             priorityActions[i] = new PriorityFilterAction(priorities[i], overview); // NOPMD by Herlin on 09/10/06 15:02
             boolean check = overview.getPriorityFilterList().contains(priorities[i].getPriority());
             priorityActions[i].setChecked(check);

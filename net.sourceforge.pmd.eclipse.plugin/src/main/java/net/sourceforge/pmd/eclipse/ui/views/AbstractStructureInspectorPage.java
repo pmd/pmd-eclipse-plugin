@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.jface.resource.ColorRegistry;
 import org.eclipse.jface.resource.JFaceResources;
@@ -47,7 +48,6 @@ import net.sourceforge.pmd.lang.dfa.DFAGraphMethod;
 import net.sourceforge.pmd.lang.dfa.DFAGraphRule;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.dfa.JavaDFAGraphRule;
-import net.sourceforge.pmd.util.StringUtil;
 
 /**
  * 
@@ -102,16 +102,18 @@ public abstract class AbstractStructureInspectorPage extends Page
 
     protected void highlight(int offset, int length) {
 
-        if (textEditor == null)
+        if (textEditor == null) {
             return;
+        }
 
         textEditor.selectAndReveal(offset, length);
     }
 
     protected void highlightLine(int lineNumber) {
 
-        if (textEditor == null)
+        if (textEditor == null) {
             return;
+        }
 
         int offset = 0;
         int length = 0;
@@ -193,12 +195,14 @@ public abstract class AbstractStructureInspectorPage extends Page
     public void selectionChanged(SelectionChangedEvent event) {
 
         RuleViolation violation = selectedViolationFrom(event);
-        if (violation == null)
+        if (violation == null) {
             return;
+        }
 
         String varName = violation.getVariableName();
-        if (StringUtil.isEmpty(varName))
+        if (StringUtils.isBlank(varName)) {
             return;
+        }
 
         int beginLine = violation.getBeginLine();
         int endLine = violation.getEndLine();

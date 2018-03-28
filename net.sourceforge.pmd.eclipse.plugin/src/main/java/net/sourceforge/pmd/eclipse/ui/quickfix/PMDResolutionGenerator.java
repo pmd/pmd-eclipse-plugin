@@ -31,49 +31,48 @@ import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
+import org.eclipse.core.resources.IMarker;
+import org.eclipse.ui.IMarkerResolution;
+import org.eclipse.ui.IMarkerResolutionGenerator;
+
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.runtime.builder.MarkerUtil;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
-import net.sourceforge.pmd.util.StringUtil;
-
-import org.eclipse.core.resources.IMarker;
-import org.eclipse.ui.IMarkerResolution;
-import org.eclipse.ui.IMarkerResolutionGenerator;
 
 /**
- * Implementation of a resolution generator to bring the quick fixes feature of
- * Eclipse to PMD
+ * Implementation of a resolution generator to bring the quick fixes feature of Eclipse to PMD
  *
  * @author Philippe Herlin, Brian Remedios
  *
- *         TODO resource bundles are read-only, migrate to a persistence
- *         mechanism that allows for updates to the fixes associated with the
- *         rules.
+ *         TODO resource bundles are read-only, migrate to a persistence mechanism that allows for updates to the fixes
+ *         associated with the rules.
  */
 public class PMDResolutionGenerator implements IMarkerResolutionGenerator {
 
-    private static final Map<String, Fix[]> fixersByRuleName = new HashMap<String, Fix[]>();
+    private static final Map<String, Fix[]> FIXERS_BY_RULE_NAME = new HashMap<String, Fix[]>();
 
-    private static final Set<String> missingFixes = new HashSet<String>();
-    private static final Map<String, String> brokenFixes = new HashMap<String, String>();
+    private static final Set<String> MISSING_FIXES = new HashSet<String>();
+    private static final Map<String, String> BROKEN_FIXES = new HashMap<String, String>();
 
-    private static String QUICKFIX_BUNDLE = "properties.QuickFix"; // NOPMD
+    private static final String QUICKFIX_BUNDLE = "properties.QuickFix"; // NOPMD
 
     public static final IMarkerResolution[] EMPTY_RESOLUTIONS = new IMarkerResolution[0];
 
     public static Class<Fix> fixClassFor(String className, String ruleName) {
 
-        if (StringUtil.isEmpty(className))
+        if (StringUtils.isBlank(className)) {
             return null;
+        }
 
         try {
             Class<?> cls = Class.forName(className);
             if (Fix.class.isAssignableFrom(cls)) {
                 return (Class<Fix>) cls;
             } else {
-                brokenFixes.put(ruleName, className);
+                BROKEN_FIXES.put(ruleName, className);
                 return null;
             }
         } catch (ClassNotFoundException ex) {
@@ -83,28 +82,30 @@ public class PMDResolutionGenerator implements IMarkerResolutionGenerator {
 
     private static void add(String ruleName, Fix fix) {
 
-        if (fixersByRuleName.containsKey(ruleName)) {
-            Fix[] existingFixers = fixersByRuleName.get(ruleName);
+        if (FIXERS_BY_RULE_NAME.containsKey(ruleName)) {
+            Fix[] existingFixers = FIXERS_BY_RULE_NAME.get(ruleName);
             Fix[] newFixers = new Fix[existingFixers.length + 1];
             System.arraycopy(existingFixers, 0, newFixers, 0, existingFixers.length);
             newFixers[newFixers.length - 1] = fix;
-            fixersByRuleName.put(ruleName, newFixers);
+            FIXERS_BY_RULE_NAME.put(ruleName, newFixers);
         } else {
-            fixersByRuleName.put(ruleName, new Fix[] { fix });
+            FIXERS_BY_RULE_NAME.put(ruleName, new Fix[] { fix });
         }
     }
 
     public static int fixCountFor(Rule rule) {
 
         String ruleName = rule.getName();
-        if (missingFixes.contains(ruleName))
+        if (MISSING_FIXES.contains(ruleName)) {
             return 0;
+        }
 
         loadFixesFor(ruleName);
 
-        if (!fixersByRuleName.containsKey(ruleName))
+        if (!FIXERS_BY_RULE_NAME.containsKey(ruleName)) {
             return 0;
-        return fixersByRuleName.get(ruleName).length;
+        }
+        return FIXERS_BY_RULE_NAME.get(ruleName).length;
     }
 
     public static void saveFixesFor(String ruleName) {
@@ -115,7 +116,7 @@ public class PMDResolutionGenerator implements IMarkerResolutionGenerator {
 
         ResourceBundle bundle = ResourceBundle.getBundle(QUICKFIX_BUNDLE);
         if (!bundle.containsKey(ruleName)) {
-            missingFixes.add(ruleName);
+            MISSING_FIXES.add(ruleName);
             return;
         }
 
@@ -123,8 +124,9 @@ public class PMDResolutionGenerator implements IMarkerResolutionGenerator {
         String[] fixClassNames = fixClassNameSet.split(",");
 
         for (String fixClassName : fixClassNames) {
-            if (StringUtil.isEmpty(fixClassName))
+            if (StringUtils.isBlank(fixClassName)) {
                 continue;
+            }
             Class<Fix> fixClass = fixClassFor(fixClassName.trim(), ruleName);
             if (fixClass != null) {
                 Fix fix = fixFor(ruleName, fixClass);
@@ -134,24 +136,28 @@ public class PMDResolutionGenerator implements IMarkerResolutionGenerator {
             }
         }
 
-        if (!fixersByRuleName.containsKey(ruleName))
-            missingFixes.add(ruleName);
+        if (!FIXERS_BY_RULE_NAME.containsKey(ruleName)) {
+            MISSING_FIXES.add(ruleName);
+        }
     }
 
     public static boolean hasFixesFor(Rule rule) {
 
         String ruleName = rule.getName();
-        if (fixersByRuleName.containsKey(ruleName))
+        if (FIXERS_BY_RULE_NAME.containsKey(ruleName)) {
             return true;
+        }
 
-        if (missingFixes.contains(ruleName))
+        if (MISSING_FIXES.contains(ruleName)) {
             return false;
-        if (brokenFixes.containsKey(ruleName))
+        }
+        if (BROKEN_FIXES.containsKey(ruleName)) {
             return false;
+        }
 
         loadFixesFor(ruleName);
 
-        return fixersByRuleName.containsKey(ruleName);
+        return FIXERS_BY_RULE_NAME.containsKey(ruleName);
     }
 
     private static Fix fixFor(String ruleName, Class<Fix> fixClass) {
@@ -159,17 +165,17 @@ public class PMDResolutionGenerator implements IMarkerResolutionGenerator {
         try {
             return fixClass.newInstance();
         } catch (Exception ex) {
-            brokenFixes.put(ruleName, fixClass.getName());
+            BROKEN_FIXES.put(ruleName, fixClass.getName());
             return null;
         }
     }
 
     public static Fix[] fixesFor(Rule rule) {
-        return fixersByRuleName.get(rule.getName());
+        return FIXERS_BY_RULE_NAME.get(rule.getName());
     }
 
     public static void fixesFor(Rule rule, Fix[] fixes) {
-        fixersByRuleName.put(rule.getName(), fixes);
+        FIXERS_BY_RULE_NAME.put(rule.getName(), fixes);
     }
 
     /**
@@ -183,12 +189,14 @@ public class PMDResolutionGenerator implements IMarkerResolutionGenerator {
             if (ruleName != null) {
                 final RuleSet ruleSet = PMDPlugin.getDefault().getPreferencesManager().getRuleSet();
                 final Rule rule = ruleSet.getRuleByName(ruleName);
-                if (rule == null || !hasFixesFor(rule))
+                if (rule == null || !hasFixesFor(rule)) {
                     return EMPTY_RESOLUTIONS;
+                }
 
                 Fix[] fixes = fixesFor(rule);
-                for (Fix fix : fixes)
+                for (Fix fix : fixes) {
                     markerResolutionList.add(new PMDResolution(fix));
+                }
             }
         } catch (RuntimeException e) {
             PMDPlugin.getDefault().showError(

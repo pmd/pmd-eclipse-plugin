@@ -1,14 +1,14 @@
 
 package net.sourceforge.pmd.eclipse.ui.views;
 
-import net.sourceforge.pmd.eclipse.ui.PMDUiConstants;
-import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
-import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
-import net.sourceforge.pmd.util.NumericConstants;
-
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.graphics.Image;
+
+import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
+import net.sourceforge.pmd.eclipse.ui.PMDUiConstants;
+import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
+import net.sourceforge.pmd.util.NumericConstants;
 
 /**
  * Provides the ViolationsOutlinePages with labels and images
@@ -24,10 +24,11 @@ public class ViolationOutlineLabelProvider extends AbstractViolationLabelProvide
      */
     public Image getColumnImage(Object element, int columnIndex) {
         IMarker marker;
-        if (element instanceof IMarker)
+        if (element instanceof IMarker) {
             marker = (IMarker) element;
-        else
+        } else {
             return null;
+        }
 
         if (columnIndex == 0) {
             Integer priority = NumericConstants.ZERO;
@@ -50,10 +51,11 @@ public class ViolationOutlineLabelProvider extends AbstractViolationLabelProvide
      */
     public String getColumnText(Object element, int columnIndex) {
         IMarker marker;
-        if (element instanceof IMarker)
+        if (element instanceof IMarker) {
             marker = (IMarker) element;
-        else
+        } else {
             return null;
+        }
 
         switch (columnIndex) {
         // show the Message
@@ -62,9 +64,9 @@ public class ViolationOutlineLabelProvider extends AbstractViolationLabelProvide
         // show the Line
         case 2:
             return String.valueOf(marker.getAttribute(IMarker.LINE_NUMBER, 0));
+        default:
+            return "";
         }
-
-        return "";
     }
 
 }

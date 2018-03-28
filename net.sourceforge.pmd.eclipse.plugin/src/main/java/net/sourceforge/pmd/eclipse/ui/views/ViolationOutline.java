@@ -3,18 +3,6 @@ package net.sourceforge.pmd.eclipse.ui.views;
 
 import java.util.List;
 
-import net.sourceforge.pmd.RulePriority;
-import net.sourceforge.pmd.eclipse.plugin.UISettings;
-import net.sourceforge.pmd.eclipse.ui.PMDUiConstants;
-import net.sourceforge.pmd.eclipse.ui.model.FileRecord;
-import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
-import net.sourceforge.pmd.eclipse.ui.views.actions.DisableRuleAction;
-import net.sourceforge.pmd.eclipse.ui.views.actions.PriorityFilterAction;
-import net.sourceforge.pmd.eclipse.ui.views.actions.QuickFixAction;
-import net.sourceforge.pmd.eclipse.ui.views.actions.RemoveViolationAction;
-import net.sourceforge.pmd.eclipse.ui.views.actions.ReviewAction;
-import net.sourceforge.pmd.eclipse.ui.views.actions.ShowRuleAction;
-
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
@@ -35,6 +23,18 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.IPage;
+
+import net.sourceforge.pmd.RulePriority;
+import net.sourceforge.pmd.eclipse.plugin.UISettings;
+import net.sourceforge.pmd.eclipse.ui.PMDUiConstants;
+import net.sourceforge.pmd.eclipse.ui.model.FileRecord;
+import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
+import net.sourceforge.pmd.eclipse.ui.views.actions.DisableRuleAction;
+import net.sourceforge.pmd.eclipse.ui.views.actions.PriorityFilterAction;
+import net.sourceforge.pmd.eclipse.ui.views.actions.QuickFixAction;
+import net.sourceforge.pmd.eclipse.ui.views.actions.RemoveViolationAction;
+import net.sourceforge.pmd.eclipse.ui.views.actions.ReviewAction;
+import net.sourceforge.pmd.eclipse.ui.views.actions.ShowRuleAction;
 
 /**
  * A View to show a list of PMD-Violations for a file
@@ -138,8 +138,9 @@ public class ViolationOutline extends AbstractPMDPagebookView implements ISelect
         RulePriority[] priorities = UISettings.currentPriorities(true);
         for (RulePriority priority : priorities) {
             Action filterAction = new PriorityFilterAction(priority, this);
-            if (filterList.contains(priority.getPriority()))
+            if (filterList.contains(priority.getPriority())) {
                 filterAction.setChecked(true);
+            }
 
             manager.add(filterAction);
         }
@@ -200,10 +201,8 @@ public class ViolationOutline extends AbstractPMDPagebookView implements ISelect
     public void partActivated(IWorkbenchPart part) {
         // We only care about the editor
         if (part instanceof IEditorPart) {
-            resourceRecord = tryForFileRecordFrom(part); // If there is a file
-                                                         // opened in the
-                                                         // editor, we create a
-                                                         // record for it
+            // If there is a file opened in the editor, we create a record for it
+            resourceRecord = tryForFileRecordFrom(part); 
 
         } else {
             // We also want to get the editors when it's not active
@@ -216,8 +215,9 @@ public class ViolationOutline extends AbstractPMDPagebookView implements ISelect
 
         IWorkbenchPage page = getSitePage();
         IWorkbenchPart activePart = page.getActivePart();
-        if (activePart == null)
+        if (activePart == null) {
             page.activate(this);
+        }
 
         super.partActivated(part);
         refresh();
@@ -231,8 +231,9 @@ public class ViolationOutline extends AbstractPMDPagebookView implements ISelect
     protected void showPageRec(PageRec pageRec) {
         ViolationOutlinePageBR oldPage = getCurrentOutlinePage();
         ViolationOutlinePageBR newPage = null;
-        if (pageRec.page instanceof ViolationOutlinePageBR)
+        if (pageRec.page instanceof ViolationOutlinePageBR) {
             newPage = (ViolationOutlinePageBR) pageRec.page;
+        }
 
         // here we change from one Page to another
         // so we get the State of the old Page, put it in a Memento
@@ -269,8 +270,9 @@ public class ViolationOutline extends AbstractPMDPagebookView implements ISelect
      */
     private ViolationOutlinePageBR getCurrentOutlinePage() {
         IPage page = super.getCurrentPage();
-        if (!(page instanceof ViolationOutlinePageBR))
+        if (!(page instanceof ViolationOutlinePageBR)) {
             return null;
+        }
 
         return (ViolationOutlinePageBR) page;
     }
@@ -287,8 +289,9 @@ public class ViolationOutline extends AbstractPMDPagebookView implements ISelect
      */
     public void refresh() {
         ViolationOutlinePageBR page = getCurrentOutlinePage();
-        if (page != null)
+        if (page != null) {
             page.refresh();
+        }
     }
 
     /*
@@ -298,15 +301,17 @@ public class ViolationOutline extends AbstractPMDPagebookView implements ISelect
      */
     public void addSelectionChangedListener(ISelectionChangedListener listener) {
         ViolationOutlinePageBR page = getCurrentOutlinePage();
-        if (page != null)
+        if (page != null) {
             page.getTableViewer().addSelectionChangedListener(listener);
+        }
     }
 
     /* @see org.eclipse.jface.viewers.ISelectionProvider#getSelection() */
     public ISelection getSelection() {
         ViolationOutlinePageBR page = getCurrentOutlinePage();
-        if (page != null)
+        if (page != null) {
             return page.getTableViewer().getSelection();
+        }
         return null;
     }
 
@@ -317,8 +322,9 @@ public class ViolationOutline extends AbstractPMDPagebookView implements ISelect
      */
     public void removeSelectionChangedListener(ISelectionChangedListener listener) {
         ViolationOutlinePageBR page = getCurrentOutlinePage();
-        if (page != null)
+        if (page != null) {
             page.getTableViewer().removeSelectionChangedListener(listener);
+        }
     }
 
     /*
@@ -328,7 +334,8 @@ public class ViolationOutline extends AbstractPMDPagebookView implements ISelect
      */
     public void setSelection(ISelection selection) {
         ViolationOutlinePageBR page = getCurrentOutlinePage();
-        if (page != null)
+        if (page != null) {
             page.getTableViewer().setSelection(selection);
+        }
     }
 }

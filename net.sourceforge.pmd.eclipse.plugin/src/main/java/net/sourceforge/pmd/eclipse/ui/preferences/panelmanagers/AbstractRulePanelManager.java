@@ -4,6 +4,7 @@ package net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
@@ -51,10 +52,9 @@ public abstract class AbstractRulePanelManager extends WizardPage implements Rul
     protected static Color disabledColour;
     protected static Color overridenColour;
 
-    private static final String disabledTabText = "-------";
+    private static final String DISABLED_TAB_TEXT = "-------";
 
-    public static final RGB overridenColourValues = new RGB(236, 236, 255); // light
-                                                                            // blue
+    public static final RGB OVERRIDDEN_COLOR_VALUES = new RGB(236, 236, 255); // light blue
 
     public AbstractRulePanelManager(String theId, String theTitle, EditorUsageMode theMode,
             ValueChangeListener theListener) {
@@ -97,8 +97,9 @@ public abstract class AbstractRulePanelManager extends WizardPage implements Rul
     }
 
     protected String asCleanString(String original) {
-        if (original == null)
+        if (original == null) {
             return "";
+        }
         return original.trim();
     }
 
@@ -110,8 +111,9 @@ public abstract class AbstractRulePanelManager extends WizardPage implements Rul
                 || (rules.hasMultipleRules() && canManageMultipleRules());
 
         showControls(isActive);
-        if (tab != null)
-            tab.setText(isActive ? tabText : disabledTabText);
+        if (tab != null) {
+            tab.setText(isActive ? tabText : DISABLED_TAB_TEXT);
+        }
 
         if (isActive) {
             adapt();
@@ -130,8 +132,9 @@ public abstract class AbstractRulePanelManager extends WizardPage implements Rul
     protected void updateUI() {
         List<String> warnings = fieldWarnings();
         List<String> errors = fieldErrors();
-        if (tab != null)
+        if (tab != null) {
             updateTabUI(warnings, errors);
+        }
         updateOverridenFields();
         disableIrrelevantFields();
     }
@@ -183,8 +186,9 @@ public abstract class AbstractRulePanelManager extends WizardPage implements Rul
         }
 
         boolean hasIssues = updateTab(errors, PMDUiConstants.ICON_ERROR);
-        if (hasIssues)
+        if (hasIssues) {
             return;
+        }
 
         updateTab(fieldWarnings(), PMDUiConstants.ICON_WARN);
     }
@@ -236,8 +240,9 @@ public abstract class AbstractRulePanelManager extends WizardPage implements Rul
 
     protected void initializeOn(Composite parent) {
 
-        if (errorColour != null)
+        if (errorColour != null) {
             return;
+        }
 
         ColourManager clrMgr = ColourManager.managerFor(parent.getDisplay());
         errorColour = clrMgr.colourFor(new RGB(255, 0, 0)); // red
@@ -258,14 +263,16 @@ public abstract class AbstractRulePanelManager extends WizardPage implements Rul
      */
     protected void changed(StringProperty property, String newValue) {
 
-        if (rules == null)
+        if (rules == null) {
             return;
+        }
 
         String cleanValue = newValue.trim();
         String existingValue = rules.commonStringValue(property);
 
-        if (StringUtil.areSemanticEquals(existingValue, cleanValue))
+        if (StringUtil.areSemanticEquals(existingValue, cleanValue)) {
             return;
+        }
 
         rules.setValue(property, cleanValue);
         valueChanged(property, newValue);
@@ -310,7 +317,7 @@ public abstract class AbstractRulePanelManager extends WizardPage implements Rul
 
         // control.setEnabled(usageMode == EditorUsageMode.CreateNew);
 
-        if (StringUtil.isEmpty(value)) {
+        if (StringUtils.isBlank(value)) {
             control.deselectAll();
             return;
         }
@@ -336,7 +343,7 @@ public abstract class AbstractRulePanelManager extends WizardPage implements Rul
 
         // control.setEnabled(usageMode == EditorUsageMode.CreateNew);
 
-        if (StringUtil.isEmpty(value)) {
+        if (StringUtils.isBlank(value)) {
             control.deselectAll();
             return;
         }

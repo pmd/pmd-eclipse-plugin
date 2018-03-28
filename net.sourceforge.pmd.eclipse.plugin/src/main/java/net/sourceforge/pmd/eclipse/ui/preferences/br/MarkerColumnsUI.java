@@ -42,7 +42,7 @@ public interface MarkerColumnsUI {
 
         public Image imageFor(IMarker marker) {
             RulePriority rp = PRIORITY_ACC.valueFor(marker);
-            return PriorityDescriptorCache.instance.descriptorFor(rp).getImage(display);
+            return PriorityDescriptorCache.INSTANCE.descriptorFor(rp).getImage(display);
         }
     };
 

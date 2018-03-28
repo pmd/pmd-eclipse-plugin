@@ -1,3 +1,4 @@
+
 package net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers;
 
 import java.util.Map;
@@ -7,30 +8,27 @@ import net.sourceforge.pmd.lang.rule.XPathRule;
 import net.sourceforge.pmd.lang.rule.stat.StatisticalRule;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertySource;
+
 /**
  *
  * @author Brian Remedios
  */
 public class Configuration {
+    private Configuration() { }
 
-	// properties that should not be shown in the PerRuleProperty page
-	public static final PropertyDescriptor<?>[] excludedRuleProperties = new PropertyDescriptor<?>[] {
-		Rule.VIOLATION_SUPPRESS_REGEX_DESCRIPTOR,
-		Rule.VIOLATION_SUPPRESS_XPATH_DESCRIPTOR,
-		XPathRule.XPATH_DESCRIPTOR,
-		XPathRule.VERSION_DESCRIPTOR,
-		StatisticalRule.SIGMA_DESCRIPTOR,
-		StatisticalRule.TOP_SCORE_DESCRIPTOR
-		};
+    // properties that should not be shown in the PerRuleProperty page
+    public static final PropertyDescriptor<?>[] EXCLUDED_RULE_PROPERTIES = new PropertyDescriptor<?>[] {
+        Rule.VIOLATION_SUPPRESS_REGEX_DESCRIPTOR, Rule.VIOLATION_SUPPRESS_XPATH_DESCRIPTOR, XPathRule.XPATH_DESCRIPTOR,
+        XPathRule.VERSION_DESCRIPTOR, StatisticalRule.SIGMA_DESCRIPTOR, StatisticalRule.TOP_SCORE_DESCRIPTOR };
 
-	public static Map<PropertyDescriptor<?>, Object> filteredPropertiesOf(PropertySource source) {
+    public static Map<PropertyDescriptor<?>, Object> filteredPropertiesOf(PropertySource source) {
 
-		Map<PropertyDescriptor<?>, Object> valuesByProp = source.getPropertiesByPropertyDescriptor();
+        Map<PropertyDescriptor<?>, Object> valuesByProp = source.getPropertiesByPropertyDescriptor();
 
-		for (PropertyDescriptor<?> excludedRuleProperty : excludedRuleProperties) {
-			valuesByProp.remove(excludedRuleProperty);
-		}
+        for (PropertyDescriptor<?> excludedRuleProperty : EXCLUDED_RULE_PROPERTIES) {
+            valuesByProp.remove(excludedRuleProperty);
+        }
 
-		return valuesByProp;
-	}
+        return valuesByProp;
+    }
 }

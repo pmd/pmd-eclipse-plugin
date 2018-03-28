@@ -89,8 +89,7 @@ public abstract class AbstractPMDPagebookView extends PageBookView {
     public void init(IViewSite site) throws PartInitException {
         super.init(site);
 
-        memento = new ViewMemento(mementoFileId()); // load Memento from a File,
-                                                    // if existing
+        memento = new ViewMemento(mementoFileId()); // load Memento from a File, if existing
     }
 
     protected void save(String mementoId, List<Integer> integerList) {

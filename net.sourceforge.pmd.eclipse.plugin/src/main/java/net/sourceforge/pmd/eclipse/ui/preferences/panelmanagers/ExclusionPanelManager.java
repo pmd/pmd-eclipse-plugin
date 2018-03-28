@@ -37,8 +37,7 @@ public class ExclusionPanelManager extends AbstractRulePanelManager {
     private Composite xPathColour;
     private ColourManager colourManager;
     private boolean showColourBoxes;
-    private List<Control> miscControls = new ArrayList<Control>(); // hide-show
-                                                                   // as req'd
+    private List<Control> miscControls = new ArrayList<Control>(); // hide-show as req'd
 
     public static final String ID = "exclusion";
 

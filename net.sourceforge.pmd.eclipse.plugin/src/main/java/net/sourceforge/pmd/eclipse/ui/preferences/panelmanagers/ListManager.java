@@ -1,3 +1,4 @@
+
 package net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers;
 
 import org.eclipse.swt.SWT;
@@ -14,82 +15,89 @@ import org.eclipse.swt.widgets.Listener;
  */
 public class ListManager {
 
-	private final List 	 list;
-	private final Button upButton;
-	private final Button downButton;
-	private final Button deleteButton;
+    private final List list;
+    private final Button upButton;
+    private final Button downButton;
+    private final Button deleteButton;
 
-	public ListManager(List theList, Button theUpButton, Button theDownButton, Button theDeleteButton) {
+    public ListManager(List theList, Button theUpButton, Button theDownButton, Button theDeleteButton) {
 
-		list = theList;
-		upButton = theUpButton;
-		downButton = theDownButton;
-		deleteButton = theDeleteButton;
+        list = theList;
+        upButton = theUpButton;
+        downButton = theDownButton;
+        deleteButton = theDeleteButton;
 
-		registerListeners();
-		updateButtonStates();
-	}
+        registerListeners();
+        updateButtonStates();
+    }
 
-	private void registerListeners() {
-		list.addListener(SWT.Selection, new Listener() {
+    private void registerListeners() {
+        list.addListener(SWT.Selection, new Listener() {
 
-			public void handleEvent(Event arg0) {
-				updateButtonStates();
-			}
+            public void handleEvent(Event arg0) {
+                updateButtonStates();
+            }
 
-		});
-		upButton.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent arg0) { shiftUp(); }
-		});
-		downButton.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent arg0) { shiftDown(); }
-		});
-		deleteButton.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent arg0) { delete(); }
-		});
-	}
+        });
+        upButton.addSelectionListener(new SelectionAdapter() {
+            public void widgetSelected(SelectionEvent arg0) {
+                shiftUp();
+            }
+        });
+        downButton.addSelectionListener(new SelectionAdapter() {
+            public void widgetSelected(SelectionEvent arg0) {
+                shiftDown();
+            }
+        });
+        deleteButton.addSelectionListener(new SelectionAdapter() {
+            public void widgetSelected(SelectionEvent arg0) {
+                delete();
+            }
+        });
+    }
 
-	private void shiftUp() {
-		// TODO
-		updateButtonStates();
-	}
+    private void shiftUp() {
+        // TODO
+        updateButtonStates();
+    }
 
-	private void shiftDown() {
-		// TODO
-		updateButtonStates();
-	}
+    private void shiftDown() {
+        // TODO
+        updateButtonStates();
+    }
 
-	private void delete() {
-		int[] indices = list.getSelectionIndices();
-		list.remove(indices);
+    private void delete() {
+        int[] indices = list.getSelectionIndices();
+        list.remove(indices);
 
-		updateButtonStates();
-	}
+        updateButtonStates();
+    }
 
-	private void updateButtonStates() {
+    private void updateButtonStates() {
 
-		if (!hasSelection()) {
-			upButton.setEnabled(false);
-			downButton.setEnabled(false);
-			deleteButton.setEnabled(false);
-			return;
-		}
+        if (!hasSelection()) {
+            upButton.setEnabled(false);
+            downButton.setEnabled(false);
+            deleteButton.setEnabled(false);
+            return;
+        }
 
-		upButton.setEnabled(hasSelectionIndex(0));
-		downButton.setEnabled(hasSelectionIndex(list.getItemCount()-1));
-		deleteButton.setEnabled(true);
-	}
+        upButton.setEnabled(hasSelectionIndex(0));
+        downButton.setEnabled(hasSelectionIndex(list.getItemCount() - 1));
+        deleteButton.setEnabled(true);
+    }
 
-	private boolean hasSelection() {
-		return list.getSelectionCount() > 0;
-	}
+    private boolean hasSelection() {
+        return list.getSelectionCount() > 0;
+    }
 
+    private boolean hasSelectionIndex(int index) {
 
-	private boolean hasSelectionIndex(int index) {
-
-		for (int i : list.getSelectionIndices()) {
-			if (i == index) return false;
-		}
-		return true;
-	}
+        for (int i : list.getSelectionIndices()) {
+            if (i == index) {
+                return false;
+            }
+        }
+        return true;
+    }
 }

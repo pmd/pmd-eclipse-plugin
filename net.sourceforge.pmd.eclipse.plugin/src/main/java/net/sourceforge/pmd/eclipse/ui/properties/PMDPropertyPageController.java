@@ -33,15 +33,8 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package net.sourceforge.pmd.eclipse.ui.properties;
 
-import name.herlin.command.CommandException;
-import net.sourceforge.pmd.RuleSet;
-import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
-import net.sourceforge.pmd.eclipse.runtime.cmd.BuildProjectCommand;
-import net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties;
-import net.sourceforge.pmd.eclipse.runtime.properties.PropertiesException;
-import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
+package net.sourceforge.pmd.eclipse.ui.properties;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IProject;
@@ -54,6 +47,15 @@ import org.eclipse.ui.IWorkingSetManager;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.IWorkingSetSelectionDialog;
 
+import net.sourceforge.pmd.RuleSet;
+import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
+import net.sourceforge.pmd.eclipse.runtime.cmd.BuildProjectCommand;
+import net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties;
+import net.sourceforge.pmd.eclipse.runtime.properties.PropertiesException;
+import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
+
+import name.herlin.command.CommandException;
+
 /**
  * This class implements the controler of the Property page
  *
@@ -61,7 +63,7 @@ import org.eclipse.ui.dialogs.IWorkingSetSelectionDialog;
  *
  */
 public class PMDPropertyPageController {
-    private static final Logger log = Logger.getLogger(PMDPropertyPageController.class);
+    private static final Logger LOG = Logger.getLogger(PMDPropertyPageController.class);
     private final Shell shell;
     private IProject project;
     private PMDPropertyPageBean propertyPageBean;
@@ -93,19 +95,20 @@ public class PMDPropertyPageController {
         if (project.isAccessible()) {
             this.project = project;
         } else {
-            log.warn("Couldn't accept project because it is not accessible.");
+            LOG.warn("Couldn't accept project because it is not accessible.");
         }
     }
 
     /**
      * populates teh property page bean from the loaded properties
+     * 
      * @return Returns the propertyPageBean.
      */
     public PMDPropertyPageBean getPropertyPageBean() {
         // assert ((this.project != null) && (this.project.isAccessible()))
 
         if (this.propertyPageBean == null) {
-            log.debug("Building a property page bean");
+            LOG.debug("Building a property page bean");
             try {
                 final IProjectProperties properties = PMDPlugin.getDefault().loadProjectProperties(this.project);
 
@@ -161,7 +164,7 @@ public class PMDPropertyPageController {
             cmd.performExecute();
 
             // If rebuild is needed, then rebuild the project
-            log.debug("Updating command terminated, checking whether the project need to be rebuilt");
+            LOG.debug("Updating command terminated, checking whether the project need to be rebuilt");
             if (pmdAlreadyActivated && cmd.isNeedRebuild()) {
                 rebuildProject();
             }
@@ -185,7 +188,8 @@ public class PMDPropertyPageController {
     public IWorkingSet selectWorkingSet(final IWorkingSet currentWorkingSet) {
         final IWorkbench workbench = PlatformUI.getWorkbench();
         final IWorkingSetManager workingSetManager = workbench.getWorkingSetManager();
-        final IWorkingSetSelectionDialog selectionDialog = workingSetManager.createWorkingSetSelectionDialog(this.shell, false);
+        final IWorkingSetSelectionDialog selectionDialog = workingSetManager.createWorkingSetSelectionDialog(this.shell,
+                false);
         IWorkingSet selectedWorkingSet = null;
 
         if (currentWorkingSet != null) {
@@ -194,10 +198,10 @@ public class PMDPropertyPageController {
 
         if (selectionDialog.open() == Window.OK) {
             if (selectionDialog.getSelection().length == 0) {
-                log.info("Deselect working set");
+                LOG.info("Deselect working set");
             } else {
                 selectedWorkingSet = selectionDialog.getSelection()[0];
-                log.info("Working set " + selectedWorkingSet.getName() + " selected");
+                LOG.info("Working set " + selectedWorkingSet.getName() + " selected");
             }
         }
 
@@ -216,7 +220,7 @@ public class PMDPropertyPageController {
                 getMessage(StringKeys.QUESTION_REBUILD_PROJECT));
 
         if (rebuild) {
-            log.info("Full rebuild of the project " + project.getName());
+            LOG.info("Full rebuild of the project " + project.getName());
             try {
                 final BuildProjectCommand cmd = new BuildProjectCommand();
                 cmd.setProject(project);
@@ -229,8 +233,8 @@ public class PMDPropertyPageController {
     }
 
     /**
-     * If the user asks to use a project ruleset file, check if it exists.
-     * Otherwise, asks the user to create a default one
+     * If the user asks to use a project ruleset file, check if it exists. Otherwise, asks the user to create a default
+     * one
      *
      */
     private void checkProjectRuleSetFile() throws PropertiesException {
@@ -266,5 +270,5 @@ public class PMDPropertyPageController {
      */
     protected String getMessage(final String key) {
         return PMDPlugin.getDefault().getStringTable().getString(key);
-    };
+    }
 }

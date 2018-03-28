@@ -1,12 +1,5 @@
 package net.sourceforge.pmd.eclipse.ui.views;
 
-import net.sourceforge.pmd.eclipse.ui.PMDUiConstants;
-import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
-import net.sourceforge.pmd.eclipse.ui.model.FileRecord;
-import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
-import net.sourceforge.pmd.eclipse.ui.views.actions.RemoveViolationAction;
-import net.sourceforge.pmd.util.NumericConstants;
-
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.runtime.CoreException;
@@ -35,6 +28,13 @@ import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.part.IPage;
 import org.eclipse.ui.part.Page;
+
+import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
+import net.sourceforge.pmd.eclipse.ui.PMDUiConstants;
+import net.sourceforge.pmd.eclipse.ui.model.FileRecord;
+import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
+import net.sourceforge.pmd.eclipse.ui.views.actions.RemoveViolationAction;
+import net.sourceforge.pmd.util.NumericConstants;
 
 /**
  * Creates a Page for the Violation Outline
@@ -65,12 +65,15 @@ public class ViolationOutlinePage extends Page implements IPage, ISelectionChang
 
         ViewerFilter[] filters = outline.getFilters();
         for (int i = 0; i < filters.length; i++) {
-            if (filters[i] instanceof PriorityFilter)
+            if (filters[i] instanceof PriorityFilter) {
                 viewerFilter = filters[i];
+            }
         }
     }
 
-    public TableViewer tableViewer() { return tableViewer; }
+    public TableViewer tableViewer() {
+        return tableViewer;
+    }
     
     /* @see org.eclipse.ui.part.IPage#createControl(org.eclipse.swt.widgets.Composite) */
     public void createControl(Composite parent) {
@@ -227,8 +230,9 @@ public class ViolationOutlinePage extends Page implements IPage, ISelectionChang
                     return 0;
                 }
             };
+        default:
+            return null;
         }
-        return null;
     }
 
     /**
@@ -261,8 +265,9 @@ public class ViolationOutlinePage extends Page implements IPage, ISelectionChang
      * @param widths, an Integer-Array containing the widths
      */
     public void setColumnWidths(Integer[] widths) {
-        if (tableViewer.getTable().isDisposed())
+        if (tableViewer.getTable().isDisposed()) {
             return;
+        }
 
         TableColumn[] columns = tableViewer.getTable().getColumns();
         for (int k = 0; k < widths.length; k++) {

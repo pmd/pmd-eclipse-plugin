@@ -37,14 +37,14 @@ public class GenerateReportAction extends AbstractUIAction {
 
         ReportManager.loadReportProperties();
 
-        for (Renderer renderer : ReportManager.instance.activeRenderers()) {
+        for (Renderer renderer : ReportManager.INSTANCE.activeRenderers()) {
             cmd.registerRenderer(renderer, DEFAULT_REPORT_NAME + "." + renderer.defaultFileExtension());
         }
     }
 
     private boolean checkRenderers() {
 
-        List<Renderer> renderers = ReportManager.instance.activeRenderers();
+        List<Renderer> renderers = ReportManager.INSTANCE.activeRenderers();
 
         if (renderers.isEmpty()) {
             PMDPlugin.getDefault().showUserError("No report renderers selected");

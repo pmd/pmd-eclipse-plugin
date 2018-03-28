@@ -40,20 +40,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import name.herlin.command.CommandException;
-import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
-import net.sourceforge.pmd.eclipse.runtime.builder.MarkerUtil;
-import net.sourceforge.pmd.eclipse.runtime.cmd.DeleteMarkersCommand;
-import net.sourceforge.pmd.eclipse.ui.PMDUiConstants;
-import net.sourceforge.pmd.eclipse.ui.model.AbstractPMDRecord;
-import net.sourceforge.pmd.eclipse.ui.model.FileRecord;
-import net.sourceforge.pmd.eclipse.ui.model.FileToMarkerRecord;
-import net.sourceforge.pmd.eclipse.ui.model.MarkerRecord;
-import net.sourceforge.pmd.eclipse.ui.model.PackageRecord;
-import net.sourceforge.pmd.eclipse.ui.model.RootRecord;
-import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
-import net.sourceforge.pmd.util.NumericConstants;
-
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
@@ -78,6 +64,21 @@ import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.ViewPart;
 
+import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
+import net.sourceforge.pmd.eclipse.runtime.builder.MarkerUtil;
+import net.sourceforge.pmd.eclipse.runtime.cmd.DeleteMarkersCommand;
+import net.sourceforge.pmd.eclipse.ui.PMDUiConstants;
+import net.sourceforge.pmd.eclipse.ui.model.AbstractPMDRecord;
+import net.sourceforge.pmd.eclipse.ui.model.FileRecord;
+import net.sourceforge.pmd.eclipse.ui.model.FileToMarkerRecord;
+import net.sourceforge.pmd.eclipse.ui.model.MarkerRecord;
+import net.sourceforge.pmd.eclipse.ui.model.PackageRecord;
+import net.sourceforge.pmd.eclipse.ui.model.RootRecord;
+import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
+import net.sourceforge.pmd.util.NumericConstants;
+
+import name.herlin.command.CommandException;
+
 /**
  * A View for PMD-Violations, provides an Overview as well as statistical
  * Information
@@ -85,12 +86,7 @@ import org.eclipse.ui.part.ViewPart;
  * @author SebastianRaffel ( 08.05.2005 ), Philippe Herlin, Sven Jacob
  *
  */
-public class ViolationOverview extends ViewPart implements ISelectionProvider, ITreeViewerListener { // NOPMD
-                                                                                                     // by
-                                                                                                     // Sven
-                                                                                                     // on
-                                                                                                     // 13.11.06
-                                                                                                     // 11:45
+public class ViolationOverview extends ViewPart implements ISelectionProvider, ITreeViewerListener {
 
     private TreeViewer treeViewer;
     private ViolationOverviewContentProvider contentProvider;
@@ -114,13 +110,12 @@ public class ViolationOverview extends ViewPart implements ISelectionProvider, I
     protected static final String COLUMN_WIDTHS = "tableColumnWidths";
     protected static final String COLUMN_SORTER = "tableColumnSorter";
 
-    public static final int SHOW_PACKAGES_FILES_MARKERS = 1; // Shows packages
-                                                             // -> files ->
-                                                             // markers
-    public static final int SHOW_FILES_MARKERS = 2; // Shows files -> markers
-                                                    // without packages
-    public static final int SHOW_MARKERS_FILES = 3; // Shows markers -> files
-                                                    // without packages
+    // Shows packages -> files -> markers
+    public static final int SHOW_PACKAGES_FILES_MARKERS = 1;
+    // Shows files -> markers without packages
+    public static final int SHOW_FILES_MARKERS = 2;
+    // Shows markers -> files without packages
+    public static final int SHOW_MARKERS_FILES = 3;
 
     /**
      * @see org.eclipse.ui.ViewPart#init(org.eclipse.ui.IViewSite)
@@ -274,12 +269,7 @@ public class ViolationOverview extends ViewPart implements ISelectionProvider, I
         TreeColumn[] columns = tree.getColumns();
 
         for (int k = 0; k < columns.length; k++) {
-            columnWidths[k] = Integer.valueOf(columns[k].getWidth()); // NOPMD
-                                                                      // by
-                                                                      // Herlin
-                                                                      // on
-                                                                      // 09/10/06
-                                                                      // 15:02
+            columnWidths[k] = Integer.valueOf(columns[k].getWidth());
 
             // each Column gets a SelectionAdapter on Selection the Column is
             // sorted
@@ -413,8 +403,7 @@ public class ViolationOverview extends ViewPart implements ISelectionProvider, I
      *            an Array with Properties, the First Value is the Number of the
      *            sorted Column, the Second one is the Direction (-1 or 1)
      */
-    public void setSorterProperties(Integer[] properties) { // NOPMD by Herlin
-                                                            // on 09/10/06 15:03
+    public void setSorterProperties(Integer[] properties) {
         if (properties.length > 0) {
             currentSortedColumn = properties[0].intValue();
             columnSortOrder[currentSortedColumn] = properties[1].intValue();
@@ -587,12 +576,7 @@ public class ViolationOverview extends ViewPart implements ISelectionProvider, I
      * @param sortOrder
      * @return
      */
-    private ViewerSorter newViolationsCountSorter(TreeColumn column, final int sortOrder) { // NOPMD
-                                                                                            // by
-                                                                                            // Sven
-                                                                                            // on
-                                                                                            // 13.11.06
-                                                                                            // 11:45
+    private ViewerSorter newViolationsCountSorter(TreeColumn column, final int sortOrder) {
         return new TableColumnSorter(column, sortOrder) {
             @Override
             public int compare(Viewer viewer, Object e1, Object e2) {
@@ -617,20 +601,11 @@ public class ViolationOverview extends ViewPart implements ISelectionProvider, I
      * @param sortOrder
      * @return
      */
-    private ViewerSorter newViolationsPerLOCSorter(TreeColumn column, final int sortOrder) { // NOPMD
-                                                                                             // by
-                                                                                             // Sven
-                                                                                             // on
-                                                                                             // 13.11.06
-                                                                                             // 11:45
+    private ViewerSorter newViolationsPerLOCSorter(TreeColumn column, final int sortOrder) {
 
         return new TableColumnSorter(column, sortOrder) {
             @Override
-            public int compare(Viewer viewer, Object e1, Object e2) { // NOPMD
-                                                                      // by Sven
-                                                                      // on
-                                                                      // 13.11.06
-                                                                      // 11:45
+            public int compare(Viewer viewer, Object e1, Object e2) {
                 Float vioPerLoc1 = NumericConstants.FLOAT_ZERO;
                 Float vioPerLoc2 = NumericConstants.FLOAT_ZERO;
                 if (e1 instanceof PackageRecord && e2 instanceof PackageRecord
@@ -662,19 +637,10 @@ public class ViolationOverview extends ViewPart implements ISelectionProvider, I
      * @param sortOrder
      * @return
      */
-    private ViewerSorter newViolationsPerMethodsCount(TreeColumn column, final int sortOrder) { // NOPMD
-                                                                                                // by
-                                                                                                // Sven
-                                                                                                // on
-                                                                                                // 13.11.06
-                                                                                                // 11:45
+    private ViewerSorter newViolationsPerMethodsCount(TreeColumn column, final int sortOrder) {
         return new TableColumnSorter(column, sortOrder) {
             @Override
-            public int compare(Viewer viewer, Object e1, Object e2) { // NOPMD
-                                                                      // by Sven
-                                                                      // on
-                                                                      // 13.11.06
-                                                                      // 11:45
+            public int compare(Viewer viewer, Object e1, Object e2) {
 
                 Float vioPerMethod1 = NumericConstants.FLOAT_ZERO;
                 Float vioPerMethod2 = NumericConstants.FLOAT_ZERO;
@@ -845,7 +811,7 @@ public class ViolationOverview extends ViewPart implements ISelectionProvider, I
     private class ColumnSelectionAdapter extends SelectionAdapter {
         private final int column;
 
-        public ColumnSelectionAdapter(int column) {
+        ColumnSelectionAdapter(int column) {
             super();
             this.column = column;
         }
@@ -863,7 +829,7 @@ public class ViolationOverview extends ViewPart implements ISelectionProvider, I
     private class ColumnControlAdapter extends ControlAdapter {
         private final int column;
 
-        public ColumnControlAdapter(int column) {
+        ColumnControlAdapter(int column) {
             super();
             this.column = column;
         }

@@ -1,6 +1,7 @@
 
 package net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers;
 
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.jface.wizard.WizardDialog;
@@ -11,7 +12,6 @@ import net.sourceforge.pmd.eclipse.ui.preferences.br.RuleUtil;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.ValueChangeListener;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertySource;
-import net.sourceforge.pmd.util.StringUtil;
 
 /**
  * A wizard that encapsulates a succession of rule panel managers to collect the
@@ -83,8 +83,9 @@ public class CreateRuleWizard extends Wizard implements ValueChangeListener, Rul
             return getAndPrepare(DescriptionPanelManager.ID);
         }
         if (currentPage instanceof DescriptionPanelManager) {
-            if (StringUtil.isEmpty(rule.getDescription()))
+            if (StringUtils.isBlank(rule.getDescription())) {
                 return null;
+            }
             return getAndPrepare(PerRulePropertyPanelManager.ID);
         }
         if (currentPage instanceof PerRulePropertyPanelManager) {

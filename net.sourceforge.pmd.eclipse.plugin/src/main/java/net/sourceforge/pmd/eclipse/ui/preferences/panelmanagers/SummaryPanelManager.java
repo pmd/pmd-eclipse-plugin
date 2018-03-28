@@ -52,12 +52,14 @@ public class SummaryPanelManager extends AbstractRulePanelManager {
     public static String pad(String text, int length, char padChar) {
 
         int delta = length - text.length();
-        if (delta == 0)
+        if (delta == 0) {
             return text;
+        }
         StringBuilder sb = new StringBuilder(length);
         sb.append(text);
-        for (int i = 0; i < delta; i++)
+        for (int i = 0; i < delta; i++) {
             sb.append(padChar);
+        }
         return sb.toString();
     }
 

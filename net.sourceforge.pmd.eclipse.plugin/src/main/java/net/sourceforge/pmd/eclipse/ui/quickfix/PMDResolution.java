@@ -20,6 +20,7 @@
  *   
  * </copyright>
  */
+
 package net.sourceforge.pmd.eclipse.ui.quickfix;
 
 import java.io.BufferedReader;
@@ -30,9 +31,6 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
-
-import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
-import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IFile;
@@ -45,6 +43,9 @@ import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.ui.IMarkerResolution;
 import org.eclipse.ui.PlatformUI;
 
+import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
+import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
+
 /**
  * This class adapt a PMD quickfix to an Eclipse resolution.
  * 
@@ -52,7 +53,7 @@ import org.eclipse.ui.PlatformUI;
  * 
  */
 public class PMDResolution implements IMarkerResolution, IRunnableWithProgress {
-    private static final Logger log = Logger.getLogger(PMDResolution.class);
+    private static final Logger LOG = Logger.getLogger(PMDResolution.class);
     private Fix fix;
     private IFile file;
     private int lineNumber;
@@ -77,14 +78,15 @@ public class PMDResolution implements IMarkerResolution, IRunnableWithProgress {
      * @see org.eclipse.ui.IMarkerResolution#run(org.eclipse.core.resources.IMarker)
      */
     public void run(IMarker marker) {
-        log.debug("fixing...");
+        LOG.debug("fixing...");
         IResource resource = marker.getResource();
         this.lineNumber = marker.getAttribute(IMarker.LINE_NUMBER, 0);
         if (resource instanceof IFile) {
             this.file = (IFile) resource;
 
             try {
-                ProgressMonitorDialog dialog = new ProgressMonitorDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell());
+                ProgressMonitorDialog dialog = new ProgressMonitorDialog(
+                        PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell());
                 dialog.run(false, false, this);
             } catch (InvocationTargetException e) {
                 showError(StringKeys.ERROR_INVOCATIONTARGET_EXCEPTION, e);
@@ -127,7 +129,7 @@ public class PMDResolution implements IMarkerResolution, IRunnableWithProgress {
     }
 
     private void showError(String errorId, Throwable throwable) {
-    	String error = PMDPlugin.getDefault().getStringTable().getString(errorId);
-    	PMDPlugin.getDefault().showError(error, throwable);
+        String error = PMDPlugin.getDefault().getStringTable().getString(errorId);
+        PMDPlugin.getDefault().showError(error, throwable);
     }
 }

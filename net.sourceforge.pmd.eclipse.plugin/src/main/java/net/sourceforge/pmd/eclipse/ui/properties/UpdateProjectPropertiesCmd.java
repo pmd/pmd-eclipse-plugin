@@ -33,15 +33,17 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package net.sourceforge.pmd.eclipse.ui.properties;
 
-import name.herlin.command.CommandException;
+import org.eclipse.ui.IWorkingSet;
+
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.eclipse.runtime.cmd.AbstractProjectCommand;
 import net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties;
 import net.sourceforge.pmd.eclipse.runtime.properties.PropertiesException;
 
-import org.eclipse.ui.IWorkingSet;
+import name.herlin.command.CommandException;
 
 /**
  * Save updated project properties. This is a composite command.
@@ -53,7 +55,7 @@ public class UpdateProjectPropertiesCmd extends AbstractProjectCommand {
 
     private static final long serialVersionUID = 1L;
 
-//    private IProject project;
+    // private IProject project;
     private boolean pmdEnabled;
     private IWorkingSet projectWorkingSet;
     private RuleSet projectRuleSet;
@@ -102,42 +104,48 @@ public class UpdateProjectPropertiesCmd extends AbstractProjectCommand {
     }
 
     /**
-     * @param pmdEnabled The pmdEnabled to set.
+     * @param pmdEnabled
+     *            The pmdEnabled to set.
      */
     public void setPmdEnabled(final boolean pmdEnabled) {
         this.pmdEnabled = pmdEnabled;
     }
 
     /**
-     * @param projectRuleSet The projectRuleSet to set.
+     * @param projectRuleSet
+     *            The projectRuleSet to set.
      */
     public void setProjectRuleSet(final RuleSet projectRuleSet) {
         this.projectRuleSet = projectRuleSet;
     }
 
     /**
-     * @param projectWorkingSet The projectWorkingSet to set.
+     * @param projectWorkingSet
+     *            The projectWorkingSet to set.
      */
     public void setProjectWorkingSet(final IWorkingSet projectWorkingSet) {
         this.projectWorkingSet = projectWorkingSet;
     }
 
     /**
-     * @param ruleSetStoredInProject The ruleSetStoredInProject to set.
+     * @param ruleSetStoredInProject
+     *            The ruleSetStoredInProject to set.
      */
     public void setRuleSetStoredInProject(final boolean ruleSetStoredInProject) {
         this.ruleSetStoredInProject = ruleSetStoredInProject;
     }
 
     /**
-     * @param ruleSetFile The ruleSetFile to set.
+     * @param ruleSetFile
+     *            The ruleSetFile to set.
      */
     public void setRuleSetFile(String ruleSetFile) {
-		this.ruleSetFile = ruleSetFile;
-	}
+        this.ruleSetFile = ruleSetFile;
+    }
 
     /**
-     * @param includeDerivedFiles The includeDerivedFiles to set.
+     * @param includeDerivedFiles
+     *            The includeDerivedFiles to set.
      */
     public void setIncludeDerivedFiles(boolean includeDerivedFiles) {
         this.includeDerivedFiles = includeDerivedFiles;
@@ -145,14 +153,16 @@ public class UpdateProjectPropertiesCmd extends AbstractProjectCommand {
 
     /**
      * 
-     * @param fullBuildEnabled run at full build setter
+     * @param fullBuildEnabled
+     *            run at full build setter
      */
-    public void setFullBuildEnabled(boolean fullBuildEnabled){
-    	this.fullBuildEnabled = fullBuildEnabled;
+    public void setFullBuildEnabled(boolean fullBuildEnabled) {
+        this.fullBuildEnabled = fullBuildEnabled;
     }
-    
+
     /**
-     * @param violationsAsErrors The violationsAsErrors to set.
+     * @param violationsAsErrors
+     *            The violationsAsErrors to set.
      */
     public void setViolationsAsErrors(boolean violationsAsErrors) {
         this.violationsAsErrors = violationsAsErrors;
@@ -182,7 +192,7 @@ public class UpdateProjectPropertiesCmd extends AbstractProjectCommand {
         setRuleSetStoredInProject(false);
         setRuleSetFile(null);
         setIncludeDerivedFiles(false);
-        setFullBuildEnabled(true);   // made to match static initializer
+        setFullBuildEnabled(true); // made to match static initializer
         setViolationsAsErrors(true); // 10/2010 changed to true to match static initializer
         setTerminated(false);
     }

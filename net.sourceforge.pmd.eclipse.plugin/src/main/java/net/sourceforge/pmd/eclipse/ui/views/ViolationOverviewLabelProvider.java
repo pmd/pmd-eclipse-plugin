@@ -38,8 +38,9 @@ package net.sourceforge.pmd.eclipse.ui.views;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
-
 import java.util.Locale;
+
+import org.eclipse.swt.graphics.Image;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
@@ -50,8 +51,6 @@ import net.sourceforge.pmd.eclipse.ui.model.FileRecord;
 import net.sourceforge.pmd.eclipse.ui.model.FileToMarkerRecord;
 import net.sourceforge.pmd.eclipse.ui.model.MarkerRecord;
 import net.sourceforge.pmd.eclipse.ui.model.PackageRecord;
-
-import org.eclipse.swt.graphics.Image;
 
 /**
  * Provides the Violation Overview with Texts and Images

@@ -1,3 +1,4 @@
+
 package net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers;
 
 import java.net.MalformedURLException;
@@ -5,13 +6,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
-import net.sourceforge.pmd.eclipse.ui.preferences.br.ValueChangeListener;
-import net.sourceforge.pmd.eclipse.ui.preferences.editors.SWTUtil;
-import net.sourceforge.pmd.lang.rule.RuleReference;
-import net.sourceforge.pmd.util.StringUtil;
-
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -30,6 +25,13 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.browser.IWebBrowser;
 
+import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
+import net.sourceforge.pmd.eclipse.ui.preferences.br.ValueChangeListener;
+import net.sourceforge.pmd.eclipse.ui.preferences.editors.SWTUtil;
+import net.sourceforge.pmd.lang.rule.RuleReference;
+import net.sourceforge.pmd.util.StringUtil;
+
 /**
  *
  * @author Brian Remedios
@@ -41,9 +43,9 @@ public class DescriptionPanelManager extends AbstractRulePanelManager {
     private Label extURLLabel;
     private Button browseButton;
     private Label messageLabel;
-    private Text  messageField;
+    private Text messageField;
 
-    private static final int MIN_MESSAGE_LENGTH = 10;	//chars
+    private static final int MIN_MESSAGE_LENGTH = 10; // chars
 
     public static final String ID = "description";
 
@@ -51,7 +53,9 @@ public class DescriptionPanelManager extends AbstractRulePanelManager {
         super(ID, theTitle, theMode, theListener);
     }
 
-    protected boolean canManageMultipleRules() { return false; }
+    protected boolean canManageMultipleRules() {
+        return false;
+    }
 
     protected void clearControls() {
         descriptionBox.setText("");
@@ -73,10 +77,11 @@ public class DescriptionPanelManager extends AbstractRulePanelManager {
         Rule rule = soleRule();
 
         if (rule instanceof RuleReference) {
-            RuleReference ruleReference = (RuleReference)rule;
-            messageField.setBackground(ruleReference.getOverriddenMessage() != null ? overridenColour: null);
-            descriptionBox.setBackground(ruleReference.getOverriddenDescription() != null ? overridenColour: null);
-            externalURLField.setBackground(ruleReference.getOverriddenExternalInfoUrl() != null ? overridenColour: null);
+            RuleReference ruleReference = (RuleReference) rule;
+            messageField.setBackground(ruleReference.getOverriddenMessage() != null ? overridenColour : null);
+            descriptionBox.setBackground(ruleReference.getOverriddenDescription() != null ? overridenColour : null);
+            externalURLField
+                    .setBackground(ruleReference.getOverriddenExternalInfoUrl() != null ? overridenColour : null);
         }
     }
 
@@ -100,16 +105,20 @@ public class DescriptionPanelManager extends AbstractRulePanelManager {
             public void modifyText(ModifyEvent event) {
 
                 Rule soleRule = soleRule();
-                if (soleRule == null) return;
+                if (soleRule == null) {
+                    return;
+                }
 
                 String cleanValue = asCleanString(descriptionBox.getText());
                 String existingValue = soleRule.getDescription();
 
-                if (StringUtil.areSemanticEquals(existingValue, cleanValue)) return;
+                if (StringUtil.areSemanticEquals(existingValue, cleanValue)) {
+                    return;
+                }
 
                 soleRule.setDescription(cleanValue);
                 valueChanged(null, cleanValue);
-                validateRuleParams();		// TODO hang off of valueChanged instead?
+                validateRuleParams(); // TODO hang off of valueChanged instead?
             }
         });
 
@@ -121,10 +130,10 @@ public class DescriptionPanelManager extends AbstractRulePanelManager {
 
     private void validateRuleParams() {
 
-    	validate();
-    	
-    	boolean urlOK = StringUtil.isEmpty(externalURLField.getText()) || hasValidURL();
-    	adjustBrowseButton(urlOK);
+        validate();
+
+        boolean urlOK = StringUtil.isEmpty(externalURLField.getText()) || hasValidURL();
+        adjustBrowseButton(urlOK);
     }
 
     private void buildExternalUrlPanel(Composite parent, String urlLabel) {
@@ -150,9 +159,9 @@ public class DescriptionPanelManager extends AbstractRulePanelManager {
 
         externalURLField.addListener(SWT.FocusOut, new Listener() {
             public void handleEvent(Event e) {
-              handleExternalURLChange();
+                handleExternalURLChange();
             }
-          });
+        });
         externalURLField.addModifyListener(new ModifyListener() {
             public void modifyText(ModifyEvent e) {
                 validateRuleParams();
@@ -178,10 +187,10 @@ public class DescriptionPanelManager extends AbstractRulePanelManager {
 
         messageField.addModifyListener(new ModifyListener() {
             public void modifyText(ModifyEvent e) {
-              handleMessageChange();
-              validateRuleParams();
+                handleMessageChange();
+                validateRuleParams();
             }
-          });
+        });
     }
 
     private void handleExternalURLChange() {
@@ -194,7 +203,7 @@ public class DescriptionPanelManager extends AbstractRulePanelManager {
             valueChanged(null, newURL);
         }
 
-       adjustBrowseButton( hasValidURL() );
+        adjustBrowseButton(hasValidURL());
     }
 
     private void handleMessageChange() {
@@ -253,13 +262,19 @@ public class DescriptionPanelManager extends AbstractRulePanelManager {
 
     public static boolean isValidURL(String url) {
 
-        if (StringUtil.isEmpty(url)) return false;
+        if (StringUtils.isBlank(url)) {
+            return false;
+        }
 
         String urlUC = url.toUpperCase();
-        if (!urlUC.startsWith("HTTP")) return false;
+        if (!urlUC.startsWith("HTTP")) {
+            return false;
+        }
 
-        for (int i=0; i<url.length(); i++) {
-            if (Character.isWhitespace(url.charAt(i))) return false;
+        for (int i = 0; i < url.length(); i++) {
+            if (Character.isWhitespace(url.charAt(i))) {
+                return false;
+            }
         }
 
         return true;
@@ -267,7 +282,9 @@ public class DescriptionPanelManager extends AbstractRulePanelManager {
 
     private boolean hasValidURL() {
         String url = externalURLField.getText().trim();
-        if (StringUtil.isEmpty(url)) return true;	// not required
+        if (StringUtils.isBlank(url)) {
+            return true; // not required
+        }
         return isValidURL(url);
     }
 
@@ -284,24 +301,24 @@ public class DescriptionPanelManager extends AbstractRulePanelManager {
     private void adjustBrowseButton(boolean hasValidURL) {
 
         browseButton.setEnabled(hasValidURL);
-        externalURLField.setForeground(
-            hasValidURL ? textColour : errorColour
-            );
+        externalURLField.setForeground(hasValidURL ? textColour : errorColour);
     }
 
     protected List<String> fieldErrors() {
 
-    	List<String> errors = new ArrayList<String>(3);
-    	
+        List<String> errors = new ArrayList<String>(3);
+
         if (StringUtil.isEmpty(descriptionBox.getText().trim())) {
-        	errors.add("Missing description");
+            errors.add("Missing description");
         }
         if (StringUtil.isEmpty(messageField.getText().trim())) {
-        	errors.add("Missing message");
+            errors.add("Missing message");
         }
 
-       if (!hasValidURL()) errors.add("Invalid external URL");
-       
-       return errors;
+        if (!hasValidURL()) {
+            errors.add("Invalid external URL");
+        }
+
+        return errors;
     }
 }

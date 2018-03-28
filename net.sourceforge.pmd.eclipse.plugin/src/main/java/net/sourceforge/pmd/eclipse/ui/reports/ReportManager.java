@@ -1,3 +1,4 @@
+
 package net.sourceforge.pmd.eclipse.ui.reports;
 
 import java.io.FileInputStream;
@@ -19,169 +20,172 @@ import net.sourceforge.pmd.renderers.RendererFactory;
  */
 public class ReportManager {
 
-	private final Renderer[] allRenderers;
+    private final Renderer[] allRenderers;
 
-	public static final ReportManager instance = new ReportManager();
+    public static final ReportManager INSTANCE = new ReportManager();
 
+    public static final String DEFAULT_REPORT_PROPERTY_FILENAME = "reportProperties.xml";
 
-    public static String DefaultReportPropertyFilename = "reportProperties.xml";
-    
-	private ReportManager() {
-		allRenderers = availableRenderers2();
-	}
+    private ReportManager() {
+        allRenderers = availableRenderers2();
+    }
 
-	public Renderer[] allRenderers() { return allRenderers; }
+    public Renderer[] allRenderers() {
+        return allRenderers;
+    }
 
-//    private Renderer[] knownRenderers() {
-//
-//    	Properties props =  new Properties();
-//
-//    	return new Renderer[] {
-//    		new HTMLRenderer(props),
-//    		new SummaryHTMLRenderer(props),
-//    		new CSVRenderer(props),
-//    		new XMLRenderer(props),
-//    		new TextRenderer(props),
-//    		new VBHTMLRenderer(props)
-//    		};
-//    }
+    // private Renderer[] knownRenderers() {
+    //
+    // Properties props = new Properties();
+    //
+    // return new Renderer[] {
+    // new HTMLRenderer(props),
+    // new SummaryHTMLRenderer(props),
+    // new CSVRenderer(props),
+    // new XMLRenderer(props),
+    // new TextRenderer(props),
+    // new VBHTMLRenderer(props)
+    // };
+    // }
 
     public Renderer[] availableRenderers2() {
 
-    	List<Renderer> renderers = new ArrayList<Renderer>();
+        List<Renderer> renderers = new ArrayList<Renderer>();
 
-    	for (String reportName : RendererFactory.REPORT_FORMAT_TO_RENDERER.keySet()) {
-    	    renderers.add(
-    	    	RendererFactory.createRenderer(reportName, new Properties())
-    	    	);
-    		}
+        for (String reportName : RendererFactory.REPORT_FORMAT_TO_RENDERER.keySet()) {
+            renderers.add(RendererFactory.createRenderer(reportName, new Properties()));
+        }
 
-    	return renderers.toArray(new Renderer[renderers.size()]);
+        return renderers.toArray(new Renderer[renderers.size()]);
     }
 
     public List<Renderer> activeRenderers() {
 
-    	List<Renderer> actives = new ArrayList<Renderer>();
-    	IPreferences prefs =  PMDPlugin.getDefault().loadPreferences();
+        List<Renderer> actives = new ArrayList<Renderer>();
+        IPreferences prefs = PMDPlugin.getDefault().loadPreferences();
 
-    	for (Renderer renderer : allRenderers) {
-    		if (prefs.isActiveRenderer(renderer.getName())) actives.add(renderer);
-    	}
+        for (Renderer renderer : allRenderers) {
+            if (prefs.isActiveRenderer(renderer.getName())) {
+                actives.add(renderer);
+            }
+        }
 
-    	return actives;
+        return actives;
     }
 
-	public static String asString(Map<PropertyDescriptor<?>, Object> propertyDefinitions) {
-		if (propertyDefinitions.isEmpty()) return "";
+    public static String asString(Map<PropertyDescriptor<?>, Object> propertyDefinitions) {
+        if (propertyDefinitions.isEmpty()) {
+            return "";
+        }
 
-		StringBuilder sb = new StringBuilder();
-		for (Map.Entry<PropertyDescriptor<?>, Object> entry : propertyDefinitions.entrySet()) {
-		    if (sb.length() != 0) {
-		        sb.append(", ");
-		    }
-		    sb.append(entry.getKey().name()).append(": ").append(String.valueOf(entry.getValue()));
-		}
+        StringBuilder sb = new StringBuilder();
+        for (Map.Entry<PropertyDescriptor<?>, Object> entry : propertyDefinitions.entrySet()) {
+            if (sb.length() != 0) {
+                sb.append(", ");
+            }
+            sb.append(entry.getKey().name()).append(": ").append(String.valueOf(entry.getValue()));
+        }
 
-		return sb.toString();
-	}
+        return sb.toString();
+    }
 
-	   /**
+    /**
      * Derive a map key for the renderer, descriptor pair.
      * 
-     * @param renderer Renderer
-     * @param desc PropertyDescriptor<?>
+     * @param renderer
+     *            Renderer
+     * @param desc
+     *            PropertyDescriptor<?>
      * @return String
      */
     private static String keyOf(Renderer renderer, PropertyDescriptor<?> desc) {
-    	return renderer.getName() + "__" + desc.name();
+        return renderer.getName() + "__" + desc.name();
     }
 
     public static void loadReportProperties() {
-    	loadReportProperties(DefaultReportPropertyFilename);
+        loadReportProperties(DEFAULT_REPORT_PROPERTY_FILENAME);
     }
-    
+
     public static void saveReportProperties() {
-    	saveReportProperties(DefaultReportPropertyFilename);
+        saveReportProperties(DEFAULT_REPORT_PROPERTY_FILENAME);
     }
-    
+
     /**
-     * Load the properties for all renderers from the specified filename.
-     * Return whether we succeeded or not.
+     * Load the properties for all renderers from the specified filename. Return whether we succeeded or not.
      * 
-     * @param propertyFilename String
+     * @param propertyFilename
+     *            String
      * @return boolean
      */
     private static boolean loadReportProperties(String propertyFilename) {
 
-    	Properties props = new Properties();
-    	FileInputStream fis = null;
-    	try {
-			fis = new FileInputStream(propertyFilename);
-			props.loadFromXML(fis);
-		} catch (Exception e) {
-			return false;
-		} finally{
-		    try {
-		        if (fis != null) {
-		            fis.close();
-		        }
-		    } catch (Exception e) {
-		        // ignored
-		    }
-		}
+        Properties props = new Properties();
+        FileInputStream fis = null;
+        try {
+            fis = new FileInputStream(propertyFilename);
+            props.loadFromXML(fis);
+        } catch (Exception e) {
+            return false;
+        } finally {
+            try {
+                if (fis != null) {
+                    fis.close();
+                }
+            } catch (Exception e) {
+                // ignored
+            }
+        }
 
-    	for (Renderer renderer : ReportManager.instance.allRenderers()) {
+        for (Renderer renderer : ReportManager.INSTANCE.allRenderers()) {
 
-    		 for (PropertyDescriptor pDesc: renderer.getPropertyDescriptors()) {
-    			String key = keyOf(renderer, pDesc);
-    			if (props.containsKey(key)) {
-    				Object value = pDesc.valueFrom((String)props.get(key));
-    				renderer.setProperty(pDesc, value);
-    				}
-    		 }
-    	}
-    	
-    	return true;
+            for (PropertyDescriptor pDesc : renderer.getPropertyDescriptors()) {
+                String key = keyOf(renderer, pDesc);
+                if (props.containsKey(key)) {
+                    Object value = pDesc.valueFrom((String) props.get(key));
+                    renderer.setProperty(pDesc, value);
+                }
+            }
+        }
+
+        return true;
     }
 
     /**
      * Save the properties of all renderers to the specified filename.
      * 
-     * @param propertyFilename String
+     * @param propertyFilename
+     *            String
      */
     private static void saveReportProperties(String propertyFilename) {
 
-    	Properties props = new Properties();
+        Properties props = new Properties();
 
-    	for (Renderer renderer : ReportManager.instance.allRenderers()) {
-    		 Map<PropertyDescriptor<?>, Object> valuesByProp = renderer.getPropertiesByPropertyDescriptor();
-    		 for (Map.Entry<PropertyDescriptor<?>, Object> entry : valuesByProp.entrySet()) {
-    			 PropertyDescriptor desc = entry.getKey();
-    			 props.put(
-    				 keyOf(renderer, desc),
-    				 desc.asDelimitedString(entry.getValue())
-    				 );
+        for (Renderer renderer : ReportManager.INSTANCE.allRenderers()) {
+            Map<PropertyDescriptor<?>, Object> valuesByProp = renderer.getPropertiesByPropertyDescriptor();
+            for (Map.Entry<PropertyDescriptor<?>, Object> entry : valuesByProp.entrySet()) {
+                PropertyDescriptor desc = entry.getKey();
+                props.put(keyOf(renderer, desc), desc.asDelimitedString(entry.getValue()));
 
-    		 }
-    	}
+            }
+        }
 
-    	FileOutputStream fos = null;
+        FileOutputStream fos = null;
 
-    	try {
-			fos = new FileOutputStream(propertyFilename);
-			props.storeToXML(fos, "asdf");
+        try {
+            fos = new FileOutputStream(propertyFilename);
+            props.storeToXML(fos, "asdf");
 
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-		    try {
-		        if (fos != null) {
-		            fos.close();
-		        }
-		    } catch (Exception e) {
-		        // ignored;
-		    }
-		}
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (fos != null) {
+                    fos.close();
+                }
+            } catch (Exception e) {
+                // ignored;
+            }
+        }
     }
-    
+
 }

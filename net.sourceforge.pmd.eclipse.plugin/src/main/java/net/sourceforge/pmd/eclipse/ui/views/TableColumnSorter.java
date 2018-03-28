@@ -48,24 +48,28 @@ import org.eclipse.swt.widgets.TreeColumn;
 public class TableColumnSorter extends ViewerSorter {
 
     /**
-     * @param column, the column to sort
-     * @param order, the Direction to sort by, -1 (desc) or 1 (asc)
+     * @param column,
+     *            the column to sort
+     * @param order,
+     *            the Direction to sort by, -1 (desc) or 1 (asc)
      */
     public TableColumnSorter(TreeColumn column, int order) {
         super();
 
-//        column.getParent().setSortColumn(column);
-//        column.getParent().setSortDirection(order == 1 ? SWT.UP : SWT.DOWN);
+        // column.getParent().setSortColumn(column);
+        // column.getParent().setSortDirection(order == 1 ? SWT.UP : SWT.DOWN);
     }
 
     /**
-     * @param column, the column to sort
-     * @param order, the Direction to sort by, -1 (desc) or 1 (asc)
+     * @param column,
+     *            the column to sort
+     * @param order,
+     *            the Direction to sort by, -1 (desc) or 1 (asc)
      */
     public TableColumnSorter(TableColumn column, int order) {
         super();
 
- //       column.getParent().setSortColumn(column);
-//        column.getParent().setSortDirection(order == 1 ? SWT.UP : SWT.DOWN);
+        // column.getParent().setSortColumn(column);
+        // column.getParent().setSortDirection(order == 1 ? SWT.UP : SWT.DOWN);
     }
 }

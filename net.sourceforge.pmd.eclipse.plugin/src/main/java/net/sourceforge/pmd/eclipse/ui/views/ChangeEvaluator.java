@@ -67,19 +67,14 @@ public class ChangeEvaluator {
 
             // if the Project is closed or deleted, we also delete it from the
             // Model and go on
-            if (!(project.isOpen() && project.isAccessible())) { // NOPMD by
-                                                                 // Sven on
-                                                                 // 09.11.06
-                                                                 // 22:17
+            if (!(project.isOpen() && project.isAccessible())) {
                 // LOG.debug("The project is not open or not accessible. Remove
                 // it");
                 List<AbstractPMDRecord>[] array = updateFiles(project, changedFiles);
                 changeRec.removed(array[1]);
                 root.removeResource(project);
-            }
-
-            // if we couldn't find the Project then it has to be new
-            else if (projectRec == null) {
+            } else if (projectRec == null) {
+                // if we couldn't find the Project then it has to be new
                 // LOG.debug("Cannot find a project record for it. Add it.");
                 projectRec = (ProjectRecord) root.addResource(project);
             }
@@ -127,10 +122,8 @@ public class ChangeEvaluator {
         // we got through all files
         if (projectRec != null && project.isAccessible()) {
             updatedFiles = searchProjectForModifications(projectRec, changedFiles);
-        }
-
-        // if the project is deleted or closed
-        else if (projectRec != null) {
+        } else if (projectRec != null) {
+            // if the project is deleted or closed
             List<AbstractPMDRecord> packages = projectRec.getChildrenAsList();
             // ... we add all Packages to the removals so they are not shown
             // anymore

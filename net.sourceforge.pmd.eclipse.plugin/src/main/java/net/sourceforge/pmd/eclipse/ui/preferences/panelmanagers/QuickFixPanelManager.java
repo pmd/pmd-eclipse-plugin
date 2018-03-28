@@ -5,19 +5,19 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.eclipse.ui.PMDUiConstants;
-import net.sourceforge.pmd.eclipse.ui.preferences.br.ValueChangeListener;
-import net.sourceforge.pmd.eclipse.ui.quickfix.Fix;
-import net.sourceforge.pmd.eclipse.ui.quickfix.PMDResolutionGenerator;
-import net.sourceforge.pmd.eclipse.util.ResourceManager;
-
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+
+import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.eclipse.ui.PMDUiConstants;
+import net.sourceforge.pmd.eclipse.ui.preferences.br.ValueChangeListener;
+import net.sourceforge.pmd.eclipse.ui.quickfix.Fix;
+import net.sourceforge.pmd.eclipse.ui.quickfix.PMDResolutionGenerator;
+import net.sourceforge.pmd.eclipse.util.ResourceManager;
 
 public class QuickFixPanelManager extends AbstractRulePanelManager {
 
@@ -37,8 +37,9 @@ public class QuickFixPanelManager extends AbstractRulePanelManager {
 
         Fix[] fixSet = PMDResolutionGenerator.fixesFor(theRules.get(0));
         if (fixSet != null) {
-            for (Fix fix : fixSet)
+            for (Fix fix : fixSet) {
                 fixes.add(fix);
+            }
         }
 
         return fixes;
@@ -51,8 +52,9 @@ public class QuickFixPanelManager extends AbstractRulePanelManager {
 
         List<Fix> fixes = commonFixes();
 
-        for (Fix fix : fixes)
+        for (Fix fix : fixes) {
             fixerList.add(fix.getLabel());
+        }
     }
 
     protected boolean canManageMultipleRules() {

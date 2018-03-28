@@ -19,7 +19,8 @@
  *  PERFORMANCE OF THE COUGAAR SOFTWARE.   
  *   
  * </copyright>
- */ 
+ */
+
 package net.sourceforge.pmd.eclipse.ui.quickfix;
 
 import org.eclipse.jface.text.BadLocationException;
@@ -33,10 +34,10 @@ import org.eclipse.jface.text.Document;
  */
 public class DeleteLineFix extends AbstractFix {
 
-	public DeleteLineFix() {
-		super("Delete the line");
-	}
-	
+    public DeleteLineFix() {
+        super("Delete the line");
+    }
+
     /**
      * @see net.sourceforge.pmd.eclipse.Fix#fix(java.lang.String, int)
      */
@@ -47,9 +48,9 @@ public class DeleteLineFix extends AbstractFix {
             final int length = document.getLineLength(lineNumber - 1);
             document.replace(offset, length, "");
         } catch (BadLocationException e) { // NOPMD by Herlin on 11/10/06 00:20
-            //ignoring that exception
+            // ignoring that exception
         }
-        
+
         return document.get();
     }
 

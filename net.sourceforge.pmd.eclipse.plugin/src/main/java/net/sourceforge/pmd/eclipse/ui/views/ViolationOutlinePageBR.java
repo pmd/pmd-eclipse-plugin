@@ -4,13 +4,6 @@ package net.sourceforge.pmd.eclipse.ui.views;
 import java.util.Arrays;
 import java.util.List;
 
-import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
-import net.sourceforge.pmd.eclipse.ui.ItemColumnDescriptor;
-import net.sourceforge.pmd.eclipse.ui.model.FileRecord;
-import net.sourceforge.pmd.eclipse.ui.preferences.br.BasicTableManager;
-import net.sourceforge.pmd.eclipse.ui.preferences.br.MarkerColumnsUI;
-import net.sourceforge.pmd.eclipse.ui.views.actions.RemoveViolationAction;
-
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.jface.action.Action;
@@ -36,6 +29,13 @@ import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.part.IPage;
 import org.eclipse.ui.part.Page;
+
+import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
+import net.sourceforge.pmd.eclipse.ui.ItemColumnDescriptor;
+import net.sourceforge.pmd.eclipse.ui.model.FileRecord;
+import net.sourceforge.pmd.eclipse.ui.preferences.br.BasicTableManager;
+import net.sourceforge.pmd.eclipse.ui.preferences.br.MarkerColumnsUI;
+import net.sourceforge.pmd.eclipse.ui.views.actions.RemoveViolationAction;
 
 /**
  * Creates a Page for the Violation Outline
@@ -72,8 +72,9 @@ public class ViolationOutlinePageBR extends Page implements IPage, ISelectionCha
 
         ViewerFilter[] filters = outline.getFilters();
         for (int i = 0; i < filters.length; i++) {
-            if (filters[i] instanceof PriorityFilter)
+            if (filters[i] instanceof PriorityFilter) {
                 viewerFilter = filters[i];
+            }
         }
     }
 
@@ -181,12 +182,14 @@ public class ViolationOutlinePageBR extends Page implements IPage, ISelectionCha
 
         IStructuredSelection selection = (IStructuredSelection) event.getSelection();
         IMarker marker = (IMarker) selection.getFirstElement();
-        if (marker == null)
+        if (marker == null) {
             return;
+        }
 
         IEditorPart editor = getSite().getPage().getActiveEditor();
-        if (editor == null)
+        if (editor == null) {
             return;
+        }
 
         IEditorInput input = editor.getEditorInput();
         if (input instanceof IFileEditorInput) {
@@ -202,10 +205,12 @@ public class ViolationOutlinePageBR extends Page implements IPage, ISelectionCha
     }
 
     public void setColumnWidths(List<Integer> widths) {
-        if (widths == null || widths.isEmpty())
+        if (widths == null || widths.isEmpty()) {
             return;
-        if (tableViewer.getTable().isDisposed())
+        }
+        if (tableViewer.getTable().isDisposed()) {
             return;
+        }
 
         columnWidths = widths.toArray(new Integer[widths.size()]);
         TableColumn[] columns = tableViewer.getTable().getColumns();
@@ -226,8 +231,9 @@ public class ViolationOutlinePageBR extends Page implements IPage, ISelectionCha
     }
 
     public void setSorterProperties(List<Integer> sorterProps) {
-        if (sorterProps == null || sorterProps.isEmpty())
+        if (sorterProps == null || sorterProps.isEmpty()) {
             return;
+        }
 
         Table table = tableViewer.getTable();
         if (table.isDisposed()) {

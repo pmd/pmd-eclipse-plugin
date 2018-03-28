@@ -140,7 +140,7 @@ public class UISettings {
 
         ImageLoader loader = new ImageLoader();
 
-        PriorityDescriptorCache pdc = PriorityDescriptorCache.instance;
+        PriorityDescriptorCache pdc = PriorityDescriptorCache.INSTANCE;
 
         for (RulePriority priority : currentPriorities(true)) {
             Image image = pdc.descriptorFor(priority).getImage(display, MAX_MARKER_DIMENSION);

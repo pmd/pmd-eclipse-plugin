@@ -4,6 +4,11 @@ package net.sourceforge.pmd.eclipse.ui.views;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.core.resources.IMarker;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.viewers.ViewerFilter;
+
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.plugin.UISettings;
 import net.sourceforge.pmd.eclipse.ui.PMDUiConstants;
@@ -13,11 +18,6 @@ import net.sourceforge.pmd.eclipse.ui.model.FileToMarkerRecord;
 import net.sourceforge.pmd.eclipse.ui.model.MarkerRecord;
 import net.sourceforge.pmd.eclipse.ui.model.PackageRecord;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
-
-import org.eclipse.core.resources.IMarker;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.jface.viewers.ViewerFilter;
 
 /**
  * The ViewerFilter for Priorities
@@ -157,8 +157,7 @@ public class PriorityFilter extends ViewerFilter {
             final List<Integer> priorities = new ArrayList<Integer>(newArray.length);
 
             for (String element : newArray) {
-                priorities.add(Integer.valueOf(element)); // NOPMD by Sven on
-                                                          // 13.11.06 11:53
+                priorities.add(Integer.valueOf(element));
             }
 
             priorityList = priorities;
@@ -174,8 +173,9 @@ public class PriorityFilter extends ViewerFilter {
      * @return the List-String
      */
     public String getPriorityFilterListAsString(String splitter) {
-        if (priorityList.isEmpty())
+        if (priorityList.isEmpty()) {
             return "";
+        }
 
         final StringBuilder listString = new StringBuilder(priorityList.get(0));
         for (int i = 1; i < priorityList.size(); i++) {
