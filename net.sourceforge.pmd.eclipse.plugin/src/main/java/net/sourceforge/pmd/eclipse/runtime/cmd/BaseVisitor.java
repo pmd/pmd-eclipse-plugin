@@ -47,6 +47,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ui.IWorkingSet;
 import org.eclipse.ui.ResourceWorkingSetFilter;
 
+import name.herlin.command.Timer;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.PMDException;
@@ -65,6 +66,7 @@ import net.sourceforge.pmd.eclipse.runtime.PMDRuntimeConstants;
 import net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties;
 import net.sourceforge.pmd.eclipse.runtime.properties.PropertiesException;
 import net.sourceforge.pmd.eclipse.util.IOUtil;
+import net.sourceforge.pmd.eclipse.util.PriorityUtil;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.LanguageVersionDiscoverer;
@@ -76,8 +78,6 @@ import net.sourceforge.pmd.util.NumericConstants;
 import net.sourceforge.pmd.util.StringUtil;
 import net.sourceforge.pmd.util.datasource.DataSource;
 import net.sourceforge.pmd.util.datasource.ReaderDataSource;
-
-import name.herlin.command.Timer;
 
 /**
  * Factor some useful features for visitors
@@ -496,6 +496,11 @@ public class BaseVisitor {
             review.ruleName = rule.getName();
             review.lineNumber = violation.getBeginLine();
 
+            /* Only show active violations */
+            if(!PriorityUtil.getActivePriorites().contains(rule.getPriority())) {
+            	continue;
+            }
+            
             if (reviewsList.contains(review)) {
                 LOG.debug("Ignoring violation of rule " + rule.getName() + " at line " + violation.getBeginLine()
                         + " because of a review.");
