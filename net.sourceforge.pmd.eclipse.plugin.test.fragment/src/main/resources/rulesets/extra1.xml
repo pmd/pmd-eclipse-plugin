@@ -41,7 +41,7 @@ The Basic Ruleset contains a collection of good practices which everyone should 
     </rule>
 
     <rule name="EmptyIfStmt"
-    	  language="java"
+          language="java"
           message="Avoid empty 'if' statements"
           class="net.sourceforge.pmd.lang.rule.XPathRule">
       <description>
@@ -118,7 +118,7 @@ Avoid empty try blocks, they serve no purpose.
     </rule>
 
     <rule name="EmptyFinallyBlock"
-    	  language="java"
+          language="java"
           message="Avoid empty finally blocks"
           class="net.sourceforge.pmd.lang.rule.XPathRule">
       <description>
@@ -148,7 +148,7 @@ Avoid empty finally blocks, these can be deleted.
 
 
     <rule name="EmptySwitchStatements"
-    	  language="java"
+          language="java"
           message="Avoid empty switch statements"
           class="net.sourceforge.pmd.lang.rule.XPathRule">
       <description>
@@ -178,7 +178,7 @@ Avoid empty switch statements.
 
 
     <rule name="JumbledIncrementer"
-    	  language="java"
+          language="java"
          message="Avoid modifying an outer loop incrementer in an inner loop for update expression"
          class="net.sourceforge.pmd.lang.rule.XPathRule">
      <description>
@@ -213,7 +213,7 @@ Avoid jumbled loop incrementers as these are usually a mistake and can make code
 
 
     <rule name="ForLoopShouldBeWhileLoop"
-    	  language="java"
+          language="java"
           message="This for loop could be simplified to a while loop"
           class="net.sourceforge.pmd.lang.rule.XPathRule">
       <description>
@@ -261,7 +261,7 @@ Avoid unnecessary temporaries when converting primitives to Strings
     </rule>
 
     <rule name="OverrideBothEqualsAndHashcode"
-    	  language="java"
+          language="java"
           message="Ensure you override both equals() and hashCode()"
           class="net.sourceforge.pmd.lang.rule.XPathRule">
       <description>
@@ -343,7 +343,7 @@ For more details see http://www.javaworld.com/javaworld/jw-02-2001/jw-0209-doubl
     </rule>
 
     <rule name="ReturnFromFinallyBlock"
-    	  language="java"
+          language="java"
           message="Avoid returning from a finally block"
           class="net.sourceforge.pmd.lang.rule.XPathRule">
       <description>
@@ -376,7 +376,7 @@ For more details see http://www.javaworld.com/javaworld/jw-02-2001/jw-0209-doubl
     </rule>
 
     <rule name="EmptySynchronizedBlock"
-    	  language="java"
+          language="java"
           message="Avoid empty synchronized blocks"
           class="net.sourceforge.pmd.lang.rule.XPathRule">
       <description>
@@ -400,7 +400,7 @@ Avoid empty synchronized blocks as they do nothing.
     </rule>
 
     <rule name="UnnecessaryReturn"
-    	  language="java"
+          language="java"
           message="Avoid unnecessary return statements"
           class="net.sourceforge.pmd.lang.rule.XPathRule">
       <description>
@@ -433,7 +433,7 @@ Avoid unnecessary return statements.
 
 
     <rule name="EmptyStaticInitializer"
-    	  language="java"
+          language="java"
            message="Empty static initializer was found"
            class="net.sourceforge.pmd.lang.rule.XPathRule">
        <description>
@@ -583,9 +583,8 @@ public final class Foo {
 
     // This final modifier is not necessary, since the class is final
     // and thus, all methods are final
-	private final void foo() {
-	}
-
+    private final void foo() {
+    }
 }
 
 ]]>

@@ -31,6 +31,7 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package net.sourceforge.pmd.eclipse;
 
 import java.io.ByteArrayInputStream;
@@ -72,266 +73,275 @@ import net.sourceforge.pmd.properties.PropertyDescriptor;
  * @author Brian Remedios
  */
 public class EclipseUtils {
-  static class OpenMonitor extends NullProgressMonitor {
-    private final CountDownLatch latch;
+    static class OpenMonitor extends NullProgressMonitor {
+        private final CountDownLatch latch;
 
-    public OpenMonitor(final CountDownLatch latch) {
-      this.latch = latch;
-    }
-
-    @Override
-    public void done() {
-      super.done();
-      latch.countDown();
-    }
-  }
-
-  /**
-   * Because this class is a utility class, it cannot be instantiated
-   */
-  private EclipseUtils() {
-    super();
-  }
-
-  /**
-   * Test if 2 sets of rules are equals
-   * 
-   * @param ruleSet1
-   * @param ruleSet2
-   * @return
-   */
-  public static boolean assertRuleSetEquals(final Collection<Rule> ruleSet1, final Collection<Rule> ruleSet2, final PrintStream out) {
-    boolean equals = true;
-
-    for (final Iterator<Rule> i = ruleSet1.iterator(); i.hasNext() && equals;) {
-      final Rule rule = i.next();
-      if (!searchRule(rule, ruleSet2, out)) {
-        equals = false;
-        System.out.println("Rule " + rule.getName() + " is not in the second ruleset");
-      }
-    }
-
-    for (final Iterator<Rule> i = ruleSet2.iterator(); i.hasNext() && equals;) {
-      final Rule rule = i.next();
-      if (!searchRule(rule, ruleSet1, out)) {
-        equals = false;
-        System.out.println("Rule " + rule.getName() + " is not in the first ruleset");
-      }
-    }
-
-    return equals;
-  }
-
-  /**
-   * Create a new java project
-   * 
-   * @param projectName a project name
-   * @return newProject a new project resource handle
-   */
-  public static IProject createJavaProject(final String projectName) throws CoreException {
-    final IProject newProject = createProject(projectName);
-
-    // 4. Make it a Java Project
-    addJavaNature(newProject);
-
-    return newProject;
-  }
-
-  public static IProject createProject(final String projectName) throws CoreException {
-      // 1. Get the project from the workspace
-      final IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-      final IProject newProject = root.getProject(projectName);
-      final IProjectDescription description = newProject.getWorkspace().newProjectDescription(projectName);
-
-      // 2. Create a project if it does not already exist
-      if (!newProject.exists()) {
-        description.setLocation(null);
-        newProject.create(description, null);
-      }
-
-      if (!newProject.isOpen()) {
-        newProject.open(null);
-      }
-
-      return newProject;
-  }
-
-  /**
-   * Create a test source file
-   * 
-   * @param project a project where to create that file; this project is
-   * expected to be empty
-   */
-  public static IFile createTestSourceFile(final IProject project) throws JavaModelException, CoreException, IOException {
-
-    // 1. Locate the test java source template
-    final InputStream is = EclipseUtils.class.getResourceAsStream("/test.template");
-
-    // 2. Copy the template inside the source directory
-    final IFile sourceFile = project.getFile("/src/Test.java");
-    if (sourceFile.exists() && sourceFile.isAccessible()) {
-      sourceFile.setContents(is, true, false, null);
-    }
-    else {
-      sourceFile.create(is, true, null);
-    }
-    is.close();
-    project.refreshLocal(IResource.DEPTH_INFINITE, null);
-
-    return sourceFile;
-  }
-
-  /**
-   * Get the content of a project resource.
-   * 
-   * @param project a project reference
-   * @param resourceName the name of the resource (@see IProject)
-   * @return the resource content as an InputStream or null
-   * @throws CoreException
-   */
-  public static InputStream getResourceStream(final IProject project, final String resourceName) throws CoreException {
-    final IFile file = project.getFile(resourceName);
-    return file != null && file.exists() && file.isAccessible() ? file.getContents(true) : null;
-  }
-
-  /**
-   * Remove the PMD Nature from a project
-   * 
-   * @param project a project to remove the PMD Nature
-   * @param monitor a progress monitor
-   * @return success true if the nature has been removed; false means the
-   * project already had not the PMD Nature.
-   * @throws CoreException if any error occurs.
-   */
-  public static boolean removePMDNature(final IProject project) throws CoreException {
-    final boolean success = false;
-
-    if (project.hasNature(PMDNature.PMD_NATURE)) {
-      final IProjectDescription description = project.getDescription();
-      final String[] natureIds = description.getNatureIds();
-      final String[] newNatureIds = new String[natureIds.length - 1];
-      for (int i = 0, j = 0; i < natureIds.length; i++) {
-        if (!natureIds[i].equals(PMDNature.PMD_NATURE)) {
-          newNatureIds[j++] = natureIds[i];
+        OpenMonitor(final CountDownLatch latch) {
+            this.latch = latch;
         }
-      }
-      description.setNatureIds(newNatureIds);
-      project.setDescription(description, null);
-      project.deleteMarkers(PMDRuntimeConstants.PMD_MARKER, true, IResource.DEPTH_INFINITE);
 
-      final IFile file = project.getFile(".pmd");
-      if (file.exists() && file.isAccessible()) {
-        file.delete(true, false, null);
-      }
-    }
-
-    return success;
-  }
-
-  /**
-   * Add a Java Nature to a project when creating
-   * 
-   * @param project
-   * @throws CoreException
-   */
-  private static void addJavaNature(final IProject project) throws CoreException {
-    if (!project.hasNature(JavaCore.NATURE_ID)) {
-      final IProjectDescription description = project.getDescription();
-      final String[] prevNatures = description.getNatureIds();
-      final String[] newNatures = new String[prevNatures.length + 1];
-      System.arraycopy(prevNatures, 0, newNatures, 0, prevNatures.length);
-      newNatures[prevNatures.length] = JavaCore.NATURE_ID;
-      description.setNatureIds(newNatures);
-      project.setDescription(description, null);
-      IFolder sourceFolder = project.getFolder("/src");
-      sourceFolder.create(true, true, null);
-
-      IJavaProject javaProject = JavaCore.create(project);
-      javaProject.setRawClasspath(new IClasspathEntry[] {
-              JavaCore.newSourceEntry(sourceFolder.getFullPath()),
-              JavaCore.newContainerEntry(new Path("org.eclipse.jdt.launching.JRE_CONTAINER"))
-      }, null);
-
-      @SuppressWarnings("unchecked")
-      Hashtable<String, String> javaOptions = JavaCore.getOptions();
-      javaOptions.put(JavaCore.COMPILER_COMPLIANCE, JavaCore.VERSION_1_5);
-      javaOptions.put(JavaCore.COMPILER_CODEGEN_TARGET_PLATFORM, JavaCore.VERSION_1_5);
-      javaOptions.put(JavaCore.COMPILER_SOURCE, JavaCore.VERSION_1_5);
-      javaProject.setOptions(javaOptions);
-    }
-  }
-
-  /**
-   * Print rule details
-   * 
-   * @param rule
-   */
-  private static void dumpRule(final Rule rule, final PrintStream out) {
-    out.println("Rule: " + rule.getName());
-    out.println("Priority: " + rule.getPriority());
-    final Map<PropertyDescriptor< ? >, Object> properties = rule.getPropertiesByPropertyDescriptor();
-    final Set<Entry<PropertyDescriptor< ? >, Object>> keys = properties.entrySet();
-    for (final Entry<PropertyDescriptor< ? >, Object> entry : keys) {
-      out.println("   " + entry.getKey().name() + " = " + entry.getValue());
-    }
-  }
-
-  private static boolean propertiesMatchFor(final Rule ruleA, final Rule ruleB) {
-
-    return ruleA.getPropertiesByPropertyDescriptor().equals(ruleB.getPropertiesByPropertyDescriptor());
-  }
-
-  /**
-   * Search a rule in a set of rules
-   * 
-   * @param rule
-   * @param set
-   * @return
-   */
-  private static boolean searchRule(final Rule rule, final Collection<Rule> set, final PrintStream out) {
-    boolean found = false;
-
-    for (final Iterator<Rule> i = set.iterator(); i.hasNext() && !found;) {
-      final Rule r = i.next();
-      if (r.getClass().getName().equals(rule.getClass().getName())) {
-        found = r.getName().equals(rule.getName()) && propertiesMatchFor(r, rule) && r.getPriority() == rule.getPriority();
-        if (!found && r.getName().equals(rule.getName())) {
-          out.println("Rules " + r.getName() + " are different because:");
-          out.println("Priorities are different: " + (r.getPriority() != rule.getPriority()));
-          out.println("Properties are different: " + !propertiesMatchFor(r, rule));
-          out.println();
-          out.println("Rule to search");
-          dumpRule(rule, out);
-          out.println();
-          out.println("Rule from set");
-          dumpRule(r, out);
-          out.println();
+        @Override
+        public void done() {
+            super.done();
+            latch.countDown();
         }
-      }
     }
 
-    return found;
-  }
+    /**
+     * Because this class is a utility class, it cannot be instantiated
+     */
+    private EclipseUtils() {
+        super();
+    }
 
-/**
- * @param testProject
- * @param string
- * @param string2
- * @return 
- * @throws CoreException 
- * @throws IOException 
- */
-public static IFile createTestSourceFile(IProject testProject, String fileName, String content) throws CoreException, IOException {
-    IFile sourceFile = testProject.getFile(fileName);
-    InputStream is = new ByteArrayInputStream(content.getBytes("UTF-8"));
-    if (sourceFile.exists() && sourceFile.isAccessible()) {
-      sourceFile.setContents(is, true, false, null);
+    /**
+     * Test if 2 sets of rules are equals
+     * 
+     * @param ruleSet1
+     * @param ruleSet2
+     * @return
+     */
+    public static boolean assertRuleSetEquals(final Collection<Rule> ruleSet1, final Collection<Rule> ruleSet2,
+            final PrintStream out) {
+        boolean equals = true;
+
+        for (final Iterator<Rule> i = ruleSet1.iterator(); i.hasNext() && equals;) {
+            final Rule rule = i.next();
+            if (!searchRule(rule, ruleSet2, out)) {
+                equals = false;
+                System.out.println("Rule " + rule.getName() + " is not in the second ruleset");
+            }
+        }
+
+        for (final Iterator<Rule> i = ruleSet2.iterator(); i.hasNext() && equals;) {
+            final Rule rule = i.next();
+            if (!searchRule(rule, ruleSet1, out)) {
+                equals = false;
+                System.out.println("Rule " + rule.getName() + " is not in the first ruleset");
+            }
+        }
+
+        return equals;
     }
-    else {
-      sourceFile.create(is, true, null);
+
+    /**
+     * Create a new java project
+     * 
+     * @param projectName
+     *            a project name
+     * @return newProject a new project resource handle
+     */
+    public static IProject createJavaProject(final String projectName) throws CoreException {
+        final IProject newProject = createProject(projectName);
+
+        // 4. Make it a Java Project
+        addJavaNature(newProject);
+
+        return newProject;
     }
-    is.close();
-    return sourceFile;
-}
+
+    public static IProject createProject(final String projectName) throws CoreException {
+        // 1. Get the project from the workspace
+        final IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
+        final IProject newProject = root.getProject(projectName);
+        final IProjectDescription description = newProject.getWorkspace().newProjectDescription(projectName);
+
+        // 2. Create a project if it does not already exist
+        if (!newProject.exists()) {
+            description.setLocation(null);
+            newProject.create(description, null);
+        }
+
+        if (!newProject.isOpen()) {
+            newProject.open(null);
+        }
+
+        return newProject;
+    }
+
+    /**
+     * Create a test source file
+     * 
+     * @param project
+     *            a project where to create that file; this project is expected to be empty
+     */
+    public static IFile createTestSourceFile(final IProject project)
+            throws JavaModelException, CoreException, IOException {
+
+        // 1. Locate the test java source template
+        final InputStream is = EclipseUtils.class.getResourceAsStream("/test.template");
+
+        // 2. Copy the template inside the source directory
+        final IFile sourceFile = project.getFile("/src/Test.java");
+        if (sourceFile.exists() && sourceFile.isAccessible()) {
+            sourceFile.setContents(is, true, false, null);
+        } else {
+            sourceFile.create(is, true, null);
+        }
+        is.close();
+        project.refreshLocal(IResource.DEPTH_INFINITE, null);
+
+        return sourceFile;
+    }
+
+    /**
+     * Get the content of a project resource.
+     * 
+     * @param project
+     *            a project reference
+     * @param resourceName
+     *            the name of the resource (@see IProject)
+     * @return the resource content as an InputStream or null
+     * @throws CoreException
+     */
+    public static InputStream getResourceStream(final IProject project, final String resourceName)
+            throws CoreException {
+        final IFile file = project.getFile(resourceName);
+        return file != null && file.exists() && file.isAccessible() ? file.getContents(true) : null;
+    }
+
+    /**
+     * Remove the PMD Nature from a project
+     * 
+     * @param project
+     *            a project to remove the PMD Nature
+     * @param monitor
+     *            a progress monitor
+     * @return success true if the nature has been removed; false means the project already had not the PMD Nature.
+     * @throws CoreException
+     *             if any error occurs.
+     */
+    public static boolean removePMDNature(final IProject project) throws CoreException {
+        final boolean success = false;
+
+        if (project.hasNature(PMDNature.PMD_NATURE)) {
+            final IProjectDescription description = project.getDescription();
+            final String[] natureIds = description.getNatureIds();
+            final String[] newNatureIds = new String[natureIds.length - 1];
+            for (int i = 0, j = 0; i < natureIds.length; i++) {
+                if (!natureIds[i].equals(PMDNature.PMD_NATURE)) {
+                    newNatureIds[j++] = natureIds[i];
+                }
+            }
+            description.setNatureIds(newNatureIds);
+            project.setDescription(description, null);
+            project.deleteMarkers(PMDRuntimeConstants.PMD_MARKER, true, IResource.DEPTH_INFINITE);
+
+            final IFile file = project.getFile(".pmd");
+            if (file.exists() && file.isAccessible()) {
+                file.delete(true, false, null);
+            }
+        }
+
+        return success;
+    }
+
+    /**
+     * Add a Java Nature to a project when creating
+     * 
+     * @param project
+     * @throws CoreException
+     */
+    private static void addJavaNature(final IProject project) throws CoreException {
+        if (!project.hasNature(JavaCore.NATURE_ID)) {
+            final IProjectDescription description = project.getDescription();
+            final String[] prevNatures = description.getNatureIds();
+            final String[] newNatures = new String[prevNatures.length + 1];
+            System.arraycopy(prevNatures, 0, newNatures, 0, prevNatures.length);
+            newNatures[prevNatures.length] = JavaCore.NATURE_ID;
+            description.setNatureIds(newNatures);
+            project.setDescription(description, null);
+            IFolder sourceFolder = project.getFolder("/src");
+            sourceFolder.create(true, true, null);
+
+            IJavaProject javaProject = JavaCore.create(project);
+            javaProject
+                    .setRawClasspath(
+                            new IClasspathEntry[] { JavaCore.newSourceEntry(sourceFolder.getFullPath()),
+                                JavaCore.newContainerEntry(new Path("org.eclipse.jdt.launching.JRE_CONTAINER")) },
+                            null);
+
+            @SuppressWarnings("unchecked")
+            Hashtable<String, String> javaOptions = JavaCore.getOptions();
+            javaOptions.put(JavaCore.COMPILER_COMPLIANCE, JavaCore.VERSION_1_5);
+            javaOptions.put(JavaCore.COMPILER_CODEGEN_TARGET_PLATFORM, JavaCore.VERSION_1_5);
+            javaOptions.put(JavaCore.COMPILER_SOURCE, JavaCore.VERSION_1_5);
+            javaProject.setOptions(javaOptions);
+        }
+    }
+
+    /**
+     * Print rule details
+     * 
+     * @param rule
+     */
+    private static void dumpRule(final Rule rule, final PrintStream out) {
+        out.println("Rule: " + rule.getName());
+        out.println("Priority: " + rule.getPriority());
+        final Map<PropertyDescriptor<?>, Object> properties = rule.getPropertiesByPropertyDescriptor();
+        final Set<Entry<PropertyDescriptor<?>, Object>> keys = properties.entrySet();
+        for (final Entry<PropertyDescriptor<?>, Object> entry : keys) {
+            out.println("   " + entry.getKey().name() + " = " + entry.getValue());
+        }
+    }
+
+    private static boolean propertiesMatchFor(final Rule ruleA, final Rule ruleB) {
+
+        return ruleA.getPropertiesByPropertyDescriptor().equals(ruleB.getPropertiesByPropertyDescriptor());
+    }
+
+    /**
+     * Search a rule in a set of rules
+     * 
+     * @param rule
+     * @param set
+     * @return
+     */
+    private static boolean searchRule(final Rule rule, final Collection<Rule> set, final PrintStream out) {
+        boolean found = false;
+
+        for (final Iterator<Rule> i = set.iterator(); i.hasNext() && !found;) {
+            final Rule r = i.next();
+            if (r.getClass().getName().equals(rule.getClass().getName())) {
+                found = r.getName().equals(rule.getName()) && propertiesMatchFor(r, rule)
+                        && r.getPriority() == rule.getPriority();
+                if (!found && r.getName().equals(rule.getName())) {
+                    out.println("Rules " + r.getName() + " are different because:");
+                    out.println("Priorities are different: " + (r.getPriority() != rule.getPriority()));
+                    out.println("Properties are different: " + !propertiesMatchFor(r, rule));
+                    out.println();
+                    out.println("Rule to search");
+                    dumpRule(rule, out);
+                    out.println();
+                    out.println("Rule from set");
+                    dumpRule(r, out);
+                    out.println();
+                }
+            }
+        }
+
+        return found;
+    }
+
+    /**
+     * @param testProject
+     * @param string
+     * @param string2
+     * @return
+     * @throws CoreException
+     * @throws IOException
+     */
+    public static IFile createTestSourceFile(IProject testProject, String fileName, String content)
+            throws CoreException, IOException {
+        IFile sourceFile = testProject.getFile(fileName);
+        InputStream is = new ByteArrayInputStream(content.getBytes("UTF-8"));
+        if (sourceFile.exists() && sourceFile.isAccessible()) {
+            sourceFile.setContents(is, true, false, null);
+        } else {
+            sourceFile.create(is, true, null);
+        }
+        is.close();
+        return sourceFile;
+    }
 
 }

@@ -1,14 +1,15 @@
 /**
  * 
  */
+
 package net.sourceforge.pmd.eclipse.runtime.preferences.impl;
+
+import org.junit.Assert;
+import org.junit.Test;
 
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.runtime.preferences.IPreferences;
 import net.sourceforge.pmd.eclipse.runtime.preferences.IPreferencesManager;
-
-import org.junit.Assert;
-import org.junit.Test;
 
 public class PreferencesManagerImplTest {
 

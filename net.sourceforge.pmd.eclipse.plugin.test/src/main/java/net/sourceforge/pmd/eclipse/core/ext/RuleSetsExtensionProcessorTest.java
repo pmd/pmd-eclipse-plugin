@@ -31,6 +31,7 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package net.sourceforge.pmd.eclipse.core.ext;
 
 import java.util.Collection;
@@ -52,58 +53,63 @@ import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
  */
 public class RuleSetsExtensionProcessorTest {
 
-  /**
-   * Tests the additional default rulesets has been registered. For this
-   * test to work, the test plugin fragment must be installed.
-   * 
-   */
-  @Test
-  public void testAdditionalDefaultRuleSetsRegistered() throws RuleSetNotFoundException {
-    final Collection<RuleSet> registeredRuleSets = PMDPlugin.getDefault().getRuleSetManager().getDefaultRuleSets();
-    Assert.assertFalse("No registered default rulesets!", registeredRuleSets.isEmpty());
+    /**
+     * Tests the additional default rulesets has been registered. For this test to work, the test plugin fragment must
+     * be installed.
+     * 
+     */
+    @Test
+    public void testAdditionalDefaultRuleSetsRegistered() throws RuleSetNotFoundException {
+        final Collection<RuleSet> registeredRuleSets = PMDPlugin.getDefault().getRuleSetManager().getDefaultRuleSets();
+        Assert.assertFalse("No registered default rulesets!", registeredRuleSets.isEmpty());
 
-    final RuleSetFactory factory = new RuleSetFactory();
-    RuleSet ruleSet = factory.createRuleSet("rulesets/extra1.xml");
-    Assert.assertTrue("RuleSet \"rulesets/extra1.xml\" has not been registered", ruleSetRegistered(ruleSet, registeredRuleSets));
+        final RuleSetFactory factory = new RuleSetFactory();
+        RuleSet ruleSet = factory.createRuleSet("rulesets/extra1.xml");
+        Assert.assertTrue("RuleSet \"rulesets/extra1.xml\" has not been registered",
+                ruleSetRegistered(ruleSet, registeredRuleSets));
 
-    ruleSet = factory.createRuleSet("rulesets/extra2.xml");
-    Assert.assertTrue("RuleSet \"rulesets/extra2.xml\" has not been registered", ruleSetRegistered(ruleSet, registeredRuleSets));
-  }
-
-  /**
-   * Tests the additional rulesets has been registered. For this test to
-   * work, the test plugin fragment must be installed.
-   * 
-   */
-  @Test
-  public void testAdditionalRuleSetsRegistered() throws RuleSetNotFoundException {
-    final Collection<RuleSet> registeredRuleSets = PMDPlugin.getDefault().getRuleSetManager().getRegisteredRuleSets();
-    Assert.assertFalse("No registered rulesets!", registeredRuleSets.isEmpty());
-
-    final RuleSetFactory factory = new RuleSetFactory();
-    RuleSet ruleSet = factory.createRuleSet("rulesets/extra1.xml");
-    Assert.assertTrue("RuleSet \"rulesets/extra1.xml\" has not been registered", ruleSetRegistered(ruleSet, registeredRuleSets));
-
-    ruleSet = factory.createRuleSet("rulesets/extra2.xml");
-    Assert.assertTrue("RuleSet \"rulesets/extra2.xml\" has not been registered", ruleSetRegistered(ruleSet, registeredRuleSets));
-  }
-
-  /**
-   * test if a ruleset is registered
-   * 
-   * @param ruleSet
-   * @param set
-   * @return true if OK
-   */
-  private boolean ruleSetRegistered(final RuleSet ruleSet, final Collection<RuleSet> set) {
-    boolean registered = false;
-
-    final Iterator<RuleSet> i = set.iterator();
-    while (i.hasNext() && !registered) {
-      final RuleSet registeredRuleSet = i.next();
-      registered = registeredRuleSet.getName().equals(ruleSet.getName());
+        ruleSet = factory.createRuleSet("rulesets/extra2.xml");
+        Assert.assertTrue("RuleSet \"rulesets/extra2.xml\" has not been registered",
+                ruleSetRegistered(ruleSet, registeredRuleSets));
     }
 
-    return registered;
-  }
+    /**
+     * Tests the additional rulesets has been registered. For this test to work, the test plugin fragment must be
+     * installed.
+     * 
+     */
+    @Test
+    public void testAdditionalRuleSetsRegistered() throws RuleSetNotFoundException {
+        final Collection<RuleSet> registeredRuleSets = PMDPlugin.getDefault().getRuleSetManager()
+                .getRegisteredRuleSets();
+        Assert.assertFalse("No registered rulesets!", registeredRuleSets.isEmpty());
+
+        final RuleSetFactory factory = new RuleSetFactory();
+        RuleSet ruleSet = factory.createRuleSet("rulesets/extra1.xml");
+        Assert.assertTrue("RuleSet \"rulesets/extra1.xml\" has not been registered",
+                ruleSetRegistered(ruleSet, registeredRuleSets));
+
+        ruleSet = factory.createRuleSet("rulesets/extra2.xml");
+        Assert.assertTrue("RuleSet \"rulesets/extra2.xml\" has not been registered",
+                ruleSetRegistered(ruleSet, registeredRuleSets));
+    }
+
+    /**
+     * test if a ruleset is registered
+     * 
+     * @param ruleSet
+     * @param set
+     * @return true if OK
+     */
+    private boolean ruleSetRegistered(final RuleSet ruleSet, final Collection<RuleSet> set) {
+        boolean registered = false;
+
+        final Iterator<RuleSet> i = set.iterator();
+        while (i.hasNext() && !registered) {
+            final RuleSet registeredRuleSet = i.next();
+            registered = registeredRuleSet.getName().equals(ruleSet.getName());
+        }
+
+        return registered;
+    }
 }
