@@ -19,10 +19,7 @@ import net.sourceforge.pmd.eclipse.ui.views.PriorityFilter;
 public class PriorityUtil {
 
 	private static PriorityFilter priorityFilter = new PriorityFilter();
-	static {
-		UISettings.currentPriorities(true);
-	}
-
+	
 	private PriorityUtil() {
 	}
 

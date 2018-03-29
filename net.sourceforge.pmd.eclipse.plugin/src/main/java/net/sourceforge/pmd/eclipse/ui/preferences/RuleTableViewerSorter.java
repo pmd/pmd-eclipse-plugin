@@ -148,9 +148,9 @@ public class RuleTableViewerSorter extends ViewerSorter {
     /**
      * @return Returns the comparator.
      */
-//    public Comparator<Rule> getComparator() {
-//        return comparator;
-//    }
+    public Comparator<Rule> getComparator() {
+        return comparator;
+    }
 
     /**
      * Set a comparator. If the same comparator is already set, then change the

@@ -1,15 +1,11 @@
 
 package net.sourceforge.pmd.eclipse.ui.views.actions;
 
-import org.eclipse.core.resources.IFile;
+import org.apache.log4j.Logger;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.IEditorPart;
-import org.eclipse.ui.IEditorReference;
-import org.eclipse.ui.IWorkbenchPart;
-import org.eclipse.ui.PlatformUI;
 
 import name.herlin.command.CommandException;
 import net.sourceforge.pmd.RulePriority;
@@ -34,6 +30,7 @@ public class PriorityFilterAction extends Action {
     private ViolationOverview overviewView;
     private PriorityFilter priorityFilter;
     private final RulePriority priority;
+    private static final Logger LOG = Logger.getLogger(PriorityFilterAction.class);
 
     private PriorityFilterAction(ViewerFilter[] filters, RulePriority thePriority) {
         priority = thePriority;
@@ -165,7 +162,7 @@ public class PriorityFilterAction extends Action {
         try {
 			ReviewCodeCmd.runCodeReviewOnFiles(PMDPlugin.getDefault().getOpenFiles());
 		} catch (CommandException e) {
-			Log.error(e);
+			LOG.error(e);
 		}
     }
 
