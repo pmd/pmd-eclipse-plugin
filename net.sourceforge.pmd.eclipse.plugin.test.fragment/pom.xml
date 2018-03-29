@@ -12,4 +12,36 @@
   <artifactId>net.sourceforge.pmd.eclipse.plugin.test.fragment</artifactId>
   <packaging>eclipse-plugin</packaging>
 
+  <build>
+    <plugins>
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-checkstyle-plugin</artifactId>
+            <version>3.0.0</version>
+            <executions>
+                <execution>
+                    <id>checkstyle-check</id>
+                    <phase>verify</phase>
+                    <goals>
+                      <goal>check</goal>
+                    </goals>
+                </execution>
+            </executions>
+            <dependencies>
+                <dependency>
+                    <groupId>com.puppycrawl.tools</groupId>
+                    <artifactId>checkstyle</artifactId>
+                    <version>8.8</version>
+                </dependency>
+            </dependencies>
+            <configuration>
+                <configLocation>${basedir}/../pmd-checkstyle-config.xml</configLocation>
+                <includeTestSourceDirectory>true</includeTestSourceDirectory>
+                <sourceDirectories>
+                    <sourceDirectory>${project.build.sourceDirectory}</sourceDirectory>
+                </sourceDirectories>
+            </configuration>
+        </plugin>
+    </plugins>
+  </build>
 </project>
