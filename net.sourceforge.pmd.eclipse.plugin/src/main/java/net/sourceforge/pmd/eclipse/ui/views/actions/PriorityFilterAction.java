@@ -1,17 +1,26 @@
 
 package net.sourceforge.pmd.eclipse.ui.views.actions;
 
-import net.sourceforge.pmd.RulePriority;
-import net.sourceforge.pmd.eclipse.plugin.UISettings;
-import net.sourceforge.pmd.eclipse.ui.priority.PriorityDescriptor;
-import net.sourceforge.pmd.eclipse.ui.views.PriorityFilter;
-import net.sourceforge.pmd.eclipse.ui.views.ViolationOutline;
-import net.sourceforge.pmd.eclipse.ui.views.ViolationOverview;
-
+import org.eclipse.core.resources.IFile;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IEditorReference;
+import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.PlatformUI;
+
+import name.herlin.command.CommandException;
+import net.sourceforge.pmd.RulePriority;
+import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
+import net.sourceforge.pmd.eclipse.plugin.UISettings;
+import net.sourceforge.pmd.eclipse.runtime.cmd.ReviewCodeCmd;
+import net.sourceforge.pmd.eclipse.ui.priority.PriorityDescriptor;
+import net.sourceforge.pmd.eclipse.ui.views.PriorityFilter;
+import net.sourceforge.pmd.eclipse.ui.views.ViolationOutline;
+import net.sourceforge.pmd.eclipse.ui.views.ViolationOverview;
+import scala.tools.jline_embedded.internal.Log;
 
 /**
  * Filters elements by the Marker priorities
@@ -151,6 +160,13 @@ public class PriorityFilterAction extends Action {
             outlineView.refresh();
         else if (overviewView != null)
             overviewView.refresh();
+        
+        /* Get all the opened files and tell them to run a "review code" on the file */
+        try {
+			ReviewCodeCmd.runCodeReviewOnFiles(PMDPlugin.getDefault().getOpenFiles());
+		} catch (CommandException e) {
+			Log.error(e);
+		}
     }
 
 }
