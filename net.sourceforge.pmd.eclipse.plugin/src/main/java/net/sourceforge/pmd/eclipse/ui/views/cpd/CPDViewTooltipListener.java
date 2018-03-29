@@ -38,8 +38,6 @@ package net.sourceforge.pmd.eclipse.ui.views.cpd;
 
 import java.util.StringTokenizer;
 
-import net.sourceforge.pmd.cpd.Match;
-
 import org.eclipse.jface.viewers.TreeNode;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
@@ -52,6 +50,8 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
+
+import net.sourceforge.pmd.cpd.Match;
 
 /**
  * This class is created for showing the source code of a tablerow via a

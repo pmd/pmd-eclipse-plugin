@@ -343,7 +343,7 @@ public abstract class AbstractStructureInspectorPage extends Page
                     methodList.add((ASTMethodDeclaration) m);
                 }
             }
-            Collections.sort(methodList, ASTUtil.MethodComparator);
+            Collections.sort(methodList, ASTUtil.METHOD_COMPARATOR);
         } catch (PMDException pmde) {
             logError(StringKeys.ERROR_PMD_EXCEPTION + toString(), pmde);
         }

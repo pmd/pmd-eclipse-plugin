@@ -2,16 +2,9 @@
 package net.sourceforge.pmd.eclipse.ui.views.actions;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
-import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
-import net.sourceforge.pmd.eclipse.runtime.PMDRuntimeConstants;
-import net.sourceforge.pmd.eclipse.runtime.builder.MarkerUtil;
-import net.sourceforge.pmd.eclipse.runtime.preferences.IPreferences;
-import net.sourceforge.pmd.util.StringUtil;
-
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResource;
@@ -25,6 +18,10 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.texteditor.ITextEditor;
+
+import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
+import net.sourceforge.pmd.eclipse.runtime.PMDRuntimeConstants;
+import net.sourceforge.pmd.eclipse.runtime.builder.MarkerUtil;
 
 public class MarkerMenuFiller extends ContributionItem {
 
@@ -77,8 +74,9 @@ public class MarkerMenuFiller extends ContributionItem {
 
         for (final IMarker marker : markers) {
             String ruleName = marker.getAttribute(PMDRuntimeConstants.KEY_MARKERATT_RULENAME, "");
-            if (StringUtil.isEmpty(ruleName))
+            if (StringUtils.isBlank(ruleName)) {
                 continue;
+            }
 
             MenuItem menuItem = new MenuItem(menu, SWT.PUSH, index);
             menuItem.setText("Disable rule: " + ruleName);

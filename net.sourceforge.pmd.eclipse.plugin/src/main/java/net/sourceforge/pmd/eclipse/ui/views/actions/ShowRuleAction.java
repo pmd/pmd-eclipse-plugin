@@ -1,15 +1,15 @@
 
 package net.sourceforge.pmd.eclipse.ui.views.actions;
 
+import org.eclipse.core.resources.IMarker;
+import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.swt.widgets.Shell;
+
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.runtime.builder.MarkerUtil;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
 import net.sourceforge.pmd.eclipse.ui.preferences.RuleDialog;
-
-import org.eclipse.core.resources.IMarker;
-import org.eclipse.jface.viewers.TableViewer;
-import org.eclipse.swt.widgets.Shell;
 
 /**
  * Implements the call of the rule dialog to show rule data

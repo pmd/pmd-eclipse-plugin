@@ -3,6 +3,7 @@ package net.sourceforge.pmd.eclipse.ui.views.dataflow;
 
 import java.util.Iterator;
 
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
@@ -28,7 +29,6 @@ import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
 import net.sourceforge.pmd.eclipse.ui.views.AbstractStructureInspectorPage;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.rule.errorprone.DataflowAnomalyAnalysisRule;
-import net.sourceforge.pmd.util.StringUtil;
 
 import name.herlin.command.CommandException;
 
@@ -124,7 +124,8 @@ public class DataflowViewPage extends AbstractStructureInspectorPage implements 
         isTableRefreshed = false;
 
         GridLayout mainLayout = new GridLayout(2, true);
-        mainLayout.horizontalSpacing = mainLayout.verticalSpacing = 7;
+        mainLayout.horizontalSpacing = 7;
+        mainLayout.verticalSpacing = 7;
         mainLayout.marginWidth = 3;
         mainLayout.marginHeight = 3;
         dfaFrame.setLayout(mainLayout);
@@ -204,12 +205,14 @@ public class DataflowViewPage extends AbstractStructureInspectorPage implements 
     public void selectionChanged(SelectionChangedEvent event) {
 
         RuleViolation violation = selectedViolationFrom(event);
-        if (violation == null)
+        if (violation == null) {
             return;
+        }
 
         String varName = violation.getVariableName();
-        if (StringUtil.isEmpty(varName))
+        if (StringUtils.isBlank(varName)) {
             return;
+        }
 
         int beginLine = violation.getBeginLine();
         int endLine = violation.getEndLine();

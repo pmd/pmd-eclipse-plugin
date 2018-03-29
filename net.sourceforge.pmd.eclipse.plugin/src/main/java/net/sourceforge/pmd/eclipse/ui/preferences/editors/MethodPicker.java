@@ -74,7 +74,7 @@ public class MethodPicker extends Composite {
 
         methodList.setEnabled(true);
         methods = cls.getMethods();
-        Arrays.sort(methods, Util.MethodNameComparator);
+        Arrays.sort(methods, Util.METHOD_NAME_COMPARATOR);
         String[] items = new String[methods.length];
         for (int i = 0; i < methods.length; i++) {
             items[i] = Util.signatureFor(methods[i], unwantedPrefixes);

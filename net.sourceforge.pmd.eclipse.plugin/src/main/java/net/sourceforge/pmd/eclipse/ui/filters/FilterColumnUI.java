@@ -21,20 +21,20 @@ public interface FilterColumnUI {
         }
     };
 
-    ItemFieldAccessor<String, FilterHolder> PMD_ACCESSOR = new ItemFieldAccessorAdapter<String, FilterHolder>(Util.compStr) {
+    ItemFieldAccessor<String, FilterHolder> PMD_ACCESSOR = new ItemFieldAccessorAdapter<String, FilterHolder>(Util.COMP_STR) {
         public String valueFor(FilterHolder holder) {
             return holder.forPMD ? "Y" : "";
         }
     };
 
-    ItemFieldAccessor<String, FilterHolder> CPD_ACCESSOR = new ItemFieldAccessorAdapter<String, FilterHolder>(Util.compStr) {
+    ItemFieldAccessor<String, FilterHolder> CPD_ACCESSOR = new ItemFieldAccessorAdapter<String, FilterHolder>(Util.COMP_STR) {
         public String valueFor(FilterHolder holder) {
             return holder.forCPD ? "Y" : "";
         }
     };
 
     ItemFieldAccessor<String, FilterHolder> PATTERN_ACCESSOR = new ItemFieldAccessorAdapter<String, FilterHolder>(
-            Util.compStr) {
+            Util.COMP_STR) {
         public String valueFor(FilterHolder holder) {
             return holder.pattern;
         }

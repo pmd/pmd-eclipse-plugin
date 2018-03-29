@@ -1,17 +1,17 @@
 
 package net.sourceforge.pmd.eclipse.ui.views.actions;
 
+import org.eclipse.jface.action.Action;
+import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.viewers.ViewerFilter;
+import org.eclipse.swt.widgets.Display;
+
 import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.eclipse.plugin.UISettings;
 import net.sourceforge.pmd.eclipse.ui.priority.PriorityDescriptor;
 import net.sourceforge.pmd.eclipse.ui.views.PriorityFilter;
 import net.sourceforge.pmd.eclipse.ui.views.ViolationOutline;
 import net.sourceforge.pmd.eclipse.ui.views.ViolationOverview;
-
-import org.eclipse.jface.action.Action;
-import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.jface.viewers.ViewerFilter;
-import org.eclipse.swt.widgets.Display;
 
 /**
  * Filters elements by the Marker priorities
@@ -62,8 +62,9 @@ public class PriorityFilterAction extends Action {
     private void setFilterFrom(ViewerFilter[] filters) {
 
         for (Object filter : filters) {
-            if (filter instanceof PriorityFilter)
+            if (filter instanceof PriorityFilter) {
                 priorityFilter = (PriorityFilter) filter;
+            }
         }
     }
 
@@ -147,10 +148,11 @@ public class PriorityFilterAction extends Action {
             priorityFilter.removePriorityFromList(priority.getPriority());
         }
 
-        if (outlineView != null)
+        if (outlineView != null) {
             outlineView.refresh();
-        else if (overviewView != null)
+        } else if (overviewView != null) {
             overviewView.refresh();
+        }
     }
 
 }

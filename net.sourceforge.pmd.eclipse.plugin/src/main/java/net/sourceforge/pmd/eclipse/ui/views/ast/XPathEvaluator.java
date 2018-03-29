@@ -24,7 +24,7 @@ import net.sourceforge.pmd.lang.rule.XPathRule;
  */
 public class XPathEvaluator {
 
-    public static final XPathEvaluator instance = new XPathEvaluator();
+    public static final XPathEvaluator INSTANCE = new XPathEvaluator();
 
     private XPathEvaluator() {
     }

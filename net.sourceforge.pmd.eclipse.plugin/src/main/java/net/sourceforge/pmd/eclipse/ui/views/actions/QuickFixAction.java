@@ -1,7 +1,5 @@
-package net.sourceforge.pmd.eclipse.ui.views.actions;
 
-import net.sourceforge.pmd.eclipse.ui.PMDUiConstants;
-import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
+package net.sourceforge.pmd.eclipse.ui.views.actions;
 
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.jface.viewers.TableViewer;
@@ -12,6 +10,9 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.MarkerResolutionSelectionDialog;
 import org.eclipse.ui.ide.IDE;
+
+import net.sourceforge.pmd.eclipse.ui.PMDUiConstants;
+import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
 
 /**
  * Enables the QuickFix Action for a Marker Adapted from Phillipe Herlin
@@ -29,26 +30,36 @@ public class QuickFixAction extends AbstractViolationSelectionAction {
         super(viewer);
     }
 
- 	protected String textId() { return StringKeys.VIEW_ACTION_QUICKFIX; }
- 	
- 	protected String imageId() { return PMDUiConstants.ICON_BUTTON_QUICKFIX; }
-    
-    protected String tooltipMsgId() { return StringKeys.VIEW_TOOLTIP_QUICKFIX; }    
-    
+    protected String textId() {
+        return StringKeys.VIEW_ACTION_QUICKFIX;
+    }
+
+    protected String imageId() {
+        return PMDUiConstants.ICON_BUTTON_QUICKFIX;
+    }
+
+    protected String tooltipMsgId() {
+        return StringKeys.VIEW_TOOLTIP_QUICKFIX;
+    }
+
     /**
      * Checks, if the Markers support QuickFix
      * 
      * @return true, if the Marker(s) support QuickFix, false otherwise
      */
     public boolean hasQuickFix() {
-    	
-    	if (!hasSelections()) return false;
-    	        
+
+        if (!hasSelections()) {
+            return false;
+        }
+
         IMarkerHelpRegistry registry = IDE.getMarkerHelpRegistry();
-        
+
         // must have resolutions for all of them to be valid
         for (IMarker marker : getSelectedViolations()) {
-            if (!registry.hasResolutions(marker)) return false;
+            if (!registry.hasResolutions(marker)) {
+                return false;
+            }
         }
 
         return true;
@@ -63,7 +74,8 @@ public class QuickFixAction extends AbstractViolationSelectionAction {
         // TODO handle multiple selections
         IMarkerResolution[] resolutions = IDE.getMarkerHelpRegistry().getResolutions(selectedMarkers[0]);
         if (resolutions.length != 0) {
-            MarkerResolutionSelectionDialog dialog = new MarkerResolutionSelectionDialog(workbench.getActiveWorkbenchWindow().getShell(), resolutions);
+            MarkerResolutionSelectionDialog dialog = new MarkerResolutionSelectionDialog(
+                    workbench.getActiveWorkbenchWindow().getShell(), resolutions);
             if (dialog.open() == Window.OK) {
                 Object[] result = dialog.getResult();
                 if ((result != null) && (result.length > 0)) {

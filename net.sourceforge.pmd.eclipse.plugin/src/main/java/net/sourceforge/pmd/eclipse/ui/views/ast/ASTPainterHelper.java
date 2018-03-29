@@ -3,19 +3,19 @@ package net.sourceforge.pmd.eclipse.ui.views.ast;
 
 import java.util.List;
 
-import net.sourceforge.pmd.lang.ast.AbstractNode;
-import net.sourceforge.pmd.lang.java.ast.ASTBooleanLiteral;
-import net.sourceforge.pmd.lang.java.ast.Comment;
-import net.sourceforge.pmd.lang.java.ast.JavadocElement;
-import net.sourceforge.pmd.util.ClassUtil;
-import net.sourceforge.pmd.util.StringUtil;
-
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.TextLayout;
 import org.eclipse.swt.graphics.TextStyle;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.TreeItem;
+
+import net.sourceforge.pmd.lang.ast.AbstractNode;
+import net.sourceforge.pmd.lang.java.ast.ASTBooleanLiteral;
+import net.sourceforge.pmd.lang.java.ast.Comment;
+import net.sourceforge.pmd.lang.java.ast.JavadocElement;
+import net.sourceforge.pmd.util.ClassUtil;
 
 /**
  * 
@@ -57,15 +57,17 @@ public class ASTPainterHelper {
 
         List<String> lines = CommentUtil.multiLinesIn(comment.getImage());
         String first = lines.get(0);
-        if (StringUtil.isNotEmpty(first))
+        if (StringUtils.isNotBlank(first)) {
             sb.append(first);
+        }
 
         if (lines.size() == 1) {
             return sb.toString();
         } else {
             for (String line : lines) {
-                if (StringUtil.isEmpty(line))
+                if (StringUtils.isBlank(line)) {
                     continue;
+                }
                 sb.append('|').append(line);
             }
         }
@@ -95,8 +97,9 @@ public class ASTPainterHelper {
 
     private String textFor(AbstractNode node) {
         String txt = node.getImage();
-        if (StringUtil.isNotEmpty(txt))
+        if (StringUtils.isNotBlank(txt)) {
             return txt;
+        }
 
         // booleans don't have image values..convert them
         if (node instanceof ASTBooleanLiteral) {

@@ -5,13 +5,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
-import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
-import net.sourceforge.pmd.eclipse.runtime.builder.MarkerUtil;
-import net.sourceforge.pmd.eclipse.runtime.preferences.IPreferences;
-import net.sourceforge.pmd.eclipse.ui.PMDUiConstants;
-import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
-
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspace;
@@ -20,6 +13,13 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.viewers.TableViewer;
+
+import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
+import net.sourceforge.pmd.eclipse.runtime.builder.MarkerUtil;
+import net.sourceforge.pmd.eclipse.runtime.preferences.IPreferences;
+import net.sourceforge.pmd.eclipse.ui.PMDUiConstants;
+import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
 
 public class DisableRuleAction extends AbstractViolationSelectionAction {
 
@@ -65,13 +65,15 @@ public class DisableRuleAction extends AbstractViolationSelectionAction {
     public boolean hasActiveRules() {
 
         final IMarker[] markers = getSelectedViolations();
-        if (markers == null)
+        if (markers == null) {
             return false;
+        }
 
         List<Rule> rules = MarkerUtil.rulesFor(markers);
         for (Rule rule : rules) {
-            if (preferences.isActive(rule.getName()))
+            if (preferences.isActive(rule.getName())) {
                 return true;
+            }
         }
 
         return false;
@@ -83,8 +85,9 @@ public class DisableRuleAction extends AbstractViolationSelectionAction {
     public void run() {
 
         final IMarker[] markers = getSelectedViolations();
-        if (markers == null)
+        if (markers == null) {
             return;
+        }
 
         runWith(markers, preferences, true);
     }
@@ -98,8 +101,9 @@ public class DisableRuleAction extends AbstractViolationSelectionAction {
                 public void run(IProgressMonitor monitor) throws CoreException {
                     Collection<Rule> rules = MarkerUtil.rulesFor(markers);
                     disableRulesFor(rules, preferences);
-                    if (removeViolations)
+                    if (removeViolations) {
                         removeViolationsOf(rules, MarkerUtil.commonProjectsOf(markers));
+                    }
                 }
             }, null);
         } catch (CoreException ce) {
