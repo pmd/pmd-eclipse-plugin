@@ -1,17 +1,22 @@
 
 package net.sourceforge.pmd.eclipse.ui.views.actions;
 
+import org.apache.log4j.Logger;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.swt.widgets.Display;
 
 import net.sourceforge.pmd.RulePriority;
+import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.plugin.UISettings;
+import net.sourceforge.pmd.eclipse.runtime.cmd.ReviewCodeCmd;
 import net.sourceforge.pmd.eclipse.ui.priority.PriorityDescriptor;
 import net.sourceforge.pmd.eclipse.ui.views.PriorityFilter;
 import net.sourceforge.pmd.eclipse.ui.views.ViolationOutline;
 import net.sourceforge.pmd.eclipse.ui.views.ViolationOverview;
+
+import name.herlin.command.CommandException;
 
 /**
  * Filters elements by the Marker priorities
@@ -25,6 +30,7 @@ public class PriorityFilterAction extends Action {
     private ViolationOverview overviewView;
     private PriorityFilter priorityFilter;
     private final RulePriority priority;
+    private static final Logger LOG = Logger.getLogger(PriorityFilterAction.class);
 
     private PriorityFilterAction(ViewerFilter[] filters, RulePriority thePriority) {
         priority = thePriority;
@@ -69,8 +75,7 @@ public class PriorityFilterAction extends Action {
     }
 
     /**
-     * Setup the Actions Look by giving the right Image, Text and ToolTip-Text
-     * to it, depending on its Priority
+     * Setup the Actions Look by giving the right Image, Text and ToolTip-Text to it, depending on its Priority
      */
     private void setupActionLook() {
         // ImageDescriptor image = null;
@@ -152,6 +157,13 @@ public class PriorityFilterAction extends Action {
             outlineView.refresh();
         } else if (overviewView != null) {
             overviewView.refresh();
+        }
+
+        /* Get all the opened files and tell them to run a "review code" on the file */
+        try {
+            ReviewCodeCmd.runCodeReviewOnFiles(PMDPlugin.getDefault().getOpenFiles());
+        } catch (CommandException e) {
+            LOG.error(e);
         }
     }
 
