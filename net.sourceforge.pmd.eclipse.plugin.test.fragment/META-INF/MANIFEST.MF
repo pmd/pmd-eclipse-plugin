@@ -5,4 +5,4 @@ Bundle-SymbolicName: net.sourceforge.pmd.eclipse.plugin.test.fragment;singleton:
 Bundle-Version: 4.0.16.qualifier
 Bundle-Vendor: PMD Development Team
 Fragment-Host: net.sourceforge.pmd.eclipse.plugin
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
