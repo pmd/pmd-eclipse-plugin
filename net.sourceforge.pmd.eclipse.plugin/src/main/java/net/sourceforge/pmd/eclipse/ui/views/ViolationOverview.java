@@ -64,7 +64,6 @@ import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.ViewPart;
 
-import name.herlin.command.CommandException;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.runtime.builder.MarkerUtil;
 import net.sourceforge.pmd.eclipse.runtime.cmd.DeleteMarkersCommand;
@@ -78,6 +77,8 @@ import net.sourceforge.pmd.eclipse.ui.model.RootRecord;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
 import net.sourceforge.pmd.eclipse.util.PriorityUtil;
 import net.sourceforge.pmd.util.NumericConstants;
+
+import name.herlin.command.CommandException;
 
 /**
  * A View for PMD-Violations, provides an Overview as well as statistical
