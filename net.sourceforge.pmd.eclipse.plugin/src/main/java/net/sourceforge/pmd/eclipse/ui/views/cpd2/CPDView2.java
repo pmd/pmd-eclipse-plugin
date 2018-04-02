@@ -9,12 +9,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 
-import net.sourceforge.pmd.cpd.Match;
-import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
-import net.sourceforge.pmd.eclipse.runtime.PMDRuntimeConstants;
-import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
-import net.sourceforge.pmd.util.StringUtil;
-
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeNode;
 import org.eclipse.jface.viewers.TreeNodeContentProvider;
@@ -38,6 +32,12 @@ import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.ViewPart;
 
+import net.sourceforge.pmd.cpd.Match;
+import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
+import net.sourceforge.pmd.eclipse.runtime.PMDRuntimeConstants;
+import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
+import net.sourceforge.pmd.util.StringUtil;
+
 /**
  * An updated view for Cut & Paste Detector that shows the results in a tree
  * table with the file matches as columns at the root level with actual code
@@ -60,11 +60,11 @@ public class CPDView2 extends ViewPart implements IPropertyListener {
     private Map<String, int[]> nameWidthsByName;
     private TreeColumn messageColumn; // we adjust the width of this one
 
-    private static final int SpanColumnWidth = 50;
+    private static final int SPAN_COLUMN_WIDTH = 50;
     private static final int MAX_MATCHES = 100;
-    private static final int xGap = 6;
-    private static final String TabEquivalent = "    "; // tab char == 4 spaces
-    public static final int SourceColumnIdx = 1;
+    private static final int X_GAP = 6;
+    private static final String TAB_EQUIVALENT = "    "; // tab char == 4 spaces
+    public static final int SOURCE_COLUMN_IDX = 1;
 
     private static List<Match> asList(Iterator<Match> matchIter) {
 
@@ -89,7 +89,7 @@ public class CPDView2 extends ViewPart implements IPropertyListener {
 
     public static String[] sourceLinesFrom(Match match, boolean trimLeadingWhitespace) {
 
-        final String text = match.getSourceCodeSlice().replaceAll("\t", TabEquivalent);
+        final String text = match.getSourceCodeSlice().replaceAll("\t", TAB_EQUIVALENT);
         final StringTokenizer lines = new StringTokenizer(text, "\n");
 
         List<String> sourceLines = new ArrayList<String>();
@@ -129,7 +129,7 @@ public class CPDView2 extends ViewPart implements IPropertyListener {
         resizeListener = new Listener() {
             public void handleEvent(Event event) {
                 int width = treeViewer.getTree().getBounds().width;
-                messageColumn.setWidth(width - SpanColumnWidth);
+                messageColumn.setWidth(width - SPAN_COLUMN_WIDTH);
                 captureColumnWidths();
                 treeViewer.refresh();
             }
@@ -139,8 +139,9 @@ public class CPDView2 extends ViewPart implements IPropertyListener {
     }
 
     public int widthOf(int columnIndex) {
-        if (columnWidths == null)
+        if (columnWidths == null) {
             captureColumnWidths();
+        }
         return columnWidths[columnIndex];
     }
 
@@ -206,8 +207,9 @@ public class CPDView2 extends ViewPart implements IPropertyListener {
 
     public int inColumn(Point point) {
 
-        if (columnWidths == null)
+        if (columnWidths == null) {
             return -1;
+        }
 
         int pos = 0;
 
@@ -243,7 +245,7 @@ public class CPDView2 extends ViewPart implements IPropertyListener {
             nameWidthsByName.put(name, new int[] { packageWidth, classWidth });
         }
 
-        int drawX = x + rightEdge - classWidth - xGap;
+        int drawX = x + rightEdge - classWidth - X_GAP;
         // Rectangle clipRect = new Rectangle(x, y, cellWidth, 24);
 
         gc.setForeground(classColor);
@@ -251,7 +253,7 @@ public class CPDView2 extends ViewPart implements IPropertyListener {
         gc.drawText(parts[1], drawX, y + descent, false);
         // gc.setClipping((Rectangle)null);
 
-        drawX = x + rightEdge - classWidth - packageWidth - xGap;
+        drawX = x + rightEdge - classWidth - packageWidth - X_GAP;
         // clipRect.x = drawX;
         // clipRect.width = packageWidth;
 
@@ -265,8 +267,9 @@ public class CPDView2 extends ViewPart implements IPropertyListener {
 
         Listener paintListener = new Listener() {
             public void handleEvent(Event event) {
-                if (event.index != SourceColumnIdx)
+                if (event.index != SOURCE_COLUMN_IDX) {
                     return;
+                }
 
                 Object item = ((TreeNode) event.item.getData()).getValue();
 
@@ -278,20 +281,21 @@ public class CPDView2 extends ViewPart implements IPropertyListener {
                 }
 
                 int descent = event.gc.getFontMetrics().getDescent();
-                int colWidth = widthOf(SourceColumnIdx);
+                int colWidth = widthOf(SOURCE_COLUMN_IDX);
                 int cellWidth = colWidth / names.length;
 
                 for (int i = 0; i < names.length; i++) {
                     int rightEdge = colWidth - (cellWidth * i);
                     paintName(event.gc, event.x, event.y, names[i], rightEdge, descent, cellWidth);
                 }
-            };
+            }
         };
 
         Listener measureListener = new Listener() {
             public void handleEvent(Event event) {
-                if (event.index != SourceColumnIdx)
+                if (event.index != SOURCE_COLUMN_IDX) {
                     return;
+                }
 
                 event.width = 400;
                 event.height = 24;
@@ -312,7 +316,7 @@ public class CPDView2 extends ViewPart implements IPropertyListener {
         // the "+"-sign for expanding packages
         TreeColumn plusColumn = new TreeColumn(tree, SWT.RIGHT);
         plusColumn.setText("Spans");
-        plusColumn.setWidth(SpanColumnWidth);
+        plusColumn.setWidth(SPAN_COLUMN_WIDTH);
         // plusColumn.setResizable(false);
 
         // shows the source
@@ -358,8 +362,7 @@ public class CPDView2 extends ViewPart implements IPropertyListener {
             for (Match match : asList(matches)) {
 
                 // create a treenode for the match and add to the list
-                TreeNode matchNode = new TreeNode(match); // NOPMD by Sven on
-                                                          // 02.11.06 11:27
+                TreeNode matchNode = new TreeNode(match);
                 elements.add(matchNode);
 
                 String[] lines = sourceLinesFrom(match, true);

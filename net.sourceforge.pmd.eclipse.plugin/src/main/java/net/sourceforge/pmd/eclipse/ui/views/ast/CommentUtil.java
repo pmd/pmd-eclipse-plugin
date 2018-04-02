@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import net.sourceforge.pmd.util.StringUtil;
+import org.apache.commons.lang3.StringUtils;
 
 public class CommentUtil {
 
@@ -19,8 +19,9 @@ public class CommentUtil {
 
     public static String wordAfter(String text, int position) {
 
-        if (position >= text.length())
+        if (position >= text.length()) {
             return null;
+        }
 
         int end = ++position;
         char ch = text.charAt(end);
@@ -35,8 +36,9 @@ public class CommentUtil {
     public static Map<String, Integer> javadocTagsIn(String comment) {
 
         int atPos = comment.indexOf('@');
-        if (atPos < 0)
+        if (atPos < 0) {
             return Collections.emptyMap();
+        }
 
         Map<String, Integer> tags = new HashMap<String, Integer>();
         while (atPos >= 0) {
@@ -98,18 +100,21 @@ public class CommentUtil {
 
         int firstNonEmpty = 0;
         for (; firstNonEmpty < lines.size(); firstNonEmpty++) {
-            if (StringUtil.isNotEmpty(lines.get(firstNonEmpty)))
+            if (StringUtils.isNotBlank(lines.get(firstNonEmpty))) {
                 break;
+            }
         }
 
         // all of them empty?
-        if (firstNonEmpty == lines.size())
+        if (firstNonEmpty == lines.size()) {
             return Collections.emptyList();
+        }
 
         int lastNonEmpty = lines.size() - 1;
         for (; lastNonEmpty > 0; lastNonEmpty--) {
-            if (StringUtil.isNotEmpty(lines.get(lastNonEmpty)))
+            if (StringUtils.isNotBlank(lines.get(lastNonEmpty))) {
                 break;
+            }
         }
 
         List<String> filtered = new ArrayList<String>();

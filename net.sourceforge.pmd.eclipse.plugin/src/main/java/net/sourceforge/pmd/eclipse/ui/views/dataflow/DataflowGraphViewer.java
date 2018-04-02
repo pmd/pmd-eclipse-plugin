@@ -7,13 +7,6 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.dfa.DataFlowNode;
-import net.sourceforge.pmd.lang.dfa.VariableAccess;
-import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
-import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
-import net.sourceforge.pmd.eclipse.util.IOUtil;
-
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.graphics.Color;
@@ -21,6 +14,13 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+
+import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
+import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
+import net.sourceforge.pmd.eclipse.util.IOUtil;
+import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.dfa.DataFlowNode;
+import net.sourceforge.pmd.lang.dfa.VariableAccess;
 
 /**
  * Viewer for the DataFlowGraph, contains the DataflowGraphTable
@@ -57,8 +57,10 @@ public class DataflowGraphViewer extends Composite {
         table = initTable(this, style);
 
         GridLayout mainLayout = new GridLayout(1, false);
-        mainLayout.marginHeight = mainLayout.marginWidth = 0;
-        mainLayout.horizontalSpacing = mainLayout.verticalSpacing = 0;
+        mainLayout.marginHeight = 0;
+        mainLayout.marginWidth = 0;
+        mainLayout.horizontalSpacing = 0;
+        mainLayout.verticalSpacing = 0;
         setLayout(mainLayout);
     }
 
@@ -90,11 +92,9 @@ public class DataflowGraphViewer extends Composite {
 
         Display display = parent.getDisplay();
         // set the Colors
-        bgColor = display.getSystemColor(SWT.COLOR_WHITE); // new Color(null,
-                                                           // 255, 255, 255);
+        bgColor = display.getSystemColor(SWT.COLOR_WHITE); // new Color(null, 255, 255, 255);
         lineColor = new Color(null, 192, 192, 192);
-        textColor = display.getSystemColor(SWT.COLOR_BLACK); // new Color(null,
-                                                             // 0, 0, 0);
+        textColor = display.getSystemColor(SWT.COLOR_BLACK); // new Color(null, 0, 0, 0);
         dfaTable.setColors(textColor, bgColor, lineColor);
 
         return dfaTable;
@@ -135,8 +135,9 @@ public class DataflowGraphViewer extends Composite {
     private String nextNodeNumberStringFrom(DataFlowNode dfNode) {
 
         List<DataFlowNode> dfNodes = dfNode.getChildren();
-        if (dfNodes.isEmpty())
+        if (dfNodes.isEmpty()) {
             return "";
+        }
 
         StringBuilder sb = new StringBuilder(Integer.toString(dfNodes.get(0).getIndex()));
 
@@ -149,8 +150,9 @@ public class DataflowGraphViewer extends Composite {
     private String referenceStringFrom(DataFlowNode dfNode) {
 
         List<VariableAccess> access = dfNode.getVariableAccess();
-        if (access == null)
+        if (access == null) {
             return null;
+        }
 
         StringBuilder exp = new StringBuilder();
         for (int k = 0; k < access.size(); k++) {

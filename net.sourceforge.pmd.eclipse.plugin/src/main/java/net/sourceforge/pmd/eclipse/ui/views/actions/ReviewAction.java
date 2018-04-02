@@ -9,12 +9,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.text.MessageFormat;
 import java.util.Date;
 
-import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
-import net.sourceforge.pmd.eclipse.runtime.PMDRuntimeConstants;
-import net.sourceforge.pmd.eclipse.runtime.builder.MarkerUtil;
-import net.sourceforge.pmd.eclipse.ui.PMDUiConstants;
-import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
-
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
@@ -31,6 +25,12 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
+import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
+import net.sourceforge.pmd.eclipse.runtime.PMDRuntimeConstants;
+import net.sourceforge.pmd.eclipse.runtime.builder.MarkerUtil;
+import net.sourceforge.pmd.eclipse.ui.PMDUiConstants;
+import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
+
 /**
  * Mark a violation as reviewed
  *
@@ -39,7 +39,7 @@ import org.eclipse.swt.widgets.Shell;
  */
 public class ReviewAction extends AbstractViolationSelectionAction {
 
-    private static final Logger log = Logger.getLogger(ReviewAction.class);
+    private static final Logger LOG = Logger.getLogger(ReviewAction.class);
     private IProgressMonitor monitor;
 
     /**
@@ -66,8 +66,9 @@ public class ReviewAction extends AbstractViolationSelectionAction {
      */
     public void run() {
         final IMarker[] markers = getSelectedViolations();
-        if (markers == null)
+        if (markers == null) {
             return;
+        }
 
         final boolean reviewPmdStyle = loadPreferences().isReviewPmdStyleEnabled();
 
@@ -154,13 +155,13 @@ public class ReviewAction extends AbstractViolationSelectionAction {
 
         IJavaModelStatus status = jme.getJavaModelStatus();
         PMDPlugin.getDefault().logError(status);
-        log.warn("Ignoring Java Model Exception : " + status.getMessage());
-        if (log.isDebugEnabled()) {
-            log.debug("   code : " + status.getCode());
-            log.debug("   severity : " + status.getSeverity());
+        LOG.warn("Ignoring Java Model Exception : " + status.getMessage());
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("   code : " + status.getCode());
+            LOG.debug("   severity : " + status.getSeverity());
             IJavaElement[] elements = status.getElements();
             for (int i = 0; i < elements.length; i++) {
-                log.debug("   element : " + elements[i].getElementName() + " (" + elements[i].getElementType() + ')');
+                LOG.debug("   element : " + elements[i].getElementName() + " (" + elements[i].getElementType() + ')');
             }
         }
     }

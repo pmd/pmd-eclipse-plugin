@@ -40,12 +40,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import net.sourceforge.pmd.cpd.Mark;
-import net.sourceforge.pmd.cpd.Match;
-import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
-import net.sourceforge.pmd.eclipse.runtime.PMDRuntimeConstants;
-import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
-
 import org.eclipse.jface.viewers.TreeNode;
 import org.eclipse.jface.viewers.TreeNodeContentProvider;
 import org.eclipse.jface.viewers.TreeViewer;
@@ -58,6 +52,12 @@ import org.eclipse.ui.IPropertyListener;
 import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.ViewPart;
+
+import net.sourceforge.pmd.cpd.Mark;
+import net.sourceforge.pmd.cpd.Match;
+import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
+import net.sourceforge.pmd.eclipse.runtime.PMDRuntimeConstants;
+import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
 
 /**
  * A class for showing the Copy / Paste Detection View.
@@ -118,12 +118,12 @@ public class CPDView extends ViewPart implements IPropertyListener {
         // the "+"-sign for expanding packages
         final TreeColumn plusColumn = new TreeColumn(tree, SWT.RIGHT);
         plusColumn.setWidth(20);
-  //      plusColumn.setResizable(false);
+        //      plusColumn.setResizable(false);
 
         // shows the image
         TreeColumn imageColumn = new TreeColumn(tree, SWT.CENTER);
         imageColumn.setWidth(20);
-  //      imageColumn.setResizable(false);
+        //      imageColumn.setResizable(false);
 
         // shows the message
         TreeColumn messageColumn = new TreeColumn(tree, SWT.LEFT);
@@ -177,7 +177,7 @@ public class CPDView extends ViewPart implements IPropertyListener {
                 // create the children of the match
                 TreeNode[] children = new TreeNode[match.getMarkCount()]; // NOPMD by Sven on 02.11.06 11:28
                 Iterator<Mark> entryIterator = match.getMarkSet().iterator();
-                for (int j=0; entryIterator.hasNext(); j++) {
+                for (int j = 0; entryIterator.hasNext(); j++) {
                     final Mark entry = entryIterator.next();
                     children[j] = new TreeNode(entry); // NOPMD by Sven on 02.11.06 11:28
                     children[j].setParent(matchNode);

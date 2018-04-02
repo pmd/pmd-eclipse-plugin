@@ -36,11 +36,6 @@
 
 package net.sourceforge.pmd.eclipse.ui.views.cpd;
 
-import net.sourceforge.pmd.cpd.Match;
-import net.sourceforge.pmd.cpd.TokenEntry;
-import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
-import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
-
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
@@ -57,6 +52,11 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.texteditor.ITextEditor;
+
+import net.sourceforge.pmd.cpd.Match;
+import net.sourceforge.pmd.cpd.TokenEntry;
+import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
+import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
 
 /**
  * 
@@ -107,8 +107,9 @@ public class CPDViewDoubleClickEventListener implements IDoubleClickListener {
 
         final IPath path = Path.fromOSString(entry.getTokenSrcID());
         final IFile file = ResourcesPlugin.getWorkspace().getRoot().getFileForLocation(path);
-        if (file == null)
+        if (file == null) {
             return;
+        }
 
         try {
             // open editor

@@ -52,10 +52,10 @@ public class RuleEditorView extends ViewPart
     protected static PMDPlugin plugin = PMDPlugin.getDefault();
 
     // columns shown in the rule treetable in the desired order
-    private static final RuleColumnDescriptor[] availableColumns = PMDPreferencePage2.AVAILABLE_COLUMNS;
+    private static final RuleColumnDescriptor[] AVAILABLE_COLUMNS = PMDPreferencePage2.AVAILABLE_COLUMNS;
 
     // last item in this list is the grouping used at startup
-    private static final Object[][] groupingChoices = PMDPreferencePage2.GROUPING_CHOICES;
+    private static final Object[][] GROUPING_CHOICES = PMDPreferencePage2.GROUPING_CHOICES;
 
     public RuleEditorView() {
 
@@ -68,7 +68,7 @@ public class RuleEditorView extends ViewPart
     @Override
     public void createPartControl(Composite parent) {
 
-        tableManager = new RuleTableManager("rules", availableColumns, PMDPlugin.getDefault().loadPreferences(), this);
+        tableManager = new RuleTableManager("rules", AVAILABLE_COLUMNS, PMDPlugin.getDefault().loadPreferences(), this);
         tableManager.modifyListener(this);
         tableManager.selectionListener(this);
 
@@ -89,7 +89,7 @@ public class RuleEditorView extends ViewPart
 
         // Create the controls (order is important !)
         Composite groupCombo = tableManager.buildGroupCombo(ruleSection, StringKeys.PREF_RULESET_RULES_GROUPED_BY,
-                groupingChoices);
+                GROUPING_CHOICES);
 
         Tree ruleTree = tableManager.buildRuleTreeViewer(ruleSection);
         tableManager.groupBy(null);
@@ -157,8 +157,9 @@ public class RuleEditorView extends ViewPart
         // TODO enhance to recognize default values
 
         for (Rule rule : selection.allRules()) {
-            if (newValue != null) { // non-reliable update behaviour, alternate
-                                    // trigger option - weird
+            if (newValue != null) {
+                // non-reliable update behaviour, alternate
+                // trigger option - weird
                 tableManager.changed(selection, desc, newValue);
                 // System.out.println("doing redraw");
             } else {
@@ -252,8 +253,9 @@ public class RuleEditorView extends ViewPart
 
     public void selection(RuleSelection selection) {
 
-        if (rulePropertyManagers == null)
+        if (rulePropertyManagers == null) {
             return;
+        }
 
         for (RulePropertyManager manager : rulePropertyManagers) {
             manager.manage(selection);

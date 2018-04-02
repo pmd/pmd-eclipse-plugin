@@ -36,12 +36,12 @@
 
 package net.sourceforge.pmd.eclipse.ui.views.actions;
 
-import net.sourceforge.pmd.eclipse.ui.PMDUiConstants;
+import org.eclipse.jface.action.Action;
+
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
+import net.sourceforge.pmd.eclipse.ui.PMDUiConstants;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
 import net.sourceforge.pmd.eclipse.ui.views.ViolationOverview;
-
-import org.eclipse.jface.action.Action;
 
 /**
  * 
@@ -59,8 +59,7 @@ public class ViolationPresentationTypeAction extends Action {
 
         setChecked(overview.getShowType() == type);
         switch (type) {
-        case ViolationOverview.SHOW_FILES_MARKERS: // we set Image and Text for
-                                                   // the Action
+        case ViolationOverview.SHOW_FILES_MARKERS: // we set Image and Text for the Action
             setImageDescriptor(PMDPlugin.getImageDescriptor(PMDUiConstants.ICON_BUTTON_FILEMARKERS));
             setText(AbstractPMDAction.getString(StringKeys.VIEW_MENU_FILEMARKERS));
             break;

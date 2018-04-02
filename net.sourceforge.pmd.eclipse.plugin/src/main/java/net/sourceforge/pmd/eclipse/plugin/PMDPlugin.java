@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.Layout;
@@ -42,6 +43,10 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IDecoratorManager;
+import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IEditorReference;
+import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
@@ -141,9 +146,8 @@ public class PMDPlugin extends AbstractUIPlugin {
     }
 
     /**
-     * Return the Java language version for the resources found within the
-     * specified project or null if it isn't a Java project or a Java version we
-     * don't support yet.
+     * Return the Java language version for the resources found within the specified project or null if it isn't a Java
+     * project or a Java version we don't support yet.
      * 
      * @param project
      * @return
@@ -214,8 +218,7 @@ public class PMDPlugin extends AbstractUIPlugin {
     /*
      * (non-Javadoc)
      * 
-     * @see org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework.
-     * BundleContext )
+     * @see org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework. BundleContext )
      */
     public void start(BundleContext context) throws Exception {
         super.start(context);
@@ -243,6 +246,25 @@ public class PMDPlugin extends AbstractUIPlugin {
         version = context.getBundle().getHeaders().get("Bundle-Version");
     }
 
+    /**
+     * Get a list of all the files that are open in eclipse currently
+     * 
+     * @return
+     */
+    public Set<IFile> getOpenFiles() {
+        Set<IFile> files = new HashSet<IFile>();
+        IEditorReference[] refs = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
+                .getEditorReferences();
+        if (refs.length > 0) {
+            final IWorkbenchPart part = refs[0].getPart(true);
+            IEditorPart[] editors = part.getSite().getPage().getEditors();
+            for (IEditorPart editor : editors) {
+                files.add((IFile) editor.getEditorInput().getAdapter(IFile.class));
+            }
+        }
+        return files;
+    }
+
     public void fileChangeListenerEnabled(boolean flag) {
 
         IWorkspace workspace = ResourcesPlugin.getWorkspace();
@@ -263,8 +285,7 @@ public class PMDPlugin extends AbstractUIPlugin {
     /*
      * (non-Javadoc)
      * 
-     * @see org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework.
-     * BundleContext )
+     * @see org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework. BundleContext )
      */
     public void stop(BundleContext context) throws Exception {
 
@@ -287,8 +308,7 @@ public class PMDPlugin extends AbstractUIPlugin {
     }
 
     /**
-     * Returns an image descriptor for the image file at the given plug-in
-     * relative path.
+     * Returns an image descriptor for the image file at the given plug-in relative path.
      *
      * @param path
      *            the path
@@ -534,8 +554,8 @@ public class PMDPlugin extends AbstractUIPlugin {
     }
 
     /**
-     * Register additional rulesets that may be provided by a fragment. Find
-     * extension points implementation and call them
+     * Register additional rulesets that may be provided by a fragment. Find extension points implementation and call
+     * them
      *
      */
     private void registerAdditionalRuleSets() {

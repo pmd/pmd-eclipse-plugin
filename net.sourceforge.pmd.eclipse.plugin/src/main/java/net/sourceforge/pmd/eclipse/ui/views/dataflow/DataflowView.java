@@ -1,13 +1,14 @@
+
 package net.sourceforge.pmd.eclipse.ui.views.dataflow;
+
+import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.part.IPage;
 
 import net.sourceforge.pmd.eclipse.ui.PMDUiConstants;
 import net.sourceforge.pmd.eclipse.ui.model.FileRecord;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
 import net.sourceforge.pmd.eclipse.ui.views.AbstractResourceView;
 import net.sourceforge.pmd.eclipse.ui.views.AbstractStructureInspectorPage;
-
-import org.eclipse.ui.IWorkbenchPart;
-import org.eclipse.ui.part.IPage;
 
 /**
  * A View that shows DataflowGraph and -Table as well as the Anomaly-List
@@ -16,16 +17,19 @@ import org.eclipse.ui.part.IPage;
  */
 public class DataflowView extends AbstractResourceView {
 
-    
-    protected String pageMessageId() { return StringKeys.VIEW_DATAFLOW_DEFAULT_TEXT; }
+    protected String pageMessageId() {
+        return StringKeys.VIEW_DATAFLOW_DEFAULT_TEXT;
+    }
 
-	@Override
-	protected String mementoFileId() { return PMDUiConstants.MEMENTO_DATAFLOW_FILE; }
-	
+    @Override
+    protected String mementoFileId() {
+        return PMDUiConstants.MEMENTO_DATAFLOW_FILE;
+    }
+
     /* @see org.eclipse.ui.part.PageBookView#doCreatePage(org.eclipse.ui.IWorkbenchPart) */
     @Override
     protected PageRec doCreatePage(IWorkbenchPart part) {
-    	
+
         FileRecord resourceRecord = getFileRecordFromWorkbenchPart(part);
         if (resourceRecord != null) {
             setupListener(resourceRecord);
@@ -41,16 +45,17 @@ public class DataflowView extends AbstractResourceView {
     }
 
     protected AbstractStructureInspectorPage getCurrentViewPage() {
-    	return getCurrentDataflowViewPage();
+        return getCurrentDataflowViewPage();
     }
-    
+
     /**
      * @return the currently displayed Page
      */
     private DataflowViewPage getCurrentDataflowViewPage() {
         IPage page = super.getCurrentPage();
-        if (!(page instanceof DataflowViewPage))
+        if (!(page instanceof DataflowViewPage)) {
             return null;
+        }
 
         return (DataflowViewPage) page;
     }

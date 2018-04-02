@@ -1,11 +1,6 @@
 
 package net.sourceforge.pmd.eclipse.ui.views.dataflow;
 
-import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
-import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
-import net.sourceforge.pmd.eclipse.ui.views.TableColumnSorter;
-
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
@@ -19,6 +14,11 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
+
+import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
+import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
+import net.sourceforge.pmd.eclipse.ui.views.TableColumnSorter;
 
 /**
  * Shows Dataflow anomalies
@@ -42,7 +42,8 @@ public class DataflowAnomalyTableViewer extends TableViewer {
         GridData tableData = new GridData(GridData.FILL_BOTH);
         table.setLayoutData(tableData);
         GridLayout tableLayout = new GridLayout(1, false);
-        tableLayout.horizontalSpacing = tableLayout.verticalSpacing = 0;
+        tableLayout.horizontalSpacing = 0;
+        tableLayout.verticalSpacing = 0;
         table.setLayout(tableLayout);
     }
 

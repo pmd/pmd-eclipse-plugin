@@ -38,13 +38,13 @@ package test;
 
 import java.util.Set;
 
+import org.eclipse.core.runtime.IStatus;
+
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetNotFoundException;
 import net.sourceforge.pmd.eclipse.core.IRuleSetsExtension;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
-
-import org.eclipse.core.runtime.IStatus;
 
 /**
  * Sample of an RuleSets extension.

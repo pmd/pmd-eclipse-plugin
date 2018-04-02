@@ -65,6 +65,7 @@ import net.sourceforge.pmd.eclipse.runtime.PMDRuntimeConstants;
 import net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties;
 import net.sourceforge.pmd.eclipse.runtime.properties.PropertiesException;
 import net.sourceforge.pmd.eclipse.util.IOUtil;
+import net.sourceforge.pmd.eclipse.util.PriorityUtil;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.LanguageVersionDiscoverer;
@@ -242,8 +243,7 @@ public class BaseVisitor {
     }
 
     /**
-     * Set the project properties (note that visitor is expected to be called
-     * one project at a time
+     * Set the project properties (note that visitor is expected to be called one project at a time
      */
     public void setProjectProperties(IProjectProperties projectProperties) {
         this.projectProperties = projectProperties;
@@ -393,7 +393,7 @@ public class BaseVisitor {
 
         } catch (CoreException e) {
             // TODO: complete message
-            LOG.error("Core exception visiting " + file.getName(), e); 
+            LOG.error("Core exception visiting " + file.getName(), e);
         } catch (PMDException e) {
             // TODO: complete message
             LOG.error("PMD exception visiting " + file.getName(), e);
@@ -496,6 +496,11 @@ public class BaseVisitor {
             review.ruleName = rule.getName();
             review.lineNumber = violation.getBeginLine();
 
+            /* Only show active violations */
+            if (!PriorityUtil.isPriorityActive(rule.getPriority())) {
+                continue;
+            }
+
             if (reviewsList.contains(review)) {
                 LOG.debug("Ignoring violation of rule " + rule.getName() + " at line " + violation.getBeginLine()
                         + " because of a review.");
@@ -519,12 +524,9 @@ public class BaseVisitor {
                 // PMDRuntimeConstants.PMD_MARKER));
                 markerSet.add(getMarkerInfo(violation, markerTypeFor(violation)));
                 /*
-                 * if (isDfaEnabled && violation.getRule().usesDFA()) {
-                 * markerSet.add(getMarkerInfo(violation,
-                 * PMDRuntimeConstants.PMD_DFA_MARKER)); } else {
-                 * markerSet.add(getMarkerInfo(violation, fTask ?
-                 * PMDRuntimeConstants.PMD_TASKMARKER :
-                 * PMDRuntimeConstants.PMD_MARKER)); }
+                 * if (isDfaEnabled && violation.getRule().usesDFA()) { markerSet.add(getMarkerInfo(violation,
+                 * PMDRuntimeConstants.PMD_DFA_MARKER)); } else { markerSet.add(getMarkerInfo(violation, fTask ?
+                 * PMDRuntimeConstants.PMD_TASKMARKER : PMDRuntimeConstants.PMD_MARKER)); }
                  */
                 violationsByRule.put(rule, Integer.valueOf(count.intValue() + 1));
 

@@ -36,10 +36,10 @@
 
 package net.sourceforge.pmd.eclipse.ui.views.actions;
 
+import org.eclipse.jface.viewers.TreeViewer;
+
 import net.sourceforge.pmd.eclipse.ui.PMDUiConstants;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
-
-import org.eclipse.jface.viewers.TreeViewer;
 
 /**
  * Collapses the Violation Overview Tree

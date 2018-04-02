@@ -7,15 +7,15 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 
+import org.eclipse.jface.viewers.ITreeContentProvider;
+import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.jface.viewers.Viewer;
+
 import net.sourceforge.pmd.lang.ast.AbstractNode;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.ast.Comment;
-
-import org.eclipse.jface.viewers.ITreeContentProvider;
-import org.eclipse.jface.viewers.TableViewer;
-import org.eclipse.jface.viewers.Viewer;
 
 /**
  * 
@@ -27,7 +27,7 @@ public class ASTContentProvider implements ITreeContentProvider {
     private boolean includeComments;
     // private Set<Class<?>> hiddenNodeTypes;
 
-    private static final Comparator<Node> ByLineNumber = new Comparator<Node>() {
+    private static final Comparator<Node> BY_LINE_NUMBER = new Comparator<Node>() {
         public int compare(Node a, Node b) {
             return a.getBeginLine() - b.getBeginLine();
         }
@@ -85,7 +85,7 @@ public class ASTContentProvider implements ITreeContentProvider {
             kids.add(kid);
         }
 
-        Collections.sort(kids, ByLineNumber);
+        Collections.sort(kids, BY_LINE_NUMBER);
 
         return kids;
     }

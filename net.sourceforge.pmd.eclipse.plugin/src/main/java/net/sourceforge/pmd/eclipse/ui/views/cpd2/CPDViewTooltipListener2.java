@@ -36,11 +36,6 @@
 
 package net.sourceforge.pmd.eclipse.ui.views.cpd2;
 
-import net.sourceforge.pmd.cpd.Mark;
-import net.sourceforge.pmd.cpd.Match;
-import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
-import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
-
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
@@ -63,6 +58,11 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.texteditor.ITextEditor;
+
+import net.sourceforge.pmd.cpd.Mark;
+import net.sourceforge.pmd.cpd.Match;
+import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
+import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
 
 /**
  * 
@@ -90,8 +90,9 @@ public class CPDViewTooltipListener2 implements Listener {
 
         IPath path = Path.fromOSString(entry.getFilename());
         IFile file = ResourcesPlugin.getWorkspace().getRoot().getFileForLocation(path);
-        if (file == null)
+        if (file == null) {
             return;
+        }
 
         try {
             // open editor
@@ -120,8 +121,9 @@ public class CPDViewTooltipListener2 implements Listener {
 
     private Mark itemAt(TreeItem treeItem, Point location, GC gc) {
 
-        if (treeItem == null)
+        if (treeItem == null) {
             return null;
+        }
 
         Object item = ((TreeNode) treeItem.getData()).getValue();
 
@@ -134,14 +136,15 @@ public class CPDViewTooltipListener2 implements Listener {
 
         location.x -= view.widthOf(0); // subtract width of preceeding columns
 
-        int colWidth = view.widthOf(CPDView2.SourceColumnIdx);
+        int colWidth = view.widthOf(CPDView2.SOURCE_COLUMN_IDX);
         int cellWidth = colWidth / names.length;
 
         for (int i = 0; i < names.length; i++) {
             int rightEdge = colWidth - (cellWidth * i);
             int[] widths = view.widthsFor(names[i]);
-            if (widths == null)
+            if (widths == null) {
                 continue;
+            }
             int classWidth = widths[1];
             if (location.x > rightEdge - classWidth && // right of the start?
                     location.x < rightEdge) { // left of the end?
@@ -163,7 +166,7 @@ public class CPDViewTooltipListener2 implements Listener {
         Point location = new Point(event.x, event.y);
         Shell shell = tree.getShell();
 
-        if (view.inColumn(location) != CPDView2.SourceColumnIdx) {
+        if (view.inColumn(location) != CPDView2.SOURCE_COLUMN_IDX) {
             shell.setCursor(normalCursor);
             return;
         }

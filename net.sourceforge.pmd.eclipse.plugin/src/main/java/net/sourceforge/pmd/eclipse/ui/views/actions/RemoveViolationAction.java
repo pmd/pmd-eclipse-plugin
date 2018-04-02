@@ -1,9 +1,6 @@
 
 package net.sourceforge.pmd.eclipse.ui.views.actions;
 
-import net.sourceforge.pmd.eclipse.ui.PMDUiConstants;
-import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
-
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceRunnable;
@@ -11,6 +8,9 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.viewers.TableViewer;
+
+import net.sourceforge.pmd.eclipse.ui.PMDUiConstants;
+import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
 
 /**
  * Deletes selected Violations Adapted from Phillipe Herlin
@@ -46,8 +46,9 @@ public class RemoveViolationAction extends AbstractViolationSelectionAction {
     public void run() {
         // simply: get all Markers
         final IMarker[] markers = getSelectedViolations();
-        if (markers == null)
+        if (markers == null) {
             return;
+        }
 
         try {
             IWorkspace workspace = ResourcesPlugin.getWorkspace();
