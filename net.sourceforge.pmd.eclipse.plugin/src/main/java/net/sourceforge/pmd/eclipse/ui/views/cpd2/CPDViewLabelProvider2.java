@@ -41,10 +41,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import net.sourceforge.pmd.cpd.Mark;
-import net.sourceforge.pmd.cpd.Match;
-import net.sourceforge.pmd.cpd.TokenEntry;
-
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
@@ -55,6 +51,10 @@ import org.eclipse.jface.viewers.TreeNode;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE.SharedImages;
+
+import net.sourceforge.pmd.cpd.Mark;
+import net.sourceforge.pmd.cpd.Match;
+import net.sourceforge.pmd.cpd.TokenEntry;
 
 /**
  * 
@@ -166,15 +166,17 @@ public class CPDViewLabelProvider2 extends LabelProvider implements ITableLabelP
         switch (columnIndex) {
         case 0:
             int count = lineCountFor(node);
-            if (count > 0)
+            if (count > 0) {
                 result = Integer.toString(count);
+            }
             break;
         // show the source
         case 1:
             if (value instanceof String) {
                 result = String.valueOf(value);
-                if (result.endsWith("\r"))
+                if (result.endsWith("\r")) {
                     result = result.substring(0, result.length() - 1);
+                }
             }
             if (value instanceof Match) {
                 // do nothing, let the painter show it

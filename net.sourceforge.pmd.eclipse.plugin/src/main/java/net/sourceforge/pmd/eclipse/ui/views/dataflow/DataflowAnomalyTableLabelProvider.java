@@ -1,3 +1,4 @@
+
 package net.sourceforge.pmd.eclipse.ui.views.dataflow;
 
 import org.eclipse.jface.viewers.ITableLabelProvider;
@@ -29,37 +30,42 @@ public class DataflowAnomalyTableLabelProvider extends LabelProvider implements 
 
     /* @see org.eclipse.jface.viewers.ITableLabelProvider#getColumnText(java.lang.Object, int) */
     public String getColumnText(Object element, int columnIndex) {
-        
+
         if (element instanceof RuleViolation) {
             final RuleViolation violation = (RuleViolation) element;
             switch (columnIndex) {
-	            case 0: return ((DaaRuleViolation)violation).getType();	// show the Type of Anomaly which is saved as message here
-	
-	            case 1:
-	                // show the (first and last) Line                
-	                int line1 = violation.getBeginLine();
-	                int line2 = violation.getEndLine();
-	
-	                // show only one Line if they are equal
-	                if ((line1 == line2) || (line2 == 0)) {
-	                    return String.valueOf(line1);
-	                } else {
-	                    // ... or twist them if needed and show something like "11, 12"
-	                    if (line2 < line1) {
-	                        final int temp = line1;
-	                        line1 = line2;
-	                        line2 = temp;
-	                    }
-	                    return line1 + ", " + line2;                    
-	                }
-	
-	            case 2: return violation.getVariableName();     
-	            case 3: return violation.getMethodName();
-	                 
-	            default: return "";
-	            }
+            case 0:
+                // show the Type of Anomaly which is saved as message here
+                return ((DaaRuleViolation) violation).getType(); 
+
+            case 1:
+                // show the (first and last) Line
+                int line1 = violation.getBeginLine();
+                int line2 = violation.getEndLine();
+
+                // show only one Line if they are equal
+                if ((line1 == line2) || (line2 == 0)) {
+                    return String.valueOf(line1);
+                } else {
+                    // ... or twist them if needed and show something like "11, 12"
+                    if (line2 < line1) {
+                        final int temp = line1;
+                        line1 = line2;
+                        line2 = temp;
+                    }
+                    return line1 + ", " + line2;
+                }
+
+            case 2:
+                return violation.getVariableName();
+            case 3:
+                return violation.getMethodName();
+
+            default:
+                return "";
+            }
         }
-        
+
         return "";
     }
 }

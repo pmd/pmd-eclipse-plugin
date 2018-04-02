@@ -75,6 +75,7 @@ import net.sourceforge.pmd.eclipse.ui.model.MarkerRecord;
 import net.sourceforge.pmd.eclipse.ui.model.PackageRecord;
 import net.sourceforge.pmd.eclipse.ui.model.RootRecord;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
+import net.sourceforge.pmd.eclipse.util.PriorityUtil;
 import net.sourceforge.pmd.util.NumericConstants;
 
 import name.herlin.command.CommandException;
@@ -129,7 +130,7 @@ public class ViolationOverview extends ViewPart implements ISelectionProvider, I
         root = (RootRecord) getInitialInput();
         contentProvider = new ViolationOverviewContentProvider(this);
         labelProvider = new ViolationOverviewLabelProvider(this);
-        priorityFilter = new PriorityFilter();
+        priorityFilter = PriorityUtil.getPriorityFilter();
         projectFilter = new ProjectFilter();
         doubleClickListener = new ViolationOverviewDoubleClickListener(this);
         menuManager = new ViolationOverviewMenuManager(this);
@@ -498,7 +499,7 @@ public class ViolationOverview extends ViewPart implements ISelectionProvider, I
         if (!priorityList.isEmpty()) {
             priorityFilter.setPriorityFilterList(priorityList);
         }
-
+        
         List<String> projectNames = memento.getStringList(PROJECT_LIST);
         if (!projectNames.isEmpty()) {
             List<AbstractPMDRecord> projectList = new ArrayList<AbstractPMDRecord>();

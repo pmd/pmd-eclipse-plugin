@@ -26,7 +26,7 @@ import net.sourceforge.pmd.lang.java.ast.AbstractJavaAccessNode;
  */
 public class ASTUtil {
 
-    public static final Comparator<ASTMethodDeclaration> MethodComparator = new Comparator<ASTMethodDeclaration>() {
+    public static final Comparator<ASTMethodDeclaration> METHOD_COMPARATOR = new Comparator<ASTMethodDeclaration>() {
         public int compare(ASTMethodDeclaration m1, ASTMethodDeclaration m2) {
             return m1.getMethodName().compareTo(m2.getMethodName());
         }
@@ -54,8 +54,9 @@ public class ASTUtil {
 
         sb.append(pmdMethod.getMethodName());
         sb.append('(').append(parameterTypes(pmdMethod)).append(')');
-        if (returnType == null)
+        if (returnType == null) {
             return sb.toString();
+        }
 
         sb.append(" : ").append(returnType);
         return sb.toString();
@@ -76,30 +77,39 @@ public class ASTUtil {
             }
         }
 
-        if (node.isAbstract())
+        if (node.isAbstract()) {
             modifiers.add("abstract");
-        if (node.isStatic())
+        }
+        if (node.isStatic()) {
             modifiers.add("static");
-        if (node.isFinal())
+        }
+        if (node.isFinal()) {
             modifiers.add("final");
-        if (node.isTransient())
+        }
+        if (node.isTransient()) {
             modifiers.add("transient");
-        if (node.isVolatile())
+        }
+        if (node.isVolatile()) {
             modifiers.add("volatile");
-        if (node.isSynchronized())
+        }
+        if (node.isSynchronized()) {
             modifiers.add("synchronized");
-        if (node.isNative())
+        }
+        if (node.isNative()) {
             modifiers.add("native");
-        if (node.isStrictfp())
+        }
+        if (node.isStrictfp()) {
             modifiers.add("strictfp");
+        }
         return modifiers;
     }
 
     private static void addModifiers(AbstractJavaAccessNode node, StringBuilder sb) {
 
         List<String> modifiers = modifiersFor(node);
-        if (modifiers.isEmpty())
+        if (modifiers.isEmpty()) {
             return;
+        }
 
         sb.append(modifiers.get(0));
         for (int i = 1; i < modifiers.size(); i++) {
@@ -113,8 +123,9 @@ public class ASTUtil {
         addModifiers(pmdField, sb);
 
         ASTType type = pmdField.getFirstChildOfType(ASTType.class);
-        if (type != null)
+        if (type != null) {
             sb.append(' ').append(type.getTypeImage());
+        }
 
         sb.append(' ').append(pmdField.getVariableName());
 
@@ -135,8 +146,9 @@ public class ASTUtil {
                     if (param == null) {
                         param = formalParam.getFirstDescendantOfType(ASTPrimitiveType.class);
                     }
-                    if (param == null)
+                    if (param == null) {
                         continue;
+                    }
                     sb.append(param.getImage()).append(", ");
                 }
             }
@@ -156,8 +168,9 @@ public class ASTUtil {
                 if (param == null) {
                     param = resultType.getFirstDescendantOfType(ASTPrimitiveType.class);
                 }
-                if (param == null)
+                if (param == null) {
                     continue;
+                }
                 return param.getImage();
             }
         }
@@ -172,8 +185,9 @@ public class ASTUtil {
         ASTType type = node.getTypeNode();
         sb.append(' ').append(type.getTypeImage());
 
-        for (int i = 0; i < node.getArrayDepth(); i++)
+        for (int i = 0; i < node.getArrayDepth(); i++) {
             sb.append("[]");
+        }
 
         sb.append(' ').append(node.getVariableName());
 

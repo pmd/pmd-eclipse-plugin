@@ -46,31 +46,31 @@ public interface MarkerColumnsUI {
         }
     };
 
-    ItemFieldAccessor<Integer, IMarker> LINE_NO_ACC = new ItemFieldAccessorAdapter<Integer, IMarker>(Util.compInt) {
+    ItemFieldAccessor<Integer, IMarker> LINE_NO_ACC = new ItemFieldAccessorAdapter<Integer, IMarker>(Util.COMP_INT) {
         public Integer valueFor(IMarker marker) {
             return (Integer) marker.getAttribute(IMarker.LINE_NUMBER, 0);
         }
     };
 
-    ItemFieldAccessor<Long, IMarker> CREATED_ACC = new ItemFieldAccessorAdapter<Long, IMarker>(Util.compLong) {
+    ItemFieldAccessor<Long, IMarker> CREATED_ACC = new ItemFieldAccessorAdapter<Long, IMarker>(Util.COMP_LONG) {
         public Long valueFor(IMarker marker) {
             return MarkerUtil.createdOn(marker, -1);
         }
     };
 
-    ItemFieldAccessor<Boolean, IMarker> DONE_ACC = new ItemFieldAccessorAdapter<Boolean, IMarker>(Util.compBool) {
+    ItemFieldAccessor<Boolean, IMarker> DONE_ACC = new ItemFieldAccessorAdapter<Boolean, IMarker>(Util.COMP_BOOL) {
         public Boolean valueFor(IMarker marker) {
             return MarkerUtil.doneState(marker, false);
         }
     };
 
-    ItemFieldAccessor<String, IMarker> RULE_NAME_ACC = new ItemFieldAccessorAdapter<String, IMarker>(Util.compStr) {
+    ItemFieldAccessor<String, IMarker> RULE_NAME_ACC = new ItemFieldAccessorAdapter<String, IMarker>(Util.COMP_STR) {
         public String valueFor(IMarker marker) {
             return MarkerUtil.ruleNameFor(marker);
         }
     };
 
-    ItemFieldAccessor<String, IMarker> MESSAGE_ACC = new ItemFieldAccessorAdapter<String, IMarker>(Util.compStr) {
+    ItemFieldAccessor<String, IMarker> MESSAGE_ACC = new ItemFieldAccessorAdapter<String, IMarker>(Util.COMP_STR) {
         public String valueFor(IMarker marker) {
             return MarkerUtil.messageFor(marker, "??");
         }

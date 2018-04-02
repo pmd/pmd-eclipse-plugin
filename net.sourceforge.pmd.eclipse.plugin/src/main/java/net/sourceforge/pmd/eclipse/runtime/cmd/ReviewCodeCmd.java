@@ -105,14 +105,12 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
     private long pmdDuration;
     private String onErrorIssue = null;
     /**
-     * Whether to run the review command, even if PMD is disabled in the project
-     * settings.
+     * Whether to run the review command, even if PMD is disabled in the project settings.
      */
     private boolean runAlways = false;
     /**
-     * Maximum count of changed resources, that are considered to be not a full
-     * build. If more than these resources are changed, PMD will only be
-     * executed, if full build option is enabled.
+     * Maximum count of changed resources, that are considered to be not a full build. If more than these resources are
+     * changed, PMD will only be executed, if full build option is enabled.
      */
     private static final int MAXIMUM_RESOURCE_COUNT = 5;
 
@@ -133,6 +131,25 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
 
     public Set<IFile> markedFiles() {
         return markersByFile.keySet();
+    }
+
+    /**
+     * Easy way to refresh a set of files.
+     * 
+     * @param files
+     * @throws CommandException
+     */
+    public static void runCodeReviewOnFiles(Set<IFile> files) throws CommandException {
+        ReviewCodeCmd cmd = new ReviewCodeCmd();
+        cmd.setStepCount(files.size());
+        cmd.setTaskMarker(true);
+        cmd.setOpenPmdPerspective(PMDPlugin.getDefault().loadPreferences().isPmdPerspectiveEnabled());
+        cmd.setUserInitiated(true);
+        cmd.setRunAlways(true);
+        for (IResource file : files) {
+            cmd.addResource(file);
+        }
+        cmd.performExecute();
     }
 
     private RuleSet currentRules() {
@@ -316,8 +333,7 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
 
     /**
      * @param openPmdPerspective
-     *            Tell whether the PMD perspective should be opened after
-     *            processing.
+     *            Tell whether the PMD perspective should be opened after processing.
      */
     public void setOpenPmdPerspective(boolean openPmdPerspective) {
         this.openPmdPerspective = openPmdPerspective;
@@ -421,7 +437,6 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
             if (properties.isFullBuildEnabled() || isUserInitiated() || targetCount <= MAXIMUM_RESOURCE_COUNT) {
                 setStepCount(targetCount);
                 LOG.debug("Visiting resource " + resource.getName() + " : " + getStepCount());
-
                 if (resource.exists()) {
                     final ResourceVisitor visitor = new ResourceVisitor();
                     visitor.setMonitor(getMonitor());
@@ -693,8 +708,7 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
     }
 
     /**
-     * Private inner class to count the number of resources or delta elements.
-     * Only files are counted.
+     * Private inner class to count the number of resources or delta elements. Only files are counted.
      */
     private final class CountVisitor implements IResourceVisitor, IResourceDeltaVisitor {
         public int count = 0;

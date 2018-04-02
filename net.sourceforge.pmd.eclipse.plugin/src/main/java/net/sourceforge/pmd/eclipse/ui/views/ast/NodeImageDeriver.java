@@ -68,12 +68,12 @@ public class NodeImageDeriver {
         }
     };
 
-    private static final NodeImageDeriver[] AllDerivers = new NodeImageDeriver[] { importDeriver,
+    private static final NodeImageDeriver[] ALL_DERIVERS = new NodeImageDeriver[] { importDeriver,
         methodDeclarationDeriver, localVariableDeclarationDeriver, fieldDeclarationDeriver, annotationDeriver,
         compilationUnitDeriver, throwStatementDeriver };
 
-    private static final Map<Class<?>, NodeImageDeriver> DeriversByType = new HashMap<Class<?>, NodeImageDeriver>(
-            NodeImageDeriver.AllDerivers.length);
+    private static final Map<Class<?>, NodeImageDeriver> DERIVERS_BY_TYPE = new HashMap<Class<?>, NodeImageDeriver>(
+            NodeImageDeriver.ALL_DERIVERS.length);
 
     public final Class<?> target;
 
@@ -94,14 +94,14 @@ public class NodeImageDeriver {
     }
 
     static {
-        for (NodeImageDeriver deriver : NodeImageDeriver.AllDerivers) {
-            DeriversByType.put(deriver.target, deriver);
+        for (NodeImageDeriver deriver : NodeImageDeriver.ALL_DERIVERS) {
+            DERIVERS_BY_TYPE.put(deriver.target, deriver);
         }
     }
 
     public static String derivedTextFor(Node node) {
 
-        NodeImageDeriver deriver = DeriversByType.get(node.getClass());
+        NodeImageDeriver deriver = DERIVERS_BY_TYPE.get(node.getClass());
         return deriver == null ? null : deriver.deriveFrom(node);
     }
 }

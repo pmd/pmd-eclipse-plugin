@@ -12,9 +12,8 @@ language: java
 jdk: oraclejdk8
 
 before_install:
-  - "mkdir -p $HOME/.m2"
-  - "cp .travis/travis-settings.xml $HOME/.m2/settings.xml"
-  - "source .travis/setup-secrets.sh"
+  - bash .travis/setup-secrets.sh
+  - bash .travis/configure-maven.sh
 install: true
 before_script:
   - "export DISPLAY=:99.0"
@@ -44,6 +43,7 @@ notifications:
   email:
     recipients:
     - andreas.dangel@adangel.org
+    - pmd-commits@lists.sourceforge.net
     on_success: always
     on_failure: always
 cache:

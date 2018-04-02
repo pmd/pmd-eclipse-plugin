@@ -52,8 +52,9 @@ public class DataflowAnomalyTableContentProvider implements IStructuredContentPr
 
     private static boolean violationIsInList(DaaRuleViolation newViolation, List<DaaRuleViolation> list) {
 
-        if (list.isEmpty())
+        if (list.isEmpty()) {
             return false;
+        }
 
         final Iterator<DaaRuleViolation> violationIterator = list.iterator();
         while (violationIterator.hasNext()) {

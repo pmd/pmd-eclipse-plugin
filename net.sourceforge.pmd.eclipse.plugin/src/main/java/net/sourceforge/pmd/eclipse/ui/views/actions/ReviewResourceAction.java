@@ -3,16 +3,17 @@ package net.sourceforge.pmd.eclipse.ui.views.actions;
 
 import java.lang.reflect.InvocationTargetException;
 
-import name.herlin.command.CommandException;
-import net.sourceforge.pmd.eclipse.runtime.cmd.ReviewCodeCmd;
-import net.sourceforge.pmd.eclipse.ui.PMDUiConstants;
-import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
-
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.swt.widgets.Display;
+
+import net.sourceforge.pmd.eclipse.runtime.cmd.ReviewCodeCmd;
+import net.sourceforge.pmd.eclipse.ui.PMDUiConstants;
+import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
+
+import name.herlin.command.CommandException;
 
 /**
  * Action for reviewing one single resource.

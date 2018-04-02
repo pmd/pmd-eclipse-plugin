@@ -91,7 +91,10 @@ public class DataflowGraphTable extends Composite implements PaintListener {
         initScrollBars(bodyFrame);
 
         GridLayout mainLayout = new GridLayout(1, false);
-        mainLayout.horizontalSpacing = mainLayout.verticalSpacing = mainLayout.marginHeight = mainLayout.marginWidth = 0;
+        mainLayout.horizontalSpacing = 0;
+        mainLayout.verticalSpacing = 0;
+        mainLayout.marginHeight = 0;
+        mainLayout.marginWidth = 0;
         setLayout(mainLayout);
     }
 
@@ -106,7 +109,10 @@ public class DataflowGraphTable extends Composite implements PaintListener {
         headerCanvas.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
         GridLayout layout = new GridLayout(1, false);
-        layout.horizontalSpacing = layout.verticalSpacing = layout.marginHeight = layout.marginWidth = 0;
+        layout.horizontalSpacing = 0;
+        layout.verticalSpacing = 0;
+        layout.marginHeight = 0;
+        layout.marginWidth = 0;
         headerCanvas.setLayout(layout);
 
         return headerCanvas;
@@ -135,13 +141,18 @@ public class DataflowGraphTable extends Composite implements PaintListener {
 
         int spacing = 10;
         GridLayout bodyLayout = new GridLayout(numCols, false);
-        bodyLayout.marginHeight = bodyLayout.marginWidth = spacing / 2;
-        bodyLayout.horizontalSpacing = bodyLayout.verticalSpacing = spacing;
+        bodyLayout.marginHeight = spacing / 2;
+        bodyLayout.marginWidth = spacing / 2;
+        bodyLayout.horizontalSpacing = spacing;
+        bodyLayout.verticalSpacing = spacing;
         bodyCanvas.setLayout(bodyLayout);
 
         // create the frame
         GridLayout frameLayout = new GridLayout(1, false);
-        frameLayout.horizontalSpacing = frameLayout.verticalSpacing = frameLayout.marginWidth = frameLayout.marginHeight = 0;
+        frameLayout.horizontalSpacing = 0;
+        frameLayout.verticalSpacing = 0;
+        frameLayout.marginWidth = 0;
+        frameLayout.marginHeight = 0;
         frameCanvas.setLayout(frameLayout);
 
         // get the Position and size of the Table and store them
@@ -175,8 +186,9 @@ public class DataflowGraphTable extends Composite implements PaintListener {
         }
 
         // check and (if correct) set the Graph's Column
-        if (graphPos >= 0 && graphPos <= numCols)
+        if (graphPos >= 0 && graphPos <= numCols) {
             graphColumn = graphPos;
+        }
 
         // check the Titles
         String[] headerTitles = getHeaderTitles(titles);
@@ -388,10 +400,12 @@ public class DataflowGraphTable extends Composite implements PaintListener {
         int viewWidth = source.getSize().x - source.getVerticalBar().getSize().x;
         int viewHeight = source.getSize().y - source.getHorizontalBar().getSize().y;
 
-        if (viewWidth > tableSize.x)
+        if (viewWidth > tableSize.x) {
             tablePosition.x = 0;
-        if (viewHeight > tableSize.y)
+        }
+        if (viewHeight > tableSize.y) {
             tablePosition.y = 0;
+        }
     }
 
     /**
@@ -469,8 +483,9 @@ public class DataflowGraphTable extends Composite implements PaintListener {
      * @param g
      */
     protected void clearGraphArea(GC g) {
-        if (colWidths == null || rowHeight == null)
+        if (colWidths == null || rowHeight == null) {
             return;
+        }
 
         int xPos = 0;
         if (graphColumn > 0) {
@@ -483,8 +498,9 @@ public class DataflowGraphTable extends Composite implements PaintListener {
 
         Color formerColor = g.getBackground();
 
-        if (bgColor == null)
+        if (bgColor == null) {
             bgColor = DEFAULT_BG_COLOR;
+        }
         g.setBackground(bgColor);
         g.fillRectangle(xPos, 1, width - 1, height);
 
@@ -497,14 +513,16 @@ public class DataflowGraphTable extends Composite implements PaintListener {
      * @param g
      */
     protected void buildBodyLines(GC g) {
-        if (lineColor == null)
+        if (lineColor == null) {
             lineColor = DEFAULT_LINE_COLOR;
+        }
         g.setForeground(lineColor);
 
         // create the Lines for each Row
         // from 0 to the Table's Width
-        if (rowHeight == null)
+        if (rowHeight == null) {
             rowHeight = Integer.valueOf(DEFAULT_ROW_HEIGHT);
+        }
         int rowWidth = tableSize.x;
         for (int i = 0; i <= numRows; i++) {
             g.drawLine(0, i * rowHeight.intValue(), rowWidth, i * rowHeight.intValue());
@@ -515,10 +533,11 @@ public class DataflowGraphTable extends Composite implements PaintListener {
         int colHeight = tableSize.y;
         int width = 0;
         for (int j = 0; j < numCols; j++) {
-            if (colWidths == null)
+            if (colWidths == null) {
                 width += DEFAULT_COL_WIDTH;
-            else
+            } else {
                 width += colWidths[j].intValue();
+            }
             g.drawLine(width - 1, 0, width - 1, colHeight);
         }
     }
@@ -531,17 +550,20 @@ public class DataflowGraphTable extends Composite implements PaintListener {
      * @param g
      */
     protected void buildFrameLines(GC g) {
-        if (bgColor == null)
+        if (bgColor == null) {
             bgColor = DEFAULT_BG_COLOR;
+        }
         bodyFrame.setBackground(bgColor);
-        if (lineColor == null)
+        if (lineColor == null) {
             lineColor = DEFAULT_LINE_COLOR;
+        }
         g.setForeground(lineColor);
 
         int tableX = tablePosition.x;
         int tableY = tablePosition.y;
-        if (rowHeight == null)
+        if (rowHeight == null) {
             rowHeight = Integer.valueOf(DEFAULT_ROW_HEIGHT);
+        }
 
         // create the filling Lines
         // from the Table's Width to the Viewer's Width
@@ -566,10 +588,11 @@ public class DataflowGraphTable extends Composite implements PaintListener {
             yPos = tableY + tableSize.y;
             int width = 0;
             for (int j = 0; j < numCols; j++) {
-                if (colWidths == null)
+                if (colWidths == null) {
                     width += DEFAULT_COL_WIDTH;
-                else
+                } else {
                     width += colWidths[j].intValue();
+                }
                 g.drawLine(tableX + width - 1, yPos, tableX + width - 1, viewHeight);
             }
         }
@@ -582,10 +605,12 @@ public class DataflowGraphTable extends Composite implements PaintListener {
      * @param tableData
      */
     private void buildTableData(Composite table, List<List<DataflowGraphTableData>> tableData) {
-        if (bgColor == null)
+        if (bgColor == null) {
             bgColor = DEFAULT_BG_COLOR;
-        if (fgColor == null)
+        }
+        if (fgColor == null) {
             fgColor = DEFAULT_FG_COLOR;
+        }
 
         int hSpace = ((GridLayout) table.getLayout()).horizontalSpacing;
         int vSpace = ((GridLayout) table.getLayout()).verticalSpacing;

@@ -36,9 +36,6 @@
 
 package net.sourceforge.pmd.eclipse.ui.views.cpd;
 
-import net.sourceforge.pmd.cpd.Match;
-import net.sourceforge.pmd.cpd.TokenEntry;
-
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
@@ -50,6 +47,9 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE.SharedImages;
+
+import net.sourceforge.pmd.cpd.Match;
+import net.sourceforge.pmd.cpd.TokenEntry;
 
 /**
  * 
@@ -73,7 +73,7 @@ public class CPDViewLabelProvider extends LabelProvider implements ITableLabelPr
         // if the Element is a Match or TokenEntry
         switch (columnIndex) {
         case 1:
-            if (value instanceof Match) {               
+            if (value instanceof Match) {
                 image = PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJS_ERROR_TSK);
             } else if (value instanceof TokenEntry) {
                 image = PlatformUI.getWorkbench().getSharedImages().getImage(SharedImages.IMG_OPEN_MARKER);
@@ -100,9 +100,9 @@ public class CPDViewLabelProvider extends LabelProvider implements ITableLabelPr
         // show the message 
         case 2:
             if (value instanceof Match) {
-                final Match match = (Match)value;
+                final Match match = (Match) value;
                 final StringBuilder buffer = new StringBuilder(50);
-                buffer.append("Found suspect cut & paste (");               
+                buffer.append("Found suspect cut & paste (");
                 buffer.append(match.getMarkCount()).append(" matches,");
                 buffer.append(match.getLineCount());
                 if (match.getLineCount() == 1) {
@@ -121,8 +121,8 @@ public class CPDViewLabelProvider extends LabelProvider implements ITableLabelPr
                 if (startLine == endLine) {
                     buffer.append("line ").append(startLine);
                 } else {
-                    buffer.append("lines ").append(startLine).append('-').append(endLine);                    
-                }                
+                    buffer.append("lines ").append(startLine).append('-').append(endLine);
+                }
                 buffer.append(" in file ").append(path.lastSegment()); 
                 result = buffer.toString();
             }

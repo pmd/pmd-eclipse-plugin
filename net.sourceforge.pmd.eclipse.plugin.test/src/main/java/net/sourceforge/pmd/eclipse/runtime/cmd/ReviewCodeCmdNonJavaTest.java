@@ -67,7 +67,6 @@ public class ReviewCodeCmdNonJavaTest {
             testProject.refreshLocal(IResource.DEPTH_INFINITE, null);
             testProject.delete(true, true, null);
             testProject = null;
-          }
-
+        }
     }
 }

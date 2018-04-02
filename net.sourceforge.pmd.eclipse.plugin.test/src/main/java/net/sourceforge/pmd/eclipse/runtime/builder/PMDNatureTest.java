@@ -1,3 +1,4 @@
+
 package net.sourceforge.pmd.eclipse.runtime.builder;
 
 import org.eclipse.core.resources.IProject;
@@ -27,6 +28,6 @@ public class PMDNatureTest {
             testProject.refreshLocal(IResource.DEPTH_INFINITE, null);
             testProject.delete(true, true, null);
             testProject = null;
-          }
+        }
     }
 }

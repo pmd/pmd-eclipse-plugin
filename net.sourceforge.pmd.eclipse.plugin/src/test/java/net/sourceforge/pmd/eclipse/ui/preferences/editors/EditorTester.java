@@ -4,15 +4,6 @@ package net.sourceforge.pmd.eclipse.ui.preferences.editors;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.sourceforge.pmd.PropertyDescriptor;
-import net.sourceforge.pmd.PropertySource;
-import net.sourceforge.pmd.eclipse.ui.preferences.br.EditorFactory;
-import net.sourceforge.pmd.eclipse.ui.preferences.br.RuleSelection;
-import net.sourceforge.pmd.eclipse.ui.preferences.br.SizeChangeListener;
-import net.sourceforge.pmd.eclipse.ui.preferences.br.ValueChangeListener;
-import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.FormArranger;
-import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.PerRulePropertyPanelManager;
-
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -22,6 +13,15 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
+import net.sourceforge.pmd.eclipse.ui.preferences.br.EditorFactory;
+import net.sourceforge.pmd.eclipse.ui.preferences.br.RuleSelection;
+import net.sourceforge.pmd.eclipse.ui.preferences.br.SizeChangeListener;
+import net.sourceforge.pmd.eclipse.ui.preferences.br.ValueChangeListener;
+import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.FormArranger;
+import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.PerRulePropertyPanelManager;
+import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.properties.PropertySource;
+
 /**
  * 
  * @author Brian Remedios
@@ -30,7 +30,7 @@ public class EditorTester implements ValueChangeListener, SizeChangeListener {
 
     // these are the ones we've tested, the others may work but might not make
     // sense in the xpath source context...
-    private static final Class<?>[] validEditorTypes = new Class[] { String.class, Integer.class, Boolean.class };
+    private static final Class<?>[] VALID_EDITOR_TYPES = new Class[] { String.class, Integer.class, Boolean.class };
 
     public static Map<Class<?>, EditorFactory> withOnly(Map<Class<?>, EditorFactory> factoriesByType,
             Class<?>[] legalTypeKeys) {
@@ -77,13 +77,14 @@ public class EditorTester implements ValueChangeListener, SizeChangeListener {
         gd = new GridData(GridData.FILL_HORIZONTAL);
         c.setLayoutData(gd);
 
-        FormArranger formArranger = new FormArranger(panel, PerRulePropertyPanelManager.editorFactoriesByPropertyType,
+        FormArranger formArranger = new FormArranger(panel, PerRulePropertyPanelManager.EDITOR_FACTORIES_BY_PROPERTY_TYPE,
                 this, this);
         formArranger.arrangeFor(new NonRuleWithAllPropertyTypes());
         s.open();
         while (!s.isDisposed()) {
-            if (!d.readAndDispatch())
+            if (!d.readAndDispatch()) {
                 d.sleep();
+            }
         }
         d.dispose();
     }

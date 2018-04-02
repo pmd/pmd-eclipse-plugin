@@ -1,6 +1,13 @@
 
 package net.sourceforge.pmd.eclipse.ui.views.ast;
 
+import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.action.IToolBarManager;
+import org.eclipse.ui.IActionBars;
+import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.part.IPage;
+
 import net.sourceforge.pmd.eclipse.ui.PMDUiConstants;
 import net.sourceforge.pmd.eclipse.ui.model.FileRecord;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
@@ -8,13 +15,6 @@ import net.sourceforge.pmd.eclipse.ui.views.AbstractResourceView;
 import net.sourceforge.pmd.eclipse.ui.views.AbstractStructureInspectorPage;
 import net.sourceforge.pmd.eclipse.ui.views.actions.CollapseAllAction;
 import net.sourceforge.pmd.eclipse.ui.views.actions.ExpandAllAction;
-
-import org.eclipse.jface.action.Action;
-import org.eclipse.jface.action.IMenuManager;
-import org.eclipse.jface.action.IToolBarManager;
-import org.eclipse.ui.IActionBars;
-import org.eclipse.ui.IWorkbenchPart;
-import org.eclipse.ui.part.IPage;
 
 /**
  * 
@@ -26,18 +26,18 @@ public class ASTView extends AbstractResourceView {
     private Action toggleShowImportsAction;
     private Action toggleShowCommentsAction;
 
-    private static final String ShowImports = "ASTView.showImports";
-    private static final String ShowComments = "ASTView.showComments";
+    private static final String SHOW_IMPORTS = "ASTView.showImports";
+    private static final String SHOW_COMMENTS = "ASTView.showComments";
 
     public ASTView() {
     }
 
     static boolean showImports() {
-        return getBoolUIPref(ShowImports);
+        return getBoolUIPref(SHOW_IMPORTS);
     }
 
     static boolean showComments() {
-        return getBoolUIPref(ShowComments);
+        return getBoolUIPref(SHOW_COMMENTS);
     }
 
     protected String pageMessageId() {
@@ -74,12 +74,12 @@ public class ASTView extends AbstractResourceView {
     }
 
     public void showImports(boolean flag) {
-        setUIPref(ShowImports, flag);
+        setUIPref(SHOW_IMPORTS, flag);
         page.showImports(flag);
     }
 
     public void showComments(boolean flag) {
-        setUIPref(ShowComments, flag);
+        setUIPref(SHOW_COMMENTS, flag);
         page.showComments(flag);
     }
 
@@ -88,8 +88,9 @@ public class ASTView extends AbstractResourceView {
      */
     private ASTViewPage getCurrentASTViewPage() {
         IPage page = super.getCurrentPage();
-        if (!(page instanceof ASTViewPage))
+        if (!(page instanceof ASTViewPage)) {
             return null;
+        }
 
         return (ASTViewPage) page;
     }

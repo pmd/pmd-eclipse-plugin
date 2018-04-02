@@ -5,10 +5,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.dfa.DataFlowNode;
-import net.sourceforge.pmd.lang.dfa.VariableAccess;
-
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
@@ -21,6 +17,10 @@ import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+
+import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.dfa.DataFlowNode;
+import net.sourceforge.pmd.lang.dfa.VariableAccess;
 
 /**
  * Builds a Dataflow Graph
@@ -73,7 +73,7 @@ public class DataflowGraph extends Composite {
          * @param nodeRadius,
          *            radius of the Node
          */
-        public NodeCanvas(Composite parent, DataFlowNode inode, Point coordinates, int nodeRadius) {
+        NodeCanvas(Composite parent, DataFlowNode inode, Point coordinates, int nodeRadius) {
             super(parent, SWT.NONE);
 
             node = inode;
@@ -81,19 +81,14 @@ public class DataflowGraph extends Composite {
 
             Display display = parent.getDisplay();
             // Default Colors
-            bgColor = display.getSystemColor(SWT.COLOR_WHITE); // new
-                                                               // Color(null,255,255,255);
-            nodeColor = display.getSystemColor(SWT.COLOR_GRAY); // new
-                                                                // Color(null,128,128,128);
-            textColor = display.getSystemColor(SWT.COLOR_WHITE); // new
-                                                                 // Color(null,255,255,255);
-            markColor = display.getSystemColor(SWT.COLOR_RED); // new
-                                                               // Color(null,192,0,0);
+            bgColor = display.getSystemColor(SWT.COLOR_WHITE); // new Color(null,255,255,255);
+            nodeColor = display.getSystemColor(SWT.COLOR_GRAY); // new Color(null,128,128,128);
+            textColor = display.getSystemColor(SWT.COLOR_WHITE); // new Color(null,255,255,255);
+            markColor = display.getSystemColor(SWT.COLOR_RED); // new Color(null,192,0,0);
 
             // set location and size of the Label
             setLocation(coordinates);
-            setSize((2 * radius) + 1, (2 * radius) + 1); // +1 to avoid cropping
-                                                         // on right & bottom
+            setSize((2 * radius) + 1, (2 * radius) + 1); // +1 to avoid cropping on right & bottom
             setBackground(bgColor);
 
             // we have our own Paint Listener
@@ -143,12 +138,14 @@ public class DataflowGraph extends Composite {
          */
         public boolean containsVariable(String varName) {
             List<VariableAccess> vars = node.getVariableAccess();
-            if (vars == null)
+            if (vars == null) {
                 return false;
+            }
 
             for (VariableAccess va : vars) {
-                if (va.getVariableName().equalsIgnoreCase(varName))
+                if (va.getVariableName().equalsIgnoreCase(varName)) {
                     return true;
+                }
             }
             return false;
         }
@@ -245,7 +242,7 @@ public class DataflowGraph extends Composite {
          * @param nodeRadius,
          *            the radius of the Node
          */
-        public PathCanvas(Composite parent, int nodeIndex1, int nodeIndex2, int x, int y1, int y2, int nodeRadius) {
+        PathCanvas(Composite parent, int nodeIndex1, int nodeIndex2, int x, int y1, int y2, int nodeRadius) {
 
             index1 = nodeIndex1;
             index2 = nodeIndex2;
@@ -423,8 +420,9 @@ public class DataflowGraph extends Composite {
     public DataflowGraph(Composite parent, Node node, int radius, int length, int height) {
         super(parent, SWT.NONE);
 
-        if (node == null)
+        if (node == null) {
             return;
+        }
 
         nodeRadius = radius;
         lineLength = length;
@@ -435,12 +433,9 @@ public class DataflowGraph extends Composite {
 
         Display display = parent.getDisplay();
         // Default Colors
-        bgColor = display.getSystemColor(SWT.COLOR_WHITE); // new
-                                                           // Color(null,255,255,255);
-        nodeColor = display.getSystemColor(SWT.COLOR_GRAY); // new
-                                                            // Color(null,192,192,192);
-        textColor = display.getSystemColor(SWT.COLOR_BLACK); // new
-                                                             // Color(null,0,0,0);
+        bgColor = display.getSystemColor(SWT.COLOR_WHITE); // new Color(null,255,255,255);
+        nodeColor = display.getSystemColor(SWT.COLOR_GRAY); // new Color(null,192,192,192);
+        textColor = display.getSystemColor(SWT.COLOR_BLACK); // new Color(null,0,0,0);
         markColor = new Color(null, 192, 0, 0);
         markColor2 = new Color(null, 128, 0, 128);
         markColor3 = new Color(null, 0, 0, 96);
@@ -524,12 +519,14 @@ public class DataflowGraph extends Composite {
      * @return the NodeCanvas
      */
     private NodeCanvas getNode(int index) {
-        if (nodes == null)
+        if (nodes == null) {
             return null;
+        }
 
         for (NodeCanvas node : nodes) {
-            if (node.getIndex() == index)
+            if (node.getIndex() == index) {
                 return node;
+            }
         }
 
         return null;
@@ -543,8 +540,9 @@ public class DataflowGraph extends Composite {
      * @return the Path
      */
     private PathCanvas getPath(int index1, int index2) {
-        if (paths == null)
+        if (paths == null) {
             return null;
+        }
 
         for (PathCanvas path : paths) {
             if (path.getIndex1() == index1 && path.getIndex2() == index2) {
@@ -602,8 +600,9 @@ public class DataflowGraph extends Composite {
      * @param varName
      */
     public void markPath(int line1, int line2, String varName) {
-        if (nodes == null || paths == null)
+        if (nodes == null || paths == null) {
             return;
+        }
 
         // twist the Lines if needed
         if (line1 > line2) {
@@ -624,9 +623,10 @@ public class DataflowGraph extends Composite {
                 continue;
             }
 
-            if (node.getLine() == line1) { // if a Node is set at the given
-                                           // first Line we color it and add it
-                                           // as starting Node
+            if (node.getLine() == line1) {
+                // if a Node is set at the given
+                // first Line we color it and add it
+                // as starting Node
                 node.mark(true, markColor);
                 startNodes.add(node.getINode());
             } else if (node.getLine() == line2) {
@@ -649,15 +649,17 @@ public class DataflowGraph extends Composite {
 
             // from every starting Node we search for a Path to the ending node
             List<PathCanvas> pathList = findPath(start, endNode, new ArrayList<DataFlowNode>());
-            if (pathList == null)
+            if (pathList == null) {
                 continue;
+            }
 
             // we get a List of PathCanvas, that build up the searched Path
             for (PathCanvas currentPath : pathList) {
                 // if some PathCanvas are already found and
                 // set to mark, we don't want to mark them again
-                if (!pathsToMark.contains(currentPath))
+                if (!pathsToMark.contains(currentPath)) {
                     pathsToMark.add(currentPath);
+                }
             }
         }
 
@@ -710,17 +712,18 @@ public class DataflowGraph extends Composite {
             // this is the Search
             for (DataFlowNode node : start.getChildren()) {
                 // here we avoid Loops by checking the visited nodes
-                if (visited.contains(node))
+                if (visited.contains(node)) {
                     continue;
+                }
                 // ... and adding the current Node
                 visited.add(node);
 
                 // the Recursion: find the Path from
                 // the current Node's children to the End
                 List<PathCanvas> isFound = findPath(node, end, visited);
-                if (isFound == null)
+                if (isFound == null) {
                     continue;
-                else {
+                } else {
                     // if a Path (from child to end) is found
                     // we can add the Path from this Node to the child
                     PathCanvas path2 = isFound.get(0);

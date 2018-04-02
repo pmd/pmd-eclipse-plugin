@@ -5,19 +5,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import net.sourceforge.pmd.eclipse.ui.BasicTableLabelProvider;
-import net.sourceforge.pmd.eclipse.ui.editors.SyntaxManager;
-import net.sourceforge.pmd.eclipse.ui.model.FileRecord;
-import net.sourceforge.pmd.eclipse.ui.preferences.br.BasicTableManager;
-import net.sourceforge.pmd.eclipse.ui.views.AbstractStructureInspectorPage;
-import net.sourceforge.pmd.lang.ast.AbstractNode;
-import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ParseException;
-import net.sourceforge.pmd.lang.rule.xpath.XPathRuleQuery;
-import net.sourceforge.pmd.util.StringUtil;
-
 import org.eclipse.core.resources.IResource;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.TableViewer;
@@ -48,6 +35,19 @@ import org.jaxen.BaseXPath;
 import org.jaxen.JaxenException;
 import org.jaxen.XPathSyntaxException;
 
+import net.sourceforge.pmd.eclipse.ui.BasicTableLabelProvider;
+import net.sourceforge.pmd.eclipse.ui.editors.SyntaxManager;
+import net.sourceforge.pmd.eclipse.ui.model.FileRecord;
+import net.sourceforge.pmd.eclipse.ui.preferences.br.BasicTableManager;
+import net.sourceforge.pmd.eclipse.ui.views.AbstractStructureInspectorPage;
+import net.sourceforge.pmd.lang.ast.AbstractNode;
+import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ParseException;
+import net.sourceforge.pmd.lang.rule.xpath.XPathRuleQuery;
+import net.sourceforge.pmd.util.StringUtil;
+
 /**
  * A combined abstract syntax tree viewer for a whole class or selected methods
  * and an XPath editor/evaluator on the right that works with it.
@@ -69,10 +69,11 @@ public class ASTViewPage extends AbstractStructureInspectorPage {
 
     // private static Set<String> keywords = new HashSet<String>();
 
-    private static Set<Class<?>> HiddenNodeTypes;
+    private static Set<Class<?>> hiddenNodeTypes;
+
     static {
-        HiddenNodeTypes = new HashSet<Class<?>>();
-        HiddenNodeTypes.add(ASTImportDeclaration.class);
+        hiddenNodeTypes = new HashSet<Class<?>>();
+        hiddenNodeTypes.add(ASTImportDeclaration.class);
     }
 
     /**
@@ -124,8 +125,9 @@ public class ASTViewPage extends AbstractStructureInspectorPage {
         classBtn.setText("Class");
         classBtn.addSelectionListener(new SelectionAdapter() {
             public void widgetSelected(SelectionEvent se) {
-                if (classBtn.getSelection())
+                if (classBtn.getSelection()) {
                     showClass();
+                }
             }
         });
 
@@ -190,9 +192,9 @@ public class ASTViewPage extends AbstractStructureInspectorPage {
         // outputField.setLayoutData(gridData);
         // SyntaxManager.adapt(outputField, "xpath", null);
 
-        BasicTableManager tableMgr = new BasicTableManager("ast", null, NodeColumnUI.VisibleColumns);
+        BasicTableManager tableMgr = new BasicTableManager("ast", null, NodeColumnUI.VISIBLE_COLUMNS);
         resultsViewer = tableMgr.buildTableViewer(xpathTestPanel);
-        tableMgr.setupColumns(NodeColumnUI.VisibleColumns);
+        tableMgr.setupColumns(NodeColumnUI.VISIBLE_COLUMNS);
 
         IStructuredContentProvider contentProvider = new IStructuredContentProvider() {
             public void dispose() {
@@ -205,7 +207,7 @@ public class ASTViewPage extends AbstractStructureInspectorPage {
                 return (Node[]) inputElement;
             }
         };
-        BasicTableLabelProvider labelProvider = new BasicTableLabelProvider(NodeColumnUI.VisibleColumns);
+        BasicTableLabelProvider labelProvider = new BasicTableLabelProvider(NodeColumnUI.VISIBLE_COLUMNS);
 
         Table table = resultsViewer.getTable();
         table.setLayoutData(gridData);
@@ -234,16 +236,8 @@ public class ASTViewPage extends AbstractStructureInspectorPage {
         try {
             new BaseXPath(xpathString, null);
         } catch (XPathSyntaxException ex) {
-            System.out.println(ex.getPosition() + "  " + ex.getMessage()); // TODO
-                                                                           // add
-                                                                           // error
-                                                                           // marker
-                                                                           // to
-                                                                           // editor,
-                                                                           // red-underlining
-                                                                           // on
-                                                                           // offending
-                                                                           // text
+            // TODO add error marker to editor, red-underlining on offending text
+            System.out.println(ex.getPosition() + "  " + ex.getMessage());
             goButton.setEnabled(false);
             return;
         } catch (JaxenException ex) {
@@ -256,14 +250,14 @@ public class ASTViewPage extends AbstractStructureInspectorPage {
 
     private void evaluateXPath() {
 
-        if (!setupTest())
+        if (!setupTest()) {
             return;
+        }
 
         List<Node> results = null;
         try {
-            results = XPathEvaluator.instance.evaluate(getDocument().get(), xpathField.getText(),
-                    XPathRuleQuery.XPATH_1_0 // TODO derive from future combo
-                                             // widget
+            results = XPathEvaluator.INSTANCE.evaluate(getDocument().get(), xpathField.getText(),
+                    XPathRuleQuery.XPATH_1_0 // TODO derive from future combo widget
             );
         } catch (ParseException pe) {
             showError(pe.fillInStackTrace().getMessage());
@@ -355,7 +349,7 @@ public class ASTViewPage extends AbstractStructureInspectorPage {
 
         if (classNode == null) {
             String source = getDocument().get();
-            classNode = XPathEvaluator.instance.getCompilationUnit(source);
+            classNode = XPathEvaluator.INSTANCE.getCompilationUnit(source);
         }
 
         astViewer.setInput(classNode);
@@ -364,8 +358,9 @@ public class ASTViewPage extends AbstractStructureInspectorPage {
 
     protected void showMethod(ASTMethodDeclaration pmdMethod) {
 
-        if (pmdMethod == null)
+        if (pmdMethod == null) {
             return;
+        }
 
         astViewer.setInput(pmdMethod);
         astViewer.expandAll();

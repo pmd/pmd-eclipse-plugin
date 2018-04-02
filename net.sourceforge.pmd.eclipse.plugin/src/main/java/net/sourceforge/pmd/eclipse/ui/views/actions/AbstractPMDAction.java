@@ -1,11 +1,11 @@
 
 package net.sourceforge.pmd.eclipse.ui.views.actions;
 
+import org.eclipse.jface.action.Action;
+
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.runtime.preferences.IPreferences;
 import net.sourceforge.pmd.eclipse.ui.nls.StringTable;
-
-import org.eclipse.jface.action.Action;
 
 /**
  * 
@@ -37,12 +37,14 @@ public abstract class AbstractPMDAction extends Action {
     protected void setupWidget() {
 
         String imageId = imageId();
-        if (imageId != null)
+        if (imageId != null) {
             setImageDescriptor(PMDPlugin.getImageDescriptor(imageId));
+        }
 
         String toolTipMsgId = tooltipMsgId();
-        if (toolTipMsgId != null)
+        if (toolTipMsgId != null) {
             setToolTipText(getString(toolTipMsgId));
+        }
     }
 
     protected static IPreferences loadPreferences() {

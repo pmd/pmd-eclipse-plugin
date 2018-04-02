@@ -5,13 +5,13 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.eclipse.runtime.builder.MarkerUtil;
-
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
+
+import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.eclipse.runtime.builder.MarkerUtil;
 
 /**
  * Base Class for Actions that need to know, which Markers are selected
@@ -44,8 +44,9 @@ public abstract class AbstractViolationSelectionAction extends AbstractPMDAction
         super.setupWidget();
 
         String textId = textId();
-        if (textId != null)
+        if (textId != null) {
             setText(getString(textId));
+        }
     }
 
     protected boolean hasSelections() {
@@ -54,8 +55,9 @@ public abstract class AbstractViolationSelectionAction extends AbstractPMDAction
 
     protected List<Rule> getSelectedViolationRules() {
 
-        if (!hasSelections())
+        if (!hasSelections()) {
             return Collections.emptyList();
+        }
 
         IMarker[] markers = getSelectedViolations();
         return MarkerUtil.rulesFor(markers);
