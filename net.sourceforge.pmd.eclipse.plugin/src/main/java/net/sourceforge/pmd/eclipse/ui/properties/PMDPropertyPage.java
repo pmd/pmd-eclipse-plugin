@@ -389,7 +389,7 @@ public class PMDPropertyPage extends PropertyPage {
 
         availableRulesTableViewer.setContentProvider(new RuleSetContentProvider());
         availableRulesTableViewer.setLabelProvider(new RuleLabelProvider());
-        availableRulesTableViewer.setSorter(availableRuleTableViewerSorter);
+        availableRulesTableViewer.setComparator(availableRuleTableViewerSorter);
         availableRulesTableViewer.setColumnProperties(
                 new String[] { PMDPreferencePage.PROPERTY_LANGUAGE, PMDPreferencePage.PROPERTY_RULESET_NAME,
                     PMDPreferencePage.PROPERTY_RULE_NAME, PMDPreferencePage.PROPERTY_SINCE,

@@ -37,7 +37,7 @@ package net.sourceforge.pmd.eclipse.ui.preferences;
 import java.util.Comparator;
 
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.jface.viewers.ViewerSorter;
+import org.eclipse.jface.viewers.ViewerComparator;
 
 import net.sourceforge.pmd.Rule;
 
@@ -48,7 +48,7 @@ import net.sourceforge.pmd.Rule;
  *
  */
 
-public class RuleTableViewerSorter extends ViewerSorter {
+public class RuleTableViewerSorter extends ViewerComparator {
 
     /**
      * Default Rule comparator for tabular display of Rules.
@@ -146,13 +146,6 @@ public class RuleTableViewerSorter extends ViewerSorter {
     }
 
     /**
-     * @return Returns the comparator.
-     */
-    public Comparator<Rule> getComparator() {
-        return comparator;
-    }
-
-    /**
      * Set a comparator. If the same comparator is already set, then change the
      * sorting order.
      * 
@@ -167,10 +160,14 @@ public class RuleTableViewerSorter extends ViewerSorter {
         }
     }
 
-    /**
-     * @see org.eclipse.jface.viewers.ViewerSorter#compare(org.eclipse.jface.viewers.Viewer,
-     *      java.lang.Object, java.lang.Object)
-     */
+    @Override
+    protected Comparator<? super String> getComparator() {
+        // safe-guard
+        throw new UnsupportedOperationException("Getting the underlaying comparator is not allowed"
+                + " - since a different one is actually used");
+    }
+
+    @Override
     public int compare(Viewer viewer, Object e1, Object e2) {
         int result = comparator.compare((Rule) e1, (Rule) e2);
         return sortDescending ? 0 - result : result;

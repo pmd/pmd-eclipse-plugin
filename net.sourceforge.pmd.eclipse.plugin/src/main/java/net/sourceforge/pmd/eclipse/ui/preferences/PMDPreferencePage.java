@@ -357,7 +357,7 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 
         ruleTableViewer.setContentProvider(new RuleSetContentProvider());
         ruleTableViewer.setLabelProvider(new RuleLabelProvider());
-        ruleTableViewer.setSorter(ruleTableViewerSorter);
+        ruleTableViewer.setComparator(ruleTableViewerSorter);
         ruleTableViewer.addSelectionChangedListener(new ISelectionChangedListener() {
             /**
              * @see org.eclipse.jface.viewers.ISelectionChangedListener#selectionChanged(SelectionChangedEvent)
