@@ -71,8 +71,6 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 
-import name.herlin.command.CommandException;
-import name.herlin.command.Timer;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
@@ -83,6 +81,10 @@ import net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties;
 import net.sourceforge.pmd.eclipse.runtime.properties.PropertiesException;
 import net.sourceforge.pmd.eclipse.ui.actions.RuleSetUtil;
 import net.sourceforge.pmd.util.StringUtil;
+
+import name.herlin.command.CommandException;
+import name.herlin.command.Timer;
+
 
 /**
  * This command executes the PMD engine on a specified resource
