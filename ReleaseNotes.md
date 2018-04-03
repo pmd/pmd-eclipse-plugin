@@ -11,12 +11,12 @@ Eclipse Update Site:
 
 ### New and noteworthy
 
-*   Updated PMD to 6.1.0
+*   Updated PMD to 6.2.0
 *   At least Java 1.7 is required now.
 
 ### Fixed Issues
 
-*   [#32](https://github.com/pmd/pmd-eclipse-plugin/issues/32): Upgrade PMD to 6.1.0
+*   [#32](https://github.com/pmd/pmd-eclipse-plugin/issues/32): Upgrade PMD to 6.2.0
 
 ### External Contributions
 
