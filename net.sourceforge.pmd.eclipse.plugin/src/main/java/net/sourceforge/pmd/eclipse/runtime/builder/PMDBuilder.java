@@ -12,6 +12,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 
+import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.runtime.cmd.ReviewCodeCmd;
 
@@ -93,6 +94,12 @@ public class PMDBuilder extends IncrementalProjectBuilder {
      * @throws CommandException
      */
     private void buildIncremental(IProgressMonitor monitor) throws CommandException {
+        /*
+        * Check the user preference to see if the user wants to run PMD on a save
+        * */
+        if (!PMDPlugin.getDefault().loadPreferences().isCheckAfterSaveEnabled()) {
+            return;
+        }
         IProject currentProject = getProject();
         if (currentProject != null) {
             IResourceDelta resourceDelta = this.getDelta(currentProject);
