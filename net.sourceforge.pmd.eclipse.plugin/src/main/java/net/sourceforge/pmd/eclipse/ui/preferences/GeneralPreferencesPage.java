@@ -72,6 +72,7 @@ import net.sourceforge.pmd.util.StringUtil;
  *
  * @author Philippe Herlin
  * @author Brian Remedios
+ * @author Phillip Krall
  */
 public class GeneralPreferencesPage extends PreferencePage implements IWorkbenchPreferencePage {
 
@@ -81,6 +82,8 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
     private Text additionalCommentText;
     private Label sampleLabel;
     private Button showPerspectiveBox;
+    private Button showViolationsOverviewViewBox;
+    private Button showViolationsOutlineViewBox;
     private Button useProjectBuildPath;
     private Button checkCodeOnSave;
     private Button useCustomPriorityNames;
@@ -141,7 +144,7 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
     }
 
     /**
-     * Build the group of general preferences
+     * Build the group of general preferences.
      * 
      * @param parent
      *            the parent composite
@@ -154,6 +157,8 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
         group.setLayout(new GridLayout(1, false));
 
         showPerspectiveBox = buildShowPerspectiveBoxButton(group);
+        showViolationsOverviewViewBox = buildShowViolationOverviewBoxButton(group);
+        showViolationsOutlineViewBox = buildShowViolationOutlineBoxButton(group);
         useProjectBuildPath = buildUseProjectBuildPathButton(group);
         checkCodeOnSave = buildCheckCodeOnSaveButton(group);
         Label separator = new Label(group, SWT.SEPARATOR | SWT.SHADOW_IN | SWT.HORIZONTAL);
@@ -164,6 +169,16 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
         data.grabExcessHorizontalSpace = true;
         showPerspectiveBox.setLayoutData(data);
 
+        data = new GridData();
+        data.horizontalAlignment = GridData.FILL;
+        data.grabExcessHorizontalSpace = true;
+        showViolationsOverviewViewBox.setLayoutData(data);
+        
+        data = new GridData();
+        data.horizontalAlignment = GridData.FILL;
+        data.grabExcessHorizontalSpace = true;
+        showViolationsOutlineViewBox.setLayoutData(data);
+        
         data = new GridData();
         data.horizontalAlignment = GridData.FILL;
         data.grabExcessHorizontalSpace = true;
@@ -627,6 +642,32 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
         button.setSelection(preferences.isPmdPerspectiveEnabled());
         return button;
     }
+    
+    /**
+     * Build the button and label to show the violations overview when running a code review.
+     * 
+     * @param viewGroup the view group
+     * @return
+     */
+    private Button buildShowViolationOverviewBoxButton(Composite viewGroup) {
+        Button button = new Button(viewGroup, SWT.CHECK);
+        button.setText(getMessage(StringKeys.PREF_GENERAL_LABEL_SHOW_VIOLATIONS_OVERVIEW));
+        button.setSelection(preferences.isPmdViolationsOverviewEnabled());
+        return button;
+    }
+    
+    /**
+     * Build the button and label to show the violations outline when running a code review.
+     * 
+     * @param viewGroup the view group
+     * @return
+     */
+    private Button buildShowViolationOutlineBoxButton(Composite viewGroup) {
+        Button button = new Button(viewGroup, SWT.CHECK);
+        button.setText(getMessage(StringKeys.PREF_GENERAL_LABEL_SHOW_VIOLATIONS_OUTLINE));
+        button.setSelection(preferences.isPmdViolationsOutlineEnabled());
+        return button;
+    }
 
     /**
      * Build the check box for enabling using Project Build Path
@@ -701,6 +742,8 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
         setText(additionalCommentText, IPreferences.REVIEW_ADDITIONAL_COMMENT_DEFAULT);
 
         setSelection(showPerspectiveBox, IPreferences.PMD_PERSPECTIVE_ENABLED_DEFAULT);
+        setSelection(showViolationsOverviewViewBox, IPreferences.PMD_VIOLATIONS_OVERVIEW_ENABLED_DEFAULT);
+        setSelection(showViolationsOutlineViewBox, IPreferences.PMD_VIOLATIONS_OUTLINE_ENABLED_DEFAULT);
         setSelection(checkCodeOnSave, IPreferences.PMD_CHECK_AFTER_SAVE_DEFAULT);
         setSelection(useCustomPriorityNames, IPreferences.PMD_USE_CUSTOM_PRIORITY_NAMES_DEFAULT);
         setSelection(useProjectBuildPath, IPreferences.PROJECT_BUILD_PATH_ENABLED_DEFAULT);
@@ -803,6 +846,14 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
 
         if (showPerspectiveBox != null) {
             preferences.setPmdPerspectiveEnabled(showPerspectiveBox.getSelection());
+        }
+        
+        if (showViolationsOverviewViewBox != null) {
+            preferences.setPmdViolationsOverviewEnabled(showViolationsOverviewViewBox.getSelection());
+        }
+        
+        if (showViolationsOutlineViewBox != null) {
+            preferences.setPmdViolationsOutlineEnabled(showViolationsOutlineViewBox.getSelection());
         }
 
         if (checkCodeOnSave != null) {

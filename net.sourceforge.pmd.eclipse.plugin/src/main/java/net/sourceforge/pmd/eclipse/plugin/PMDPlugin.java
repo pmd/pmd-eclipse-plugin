@@ -46,6 +46,7 @@ import org.eclipse.ui.IDecoratorManager;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.Bundle;
@@ -88,6 +89,8 @@ public class PMDPlugin extends AbstractUIPlugin {
     private static File pluginFolder;
 
     private FileChangeReviewer changeReviewer;
+    public static final String VIOLATIONS_OVERVIEW_ID = "net.sourceforge.pmd.eclipse.ui.views.violationOverview";
+    public static final String VIOLATIONS_OUTLINE_ID = "net.sourceforge.pmd.eclipse.ui.views.violationOutline";
 
     private Map<RGB, Color> coloursByRGB = new HashMap<RGB, Color>();
 
@@ -263,6 +266,24 @@ public class PMDPlugin extends AbstractUIPlugin {
             }
         }
         return files;
+    }
+    
+    /**
+     * Open a view to the id passed in.
+     * 
+     * @param viewId id of the view
+     */
+    public void showView(final String viewId) {
+        Display.getDefault().asyncExec(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(viewId);
+                } catch (PartInitException e) {
+                    LOG.error(e);
+                }
+            }
+        });
     }
 
     public void fileChangeListenerEnabled(boolean flag) {

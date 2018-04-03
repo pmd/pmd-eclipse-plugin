@@ -56,6 +56,8 @@ public interface IPreferences {
 
     boolean PROJECT_BUILD_PATH_ENABLED_DEFAULT = true;
     boolean PMD_PERSPECTIVE_ENABLED_DEFAULT = true;
+    boolean PMD_VIOLATIONS_OVERVIEW_ENABLED_DEFAULT = false;
+    boolean PMD_VIOLATIONS_OUTLINE_ENABLED_DEFAULT = false;
     boolean PMD_CHECK_AFTER_SAVE_DEFAULT = false;
     boolean PMD_USE_CUSTOM_PRIORITY_NAMES_DEFAULT = true;
     int MAX_VIOLATIONS_PFPR_DEFAULT = 5;
@@ -110,6 +112,18 @@ public interface IPreferences {
      * is launched ?
      */
     boolean isPmdPerspectiveEnabled();
+    
+    /**
+     * Should the plugin show the PMD violations overview when a code review is launched?
+     * @return
+     */
+    boolean isPmdViolationsOverviewEnabled();
+    
+    /**
+     * Should the plugin show the PMD violations outline when a code review is launched?
+     * @return
+     */
+    boolean isPmdViolationsOutlineEnabled();
 
     /**
      * Should the plugin scan any newly-saved code?
@@ -130,6 +144,18 @@ public interface IPreferences {
      * review is launched
      */
     void setPmdPerspectiveEnabled(boolean pmdPerspectiveEnabled);
+    
+    /**
+     * Set whether the plugin switch to the PMD violations overview when a manual code
+     * review is launched
+     */
+    void setPmdViolationsOverviewEnabled(boolean pmdViolationsOverviewEnabled);
+    
+    /**
+     * Set whether the plugin switch to the PMD violations outline when a manual code
+     * review is launched
+     */
+    void setPmdViolationsOutlineEnabled(boolean pmdViolationsOutlineEnabled);
 
     /**
      * Get the maximum number of violations per file per rule reported by the

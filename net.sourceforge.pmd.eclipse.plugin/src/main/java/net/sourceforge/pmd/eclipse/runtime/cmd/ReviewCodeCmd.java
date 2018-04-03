@@ -71,6 +71,8 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 
+import name.herlin.command.CommandException;
+import name.herlin.command.Timer;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
@@ -81,9 +83,6 @@ import net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties;
 import net.sourceforge.pmd.eclipse.runtime.properties.PropertiesException;
 import net.sourceforge.pmd.eclipse.ui.actions.RuleSetUtil;
 import net.sourceforge.pmd.util.StringUtil;
-
-import name.herlin.command.CommandException;
-import name.herlin.command.Timer;
 
 /**
  * This command executes the PMD engine on a specified resource
@@ -100,6 +99,8 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
     private Map<IFile, Set<MarkerInfo2>> markersByFile = new HashMap<IFile, Set<MarkerInfo2>>();
     private boolean taskMarker;
     private boolean openPmdPerspective;
+    private boolean openPmdViolationsOverviewView;
+    private boolean openPmdViolationsOutlineView;
     private int ruleCount;
     private int fileCount;
     private long pmdDuration;
@@ -144,6 +145,8 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
         cmd.setStepCount(files.size());
         cmd.setTaskMarker(true);
         cmd.setOpenPmdPerspective(PMDPlugin.getDefault().loadPreferences().isPmdPerspectiveEnabled());
+        cmd.setOpenPmdViolationsOverviewView(PMDPlugin.getDefault().loadPreferences().isPmdViolationsOverviewEnabled());
+        cmd.setOpenPmdViolationsOutlineView(PMDPlugin.getDefault().loadPreferences().isPmdViolationsOutlineEnabled());
         cmd.setUserInitiated(true);
         cmd.setRunAlways(true);
         for (IResource file : files) {
@@ -255,6 +258,14 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
                 });
             }
 
+            if (openPmdViolationsOverviewView) {
+                PMDPlugin.getDefault().showView(PMDPlugin.VIOLATIONS_OVERVIEW_ID);
+            }
+            
+            if (openPmdViolationsOutlineView) {
+                PMDPlugin.getDefault().showView(PMDPlugin.VIOLATIONS_OUTLINE_ID);
+            }
+
         } catch (CoreException e) {
             throw new CommandException("Core exception when reviewing code", e);
         } finally {
@@ -338,6 +349,24 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
     public void setOpenPmdPerspective(boolean openPmdPerspective) {
         this.openPmdPerspective = openPmdPerspective;
     }
+    
+    /**
+     * Set the open violations view to run after code review.
+     * 
+     * @param openPmdViolationsView should open
+     */
+    public void setOpenPmdViolationsOverviewView(boolean openPmdViolationsView) {
+        this.openPmdViolationsOverviewView = openPmdViolationsView;
+    }
+    
+    /**
+     * Set the open violations outline view to run after code review.
+     * 
+     * @param openPmdViolationsOutlineView should open
+     */
+    public void setOpenPmdViolationsOutlineView(boolean openPmdViolationsOutlineView) {
+        this.openPmdViolationsOutlineView = openPmdViolationsOutlineView;
+    }
 
     /**
      * @see name.herlin.command.Command#reset()
@@ -348,6 +377,8 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
         markersByFile = new HashMap<IFile, Set<MarkerInfo2>>();
         setTerminated(false);
         openPmdPerspective = false;
+        openPmdViolationsOverviewView = false;
+        openPmdViolationsOutlineView = false;
         onErrorIssue = null;
         runAlways = false;
     }

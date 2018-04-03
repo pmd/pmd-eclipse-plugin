@@ -66,6 +66,9 @@ public class StringKeys {
     public static final String PREF_GENERAL_GROUP_PRIORITIES = "preference.pmd.group.priorities";
     public static final String PREF_GENERAL_GROUP_GENERAL = "preference.pmd.group.general";
     public static final String PREF_GENERAL_LABEL_SHOW_PERSPECTIVE = "preference.pmd.label.perspective_on_check";
+    // TODO (pk) Add the Fr version
+    public static final String PREF_GENERAL_LABEL_SHOW_VIOLATIONS_OVERVIEW = "preference.pmd.label.violationsoverview_on_check";
+    public static final String PREF_GENERAL_LABEL_SHOW_VIOLATIONS_OUTLINE = "preference.pmd.label.violationsoutline_on_check";
     public static final String PREF_GENERAL_LABEL_CHECK_AFTER_SAVING = "preference.pmd.label.check_after_saving";
     public static final String PREF_GENERAL_LABEL_USE_DFA = "preference.pmd.label.use_dfa";
     public static final String PREF_GENERAL_LABEL_USE_PROJECT_BUILD_PATH = "preference.pmd.label.use_project_build_path";
