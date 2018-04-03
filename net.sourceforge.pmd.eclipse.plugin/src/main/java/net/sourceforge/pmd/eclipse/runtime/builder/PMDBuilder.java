@@ -12,11 +12,9 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 
-import net.sourceforge.pmd.PMD;
+import name.herlin.command.CommandException;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.runtime.cmd.ReviewCodeCmd;
-
-import name.herlin.command.CommandException;
 
 /**
  * Implements an incremental builder for PMD. Use ResourceVisitor and
