@@ -45,7 +45,10 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IDecoratorManager;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorReference;
+import org.eclipse.ui.IViewPart;
+import org.eclipse.ui.IViewReference;
 import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.Bundle;
@@ -92,6 +95,8 @@ public class PMDPlugin extends AbstractUIPlugin {
     private Map<RGB, Color> coloursByRGB = new HashMap<RGB, Color>();
 
     public static final String PLUGIN_ID = "net.sourceforge.pmd.eclipse.plugin";
+    public static final String VIOLATIONS_OVERVIEW_ID = "net.sourceforge.pmd.eclipse.ui.views.violationOverview"; 
+    public static final String VIOLATIONS_OUTLINE_ID = "net.sourceforge.pmd.eclipse.ui.views.violationOutline"; 
 
     private static Map<IProject, IJavaProject> javaProjectsByIProject = new HashMap<IProject, IJavaProject>();
 
@@ -281,6 +286,55 @@ public class PMDPlugin extends AbstractUIPlugin {
             }
         }
     }
+    
+    /** 
+     * Get a view from the view id. 
+     * @param id id of the view 
+     * @return view 
+     */ 
+    public static IViewPart getView(String id) { 
+        IViewReference[] viewReferences = PlatformUI.getWorkbench() 
+        .getActiveWorkbenchWindow().getActivePage().getViewReferences(); 
+        for (int i = 0; i < viewReferences.length; i++) { 
+            if (id.equals(viewReferences[i].getId())) { 
+                return viewReferences[i].getView(false); 
+            } 
+        } 
+        return null; 
+    } 
+     
+    /** 
+     * refresh a view to the id passed in. 
+     *  
+     * @param viewId id of the view 
+     */ 
+    public void refreshView(final String viewId) { 
+        Display.getDefault().asyncExec(new Runnable() { 
+            @Override 
+            public void run() { 
+                try { 
+                    IViewPart view = getView(viewId); 
+                    if (view == null) { 
+                        return; 
+                    } 
+                    boolean found = false; 
+                    IViewPart[] views = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getViews(); 
+                    for (IViewPart activeView: views) { 
+                        if (activeView.getTitle().equals(view.getTitle())) { 
+                            found = true; 
+                        } 
+                    } 
+                    if (!found) { 
+                        return; 
+                    } 
+                    PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().hideView(view); 
+                    PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(viewId); 
+                } catch (PartInitException e) { 
+                    LOG.error(e); 
+                } 
+            } 
+        }); 
+    } 
 
     /*
      * (non-Javadoc)
