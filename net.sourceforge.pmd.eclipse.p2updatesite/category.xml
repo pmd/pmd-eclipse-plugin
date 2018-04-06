@@ -1,14 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <description url="https://sourceforge.net/projects/pmd/files/pmd-eclipse/update-site/">
-       PMD for Eclipse Update Site
-   </description>
-
-    <feature url="features/net.sourceforge.pmd.eclipse_4.0.5.v20141105-1906.jar"
-        id="net.sourceforge.pmd.eclipse"
-        version="4.0.16.qualifier">
-        <category name="pmdForEclipse4"/>
-    </feature>
-
-    <category-def name="pmdForEclipse4" label="PMD for Eclipse 4"/>
+   <feature id="net.sourceforge.pmd.eclipse" version="4.0.16.qualifier">
+      <category name="pmdForEclipse"/>
+   </feature>
+   <category-def name="pmdForEclipse" label="PMD for Eclipse">
+      <description>
+         PMD Plugin for Eclipse
+      </description>
+   </category-def>
 </site>
