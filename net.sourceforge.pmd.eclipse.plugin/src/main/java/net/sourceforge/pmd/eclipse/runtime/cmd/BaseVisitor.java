@@ -372,6 +372,16 @@ public class BaseVisitor {
 
                 LOG.debug("PMD found " + collectingReport.size() + " violations for file " + file.getName());
 
+                if (collectingReport.hasConfigErrors()) {
+                    StringBuilder message = new StringBuilder("There were configuration errors!\n");
+                    Iterator<ConfigurationError> errors = collectingReport.configErrors();
+                    while (errors.hasNext()) {
+                        ConfigurationError error = errors.next();
+                        message.append(error.rule().getName()).append(": ").append(error.issue()).append('\n');
+                    }
+                    PMDPlugin.getDefault().logWarn(message.toString());
+                    LOG.warn(message);
+                }
                 if (collectingReport.hasErrors()) {
                     StringBuilder message = new StringBuilder("There were processing errors!\n");
                     Iterator<ProcessingError> errors = collectingReport.errors();
