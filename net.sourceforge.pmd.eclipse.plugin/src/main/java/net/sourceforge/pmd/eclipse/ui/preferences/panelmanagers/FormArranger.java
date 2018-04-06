@@ -1,6 +1,7 @@
 
 package net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -43,7 +44,7 @@ import net.sourceforge.pmd.properties.PropertySource;
 public class FormArranger implements ValueChangeListener {
 
     private final Composite parent;
-    private final Map<Class<?>, EditorFactory> editorFactoriesByValueType;
+    private final Map<Class<?>, EditorFactory<?>> editorFactoriesByValueType;
     private final ValueChangeListener changeListener;
     private final SizeChangeListener sizeChangeListener;
     private PropertySource propertySource;
@@ -59,7 +60,7 @@ public class FormArranger implements ValueChangeListener {
      * @param factories
      *            Map<Class,EditorFactory>
      */
-    public FormArranger(Composite theParent, Map<Class<?>, EditorFactory> factories, ValueChangeListener listener,
+    public FormArranger(Composite theParent, Map<Class<?>, EditorFactory<?>> factories, ValueChangeListener listener,
             SizeChangeListener sizeListener) {
         parent = theParent;
         editorFactoriesByValueType = factories;
@@ -101,8 +102,14 @@ public class FormArranger implements ValueChangeListener {
      *            PropertyDescriptor
      * @return EditorFactory
      */
-    private EditorFactory factoryFor(PropertyDescriptor<?> desc) {
-        return editorFactoriesByValueType.get(desc.type());
+    private EditorFactory<?> factoryFor(PropertyDescriptor<?> desc) {
+        Class<?> type = desc.type();
+        if (desc.isMultiValue()) {
+            // assume it is a array type (type[])
+            type = Array.newInstance(type, 0).getClass();
+        }
+
+        return editorFactoriesByValueType.get(type);
     }
 
     public void clearChildren() {
@@ -157,7 +164,7 @@ public class FormArranger implements ValueChangeListener {
 
         int rowCount = 0; // count up the actual rows with widgets needed, not all have editors yet
         for (PropertyDescriptor<?> desc : orderedDescs) {
-            EditorFactory factory = factoryFor(desc);
+            EditorFactory<?> factory = factoryFor(desc);
             if (factory == null) {
                 System.out.println("No editor defined for: " + desc.getClass().getSimpleName());
                 continue;
@@ -226,7 +233,7 @@ public class FormArranger implements ValueChangeListener {
      *            PropertyDescriptor
      * @return boolean
      */
-    private boolean addRowWidgets(EditorFactory factory, int rowIndex, PropertyDescriptor<?> desc,
+    private boolean addRowWidgets(EditorFactory<?> factory, int rowIndex, PropertyDescriptor desc,
             boolean isXPathRule) {
 
         if (factory == null) {

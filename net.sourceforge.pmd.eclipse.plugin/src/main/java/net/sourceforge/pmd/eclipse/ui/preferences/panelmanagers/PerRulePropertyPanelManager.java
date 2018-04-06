@@ -53,10 +53,10 @@ public class PerRulePropertyPanelManager extends AbstractRulePanelManager implem
     private static final int MAX_WIDGET_HEIGHT = 30; // TODO derive this instead
     public static final String ID = "perRuleProperties";
 
-    public static final Map<Class<?>, EditorFactory> EDITOR_FACTORIES_BY_PROPERTY_TYPE;
+    public static final Map<Class<?>, EditorFactory<?>> EDITOR_FACTORIES_BY_PROPERTY_TYPE;
 
     static {
-        Map<Class<?>, EditorFactory> factoriesByPropertyType = new HashMap<Class<?>, EditorFactory>();
+        Map<Class<?>, EditorFactory<?>> factoriesByPropertyType = new HashMap<Class<?>, EditorFactory<?>>();
 
         factoriesByPropertyType.put(Boolean.class, BooleanEditorFactory.INSTANCE);
         factoriesByPropertyType.put(String.class, StringEditorFactory.INSTANCE);
