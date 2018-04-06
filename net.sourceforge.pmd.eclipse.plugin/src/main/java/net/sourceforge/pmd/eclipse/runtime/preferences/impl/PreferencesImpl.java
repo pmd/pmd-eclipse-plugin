@@ -66,6 +66,8 @@ class PreferencesImpl implements IPreferences {
     private IPreferencesManager preferencesManager;
     private boolean projectBuildPathEnabled;
     private boolean pmdPerspectiveEnabled;
+    private boolean pmdViolationsOverviewEnabled;
+    private boolean pmdViolationsOutlineEnabled;
     private boolean checkAfterSaveEnabled;
     private boolean useCustomPriorityNames;
     private int maxViolationsPerFilePerRule;
@@ -146,6 +148,14 @@ class PreferencesImpl implements IPreferences {
     public void setPmdPerspectiveEnabled(boolean pmdPerspectiveEnabled) {
         this.pmdPerspectiveEnabled = pmdPerspectiveEnabled;
     }
+    
+    /**
+     * @see net.sourceforge.pmd.eclipse.runtime.preferences.IPreferences#setPmdViolationsOverviewEnabled(boolean)
+     */
+    public void setPmdViolationsOverviewEnabled(boolean pmdViolationsOverviewEnabled) {
+        this.pmdViolationsOverviewEnabled = pmdViolationsOverviewEnabled;
+    }
+    
 
     /**
      * @see net.sourceforge.pmd.eclipse.runtime.preferences.IPreferences#getMaxViolationsPerFilePerRule()
@@ -323,9 +333,25 @@ class PreferencesImpl implements IPreferences {
     public Set<String> activeReportRenderers() {
         return activeRendererNames;
     }
-
+    
+    @Override
     public void activeReportRenderers(Set<String> names) {
         activeRendererNames = names;
+    }
+
+    @Override
+    public boolean isPmdViolationsOverviewEnabled() {
+        return pmdViolationsOverviewEnabled;
+    }
+
+    @Override
+    public boolean isPmdViolationsOutlineEnabled() {
+        return pmdViolationsOutlineEnabled;
+    }
+
+    @Override
+    public void setPmdViolationsOutlineEnabled(boolean pmdViolationsOutlineEnabled) {
+        this.pmdViolationsOutlineEnabled = pmdViolationsOutlineEnabled;
     }
 
 }

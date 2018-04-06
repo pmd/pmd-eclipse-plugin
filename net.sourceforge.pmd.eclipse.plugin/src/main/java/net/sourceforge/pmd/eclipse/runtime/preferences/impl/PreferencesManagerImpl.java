@@ -94,6 +94,8 @@ class PreferencesManagerImpl implements IPreferencesManager {
 
     private static final String PROJECT_BUILD_PATH_ENABLED = PMDPlugin.PLUGIN_ID + ".project_build_path_enabled";
     private static final String PMD_PERSPECTIVE_ENABLED = PMDPlugin.PLUGIN_ID + ".pmd_perspective_enabled";
+    private static final String PMD_VIOLATIONS_OVERVIEW_ENABLED = PMDPlugin.PLUGIN_ID + ".pmd_overview_enabled";
+    private static final String PMD_VIOLATIONS_OUTLINE_ENABLED = PMDPlugin.PLUGIN_ID + ".pmd_outline_enabled";
     private static final String PMD_CHECK_AFTER_SAVE_ENABLED = PMDPlugin.PLUGIN_ID + ".pmd_check_after_save_enabled";
     private static final String MAX_VIOLATIONS_PFPR = PMDPlugin.PLUGIN_ID + ".max_violations_pfpr";
     private static final String REVIEW_ADDITIONAL_COMMENT = PMDPlugin.PLUGIN_ID + ".review_additional_comment";
@@ -174,6 +176,8 @@ class PreferencesManagerImpl implements IPreferencesManager {
 
         loadProjectBuildPathEnabled();
         loadPmdPerspectiveEnabled();
+        loadPmdViolationsOverviewEnabled();
+        loadPmdViolationsOutlineEnabled();
         loadCheckAfterSaveEnabled();
         loadUseCustomPriorityNames();
         loadMaxViolationsPerFilePerRule();
@@ -238,6 +242,8 @@ class PreferencesManagerImpl implements IPreferencesManager {
 
         storeProjectBuildPathEnabled();
         storePmdPerspectiveEnabled();
+        storePmdViolationsOverviewEnabled();
+        storePmdViolationsOutlineEnabled();
         storeCheckAfterSaveEnabled();
         storeUseCustomPriorityNames();
         storeMaxViolationsPerFilePerRule();
@@ -283,7 +289,17 @@ class PreferencesManagerImpl implements IPreferencesManager {
         loadPreferencesStore.setDefault(PMD_PERSPECTIVE_ENABLED, IPreferences.PMD_PERSPECTIVE_ENABLED_DEFAULT);
         preferences.setPmdPerspectiveEnabled(loadPreferencesStore.getBoolean(PMD_PERSPECTIVE_ENABLED));
     }
-
+    
+    private void loadPmdViolationsOverviewEnabled() {
+        loadPreferencesStore.setDefault(PMD_VIOLATIONS_OVERVIEW_ENABLED, IPreferences.PMD_VIOLATIONS_OVERVIEW_ENABLED_DEFAULT);
+        preferences.setPmdPerspectiveEnabled(loadPreferencesStore.getBoolean(PMD_VIOLATIONS_OVERVIEW_ENABLED));
+    }
+    
+    private void loadPmdViolationsOutlineEnabled() {
+        loadPreferencesStore.setDefault(PMD_VIOLATIONS_OUTLINE_ENABLED, IPreferences.PMD_VIOLATIONS_OUTLINE_ENABLED_DEFAULT);
+        preferences.setPmdPerspectiveEnabled(loadPreferencesStore.getBoolean(PMD_VIOLATIONS_OUTLINE_ENABLED));
+    }
+    
     private void loadCheckAfterSaveEnabled() {
         loadPreferencesStore.setDefault(PMD_CHECK_AFTER_SAVE_ENABLED, IPreferences.PMD_CHECK_AFTER_SAVE_DEFAULT);
         preferences.isCheckAfterSaveEnabled(loadPreferencesStore.getBoolean(PMD_CHECK_AFTER_SAVE_ENABLED));
@@ -428,6 +444,14 @@ class PreferencesManagerImpl implements IPreferencesManager {
         storePreferencesStore.setValue(PMD_PERSPECTIVE_ENABLED, preferences.isPmdPerspectiveEnabled());
     }
 
+    private void storePmdViolationsOverviewEnabled() {
+        storePreferencesStore.setValue(PMD_VIOLATIONS_OVERVIEW_ENABLED, preferences.isPmdViolationsOverviewEnabled());
+    }
+    
+    private void storePmdViolationsOutlineEnabled() {
+        storePreferencesStore.setValue(PMD_VIOLATIONS_OUTLINE_ENABLED, preferences.isPmdViolationsOutlineEnabled());
+    }
+    
     private void storeMaxViolationsPerFilePerRule() {
         storePreferencesStore.setValue(MAX_VIOLATIONS_PFPR, preferences.getMaxViolationsPerFilePerRule());
     }
