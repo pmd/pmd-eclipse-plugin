@@ -374,10 +374,12 @@ public class BaseVisitor {
 
                 if (collectingReport.hasErrors()) {
                     StringBuilder message = new StringBuilder("There were processing errors!\n");
-                    Iterator<ProcessingError> errors = context.getReport().errors();
+                    Iterator<ProcessingError> errors = collectingReport.errors();
                     while (errors.hasNext()) {
                         ProcessingError error = errors.next();
-                        message.append(error.getFile()).append(": ").append(error.getMsg()).append("\n");
+                        message.append(error.getFile()).append(": ").append(error.getMsg()).append(' ')
+                        .append(error.getDetail())
+                        .append("\n");
                     }
                     PMDPlugin.getDefault().logWarn(message.toString());
                     throw new PMDException(message.toString());
