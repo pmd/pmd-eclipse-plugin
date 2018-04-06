@@ -46,6 +46,7 @@ import org.eclipse.ui.IWorkingSet;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import net.sourceforge.pmd.Rule;
@@ -238,19 +239,18 @@ public class ProjectPropertiesModelTest {
 
         final RuleSetFactory factory = new RuleSetFactory();
 
-        // use the basic ruleset because it should be included in the plugin
-        // ruleset.
-        final RuleSet basicRuleSet = factory.createRuleSet("rulesets/java/basic.xml");
+        // use the best practices ruleset because it should be included in the plugin ruleset.
+        final RuleSet bestPracticesRuleSet = factory.createRuleSet("category/java/bestpractices.xml");
 
         // First set the project ruleset
-        model.setProjectRuleSet(basicRuleSet);
+        model.setProjectRuleSet(bestPracticesRuleSet);
         model.sync();
 
         // Test the ruleset we set is equal to the ruleset we queried
         final RuleSet projectRuleSet = model.getProjectRuleSet();
         Assert.assertNotNull("Project ruleset has not been set", projectRuleSet);
         Assert.assertTrue("The project ruleset is not the basic ruleset",
-                EclipseUtils.assertRuleSetEquals(basicRuleSet.getRules(), projectRuleSet.getRules(), System.out));
+                EclipseUtils.assertRuleSetEquals(bestPracticesRuleSet.getRules(), projectRuleSet.getRules(), System.out));
     }
 
     /**
@@ -258,27 +258,32 @@ public class ProjectPropertiesModelTest {
      * ben en fait non. annulé.
      */
     @Test
+    @Ignore("implementation is not finished - maybe the behavior would even be wrong")
     public void testProjectRuleSet2() throws PropertiesException, RuleSetNotFoundException, CoreException {
-        /*
-         * // First ensure that the plugin initial ruleset is equal to the project // ruleset IProjectPropertiesManager
-         * mgr = PMDPlugin.getDefault().getPropertiesManager(); IProjectProperties model =
-         * mgr.loadProjectProperties(this.testProject);
-         * 
-         * RuleSet projectRuleSet = model.getProjectRuleSet();
-         * assertEquals("The project ruleset is not equal to the plugin ruleset", this.initialPluginRuleSet.getRules(),
-         * projectRuleSet .getRules());
-         * 
-         * // use the basic ruleset and set it at the only plugin ruleset RuleSetFactory factory = new RuleSetFactory();
-         * RuleSet basicRuleSet = factory.createSingleRuleSet("rulesets/basic.xml");
-         * 
-         * IPreferencesManager pmgr = PMDPlugin.getDefault().getPreferencesManager(); pmgr.setRuleSet(basicRuleSet);
-         * 
-         * projectRuleSet = model.getProjectRuleSet();
-         * 
-         * dumpRuleSet(basicRuleSet); dumpRuleSet(projectRuleSet);
-         * assertEquals("The project ruleset is not equal to the plugin ruleset", basicRuleSet.getRules(),
-         * projectRuleSet.getRules());
-         */
+        // First ensure that the plugin initial ruleset is equal to the project
+        // // ruleset IProjectPropertiesManager
+        final IProjectPropertiesManager mgr = PMDPlugin.getDefault().getPropertiesManager();
+        final IProjectProperties model = mgr.loadProjectProperties(this.testProject);
+
+        RuleSet projectRuleSet = model.getProjectRuleSet();
+        Assert.assertEquals("The project ruleset is not equal to the plugin ruleset",
+                this.initialPluginRuleSet.getRules(), projectRuleSet.getRules());
+
+        final RuleSetFactory factory = new RuleSetFactory();
+
+        // use the best practices ruleset because it should be included in the
+        // plugin ruleset.
+        final RuleSet bestPracticesRuleSet = factory.createRuleSet("category/java/bestpractices.xml");
+
+        IPreferencesManager pmgr = PMDPlugin.getDefault().getPreferencesManager();
+        pmgr.setRuleSet(bestPracticesRuleSet);
+
+        projectRuleSet = model.getProjectRuleSet();
+
+        dumpRuleSet(bestPracticesRuleSet);
+        dumpRuleSet(projectRuleSet);
+        Assert.assertEquals("The project ruleset is not equal to the plugin ruleset", bestPracticesRuleSet.getRules(),
+                projectRuleSet.getRules());
     }
 
     /**
@@ -286,7 +291,6 @@ public class ProjectPropertiesModelTest {
      */
     @Test
     public void testProjectRuleSet3() throws PropertiesException, RuleSetNotFoundException, CoreException {
-
         // First ensure that the plugin initial ruleset is equal to the project
         // ruleset
         final IProjectPropertiesManager mgr = PMDPlugin.getDefault().getPropertiesManager();
@@ -407,11 +411,11 @@ public class ProjectPropertiesModelTest {
         final IProjectProperties model = mgr.loadProjectProperties(this.testProject);
 
         final RuleSetFactory factory = new RuleSetFactory();
-        final RuleSet basicRuleSet = factory.createRuleSet("rulesets/java/basic.xml");
+        final RuleSet bestPracticesRuleSet = factory.createRuleSet("category/java/bestpractices.xml");
         model.setPmdEnabled(true);
         model.setRuleSetStoredInProject(false);
         model.setProjectWorkingSet(null);
-        model.setProjectRuleSet(basicRuleSet);
+        model.setProjectRuleSet(bestPracticesRuleSet);
         model.sync();
 
         model.createDefaultRuleSetFile();
@@ -433,7 +437,7 @@ public class ProjectPropertiesModelTest {
         final IProjectProperties model = mgr.loadProjectProperties(this.testProject);
 
         final RuleSetFactory factory = new RuleSetFactory();
-        final RuleSet basicRuleSet = factory.createRuleSet("rulesets/java/basic.xml");
+        final RuleSet basicRuleSet = factory.createRuleSet("category/java/bestpractices.xml");
         model.setPmdEnabled(true);
         model.setRuleSetStoredInProject(false);
         model.setProjectWorkingSet(null);

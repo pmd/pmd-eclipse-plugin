@@ -120,8 +120,8 @@ public class BasicPMDTest {
             context.setSourceCodeFilename("foo.java");
             context.setReport(new Report());
 
-            final RuleSet unnecessaryRuleSet = new RuleSetFactory().createRuleSet("rulesets/java/unnecessary.xml");
-            RuleSets rSets = new RuleSets(unnecessaryRuleSet);
+            final RuleSet codeStyleRuleSet = new RuleSetFactory().createRuleSet("category/java/codestyle.xml/UnnecessaryReturn");
+            RuleSets rSets = new RuleSets(codeStyleRuleSet);
             new SourceCodeProcessor(configuration).processSourceCode(new StringDataSource(sourceCode).getInputStream(),
                     rSets, context);
 
@@ -158,8 +158,8 @@ public class BasicPMDTest {
             context.setSourceCodeFilename("foo.java");
             context.setReport(new Report());
 
-            final RuleSet unnecessaryRuleSet = new RuleSetFactory().createRuleSet("rulesets/java/unnecessary.xml");
-            RuleSets rSets = new RuleSets(unnecessaryRuleSet);
+            final RuleSet codeStyleRuleSet = new RuleSetFactory().createRuleSet("category/java/codestyle.xml/UnnecessaryReturn");
+            RuleSets rSets = new RuleSets(codeStyleRuleSet);
             new SourceCodeProcessor(configuration).processSourceCode(new StringDataSource(sourceCode).getInputStream(),
                     rSets, context);
 
@@ -196,8 +196,8 @@ public class BasicPMDTest {
             context.setSourceCodeFilename("foo.java");
             context.setReport(new Report());
 
-            final RuleSet unnecessaryRuleSet = new RuleSetFactory().createRuleSet("rulesets/java/unnecessary.xml");
-            RuleSets rSets = new RuleSets(unnecessaryRuleSet);
+            final RuleSet codeStyleRuleSet = new RuleSetFactory().createRuleSet("category/java/codestyle.xml/UnnecessaryReturn");
+            RuleSets rSets = new RuleSets(codeStyleRuleSet);
             new SourceCodeProcessor(configuration).processSourceCode(new StringDataSource(sourceCode).getInputStream(),
                     rSets, context);
 
