@@ -6,7 +6,7 @@
 The Basic Ruleset contains a collection of good practices which everyone should follow.
   </description>
 
-    <rule name="EmptyCatchBlock"
+    <rule name="ExtraEmptyCatchBlock"
           language="java"
           message="Avoid empty catch blocks"
           class="net.sourceforge.pmd.lang.rule.XPathRule">
@@ -40,7 +40,7 @@ The Basic Ruleset contains a collection of good practices which everyone should 
       </example>
     </rule>
 
-    <rule name="EmptyIfStmt"
+    <rule name="ExtraEmptyIfStmt"
           language="java"
           message="Avoid empty 'if' statements"
           class="net.sourceforge.pmd.lang.rule.XPathRule">
@@ -63,7 +63,7 @@ The Basic Ruleset contains a collection of good practices which everyone should 
     </rule>
 
 
-    <rule name="EmptyWhileStmt"
+    <rule name="ExtraEmptyWhileStmt"
           language="java"
           message="Avoid empty 'while' statements"
           class="net.sourceforge.pmd.lang.rule.XPathRule">
@@ -90,7 +90,7 @@ The Basic Ruleset contains a collection of good practices which everyone should 
     </rule>
 
 
-    <rule name="EmptyTryBlock"
+    <rule name="ExtraEmptyTryBlock"
           language="java"
           message="Avoid empty try blocks"
           class="net.sourceforge.pmd.lang.rule.XPathRule">
@@ -117,7 +117,7 @@ Avoid empty try blocks, they serve no purpose.
       </example>
     </rule>
 
-    <rule name="EmptyFinallyBlock"
+    <rule name="ExtraEmptyFinallyBlock"
           language="java"
           message="Avoid empty finally blocks"
           class="net.sourceforge.pmd.lang.rule.XPathRule">
@@ -147,7 +147,7 @@ Avoid empty finally blocks, these can be deleted.
     </rule>
 
 
-    <rule name="EmptySwitchStatements"
+    <rule name="ExtraEmptySwitchStatements"
           language="java"
           message="Avoid empty switch statements"
           class="net.sourceforge.pmd.lang.rule.XPathRule">
@@ -177,7 +177,7 @@ Avoid empty switch statements.
       </rule>
 
 
-    <rule name="JumbledIncrementer"
+    <rule name="ExtraJumbledIncrementer"
           language="java"
          message="Avoid modifying an outer loop incrementer in an inner loop for update expression"
          class="net.sourceforge.pmd.lang.rule.XPathRule">
@@ -212,7 +212,7 @@ Avoid jumbled loop incrementers as these are usually a mistake and can make code
      </rule>
 
 
-    <rule name="ForLoopShouldBeWhileLoop"
+    <rule name="ExtraForLoopShouldBeWhileLoop"
           language="java"
           message="This for loop could be simplified to a while loop"
           class="net.sourceforge.pmd.lang.rule.XPathRule">
@@ -243,7 +243,7 @@ Some for loops can be simplified to while loops - this makes them more concise.
     </rule>
 
 
-    <rule name="UnnecessaryConversionTemporary"
+    <rule name="ExtraUnnecessaryConversionTemporary"
           message="Avoid unnecessary temporaries when converting primitives to Strings"
           class="net.sourceforge.pmd.lang.java.rule.errorprone.UnnecessaryConversionTemporaryRule">
       <description>
@@ -260,7 +260,7 @@ Avoid unnecessary temporaries when converting primitives to Strings
       </example>
     </rule>
 
-    <rule name="OverrideBothEqualsAndHashcode"
+    <rule name="ExtraOverrideBothEqualsAndHashcode"
           language="java"
           message="Ensure you override both equals() and hashCode()"
           class="net.sourceforge.pmd.lang.rule.XPathRule">
@@ -316,7 +316,7 @@ not
       </example>
     </rule>
 
-    <rule name="DoubleCheckedLocking"
+    <rule name="ExtraDoubleCheckedLocking"
           message="Double checked locking is not thread safe in Java."
           class="net.sourceforge.pmd.lang.java.rule.multithreading.DoubleCheckedLockingRule">
       <description>
@@ -342,7 +342,7 @@ For more details see http://www.javaworld.com/javaworld/jw-02-2001/jw-0209-doubl
       </example>
     </rule>
 
-    <rule name="ReturnFromFinallyBlock"
+    <rule name="ExtraReturnFromFinallyBlock"
           language="java"
           message="Avoid returning from a finally block"
           class="net.sourceforge.pmd.lang.rule.XPathRule">
@@ -375,7 +375,7 @@ For more details see http://www.javaworld.com/javaworld/jw-02-2001/jw-0209-doubl
       </example>
     </rule>
 
-    <rule name="EmptySynchronizedBlock"
+    <rule name="ExtraEmptySynchronizedBlock"
           language="java"
           message="Avoid empty synchronized blocks"
           class="net.sourceforge.pmd.lang.rule.XPathRule">
@@ -399,7 +399,7 @@ Avoid empty synchronized blocks as they do nothing.
       </example>
     </rule>
 
-    <rule name="UnnecessaryReturn"
+    <rule name="ExtraUnnecessaryReturn"
           language="java"
           message="Avoid unnecessary return statements"
           class="net.sourceforge.pmd.lang.rule.XPathRule">
@@ -432,7 +432,7 @@ Avoid unnecessary return statements.
     </rule>
 
 
-    <rule name="EmptyStaticInitializer"
+    <rule name="ExtraEmptyStaticInitializer"
           language="java"
            message="Empty static initializer was found"
            class="net.sourceforge.pmd.lang.rule.XPathRule">
@@ -455,7 +455,7 @@ Avoid unnecessary return statements.
        </example>
      </rule>
 
-    <rule name="UnconditionalIfStatement"
+    <rule name="ExtraUnconditionalIfStatement"
        language="java"
        message="Do not use 'if' statements that are always true or always false"
           class="net.sourceforge.pmd.lang.rule.XPathRule">
@@ -483,7 +483,7 @@ Do not use "if" statements that are always true or always false.
       </example>
     </rule>
 
-    <rule name="EmptyStatementNotInLoop"
+    <rule name="ExtraEmptyStatementNotInLoop"
           language="java"
           message="An empty statement (semicolon) not part of a loop"
           class="net.sourceforge.pmd.lang.rule.XPathRule">
@@ -523,7 +523,7 @@ could also be a double semicolon, which is useless and should be removed.
        </example>
      </rule>
 
-    <rule name="BooleanInstantiation"
+    <rule name="ExtraBooleanInstantiation"
        language="java"
        message="Avoid instantiating Boolean objects; you can usually invoke Boolean.TRUE instead."
        class="net.sourceforge.pmd.lang.rule.XPathRule">
@@ -558,7 +558,7 @@ public class Foo {
    </example>
    </rule>
 
-    <rule name="UnnecessaryFinalModifier"
+    <rule name="ExtraUnnecessaryFinalModifier"
           language="java"
           message="Unnecessary final modifier in final class"
           class="net.sourceforge.pmd.lang.rule.XPathRule">
@@ -591,7 +591,7 @@ public final class Foo {
       </example>
     </rule>
 
-    <rule name="CollapsibleIfStatements"
+    <rule name="ExtraCollapsibleIfStatements"
           language="java"
           message="These nested if statements could be combined"
           class="net.sourceforge.pmd.lang.rule.XPathRule">
