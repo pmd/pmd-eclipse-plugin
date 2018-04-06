@@ -12,6 +12,10 @@ Eclipse Update Site:
 ### New and noteworthy
 
 *   Updated PMD to 6.1.0
+*   Two new options under Preferences: "Show PMD violations overview when checking code" and "Show PMD violations
+    outline when checking code". If these options are checked, then theses PMD views are shown automatically,
+    when PMD check is executed for a project. This behaves similar like "Show PMD perspective", but just doesn't
+    switch the current perspective.
 
 ### Fixed Issues
 
@@ -22,6 +26,7 @@ Eclipse Update Site:
 *   [#25](https://github.com/pmd/pmd-eclipse-plugin/pull/25): \[core] Typesafe properties - [Clément Fournier](https://github.com/oowekyala)
 *   [#26](https://github.com/pmd/pmd-eclipse-plugin/pull/26): Updated french translations - [Clément Fournier](https://github.com/oowekyala)
 *   [#37](https://github.com/pmd/pmd-eclipse-plugin/pull/37): Global Priority Filter for Violations Overview/Outline - [Phillip Krall](https://github.com/pkrall520)
+*   [#39](https://github.com/pmd/pmd-eclipse-plugin/pull/39): Show PMD violations overview/outline views when checking code - [Phillip Krall](https://github.com/pkrall520)
 
 
 ## 24-June-2017: 4.0.15.v20170624-2134
