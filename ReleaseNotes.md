@@ -18,6 +18,7 @@ Eclipse Update Site:
 
 *   [#20](https://github.com/pmd/pmd-eclipse-plugin/issues/20): category.xml maybe broken
 *   [#32](https://github.com/pmd/pmd-eclipse-plugin/issues/32): Upgrade PMD to 6.2.0
+*   [#43](https://github.com/pmd/pmd-eclipse-plugin/issues/43): Update unit tests to use new ruleset categories
 
 ### External Contributions
 
