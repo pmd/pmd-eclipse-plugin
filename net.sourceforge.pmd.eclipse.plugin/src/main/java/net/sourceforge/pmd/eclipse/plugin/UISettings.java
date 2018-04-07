@@ -146,6 +146,7 @@ public class UISettings {
             Image image = pdc.descriptorFor(priority).getImage(display, MAX_MARKER_DIMENSION);
             loader.data = new ImageData[] { image.getImageData() };
             String fullPath = markerFilenameFor(priority);
+            PMDPlugin.getDefault().logInformation("Writing marker icon to: " + fullPath);
             loader.save(fullPath, SWT.IMAGE_PNG);
 
             image.dispose();
