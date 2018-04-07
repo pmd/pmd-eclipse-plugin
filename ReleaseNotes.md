@@ -22,6 +22,7 @@ Eclipse Update Site:
 *   [#25](https://github.com/pmd/pmd-eclipse-plugin/pull/25): \[core] Typesafe properties - [Clément Fournier](https://github.com/oowekyala)
 *   [#26](https://github.com/pmd/pmd-eclipse-plugin/pull/26): Updated french translations - [Clément Fournier](https://github.com/oowekyala)
 *   [#37](https://github.com/pmd/pmd-eclipse-plugin/pull/37): Global Priority Filter for Violations Overview/Outline - [Phillip Krall](https://github.com/pkrall520)
+*   [#40](https://github.com/pmd/pmd-eclipse-plugin/pull/40): Only excute PMD when check on save is enabled - [Phillip Krall](https://github.com/pkrall520)
 
 
 ## 24-June-2017: 4.0.15.v20170624-2134
