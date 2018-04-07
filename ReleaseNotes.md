@@ -17,6 +17,9 @@ Eclipse Update Site:
     outline when checking code". If these options are checked, then theses PMD views are shown automatically,
     when PMD check is executed for a project. This behaves similar like "Show PMD perspective", but just doesn't
     switch the current perspective.
+*   PMD is now only executed automatically, if the option "Check code after saving" is enabled. This allows
+    to simply disable automatic PMD checks temporarily. Executing PMD via the project's context menu "Check Code"
+    is not affected and can still be used to manually execute PMD to update the markers.
 
 ### Fixed Issues
 
@@ -31,7 +34,7 @@ Eclipse Update Site:
 *   [#26](https://github.com/pmd/pmd-eclipse-plugin/pull/26): Updated french translations - [Clément Fournier](https://github.com/oowekyala)
 *   [#37](https://github.com/pmd/pmd-eclipse-plugin/pull/37): Global Priority Filter for Violations Overview/Outline - [Phillip Krall](https://github.com/pkrall520)
 *   [#39](https://github.com/pmd/pmd-eclipse-plugin/pull/39): Show PMD violations overview/outline views when checking code - [Phillip Krall](https://github.com/pkrall520)
-*   [#40](https://github.com/pmd/pmd-eclipse-plugin/pull/40): Only excute PMD when check on save is enabled - [Phillip Krall](https://github.com/pkrall520)
+*   [#40](https://github.com/pmd/pmd-eclipse-plugin/pull/40): Only execute PMD when check on save is enabled - [Phillip Krall](https://github.com/pkrall520)
 
 
 ## 24-June-2017: 4.0.15.v20170624-2134
