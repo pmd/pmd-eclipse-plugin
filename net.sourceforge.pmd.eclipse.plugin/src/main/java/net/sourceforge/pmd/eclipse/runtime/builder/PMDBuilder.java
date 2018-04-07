@@ -93,6 +93,12 @@ public class PMDBuilder extends IncrementalProjectBuilder {
      * @throws CommandException
      */
     private void buildIncremental(IProgressMonitor monitor) throws CommandException {
+        /*
+        * Check the user preference to see if the user wants to run PMD on a save
+        * */
+        if (!PMDPlugin.getDefault().loadPreferences().isCheckAfterSaveEnabled()) {
+            return;
+        }
         IProject currentProject = getProject();
         if (currentProject != null) {
             IResourceDelta resourceDelta = this.getDelta(currentProject);
