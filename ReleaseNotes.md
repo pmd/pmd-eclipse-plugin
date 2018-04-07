@@ -26,6 +26,7 @@ Eclipse Update Site:
 *   [#20](https://github.com/pmd/pmd-eclipse-plugin/issues/20): category.xml maybe broken
 *   [#29](https://github.com/pmd/pmd-eclipse-plugin/issues/29): Processing errors without cause
 *   [#32](https://github.com/pmd/pmd-eclipse-plugin/issues/32): Upgrade PMD to 6.2.0
+*   [#42](https://github.com/pmd/pmd-eclipse-plugin/issues/42): Marker colors not updated in all views after change
 *   [#43](https://github.com/pmd/pmd-eclipse-plugin/issues/43): Update unit tests to use new ruleset categories
 
 ### External Contributions
@@ -35,6 +36,7 @@ Eclipse Update Site:
 *   [#37](https://github.com/pmd/pmd-eclipse-plugin/pull/37): Global Priority Filter for Violations Overview/Outline - [Phillip Krall](https://github.com/pkrall520)
 *   [#39](https://github.com/pmd/pmd-eclipse-plugin/pull/39): Show PMD violations overview/outline views when checking code - [Phillip Krall](https://github.com/pkrall520)
 *   [#40](https://github.com/pmd/pmd-eclipse-plugin/pull/40): Only execute PMD when check on save is enabled - [Phillip Krall](https://github.com/pkrall520)
+*   [#41](https://github.com/pmd/pmd-eclipse-plugin/pull/41): Update all views after marker color changed - [Phillip Krall](https://github.com/pkrall520)
 
 
 ## 24-June-2017: 4.0.15.v20170624-2134

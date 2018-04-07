@@ -42,6 +42,7 @@ import org.eclipse.swt.widgets.Scale;
 import org.eclipse.swt.widgets.Spinner;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.dialogs.PreferencesUtil;
@@ -825,6 +826,13 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
         RootRecord root = new RootRecord(ResourcesPlugin.getWorkspace().getRoot());
         Set<IFile> files = MarkerUtil.allMarkedFiles(root);
         PMDPlugin.getDefault().changedFiles(files);
+        
+        /* Refresh the views to pick up the marker change */ 
+        PMDPlugin.getDefault().refreshView(PMDPlugin.VIOLATIONS_OVERVIEW_ID); 
+        PMDPlugin.getDefault().refreshView(PMDPlugin.VIOLATIONS_OUTLINE_ID); 
+        PMDPlugin.getDefault().refreshView(IPageLayout.ID_PROJECT_EXPLORER); 
+        PMDPlugin.getDefault().refreshView(IPageLayout.ID_OUTLINE); 
+        
     }
 
     public boolean performCancel() {
