@@ -239,7 +239,7 @@ class PreferencesManagerImpl implements IPreferencesManager {
      */
     public void storePreferences(IPreferences thePreferences) {
         preferences = thePreferences;
-
+        
         storeProjectBuildPathEnabled();
         storePmdPerspectiveEnabled();
         storePmdViolationsOverviewEnabled();
@@ -292,12 +292,12 @@ class PreferencesManagerImpl implements IPreferencesManager {
     
     private void loadPmdViolationsOverviewEnabled() {
         loadPreferencesStore.setDefault(PMD_VIOLATIONS_OVERVIEW_ENABLED, IPreferences.PMD_VIOLATIONS_OVERVIEW_ENABLED_DEFAULT);
-        preferences.setPmdPerspectiveEnabled(loadPreferencesStore.getBoolean(PMD_VIOLATIONS_OVERVIEW_ENABLED));
+        preferences.setPmdViolationsOverviewEnabled(loadPreferencesStore.getBoolean(PMD_VIOLATIONS_OVERVIEW_ENABLED));
     }
     
     private void loadPmdViolationsOutlineEnabled() {
         loadPreferencesStore.setDefault(PMD_VIOLATIONS_OUTLINE_ENABLED, IPreferences.PMD_VIOLATIONS_OUTLINE_ENABLED_DEFAULT);
-        preferences.setPmdPerspectiveEnabled(loadPreferencesStore.getBoolean(PMD_VIOLATIONS_OUTLINE_ENABLED));
+        preferences.setPmdViolationsOutlineEnabled(loadPreferencesStore.getBoolean(PMD_VIOLATIONS_OUTLINE_ENABLED));
     }
     
     private void loadCheckAfterSaveEnabled() {
