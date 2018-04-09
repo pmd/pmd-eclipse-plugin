@@ -37,6 +37,7 @@ Eclipse Update Site:
 *   [#39](https://github.com/pmd/pmd-eclipse-plugin/pull/39): Show PMD violations overview/outline views when checking code - [Phillip Krall](https://github.com/pkrall520)
 *   [#40](https://github.com/pmd/pmd-eclipse-plugin/pull/40): Only execute PMD when check on save is enabled - [Phillip Krall](https://github.com/pkrall520)
 *   [#41](https://github.com/pmd/pmd-eclipse-plugin/pull/41): Update all views after marker color changed - [Phillip Krall](https://github.com/pkrall520)
+*   [#44](https://github.com/pmd/pmd-eclipse-plugin/pull/44): Fix saving preferences for violation overview/outline - [Phillip Krall](https://github.com/pkrall520)
 
 
 ## 24-June-2017: 4.0.15.v20170624-2134
