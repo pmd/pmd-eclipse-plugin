@@ -365,6 +365,7 @@ class PreferencesImpl implements IPreferences {
     public int tableFraction() {
         return tableFraction;
     }
+
     @Override
     public void tableFraction(int aFraction) {
         this.tableFraction = aFraction;

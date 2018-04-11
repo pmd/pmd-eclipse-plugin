@@ -63,10 +63,10 @@ public interface RuleTableColumns {
             SWT.LEFT, 40, ImageColumnDescriptor.PROPERTIES_ACCESSOR, false, null,
             new StyledTextBuilder(RuleUIUtil.CHANGED_PROPERTY_FONT));
 
-//    RuleColumnDescriptor[] DEFAULT_HIDDEN_COLUMNS = new RuleColumnDescriptor[] {
-//        RuleTableColumns.EXTERNAL_URL, RuleTableColumns.MIN_LANGUAGE_VERSION, RuleTableColumns.FIX_COUNT,
-//        RuleTableColumns.EXAMPLE_COUNT, RuleTableColumns.MAX_LANGUAGE_VERSION, RuleTableColumns.SINCE,
-//        RuleTableColumns.MOD_COUNT };
+    //RuleColumnDescriptor[] DEFAULT_HIDDEN_COLUMNS = new RuleColumnDescriptor[] {
+    //    RuleTableColumns.EXTERNAL_URL, RuleTableColumns.MIN_LANGUAGE_VERSION, RuleTableColumns.FIX_COUNT,
+    //    RuleTableColumns.EXAMPLE_COUNT, RuleTableColumns.MAX_LANGUAGE_VERSION, RuleTableColumns.SINCE,
+    //    RuleTableColumns.MOD_COUNT };
     String DEFAULT_HIDDEN_COLUMNS_IDS = "tExtURL,tMinLang,fixCnt,tXmpCnt,tMaxLang,tSince,modCnt";
 
 }

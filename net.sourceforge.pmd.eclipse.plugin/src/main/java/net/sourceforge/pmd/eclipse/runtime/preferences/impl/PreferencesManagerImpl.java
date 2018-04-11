@@ -78,7 +78,6 @@ import net.sourceforge.pmd.eclipse.runtime.writer.WriterException;
 import net.sourceforge.pmd.eclipse.ui.Shape;
 import net.sourceforge.pmd.eclipse.ui.actions.RuleSetUtil;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
-import net.sourceforge.pmd.eclipse.ui.preferences.br.RuleColumnDescriptor;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.RuleTableColumns;
 import net.sourceforge.pmd.eclipse.ui.priority.PriorityDescriptor;
 import net.sourceforge.pmd.eclipse.util.IOUtil;
@@ -407,11 +406,11 @@ class PreferencesManagerImpl implements IPreferencesManager {
     }
 
     private static String defaultHiddenColumnIds() {
-//        Set<String> colNames = new HashSet<String>(RuleTableColumns.DEFAULT_HIDDEN_COLUMNS.length);
-//        for (RuleColumnDescriptor rcDesc : RuleTableColumns.DEFAULT_HIDDEN_COLUMNS) {
-//            colNames.add(rcDesc.id());
-//        }
-//        return asDelimitedString(colNames, ",");
+        //Set<String> colNames = new HashSet<String>(RuleTableColumns.DEFAULT_HIDDEN_COLUMNS.length);
+        //for (RuleColumnDescriptor rcDesc : RuleTableColumns.DEFAULT_HIDDEN_COLUMNS) {
+        //    colNames.add(rcDesc.id());
+        //}
+        //return asDelimitedString(colNames, ",");
         return RuleTableColumns.DEFAULT_HIDDEN_COLUMNS_IDS;
     }
 
