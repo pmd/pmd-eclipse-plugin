@@ -28,6 +28,7 @@ Eclipse Update Site:
 *   [#32](https://github.com/pmd/pmd-eclipse-plugin/issues/32): Upgrade PMD to 6.2.0
 *   [#42](https://github.com/pmd/pmd-eclipse-plugin/issues/42): Marker colors not updated in all views after change
 *   [#43](https://github.com/pmd/pmd-eclipse-plugin/issues/43): Update unit tests to use new ruleset categories
+*   [#46](https://github.com/pmd/pmd-eclipse-plugin/issues/46): PMD Preferences are overridden and lost
 
 ### External Contributions
 

@@ -78,6 +78,8 @@ import net.sourceforge.pmd.eclipse.runtime.writer.WriterException;
 import net.sourceforge.pmd.eclipse.ui.Shape;
 import net.sourceforge.pmd.eclipse.ui.actions.RuleSetUtil;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
+import net.sourceforge.pmd.eclipse.ui.preferences.br.RuleColumnDescriptor;
+import net.sourceforge.pmd.eclipse.ui.preferences.br.RuleTableColumns;
 import net.sourceforge.pmd.eclipse.ui.priority.PriorityDescriptor;
 import net.sourceforge.pmd.eclipse.util.IOUtil;
 
@@ -110,9 +112,17 @@ class PreferencesManagerImpl implements IPreferencesManager {
     private static final String ACTIVE_EXCLUSIONS = PMDPlugin.PLUGIN_ID + ".active_exclusions";
     private static final String ACTIVE_INCLUSIONS = PMDPlugin.PLUGIN_ID + ".active_inclusions";
 
+    private static final String TABLE_FRACTION = PMDPlugin.PLUGIN_ID + ".ruletable.fraction";
+    private static final String TABLE_HIDDEN_COLS = PMDPlugin.PLUGIN_ID + ".ruletable.hiddenColumns";
+    private static final String TABLE_COLUMN_SORT_UP = PMDPlugin.PLUGIN_ID + ".ruletable.sortUp";
+    private static final String GROUPING_COLUMN = PMDPlugin.PLUGIN_ID + ".ruletable.groupingColumn";
+    private static final String SELECTED_RULE_NAMES = PMDPlugin.PLUGIN_ID + ".ruletable.selectedRules";
+    private static final String SELECTED_PROPERTY_TAB = PMDPlugin.PLUGIN_ID + ".ruletable.selectedPropertyTab";
+
+
     private static final String OLD_PREFERENCE_PREFIX = "net.sourceforge.pmd.runtime";
     private static final String OLD_PREFERENCE_LOCATION = "/.metadata/.plugins/org.eclipse.core.runtime/.settings/net.sourceforge.pmd.runtime.prefs";
-    public static final String NEW_PREFERENCE_LOCATION = "/.metadata/.plugins/org.eclipse.core.runtime/.settings/net.sourceforge.pmd.eclipse.plugin.prefs";
+    private static final String NEW_PREFERENCE_LOCATION = "/.metadata/.plugins/org.eclipse.core.runtime/.settings/net.sourceforge.pmd.eclipse.plugin.prefs";
 
     private static final String PREFERENCE_RULESET_FILE = "/ruleset.xml";
 
@@ -192,6 +202,12 @@ class PreferencesManagerImpl implements IPreferencesManager {
         loadActiveExclusions();
         loadActiveInclusions();
         loadRulePriorityDescriptors();
+        loadTableFraction();
+        loadHiddenColumnIds();
+        loadSortDirectionUp();
+        loadGroupingColumn();
+        loadSelectedRuleNames();
+        loadSelectedPropertyTab();
 
         return preferences;
     }
@@ -258,6 +274,12 @@ class PreferencesManagerImpl implements IPreferencesManager {
         storeActiveExclusions();
         storeActiveInclusions();
         storePriorityDescriptors();
+        storeTableFraction();
+        storeHiddenColumnIds();
+        storeSortDirectionUp();
+        storeGroupingColumn();
+        storeSelectedRuleNames();
+        storeSelectedPropertyTab();
     }
 
     /**
@@ -368,17 +390,57 @@ class PreferencesManagerImpl implements IPreferencesManager {
 
     private void loadRulePriorityDescriptors() {
 
-        for (Map.Entry<RulePriority, String> entry : STORE_KEYS_BY_PRIORITY.entrySet()) {
-            PriorityDescriptor desc = defaultDescriptorFor(entry.getKey());
-            loadPreferencesStore.setDefault(entry.getValue(), desc.storeString());
-            String storeKey = STORE_KEYS_BY_PRIORITY.get(entry.getKey());
-            preferences.setPriorityDescriptor(entry.getKey(),
-                    PriorityDescriptor.from(loadPreferencesStore.getString(storeKey)));
+        if (STORE_KEYS_BY_PRIORITY != null) {
+            for (Map.Entry<RulePriority, String> entry : STORE_KEYS_BY_PRIORITY.entrySet()) {
+                PriorityDescriptor desc = defaultDescriptorFor(entry.getKey());
+                loadPreferencesStore.setDefault(entry.getValue(), desc.storeString());
+                String storeKey = STORE_KEYS_BY_PRIORITY.get(entry.getKey());
+                preferences.setPriorityDescriptor(entry.getKey(),
+                        PriorityDescriptor.from(loadPreferencesStore.getString(storeKey)));
+            }
         }
     }
 
-    private static Set<String> asStringSet(String delimitedString, String delimiter) {
+    private void loadTableFraction() {
+        loadPreferencesStore.setDefault(TABLE_FRACTION, IPreferences.TABLE_FRACTION_DEFAULT);
+        preferences.tableFraction(loadPreferencesStore.getInt(TABLE_FRACTION));
+    }
 
+    private static String defaultHiddenColumnIds() {
+//        Set<String> colNames = new HashSet<String>(RuleTableColumns.DEFAULT_HIDDEN_COLUMNS.length);
+//        for (RuleColumnDescriptor rcDesc : RuleTableColumns.DEFAULT_HIDDEN_COLUMNS) {
+//            colNames.add(rcDesc.id());
+//        }
+//        return asDelimitedString(colNames, ",");
+        return RuleTableColumns.DEFAULT_HIDDEN_COLUMNS_IDS;
+    }
+
+    private void loadHiddenColumnIds() {
+        loadPreferencesStore.setDefault(TABLE_HIDDEN_COLS, defaultHiddenColumnIds());
+        preferences.setHiddenColumnIds(asStringSet(loadPreferencesStore.getString(TABLE_HIDDEN_COLS), ","));
+    }
+
+    private void loadSortDirectionUp() {
+        loadPreferencesStore.setDefault(TABLE_COLUMN_SORT_UP, IPreferences.DEFAULT_SORT_UP);
+        preferences.setSortDirectionUp(loadPreferencesStore.getBoolean(TABLE_COLUMN_SORT_UP));
+    }
+
+    private void loadGroupingColumn() {
+        loadPreferencesStore.setDefault(GROUPING_COLUMN, IPreferences.DEFAULT_GROUPING_COLUMN);
+        preferences.setGroupingColumn(loadPreferencesStore.getString(GROUPING_COLUMN));
+    }
+
+    private void loadSelectedRuleNames() {
+        loadPreferencesStore.setDefault(SELECTED_RULE_NAMES, "");
+        preferences.setSelectedRuleNames(asStringSet(loadPreferencesStore.getString(SELECTED_RULE_NAMES), ","));
+    }
+
+    private void loadSelectedPropertyTab() {
+        loadPreferencesStore.setDefault(SELECTED_PROPERTY_TAB, 0);
+        preferences.setSelectedPropertyTab(loadPreferencesStore.getInt(SELECTED_PROPERTY_TAB));
+    }
+
+    private static Set<String> asStringSet(String delimitedString, String delimiter) {
         String[] values = delimitedString.split(delimiter);
         Set<String> valueSet = new HashSet<String>(values.length);
         for (int i = 0; i < values.length; i++) {
@@ -483,6 +545,32 @@ class PreferencesManagerImpl implements IPreferencesManager {
             storePreferencesStore.setValue(entry.getValue(), desc.storeString());
         }
     }
+
+    private void storeTableFraction() {
+        storePreferencesStore.setValue(TABLE_FRACTION, preferences.tableFraction());
+    }
+
+    private void storeHiddenColumnIds() {
+        storePreferencesStore.setValue(TABLE_HIDDEN_COLS,
+                asDelimitedString(preferences.getHiddenColumnIds(), ","));
+    }
+
+    private void storeSortDirectionUp() {
+        storePreferencesStore.setValue(TABLE_COLUMN_SORT_UP, preferences.isSortDirectionUp());
+    }
+
+    private void storeGroupingColumn() {
+        storePreferencesStore.setValue(GROUPING_COLUMN, preferences.getGroupingColumn());
+    }
+
+    private void storeSelectedRuleNames() {
+        storePreferencesStore.setValue(SELECTED_RULE_NAMES, asDelimitedString(preferences.getSelectedRuleNames(), ","));
+    }
+
+    private void storeSelectedPropertyTab() {
+        storePreferencesStore.setValue(SELECTED_PROPERTY_TAB, preferences.getSelectedPropertyTab());
+    }
+
 
     /**
      * Get rule set from state location

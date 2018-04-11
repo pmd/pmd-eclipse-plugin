@@ -74,6 +74,10 @@ public interface IPreferences {
 
     boolean GLOBAL_RULE_MANAGEMENT_DEFAULT = false;
 
+    int TABLE_FRACTION_DEFAULT = 55;
+    boolean DEFAULT_SORT_UP = false;
+    String DEFAULT_GROUPING_COLUMN = "";
+
     /**
      * Get a comma-separated list of rules that are active by default.
      */
@@ -277,5 +281,29 @@ public interface IPreferences {
      * Synchronize the preferences with the preferences store
      */
     void sync();
+
+    int tableFraction();
+
+    void tableFraction(int aFraction);
+
+    Set<String> getHiddenColumnIds();
+
+    void setHiddenColumnIds(Set<String> names);
+
+    boolean isSortDirectionUp();
+
+    void setSortDirectionUp(boolean isUp);
+
+    String getGroupingColumn();
+
+    void setGroupingColumn(String columnName);
+
+    Set<String> getSelectedRuleNames();
+
+    void setSelectedRuleNames(Set<String> ruleNames);
+
+    int getSelectedPropertyTab();
+
+    void setSelectedPropertyTab(int anIndex);
 
 }

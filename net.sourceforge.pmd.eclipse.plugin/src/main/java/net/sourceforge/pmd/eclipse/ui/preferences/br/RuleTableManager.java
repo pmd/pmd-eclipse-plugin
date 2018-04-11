@@ -941,7 +941,7 @@ public class RuleTableManager extends AbstractTreeTableManager<Rule> implements 
 
         IStructuredSelection selection = (IStructuredSelection) treeViewer.getSelection();
 
-        List<String> ruleNames = new ArrayList<String>();
+        Set<String> ruleNames = new HashSet<String>();
         for (Object item : selection.toList()) {
             if (item instanceof Rule) {
                 ruleNames.add(((Rule) item).getName());

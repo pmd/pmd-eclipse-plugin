@@ -85,6 +85,13 @@ class PreferencesImpl implements IPreferences {
     private Map<RulePriority, PriorityDescriptor> uiDescriptorsByPriority = new HashMap<RulePriority, PriorityDescriptor>(
             5);
 
+    private int tableFraction;
+    private Set<String> hiddenColumnIds;
+    private boolean sortDirectionUp;
+    private String groupingColumn;
+    private Set<String> selectedRuleNames;
+    private int selectedPropertyTab;
+
     /**
      * Is constructed from a preferences manager
      * 
@@ -354,4 +361,62 @@ class PreferencesImpl implements IPreferences {
         this.pmdViolationsOutlineEnabled = pmdViolationsOutlineEnabled;
     }
 
+    @Override
+    public int tableFraction() {
+        return tableFraction;
+    }
+    @Override
+    public void tableFraction(int aFraction) {
+        this.tableFraction = aFraction;
+    }
+
+    @Override
+    public Set<String> getHiddenColumnIds() {
+        return hiddenColumnIds;
+    }
+
+    @Override
+    public void setHiddenColumnIds(Set<String> names) {
+        hiddenColumnIds = names;
+    }
+
+    @Override
+    public boolean isSortDirectionUp() {
+        return sortDirectionUp;
+    }
+
+    @Override
+    public void setSortDirectionUp(boolean isUp) {
+        sortDirectionUp = isUp;
+    }
+
+    @Override
+    public String getGroupingColumn() {
+        return groupingColumn;
+    }
+
+    @Override
+    public void setGroupingColumn(String columnName) {
+        groupingColumn = columnName;
+    }
+
+    @Override
+    public Set<String> getSelectedRuleNames() {
+        return selectedRuleNames;
+    }
+
+    @Override
+    public void setSelectedRuleNames(Set<String> ruleNames) {
+        selectedRuleNames = ruleNames;
+    }
+
+    @Override
+    public int getSelectedPropertyTab() {
+        return selectedPropertyTab;
+    }
+
+    @Override
+    public void setSelectedPropertyTab(int anIndex) {
+        selectedPropertyTab = anIndex;
+    }
 }
