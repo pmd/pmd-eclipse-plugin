@@ -36,9 +36,11 @@
 
 package net.sourceforge.pmd.eclipse.ui.properties;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IProject;
@@ -399,10 +401,19 @@ public class PMDProjectPropertyPage extends PropertyPage {
             @Override
             public void widgetSelected(SelectionEvent e) {
                 // TODO EMF's ResourceDialog would be better.
-                FileDialog fileDialog = new FileDialog(getShell(), SWT.OPEN);
+                FileDialog fileDialog = new FileDialog(getShell(), SWT.MULTI);
                 String path = fileDialog.open();
+                List<String> files = new ArrayList();
+                  String[] names = fileDialog.getFileNames();
+                  for (int i = 0, n = names.length; i < n; i++) {
+                    StringBuffer buf = new StringBuffer(fileDialog.getFilterPath());
+                    if (buf.charAt(buf.length() - 1) != File.separatorChar)
+                      buf.append(File.separatorChar);
+                    buf.append(names[i]);
+                    files.add(buf.toString());
+                  }
                 if (path != null) {
-                    ruleSetFileText.setText(path);
+                    ruleSetFileText.setText(String.join(",", files));
                 }
             }
         });
