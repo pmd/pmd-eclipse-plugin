@@ -403,15 +403,16 @@ public class PMDProjectPropertyPage extends PropertyPage {
                 // TODO EMF's ResourceDialog would be better.
                 FileDialog fileDialog = new FileDialog(getShell(), SWT.MULTI);
                 String path = fileDialog.open();
-                List<String> files = new ArrayList();
-                  String[] names = fileDialog.getFileNames();
-                  for (int i = 0, n = names.length; i < n; i++) {
+                List<String> files = new ArrayList<>();
+                String[] names = fileDialog.getFileNames();
+                for (int i = 0, n = names.length; i < n; i++) {
                     StringBuffer buf = new StringBuffer(fileDialog.getFilterPath());
-                    if (buf.charAt(buf.length() - 1) != File.separatorChar)
-                      buf.append(File.separatorChar);
+                    if (buf.charAt(buf.length() - 1) != File.separatorChar) {
+                        buf.append(File.separatorChar);
+                    }
                     buf.append(names[i]);
                     files.add(buf.toString());
-                  }
+                }
                 if (path != null) {
                     ruleSetFileText.setText(String.join(",", files));
                 }
