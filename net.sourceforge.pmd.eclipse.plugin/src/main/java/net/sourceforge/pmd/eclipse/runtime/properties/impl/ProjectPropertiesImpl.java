@@ -51,10 +51,13 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.IClasspathEntry;
+import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.ui.IWorkingSet;
 
+import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
+import net.sourceforge.pmd.eclipse.runtime.cmd.JavaProjectClassLoader;
 import net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties;
 import net.sourceforge.pmd.eclipse.runtime.properties.IProjectPropertiesManager;
 import net.sourceforge.pmd.eclipse.runtime.properties.PropertiesException;
@@ -89,6 +92,7 @@ public class ProjectPropertiesImpl implements IProjectProperties {
     private boolean fullBuildEnabled = true; // default in case didn't come from properties
     private Set<String> buildPathExcludePatterns = new HashSet<String>();
     private Set<String> buildPathIncludePatterns = new HashSet<String>();
+    private ClassLoader auxclasspath;
 
     /**
      * The default constructor takes a project as an argument
@@ -451,5 +455,22 @@ public class ProjectPropertiesImpl implements IProjectProperties {
 
     public Set<String> getBuildPathIncludePatterns() {
         return buildPathIncludePatterns;
+    }
+
+    @Override
+    public ClassLoader getAuxClasspath() {
+        try {
+            if (project != null && project.hasNature(JavaCore.NATURE_ID)) {
+                if (auxclasspath == null) {
+                    LOG.debug("Creating new auxclaspath class loader for project " + project.getName());
+                    auxclasspath = new JavaProjectClassLoader(PMD.class.getClassLoader(), project);
+                }
+                return auxclasspath;
+            }
+        } catch (CoreException e) {
+            LOG.error("Error determining aux classpath", e);
+            PMDPlugin.getDefault().logError("Error determining aux classpath", e);
+        }
+        return null;
     }
 }
