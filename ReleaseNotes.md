@@ -13,6 +13,8 @@ Eclipse Update Site:
 
 ### Fixed Issues
 
+*   [#52](https://github.com/pmd/pmd-eclipse-plugin/issues/52): Eclipse Internal Error - Out of Memory
+
 ### External Contributions
 
 

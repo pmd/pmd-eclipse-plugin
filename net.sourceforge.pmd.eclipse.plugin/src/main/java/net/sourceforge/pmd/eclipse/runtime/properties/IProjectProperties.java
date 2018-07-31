@@ -198,4 +198,13 @@ public interface IProjectProperties {
      * @return include patterns
      */
     Set<String> getBuildPathIncludePatterns();
+
+    /**
+     * Determines the auxiliary classpath needed for type resolution.
+     * The classloader is cached and used for all PMD executions for the same project.
+     * The classloader is not stored to the project properties file.
+     * 
+     * @return the classpath or <code>null</code> if the project is not a java project
+     */
+    ClassLoader getAuxClasspath();
 }
