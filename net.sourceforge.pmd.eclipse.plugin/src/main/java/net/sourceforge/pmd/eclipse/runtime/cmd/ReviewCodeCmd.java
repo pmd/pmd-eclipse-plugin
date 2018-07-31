@@ -40,7 +40,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -139,7 +138,7 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
 
     /**
      * Easy way to refresh a set of files.
-     * 
+     *
      * @param files
      * @throws CommandException
      */
@@ -255,6 +254,7 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
             // Switch to the PMD perspective if required
             if (openPmdPerspective) {
                 Display.getDefault().asyncExec(new Runnable() {
+                    @Override
                     public void run() {
                         switchToPmdPerspective();
                     }
@@ -264,7 +264,7 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
             if (openPmdViolationsOverviewView) {
                 PMDPlugin.getDefault().showView(PMDPlugin.VIOLATIONS_OVERVIEW_ID);
             }
-            
+
             if (openPmdViolationsOutlineView) {
                 PMDPlugin.getDefault().showView(PMDPlugin.VIOLATIONS_OUTLINE_ID);
             }
@@ -352,19 +352,19 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
     public void setOpenPmdPerspective(boolean openPmdPerspective) {
         this.openPmdPerspective = openPmdPerspective;
     }
-    
+
     /**
      * Set the open violations view to run after code review.
-     * 
+     *
      * @param openPmdViolationsView should open
      */
     public void setOpenPmdViolationsOverviewView(boolean openPmdViolationsView) {
         this.openPmdViolationsOverviewView = openPmdViolationsView;
     }
-    
+
     /**
      * Set the open violations outline view to run after code review.
-     * 
+     *
      * @param openPmdViolationsOutlineView should open
      */
     public void setOpenPmdViolationsOutlineView(boolean openPmdViolationsOutlineView) {
