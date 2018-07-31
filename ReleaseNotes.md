@@ -19,6 +19,8 @@ Eclipse Update Site:
 
 ### External Contributions
 
+*   [#53](https://github.com/pmd/pmd-eclipse-plugin/pull/53): README: markdown, fix links - [Lars Hvam](https://github.com/larshp)
+
 
 ## 12-April-2018: 4.0.16.v20180412-0833
 
