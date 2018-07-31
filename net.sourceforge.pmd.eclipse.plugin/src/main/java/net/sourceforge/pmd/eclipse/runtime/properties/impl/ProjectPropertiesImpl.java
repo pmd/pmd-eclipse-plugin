@@ -462,7 +462,7 @@ public class ProjectPropertiesImpl implements IProjectProperties {
         try {
             if (project != null && project.hasNature(JavaCore.NATURE_ID)) {
                 if (auxclasspath == null) {
-                    LOG.debug("Creating new auxclaspath class loader for project " + project.getName());
+                    PMDPlugin.getDefault().logInformation("Creating new auxclasspath class loader for project " + project.getName());
                     auxclasspath = new JavaProjectClassLoader(PMD.class.getClassLoader(), project);
                 }
                 return auxclasspath;
