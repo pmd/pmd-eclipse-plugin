@@ -43,8 +43,10 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import javax.xml.bind.DataBindingException;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
@@ -102,6 +104,7 @@ public class ProjectPropertiesManagerImpl implements IProjectPropertiesManager {
      * @param project
      *            a project
      */
+    @Override
     public IProjectProperties loadProjectProperties(final IProject project) throws PropertiesException {
         LOG.debug("Loading project properties for project " + project.getName());
         try {
@@ -134,6 +137,7 @@ public class ProjectPropertiesManagerImpl implements IProjectPropertiesManager {
     /**
      * @see net.sourceforge.pmd.eclipse.runtime.properties.IProjectPropertiesManager#storeProjectProperties(net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties)
      */
+    @Override
     public void storeProjectProperties(IProjectProperties projectProperties) throws PropertiesException {
         LOG.debug("Storing project properties for project " + projectProperties.getProject().getName());
         try {
@@ -257,14 +261,24 @@ public class ProjectPropertiesManagerImpl implements IProjectPropertiesManager {
     private void setRuleSetFromProperties(IProjectProperties projectProperties, RuleSpecTO[] rules)
             throws PropertiesException {
         final RuleSet pluginRuleSet = PMDPlugin.getDefault().getPreferencesManager().getRuleSet();
-        int n = rules == null ? 0 : rules.length;
+
+        // de-duplicate rules
+        Set<String> ruleNamesToAdd = new HashSet<>();
+        for (RuleSpecTO rule : rules) {
+            if (!ruleNamesToAdd.add(rule.getName())) {
+                PMDPlugin.getDefault().logInformation("Duplicated Rule found: " + rule.getName() + ". This rule will be ignored.");
+                LOG.debug("Duplicated Rule found: " + rule.getName() + ". This rule will be ignored.");
+            }
+        }
+
         List<Rule> rulesToAdd = new ArrayList<Rule>();
-        for (int i = 0; i < n; i++) {
-            final Rule rule = pluginRuleSet.getRuleByName(rules[i].getName());
+        for (String ruleName : ruleNamesToAdd) {
+            Rule rule = pluginRuleSet.getRuleByName(ruleName);
             if (rule != null) {
                 rulesToAdd.add(rule);
             } else {
-                LOG.debug("The rule " + rules[i].getName() + " cannot be found. ignore.");
+                PMDPlugin.getDefault().logInformation("The rule " + ruleName + " could not be found. The rule will be ignored.");
+                LOG.debug("The rule " + ruleName + " could not be found. The rule will be ignored.");
             }
         }
 
