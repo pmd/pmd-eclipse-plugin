@@ -16,6 +16,7 @@ Eclipse Update Site:
 ### Fixed Issues
 
 *   [#48](https://github.com/pmd/pmd-eclipse-plugin/issues/48): Upgrade to PMD 6.3.0
+*   [#52](https://github.com/pmd/pmd-eclipse-plugin/issues/52): Eclipse Internal Error - Out of Memory
 
 ### External Contributions
 
