@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Version: 4.0.17.qualifier
+Bundle-Version: 4.0.17.v20180801-1551
 Bundle-Name: PMD Test Plugin
 Bundle-SymbolicName: net.sourceforge.pmd.eclipse.plugin.test;singleton=true
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7

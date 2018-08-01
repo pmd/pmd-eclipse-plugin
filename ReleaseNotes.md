@@ -7,16 +7,16 @@ Eclipse Update Site:
 *   Releases: <https://dl.bintray.com/pmd/pmd-eclipse-plugin/updates/>
 *   Snapshots: <https://dl.bintray.com/pmd/pmd-eclipse-plugin/snapshots/updates/>
 
-## ????: 4.0.17.v????
+## 01-August-2018: 4.0.17.v20180801-1551
 
 ### New and noteworthy
+
+*   This is only a bugfix release.
 
 ### Fixed Issues
 
 *   [#52](https://github.com/pmd/pmd-eclipse-plugin/issues/52): Eclipse Internal Error - Out of Memory
 *   [#57](https://github.com/pmd/pmd-eclipse-plugin/pull/57): De-duplicate project ruleset when loading the project properties
-
-### External Contributions
 
 
 ## 12-April-2018: 4.0.16.v20180412-0833
