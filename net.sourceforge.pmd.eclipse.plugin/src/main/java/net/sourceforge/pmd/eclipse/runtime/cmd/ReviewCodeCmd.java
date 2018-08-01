@@ -39,7 +39,7 @@ package net.sourceforge.pmd.eclipse.runtime.cmd;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -96,7 +96,7 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
 
     private static final Logger LOG = Logger.getLogger(ReviewCodeCmd.class);
 
-    private final List<ISchedulingRule> resources = new ArrayList<ISchedulingRule>();
+    private final List<IResource> resources = new ArrayList<IResource>();
     private IResourceDelta resourceDelta;
     private Map<IFile, Set<MarkerInfo2>> markersByFile = new HashMap<IFile, Set<MarkerInfo2>>();
     private boolean taskMarker;
@@ -138,7 +138,7 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
 
     /**
      * Easy way to refresh a set of files.
-     * 
+     *
      * @param files
      * @throws CommandException
      */
@@ -254,6 +254,7 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
             // Switch to the PMD perspective if required
             if (openPmdPerspective) {
                 Display.getDefault().asyncExec(new Runnable() {
+                    @Override
                     public void run() {
                         switchToPmdPerspective();
                     }
@@ -263,7 +264,7 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
             if (openPmdViolationsOverviewView) {
                 PMDPlugin.getDefault().showView(PMDPlugin.VIOLATIONS_OVERVIEW_ID);
             }
-            
+
             if (openPmdViolationsOutlineView) {
                 PMDPlugin.getDefault().showView(PMDPlugin.VIOLATIONS_OUTLINE_ID);
             }
@@ -277,12 +278,12 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
 
             // Log performance information
             if (fileCount > 0 && ruleCount > 0) {
-                logInfo("Review code command terminated. " + ruleCount + " rules were executed against " + fileCount
+                logInfo("Review code command finished. " + ruleCount + " rules were executed against " + fileCount
                         + " files. Actual PMD duration is about " + pmdDuration + "ms, that is about "
                         + (float) pmdDuration / fileCount + " ms/file, " + (float) pmdDuration / ruleCount
                         + " ms/rule, " + (float) pmdDuration / ((long) fileCount * (long) ruleCount) + " ms/filerule");
             } else {
-                logInfo("Review code command terminated. " + ruleCount + " rules were executed against " + fileCount
+                logInfo("Review code command finished. " + ruleCount + " rules were executed against " + fileCount
                         + " files. PMD was not executed.");
             }
         }
@@ -351,19 +352,19 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
     public void setOpenPmdPerspective(boolean openPmdPerspective) {
         this.openPmdPerspective = openPmdPerspective;
     }
-    
+
     /**
      * Set the open violations view to run after code review.
-     * 
+     *
      * @param openPmdViolationsView should open
      */
     public void setOpenPmdViolationsOverviewView(boolean openPmdViolationsView) {
         this.openPmdViolationsOverviewView = openPmdViolationsView;
     }
-    
+
     /**
      * Set the open violations outline view to run after code review.
-     * 
+     *
      * @param openPmdViolationsOutlineView should open
      */
     public void setOpenPmdViolationsOutlineView(boolean openPmdViolationsOutlineView) {
@@ -420,10 +421,13 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
      * @throws CommandException
      */
     private void processResources() throws CommandException {
-        final Iterator<ISchedulingRule> i = resources.iterator();
-        while (i.hasNext()) {
-            final IResource resource = (IResource) i.next();
+        Set<String> projects = new HashSet<String>();
+        for (IResource resource : resources) {
+            projects.add(resource.getProject().getName());
+        }
+        logInfo("ReviewCodeCmd started with " + resources.size() + " selected resources on projects " + projects);
 
+        for (IResource resource : resources) {
             // if resource is a project, visit only its source folders
             if (resource instanceof IProject) {
                 processProject((IProject) resource);
@@ -508,7 +512,8 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
     private void processProject(IProject project) throws CommandException {
         try {
             setStepCount(countResourceElement(project));
-            LOG.debug("Visiting  project " + project.getName() + " : " + getStepCount());
+            logInfo("ReviewCodeCmd: visiting project " + project.getName() + ": " + getStepCount() + " resources found.");
+            LOG.debug("Visiting project " + project.getName() + " : " + getStepCount() + " resources found.");
 
             if (project.hasNature(JavaCore.NATURE_ID)) {
                 processJavaProject(project);
@@ -609,6 +614,7 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
             IResource resource = resourceDelta.getResource();
             final IProject project = resource.getProject();
             final IProjectProperties properties = getProjectProperties(project);
+            logInfo("ReviewCodeCmd started on resource delta " + resource.getName() + " in project " + project.getName());
 
             RuleSet ruleSet = rulesetFromResourceDelta(); // properties.getProjectRuleSet();
 
@@ -680,7 +686,7 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
         } finally {
             timer.stop();
             int count = markersByFile.size();
-            logInfo("" + violationCount + " markers applied on " + count + " files in " + timer.getDuration() + "ms.");
+            LOG.info("" + violationCount + " markers applied on " + count + " files in " + timer.getDuration() + "ms.");
             LOG.info("End of processing marker directives. " + violationCount + " violations for " + count + " files.");
         }
     }

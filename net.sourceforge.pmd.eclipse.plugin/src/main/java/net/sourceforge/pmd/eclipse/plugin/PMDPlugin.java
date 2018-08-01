@@ -138,6 +138,7 @@ public class PMDPlugin extends AbstractUIPlugin {
         return color;
     }
 
+    @Deprecated // use IProjectProperties#getAuxclasspath() instead
     public static void setJavaClassLoader(PMDConfiguration config, IProject project) {
 
         IPreferences preferences = getDefault().loadPreferences();

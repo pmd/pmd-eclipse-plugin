@@ -288,7 +288,9 @@ public class BaseVisitor {
             }
             LOG.debug("discovered language: " + languageVersion);
 
-            PMDPlugin.setJavaClassLoader(configuration(), resource.getProject());
+            if (PMDPlugin.getDefault().loadPreferences().isProjectBuildPathEnabled()) {
+                configuration().setClassLoader(projectProperties.getAuxClasspath());
+            }
 
             final File sourceCodeFile = file.getRawLocation().toFile();
             if (included && getRuleSet().applies(sourceCodeFile) && isFileInWorkingSet(file)
