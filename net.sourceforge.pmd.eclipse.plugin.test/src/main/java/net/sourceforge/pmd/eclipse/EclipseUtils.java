@@ -1,12 +1,12 @@
 /*
  * Created on 14 mai 2005
- * 
+ *
  * Copyright (c) 2005, PMD for Eclipse Development Team All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
  * met:
- * 
+ *
  * * Redistributions of source code must retain the above copyright notice,
  * this list of conditions and the following disclaimer. * Redistributions
  * in binary form must reproduce the above copyright notice, this list of
@@ -18,7 +18,7 @@
  * Neither the name of "PMD for Eclipse Development Team" nor the names of
  * its contributors may be used to endorse or promote products derived from
  * this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
  * IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
  * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
@@ -45,6 +45,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
+import java.util.regex.Pattern;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -68,7 +69,7 @@ import net.sourceforge.pmd.properties.PropertyDescriptor;
 
 /**
  * This is a utility class for Eclipse various operations
- * 
+ *
  * @author Philippe Herlin
  * @author Brian Remedios
  */
@@ -96,7 +97,7 @@ public class EclipseUtils {
 
     /**
      * Test if 2 sets of rules are equals
-     * 
+     *
      * @param ruleSet1
      * @param ruleSet2
      * @return
@@ -126,7 +127,7 @@ public class EclipseUtils {
 
     /**
      * Create a new java project
-     * 
+     *
      * @param projectName
      *            a project name
      * @return newProject a new project resource handle
@@ -161,7 +162,7 @@ public class EclipseUtils {
 
     /**
      * Create a test source file
-     * 
+     *
      * @param project
      *            a project where to create that file; this project is expected to be empty
      */
@@ -186,7 +187,7 @@ public class EclipseUtils {
 
     /**
      * Get the content of a project resource.
-     * 
+     *
      * @param project
      *            a project reference
      * @param resourceName
@@ -202,7 +203,7 @@ public class EclipseUtils {
 
     /**
      * Remove the PMD Nature from a project
-     * 
+     *
      * @param project
      *            a project to remove the PMD Nature
      * @param monitor
@@ -238,7 +239,7 @@ public class EclipseUtils {
 
     /**
      * Add a Java Nature to a project when creating
-     * 
+     *
      * @param project
      * @throws CoreException
      */
@@ -272,7 +273,7 @@ public class EclipseUtils {
 
     /**
      * Print rule details
-     * 
+     *
      * @param rule
      */
     private static void dumpRule(final Rule rule, final PrintStream out) {
@@ -286,13 +287,50 @@ public class EclipseUtils {
     }
 
     private static boolean propertiesMatchFor(final Rule ruleA, final Rule ruleB) {
+        Map<PropertyDescriptor<?>, Object> ruleAProperties = ruleA.getPropertiesByPropertyDescriptor();
 
-        return ruleA.getPropertiesByPropertyDescriptor().equals(ruleB.getPropertiesByPropertyDescriptor());
+        Map<PropertyDescriptor<?>, Object> ruleBProperties = ruleB.getPropertiesByPropertyDescriptor();
+
+        // simple equals doesn't work for RegexProperties whose value type is java.util.regex.Pattern...
+        //return ruleAProperties.equals(ruleBProperties);
+
+        if (ruleAProperties == ruleBProperties) {
+            return true;
+        }
+
+        if (ruleAProperties.size() != ruleBProperties.size()) {
+            return false;
+        }
+
+        for (Map.Entry<PropertyDescriptor<?>, Object> entry : ruleAProperties.entrySet()) {
+            if (entry.getValue() == null) {
+                Object valueB = ruleBProperties.get(entry.getKey());
+                if (!(valueB == null && ruleBProperties.containsKey(entry.getKey()))) {
+                    return false;
+                }
+            } else {
+                Object valueB = ruleBProperties.get(entry.getKey());
+                if (entry.getValue() instanceof Pattern) {
+                    if (!(valueB instanceof Pattern)) {
+                        return false;
+                    }
+                    if (!entry.getValue().toString().equals(valueB.toString())) {
+                        return false;
+                    }
+                } else {
+                    if (!entry.getValue().equals(valueB)) {
+                        return false;
+                    }
+                }
+            }
+        }
+
+        return true;
     }
 
     /**
      * Search a rule in a set of rules
-     * 
+     *
      * @param rule
      * @param set
      * @return

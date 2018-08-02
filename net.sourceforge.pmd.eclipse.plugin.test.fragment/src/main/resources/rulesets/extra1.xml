@@ -413,10 +413,10 @@ Avoid unnecessary return statements.
  [parent::Statement
   [parent::BlockStatement
    [parent::Block
-    [parent::MethodDeclaration/ResultType[@Void='true']
-    ]
+    [parent::MethodDeclaration/ResultType[@Void='true']]
    ]
-  ] ]]>
+  ]
+ ] ]]>
               </value>
           </property>
       </properties>
