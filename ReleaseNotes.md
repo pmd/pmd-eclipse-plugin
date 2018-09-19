@@ -11,15 +11,16 @@ Eclipse Update Site:
 
 ### New and noteworthy
 
-*   Updated PMD to 6.6.0
+*   Updated PMD to 6.7.0
 
 ### Fixed Issues
 
-*   [#48](https://github.com/pmd/pmd-eclipse-plugin/issues/48): Upgrade to PMD 6.6.0
+*   [#48](https://github.com/pmd/pmd-eclipse-plugin/issues/48): Upgrade to PMD 6.7.0
 
 ### External Contributions
 
 *   [#53](https://github.com/pmd/pmd-eclipse-plugin/pull/53): README: markdown, fix links - [Lars Hvam](https://github.com/larshp)
+*   [#60](https://github.com/pmd/pmd-eclipse-plugin/pull/60): Update to PMD 6.7.0 - [Jan](https://github.com/jgerken)
 
 
 ## 01-August-2018: 4.0.17.v20180801-1551
