@@ -12,4 +12,6 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.jdt,
  org.eclipse.jdt.core,
  org.eclipse.jdt.launching,
- org.junit
+ org.junit,
+ org.apache.log4j,
+ org.apache.commons.io
