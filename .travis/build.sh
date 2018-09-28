@@ -18,4 +18,9 @@ echo "TRAVIS_ALLOW_FAILURE: $TRAVIS_ALLOW_FAILURE"
 if [ "${TRAVIS_PULL_REQUEST}" = "false" ] && [ "${TRAVIS_SECURE_ENV_VARS}" = "true" ]; then
     # Uploading the update site to Bintray
     ./mvnw verify -DskipTests -Psnapshot-properties -Prelease-composite
+    # Cleanup old snapshots
+    (
+        cd net.sourceforge.pmd.eclipse.p2updatesite
+        ./cleanup-bintray-snapshots.sh
+    )
 fi
