@@ -19,6 +19,8 @@ Eclipse Update Site:
 
 ### External Contributions
 
+*   [#51](https://github.com/pmd/pmd-eclipse-plugin/pull/51): Allow multiple ruleset files - [Phillip Krall](https://github.com/pkrall520)
+
 
 ## 12-April-2018: 4.0.16.v20180412-0833
 
