@@ -13,6 +13,7 @@ public class ProjectPropertiesManagerImplTest {
     public void testToString() throws Exception {
         ProjectPropertiesTO projectProperties = createProjectProperties();
         String expected = IOUtils.toString(this.getClass().getResourceAsStream("projectproperties.xml"));
+        expected = expected.replaceAll("\r\n", "\n");
 
         String s = manager.convertProjectPropertiesToString(projectProperties);
         Assert.assertEquals(expected, s);
