@@ -12,6 +12,10 @@ Eclipse Update Site:
 ### New and noteworthy
 
 *   Updated PMD to 6.7.0
+*   Eclipse SimRel 2018-09 is supported.
+    To do this, the plugin doesn't expose log4j for other plugins anymore
+    (the package `org.apache.log4j` is not exported anymore). In case you used this in a fragment,
+    you should now use the eclipse platform logging facilities.
 
 ### Fixed Issues
 
@@ -21,6 +25,7 @@ Eclipse Update Site:
 
 *   [#53](https://github.com/pmd/pmd-eclipse-plugin/pull/53): README: markdown, fix links - [Lars Hvam](https://github.com/larshp)
 *   [#60](https://github.com/pmd/pmd-eclipse-plugin/pull/60): Update to PMD 6.7.0 - [Jan](https://github.com/jgerken)
+*   [#61](https://github.com/pmd/pmd-eclipse-plugin/pull/61): Support Eclipse SimRel 2018-09 - [jftsunami](https://github.com/jftsunami)
 
 
 ## 01-August-2018: 4.0.17.v20180801-1551
