@@ -398,7 +398,7 @@ public class RuleTableManager extends AbstractTreeTableManager<Rule> implements 
             flContinue = input.open() == Window.OK;
         }
 
-        if (flContinue) {
+        if (flContinue && input != null) {
             OutputStream out = null;
             try {
                 ruleSet = RuleSetUtil.setNameDescription(ruleSet, FileUtil.getFileNameWithoutExtension(file.getName()),

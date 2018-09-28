@@ -146,7 +146,7 @@ public class RulePanelManager extends AbstractRulePanelManager {
         minLanguageVersionCombo.setVisible(hasVersions);
         maxLanguageVersionCombo.setVisible(hasVersions);
 
-        if (hasVersions) {
+        if (hasVersions && language != null) {
             List<LanguageVersion> versions = new ArrayList<LanguageVersion>();
             versions.add(null); // allow no selection
             versions.addAll(language.getVersions());
