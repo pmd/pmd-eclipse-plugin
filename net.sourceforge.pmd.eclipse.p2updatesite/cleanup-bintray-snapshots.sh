@@ -4,16 +4,22 @@ set -e
 #Sample Usage: cleanup-bintray-snapshots.sh user apikey
 API=https://api.bintray.com
 
-if [ -z $BINTRAY_API_KEY -o -z $BINTRAY_USER ]; then
+if [ -z $BINTRAY_APIKEY -o -z $BINTRAY_USER ]; then
     # only take arguments, if there are now env variable set already
-    BINTRAY_API_KEY=$1
+    BINTRAY_APIKEY=$1
     BINTRAY_USER=$2
 fi
 
-if [ -z $BINTRAY_API_KEY -o -z $BINTRAY_USER ]; then
-  echo "Usage: $0 <BINTRAY_API_KEY> <BINTRAY_USER>"
+if [ -z $BINTRAY_APIKEY -o -z $BINTRAY_USER ]; then
+  echo "Usage: $0 <BINTRAY_APIKEY> <BINTRAY_USER>"
   exit 1
 fi
+
+echo
+echo Cleanup up old snapshot builds
+echo ------------------------------
+echo
+
 
 BINTRAY_REPO=pmd-eclipse-plugin
 BINTRAY_OWNER=pmd
@@ -62,7 +68,7 @@ for v in $artifacts_versions; do
     echo "Deleting $v ..."
     
     for file in artifacts.jar artifacts.xml.xz content.jar content.xml.xz p2.index features/net.sourceforge.pmd.eclipse_${v}.jar plugins/net.sourceforge.pmd.eclipse.plugin_${v}.jar; do
-        ${DRY_RUN} curl -X DELETE -u${BINTRAY_USER}:${BINTRAY_API_KEY} "https://api.bintray.com/content/${BASE_PATH_SNAPSHOT_BUILDS}/${v}/${file}"
+        ${DRY_RUN} curl -X DELETE -u${BINTRAY_USER}:${BINTRAY_APIKEY} "https://api.bintray.com/content/${BASE_PATH_SNAPSHOT_BUILDS}/${v}/${file}"
     done
     echo
     echo ----------------------------------------
@@ -86,7 +92,7 @@ $artifacts
 </repository>
 "
 echo "${artifactsTemplate}" > ${ARTIFACTS_FILE}.new
-${DRY_RUN} curl -X PUT -u${BINTRAY_USER}:${BINTRAY_API_KEY} -T ${ARTIFACTS_FILE}.new https://api.bintray.com/content/${BASE_PATH}/${ARTIFACTS_FILE};publish=1
+${DRY_RUN} curl -X PUT -u${BINTRAY_USER}:${BINTRAY_APIKEY} -T ${ARTIFACTS_FILE}.new https://api.bintray.com/content/${BASE_PATH}/${ARTIFACTS_FILE};publish=1
 
 
 content=$(grep "<child location" ${CONTENT_FILE} | tail -${KEEP})
@@ -111,7 +117,7 @@ $content
 </repository>
 "
 echo "${contentTemplate}" > ${CONTENT_FILE}.new
-${DRY_RUN} curl -X PUT -u${BINTRAY_USER}:${BINTRAY_API_KEY} -T ${CONTENT_FILE}.new https://api.bintray.com/content/${BASE_PATH}/${CONTENT_FILE};publish=1
+${DRY_RUN} curl -X PUT -u${BINTRAY_USER}:${BINTRAY_APIKEY} -T ${CONTENT_FILE}.new https://api.bintray.com/content/${BASE_PATH}/${CONTENT_FILE};publish=1
 
 
 popd
