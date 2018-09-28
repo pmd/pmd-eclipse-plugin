@@ -37,6 +37,7 @@
 package net.sourceforge.pmd.eclipse.runtime.properties;
 
 import java.io.File;
+import java.util.List;
 import java.util.Set;
 
 import org.eclipse.core.resources.IProject;
@@ -106,7 +107,7 @@ public interface IProjectProperties {
      * @return Returns the resolved RuleSet File suitable for loading a rule
      *         set.
      */
-    File getResolvedRuleSetFile() throws PropertiesException;
+    List<File> getResolvedRuleSetFile() throws PropertiesException;
 
     /**
      * @return Returns the project Working Set.

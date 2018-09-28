@@ -44,6 +44,7 @@ import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -171,8 +172,42 @@ public class ProjectPropertiesManagerImpl implements IProjectPropertiesManager {
             LOG.debug("Loading ruleset from project ruleset file: " + projectProperties.getRuleSetFile());
             try {
                 final RuleSetFactory factory = new RuleSetFactory();
-                final File ruleSetFile = projectProperties.getResolvedRuleSetFile();
-                projectProperties.setProjectRuleSet(factory.createRuleSets(ruleSetFile.getPath()).getAllRuleSets()[0]);
+                RuleSet allRuleSets = null;
+                for (final File ruleSetFile : projectProperties.getResolvedRuleSetFile()) {
+                    RuleSet rs = factory.createRuleSets(ruleSetFile.getPath()).getAllRuleSets()[0];
+                    if (allRuleSets == null) {
+                        /* The first ruleset file */
+                        allRuleSets = rs;
+                    } else {
+                        /*
+                         * Loop through all the rules in an additional ruleset file. If a previous file
+                         * has defined the rule, then remove it. If it is not found, then add the new
+                         * rule.
+                         */
+                        List<Rule> rules = new ArrayList<Rule>(allRuleSets.getRules());
+                        for (Rule rule2 : rs.getRules()) {
+                            boolean processed = false;
+                            for (Rule rule1 : allRuleSets.getRules()) {
+                                if (rule2.getName().equals(rule1.getName())) {
+                                    for (Iterator<Rule> iter = rules.listIterator(); iter.hasNext();) {
+                                        Rule r = iter.next();
+                                        if (r.getName().equals(rule1.getName())) {
+                                            iter.remove();
+                                        }
+                                    }
+                                    rules.add(rule2);
+                                    processed = true;
+                                }
+                                if (!processed) {
+                                    rules.add(rule2);
+                                }
+                            }
+                        }
+                        allRuleSets.getRules().removeAll(allRuleSets.getRules());
+                        allRuleSets.getRules().addAll(rules);
+                    }
+                }
+                projectProperties.setProjectRuleSet(allRuleSets);
                 projectProperties.setNeedRebuild(false);
             } catch (RuleSetNotFoundException e) {
                 PMDPlugin.getDefault()

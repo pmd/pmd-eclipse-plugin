@@ -40,7 +40,9 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
@@ -106,8 +108,8 @@ public class ProjectPropertiesImpl implements IProjectProperties {
     }
 
     /**
-     * Determines the included and excluded paths configured for the build path
-     * of this eclipse project.
+     * Determines the included and excluded paths configured for the build path of
+     * this eclipse project.
      */
     private void determineBuildPathIncludesExcludes() {
         IClasspathEntry source = PMDPlugin.buildSourceClassPathEntryFor(project);
@@ -180,16 +182,19 @@ public class ProjectPropertiesImpl implements IProjectProperties {
     public void setProjectRuleSet(final RuleSet projectRuleSet) throws PropertiesException {
         LOG.debug("Set a rule set for project " + this.project.getName());
         if (projectRuleSet == null) {
-            //TODO: NLS
+            // TODO: NLS
             throw new PropertiesException("Setting a project rule set to null");
         }
 
         this.needRebuild |= !this.projectRuleSet.getRules().equals(projectRuleSet.getRules());
         this.projectRuleSet = projectRuleSet;
         if (this.ruleSetStoredInProject) {
-            File f = getResolvedRuleSetFile();
-            if (f != null) {
-                projectRuleFileLastModified = f.lastModified();
+            for (File f : getResolvedRuleSetFile()) {
+                if (f != null) {
+                    if (projectRuleFileLastModified < f.lastModified()) {
+                        projectRuleFileLastModified = f.lastModified();
+                    }
+                }
             }
         }
     }
@@ -211,13 +216,16 @@ public class ProjectPropertiesImpl implements IProjectProperties {
         this.ruleSetStoredInProject = ruleSetStoredInProject;
         if (this.ruleSetStoredInProject) {
             if (!isRuleSetFileExist()) {
-                //TODO: NLS
-                throw new PropertiesException("The project ruleset file cannot be found for project "
-                        + this.project.getName());
+                // TODO: NLS
+                throw new PropertiesException(
+                        "The project ruleset file cannot be found for project " + this.project.getName());
             }
-            File f = getResolvedRuleSetFile();
-            if (f != null) {
-                projectRuleFileLastModified = f.lastModified();
+            for (File f : getResolvedRuleSetFile()) {
+                if (f != null) {
+                    if (projectRuleFileLastModified < f.lastModified()) {
+                        projectRuleFileLastModified = f.lastModified();
+                    }
+                }
             }
         }
     }
@@ -240,12 +248,15 @@ public class ProjectPropertiesImpl implements IProjectProperties {
         if (ruleSetStoredInProject) {
             if (!isRuleSetFileExist()) {
                 // TODO: NLS
-                throw new PropertiesException("The project ruleset file cannot be found for project "
-                        + project.getName());
+                throw new PropertiesException(
+                        "The project ruleset file cannot be found for project " + project.getName());
             }
-            File f = getResolvedRuleSetFile();
-            if (f != null) {
-                projectRuleFileLastModified = f.lastModified();
+            for (File f : getResolvedRuleSetFile()) {
+                if (f != null) {
+                    if (projectRuleFileLastModified < f.lastModified()) {
+                        projectRuleFileLastModified = f.lastModified();
+                    }
+                }
             }
         }
     }
@@ -277,9 +288,10 @@ public class ProjectPropertiesImpl implements IProjectProperties {
         LOG.debug("   PMD Enabled = " + pmdEnabled);
         LOG.debug("   Project need rebuild = " + needRebuild);
         if (ruleSetStoredInProject) {
-            File f = getResolvedRuleSetFile();
-            if (f != null) {
-                needRebuild |= f.lastModified() > projectRuleFileLastModified;
+            for (File f : getResolvedRuleSetFile()) {
+                if (f != null) {
+                    needRebuild |= f.lastModified() > projectRuleFileLastModified;
+                }
             }
         }
         return pmdEnabled && needRebuild;
@@ -297,31 +309,41 @@ public class ProjectPropertiesImpl implements IProjectProperties {
      * @see net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties#isRuleSetFileExist()
      */
     public final boolean isRuleSetFileExist() {
-        return getResolvedRuleSetFile().exists();
+        boolean ret = true;
+        for (File f : getResolvedRuleSetFile()) {
+            if (!f.exists()) {
+                ret = false;
+            }
+        }
+        return ret;
     }
 
     /**
      * @see net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties#getResolvedRuleSetFile()
      */
-    public File getResolvedRuleSetFile() {
+    public List<File> getResolvedRuleSetFile() {
         // Check as project-relative path
-        IFile file = project.getFile(getRuleSetFile());
-        File f = getExistingFileOrNull(file);
-        if (f == null) {
-            // Check as workspace-relative path
-            IWorkspaceRoot workspaceRoot = project.getWorkspace().getRoot();
-            try {
-                IFile workspaceFile = workspaceRoot.getFile(new Path(getRuleSetFile()));
-                f = getExistingFileOrNull(workspaceFile);
-            } catch (IllegalArgumentException e) {
-                // Fall back to below
-            }
+        List<File> files = new ArrayList<File>();
+        for (String ruleSetFile : getRuleSetFile().split(",")) {
+            IFile file = project.getFile(ruleSetFile);
+            File f = getExistingFileOrNull(file);
             if (f == null) {
-                // Fall back to file system path
-                f = new File(getRuleSetFile());
+                // Check as workspace-relative path
+                IWorkspaceRoot workspaceRoot = project.getWorkspace().getRoot();
+                try {
+                    IFile workspaceFile = workspaceRoot.getFile(new Path(ruleSetFile));
+                    f = getExistingFileOrNull(workspaceFile);
+                } catch (IllegalArgumentException e) {
+                    // Fall back to below
+                }
+                if (f == null) {
+                    // Fall back to file system path
+                    f = new File(ruleSetFile);
+                }
             }
+            files.add(f);
         }
-        return f;
+        return files;
     }
 
     private File getExistingFileOrNull(IFile file) {

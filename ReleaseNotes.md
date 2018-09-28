@@ -19,6 +19,7 @@ Eclipse Update Site:
 
 ### External Contributions
 
+*   [#51](https://github.com/pmd/pmd-eclipse-plugin/pull/51): Allow multiple ruleset files - [Phillip Krall](https://github.com/pkrall520)
 *   [#53](https://github.com/pmd/pmd-eclipse-plugin/pull/53): README: markdown, fix links - [Lars Hvam](https://github.com/larshp)
 *   [#60](https://github.com/pmd/pmd-eclipse-plugin/pull/60): Update to PMD 6.7.0 - [Jan](https://github.com/jgerken)
 
