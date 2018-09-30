@@ -27,6 +27,7 @@ Eclipse Update Site:
 *   [#53](https://github.com/pmd/pmd-eclipse-plugin/pull/53): README: markdown, fix links - [Lars Hvam](https://github.com/larshp)
 *   [#60](https://github.com/pmd/pmd-eclipse-plugin/pull/60): Update to PMD 6.7.0 - [Jan](https://github.com/jgerken)
 *   [#61](https://github.com/pmd/pmd-eclipse-plugin/pull/61): Support Eclipse SimRel 2018-09 - [jftsunami](https://github.com/jftsunami)
+*   [#63](https://github.com/pmd/pmd-eclipse-plugin/pull/63): Minor changes - [jftsunami](https://github.com/jftsunami)
 
 
 ## 01-August-2018: 4.0.17.v20180801-1551

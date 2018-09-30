@@ -42,6 +42,7 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -414,7 +415,7 @@ public class PMDProjectPropertyPage extends PropertyPage {
                     files.add(buf.toString());
                 }
                 if (path != null) {
-                    ruleSetFileText.setText(String.join(",", files));
+                    ruleSetFileText.setText(StringUtils.join(files, ","));
                 }
             }
         });

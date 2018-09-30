@@ -574,7 +574,7 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
                             flContinue = input.open() == InputDialog.OK;
                         }
 
-                        if (flContinue) {
+                        if (flContinue && input != null) {
                             ruleSet = RuleSetUtil.setNameDescription(ruleSet,
                                     getFileNameWithoutExtension(file.getName()), input.getValue());
                             OutputStream out = new FileOutputStream(fileName);
