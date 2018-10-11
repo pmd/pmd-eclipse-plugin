@@ -38,12 +38,11 @@ package net.sourceforge.pmd.eclipse.ui.properties;
 
 import org.eclipse.ui.IWorkingSet;
 
-import net.sourceforge.pmd.RuleSet;
+import name.herlin.command.CommandException;
+import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.eclipse.runtime.cmd.AbstractProjectCommand;
 import net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties;
 import net.sourceforge.pmd.eclipse.runtime.properties.PropertiesException;
-
-import name.herlin.command.CommandException;
 
 /**
  * Save updated project properties. This is a composite command.
@@ -58,7 +57,7 @@ public class UpdateProjectPropertiesCmd extends AbstractProjectCommand {
     // private IProject project;
     private boolean pmdEnabled;
     private IWorkingSet projectWorkingSet;
-    private RuleSet projectRuleSet;
+    private RuleSets projectRuleSet;
     private boolean ruleSetStoredInProject;
     private String ruleSetFile;
     private boolean needRebuild;
@@ -85,7 +84,7 @@ public class UpdateProjectPropertiesCmd extends AbstractProjectCommand {
         try {
             final IProjectProperties properties = projectProperties();
             properties.setPmdEnabled(pmdEnabled);
-            properties.setProjectRuleSet(projectRuleSet);
+            properties.setProjectRuleSets(projectRuleSet);
             properties.setProjectWorkingSet(projectWorkingSet);
             properties.setRuleSetStoredInProject(ruleSetStoredInProject);
             properties.setRuleSetFile(ruleSetFile);
@@ -115,7 +114,8 @@ public class UpdateProjectPropertiesCmd extends AbstractProjectCommand {
      * @param projectRuleSet
      *            The projectRuleSet to set.
      */
-    public void setProjectRuleSet(final RuleSet projectRuleSet) {
+    // TODO (pk) rename this
+    public void setProjectRuleSet(final RuleSets projectRuleSet) {
         this.projectRuleSet = projectRuleSet;
     }
 

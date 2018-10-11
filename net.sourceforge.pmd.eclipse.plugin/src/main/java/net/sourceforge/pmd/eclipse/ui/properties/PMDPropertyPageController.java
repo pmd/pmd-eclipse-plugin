@@ -115,7 +115,7 @@ public class PMDPropertyPageController {
                 propertyPageBean = new PMDPropertyPageBean();
                 propertyPageBean.setPmdEnabled(properties.isPmdEnabled());
                 propertyPageBean.setProjectWorkingSet(properties.getProjectWorkingSet());
-                propertyPageBean.setProjectRuleSet(properties.getProjectRuleSet());
+                propertyPageBean.setProjectRuleSet(properties.getProjectRuleSets());
                 propertyPageBean.setRuleSetStoredInProject(properties.isRuleSetStoredInProject());
                 propertyPageBean.setRuleSetFile(properties.getRuleSetFile());
                 propertyPageBean.setIncludeDerivedFiles(properties.isIncludeDerivedFiles());

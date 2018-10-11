@@ -39,6 +39,7 @@ package net.sourceforge.pmd.eclipse.ui.properties;
 import org.eclipse.ui.IWorkingSet;
 
 import net.sourceforge.pmd.RuleSet;
+import net.sourceforge.pmd.RuleSets;
 
 /**
  * This class is a bean that hold the property page data. It acts as the model in the MVC paradigm.
@@ -49,7 +50,7 @@ import net.sourceforge.pmd.RuleSet;
 public class PMDPropertyPageBean {
     private boolean pmdEnabled;
     private IWorkingSet projectWorkingSet;
-    private RuleSet projectRuleSet;
+    private RuleSets projectRuleSet;
     private boolean ruleSetStoredInProject;
     private String ruleSetFile;
     private boolean includeDerivedFiles;
@@ -74,7 +75,7 @@ public class PMDPropertyPageBean {
     /**
      * @return Returns the projectRuleSet.
      */
-    public RuleSet getProjectRuleSet() {
+    public RuleSets getProjectRuleSet() {
         return projectRuleSet;
     }
 
@@ -82,7 +83,8 @@ public class PMDPropertyPageBean {
      * @param projectRuleSet
      *            The projectRuleSet to set.
      */
-    public void setProjectRuleSet(final RuleSet projectRuleSet) {
+    // TODO (pk) rename this
+    public void setProjectRuleSet(final RuleSets projectRuleSet) {
         this.projectRuleSet = projectRuleSet;
     }
 

@@ -70,6 +70,7 @@ import org.eclipse.ui.dialogs.PropertyPage;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSet;
+import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.ui.actions.RuleSetUtil;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
@@ -554,9 +555,9 @@ public class PMDProjectPropertyPage extends PropertyPage {
      */
     private void populateAvailableRulesTable() {
         availableRulesTableViewer.setInput(controller.getAvailableRules());
-        final RuleSet activeRuleSet = model.getProjectRuleSet();
+        final RuleSets activeRuleSet = model.getProjectRuleSet();
         if (activeRuleSet != null) {
-            final Collection<Rule> activeRules = activeRuleSet.getRules();
+            final Collection<Rule> activeRules = activeRuleSet.getAllRules();
 
             final TableItem[] itemList = availableRulesTableViewer.getTable().getItems();
             for (TableItem element2 : itemList) {
@@ -576,7 +577,9 @@ public class PMDProjectPropertyPage extends PropertyPage {
         LOG.info("Properties editing accepted");
         model.setPmdEnabled(enablePMDButton.getSelection());
         model.setProjectWorkingSet(selectedWorkingSet);
-        model.setProjectRuleSet(getProjectRuleSet());
+        RuleSets ruleSets = new RuleSets();
+        ruleSets.addRuleSet(getProjectRuleSet());
+        model.setProjectRuleSet(ruleSets);
         model.setRuleSetStoredInProject(ruleSetStoredInProjectButton.getSelection());
         model.setRuleSetFile(ruleSetFileText.getText());
         model.setIncludeDerivedFiles(includeDerivedFilesButton.getSelection());
@@ -611,10 +614,12 @@ public class PMDProjectPropertyPage extends PropertyPage {
             }
         }
 
-        final RuleSet activeRuleSet = model.getProjectRuleSet();
-        ruleSet = RuleSetUtil.addExcludePatterns(ruleSet, activeRuleSet.getExcludePatterns());
-        ruleSet = RuleSetUtil.addIncludePatterns(ruleSet, activeRuleSet.getIncludePatterns());
-
+        final RuleSets activeRuleSet = model.getProjectRuleSet();
+        for(RuleSet rs : activeRuleSet.getAllRuleSets()) {
+          ruleSet = RuleSetUtil.addExcludePatterns(ruleSet, rs.getExcludePatterns());
+          ruleSet = RuleSetUtil.addIncludePatterns(ruleSet, rs.getIncludePatterns());
+        }
+       
         return ruleSet;
     }
 

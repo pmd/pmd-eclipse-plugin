@@ -43,7 +43,7 @@ import java.util.Set;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.ui.IWorkingSet;
 
-import net.sourceforge.pmd.RuleSet;
+import net.sourceforge.pmd.RuleSets;
 
 /**
  * This interface specifies what is the model for the PMD related project
@@ -72,13 +72,13 @@ public interface IProjectProperties {
     /**
      * @return Returns the project Rule Set.
      */
-    RuleSet getProjectRuleSet() throws PropertiesException;
+    RuleSets getProjectRuleSets() throws PropertiesException;
 
     /**
      * @param projectRuleSet
      *            The project Rule Set to set.
      */
-    void setProjectRuleSet(RuleSet projectRuleSet) throws PropertiesException;
+    void setProjectRuleSets(RuleSets projectRuleSets) throws PropertiesException;
 
     /**
      * @return Returns the whether the project rule set is stored as a file

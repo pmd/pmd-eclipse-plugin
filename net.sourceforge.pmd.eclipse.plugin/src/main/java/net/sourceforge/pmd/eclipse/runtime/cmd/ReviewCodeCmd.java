@@ -71,8 +71,11 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 
+import name.herlin.command.CommandException;
+import name.herlin.command.Timer;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSet;
+import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.runtime.PMDRuntimeConstants;
 import net.sourceforge.pmd.eclipse.runtime.builder.MarkerUtil;
@@ -81,9 +84,6 @@ import net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties;
 import net.sourceforge.pmd.eclipse.runtime.properties.PropertiesException;
 import net.sourceforge.pmd.eclipse.ui.actions.RuleSetUtil;
 import net.sourceforge.pmd.util.StringUtil;
-
-import name.herlin.command.CommandException;
-import name.herlin.command.Timer;
 
 
 /**
@@ -463,8 +463,7 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
                 return;
             }
 
-            final RuleSet ruleSet = rulesetFrom(resource); // properties.getProjectRuleSet();
-
+            RuleSets ruleSets = properties.getProjectRuleSets();
             // final PMDEngine pmdEngine = getPmdEngineForProject(project);
             int targetCount = 0;
             if (resource.exists()) {
@@ -477,14 +476,14 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
                 if (resource.exists()) {
                     final ResourceVisitor visitor = new ResourceVisitor();
                     visitor.setMonitor(getMonitor());
-                    visitor.setRuleSet(ruleSet);
+                    visitor.setRuleSet(ruleSets);
                     // visitor.setPmdEngine(pmdEngine);
                     visitor.setAccumulator(markersByFile);
                     visitor.setUseTaskMarker(taskMarker);
                     visitor.setProjectProperties(properties);
                     resource.accept(visitor);
 
-                    ruleCount = ruleSet.getRules().size();
+                    ruleCount = ruleSets.getAllRules().size();
                     fileCount += visitor.getProcessedFilesCount();
                     pmdDuration += visitor.getActualPmdDuration();
                 } else {
@@ -496,7 +495,6 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
                         + " If you want to execute PMD, please check \"Full build enabled\" in the project settings";
                 PMDPlugin.getDefault().logInformation(message);
             }
-
             worked(1); // TODO - temp fix? BR
 
         } catch (PropertiesException e) {
@@ -563,7 +561,8 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
 
     private RuleSet filteredRuleSet(IProjectProperties properties) throws CommandException, PropertiesException {
 
-        final RuleSet ruleSet = properties.getProjectRuleSet();
+      // TODO (pk) Is this ok?
+        final RuleSet ruleSet = properties.getProjectRuleSets().getAllRuleSets()[0];
         IPreferences preferences = PMDPlugin.getDefault().getPreferencesManager().loadPreferences();
         Set<String> onlyActiveRuleNames = preferences.getActiveRuleNames();
 
@@ -616,36 +615,38 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
             final IProjectProperties properties = getProjectProperties(project);
             logInfo("ReviewCodeCmd started on resource delta " + resource.getName() + " in project " + project.getName());
 
-            RuleSet ruleSet = rulesetFromResourceDelta(); // properties.getProjectRuleSet();
+            RuleSets ruleSets = properties.getProjectRuleSets();
+          //  RuleSet ruleSet = rulesetFromResourceDelta(); // properties.getProjectRuleSet();
 
-            // PMDEngine pmdEngine = getPmdEngineForProject(project);
-            int targetCount = countDeltaElement(resourceDelta);
-            // Could add a property that lets us set the max number to analyze
-            if (properties.isFullBuildEnabled() || isUserInitiated() || targetCount <= MAXIMUM_RESOURCE_COUNT) {
-                setStepCount(targetCount);
-                LOG.debug("Visiting delta of resource " + resource.getName() + " : " + getStepCount());
-
-                DeltaVisitor visitor = new DeltaVisitor();
-                visitor.setMonitor(getMonitor());
-                visitor.setRuleSet(ruleSet);
-                // visitor.setPmdEngine(pmdEngine);
-                visitor.setAccumulator(markersByFile);
-                visitor.setUseTaskMarker(taskMarker);
-                visitor.setProjectProperties(properties);
-                resourceDelta.accept(visitor);
-
-                ruleCount = ruleSet.getRules().size();
-                fileCount += visitor.getProcessedFilesCount();
-                pmdDuration += visitor.getActualPmdDuration();
-            } else {
-                String message = "Skipping resourceDelta " + resource.getName()
-                        + " because of fullBuildEnabled flag and " + "targetCount is " + targetCount
-                        + ". This is more than " + MAXIMUM_RESOURCE_COUNT + "."
-                        + " If you want to execute PMD, please check \"Full build enabled\" in the project settings";
-                PMDPlugin.getDefault().logInformation(message);
-                LOG.debug(message);
-            }
-
+              // PMDEngine pmdEngine = getPmdEngineForProject(project);
+              int targetCount = countDeltaElement(resourceDelta);
+              // Could add a property that lets us set the max number to analyze
+              if (properties.isFullBuildEnabled() || isUserInitiated() || targetCount <= MAXIMUM_RESOURCE_COUNT) {
+                  setStepCount(targetCount);
+                  LOG.debug("Visiting delta of resource " + resource.getName() + " : " + getStepCount());
+  
+                  for(RuleSet ruleSet: ruleSets.getAllRuleSets()) {
+                  DeltaVisitor visitor = new DeltaVisitor();
+                  visitor.setMonitor(getMonitor());
+                  visitor.setRuleSet(ruleSets);
+                  // visitor.setPmdEngine(pmdEngine);
+                  visitor.setAccumulator(markersByFile);
+                  visitor.setUseTaskMarker(taskMarker);
+                  visitor.setProjectProperties(properties);
+                  resourceDelta.accept(visitor);
+  
+                  ruleCount = ruleSets.getAllRules().size();
+                  fileCount += visitor.getProcessedFilesCount();
+                  pmdDuration += visitor.getActualPmdDuration();
+                  }
+              } else {
+                  String message = "Skipping resourceDelta " + resource.getName()
+                          + " because of fullBuildEnabled flag and " + "targetCount is " + targetCount
+                          + ". This is more than " + MAXIMUM_RESOURCE_COUNT + "."
+                          + " If you want to execute PMD, please check \"Full build enabled\" in the project settings";
+                  PMDPlugin.getDefault().logInformation(message);
+                  LOG.debug(message);
+              }
         } catch (PropertiesException e) {
             throw new CommandException(e);
         } catch (CoreException e) {

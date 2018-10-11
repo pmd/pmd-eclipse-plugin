@@ -66,6 +66,7 @@ import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetNotFoundException;
+import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.eclipse.core.IRuleSetManager;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.runtime.preferences.IPreferences;
@@ -637,14 +638,22 @@ class PreferencesManagerImpl implements IPreferencesManager {
             if (project.isAccessible()) {
                 try {
                     IProjectProperties properties = PMDPlugin.getDefault().loadProjectProperties(project);
-                    RuleSet projectRuleSet = properties.getProjectRuleSet();
+                    RuleSets projectRuleSet = properties.getProjectRuleSets();
                     if (projectRuleSet != null) {
-                        projectRuleSet = RuleSetUtil.addRules(projectRuleSet, getNewRules(updatedRuleSet));
-                        projectRuleSet = RuleSetUtil.setExcludePatterns(projectRuleSet,
-                                updatedRuleSet.getExcludePatterns());
-                        projectRuleSet = RuleSetUtil.setIncludePatterns(projectRuleSet,
-                                updatedRuleSet.getIncludePatterns());
-                        properties.setProjectRuleSet(projectRuleSet);
+                      projectRuleSet.getAllRules().addAll(getNewRules(updatedRuleSet));
+                        //projectRuleSet = RuleSetUtil.addRules(projectRuleSet, getNewRules(updatedRuleSet));
+                     // TODO (pk) Is this wrong?
+                      for(RuleSet rs : projectRuleSet.getAllRuleSets()) {
+                        rs = RuleSetUtil.setExcludePatterns(rs,
+                          updatedRuleSet.getExcludePatterns());
+                        rs = RuleSetUtil.setIncludePatterns(rs,
+                          updatedRuleSet.getIncludePatterns());
+                      }
+//                        projectRuleSet = RuleSetUtil.setExcludePatterns(projectRuleSet,
+//                                updatedRuleSet.getExcludePatterns());
+//                        projectRuleSet = RuleSetUtil.setIncludePatterns(projectRuleSet,
+//                                updatedRuleSet.getIncludePatterns());
+                        properties.setProjectRuleSets(projectRuleSet);
                         properties.sync();
                     }
                 } catch (PropertiesException e) {
@@ -665,7 +674,9 @@ class PreferencesManagerImpl implements IPreferencesManager {
             IPath ruleSetLocation = plugin.getStateLocation().append(PREFERENCE_RULESET_FILE);
             out = new FileOutputStream(ruleSetLocation.toOSString());
             IRuleSetWriter writer = plugin.getRuleSetWriter();
-            writer.write(out, ruleSet);
+            RuleSets ruleSets = new RuleSets();
+            ruleSets.addRuleSet(ruleSet);
+            writer.write(out, ruleSets);
             out.flush();
 
         } catch (IOException e) {

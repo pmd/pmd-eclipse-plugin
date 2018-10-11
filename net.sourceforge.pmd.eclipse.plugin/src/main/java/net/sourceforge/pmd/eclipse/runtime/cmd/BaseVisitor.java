@@ -92,7 +92,7 @@ public class BaseVisitor {
     private boolean useTaskMarker = false;
     private Map<IFile, Set<MarkerInfo2>> accumulator;
     // private PMDEngine pmdEngine;
-    private RuleSet ruleSet;
+    private RuleSets ruleSets;
     private int fileCount;
     private long pmdDuration;
     private IProjectProperties projectProperties;
@@ -216,16 +216,18 @@ public class BaseVisitor {
     /**
      * @return Returns the ruleSet.
      */
-    public RuleSet getRuleSet() {
-        return this.ruleSet;
+    // TODO (pk) rename
+    public RuleSets getRuleSet() {
+        return this.ruleSets;
     }
 
     /**
      * @param ruleSet
      *            The ruleSet to set.
      */
-    public void setRuleSet(final RuleSet ruleSet) {
-        this.ruleSet = ruleSet;
+    // TODO (pk) Rename
+    public void setRuleSet(final RuleSets ruleSets) {
+        this.ruleSets = ruleSets;
     }
 
     /**
@@ -315,6 +317,17 @@ public class BaseVisitor {
                         return new RuleSets(getRuleSet());
                     }
                 };
+                
+                System.out.println("");
+                System.out.println("");
+                System.out.println("");
+                System.out.println("");
+                System.out.println("(pk): " + sourceCodeFile.getName());
+                for(RuleSet ruleSet: new RuleSets(getRuleSet()).getAllRuleSets()) {
+                  System.out.println("(pk): " + ruleSet.getName());
+                  System.out.println("(pk): " + ruleSet.getExcludePatterns());
+                  System.out.println("(pk): " + ruleSet.getRules().size());
+                }
                 // need to disable multi threading, as the ruleset is
                 // not recreated and shared between threads...
                 // but as we anyway have only one file to process, it won't hurt
@@ -339,6 +352,7 @@ public class BaseVisitor {
                     @Override
                     public void renderFileReport(Report report) throws IOException {
                         for (RuleViolation v : report) {
+                          System.out.println("(pk): " + v.getRule().getName() );
                             collectingReport.addRuleViolation(v);
                         }
                         for (Iterator<ProcessingError> it = report.errors(); it.hasNext();) {
