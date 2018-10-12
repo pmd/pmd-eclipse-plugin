@@ -188,7 +188,6 @@ public class ProjectPropertiesImpl implements IProjectProperties {
       throw new PropertiesException("Setting a project rule set to null");
     }
 
-    // TODO (pk) Think about needing to rebuild and some of the issues I have seen
     this.needRebuild = true;
     this.projectRuleSets = projectRuleSets;
     if (this.ruleSetStoredInProject) {
@@ -464,8 +463,7 @@ public class ProjectPropertiesImpl implements IProjectProperties {
       projectName = project.getName();
     }
     if (projectRuleSets != null) {
-      // TODO (pk) Need to figure out what I am doing for a name here.
-      projectRuleSetName = "NO NAME PHILL";//projectRuleSets.getName();
+      projectRuleSetName = projectRuleSets.getAllRuleSets()[0].getName();
     }
     if (projectWorkingSet != null) {
       projectWorkingSetName = projectWorkingSet.getName();

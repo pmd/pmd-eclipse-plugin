@@ -38,7 +38,6 @@ package net.sourceforge.pmd.eclipse.ui.properties;
 
 import org.eclipse.ui.IWorkingSet;
 
-import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSets;
 
 /**
@@ -50,7 +49,7 @@ import net.sourceforge.pmd.RuleSets;
 public class PMDPropertyPageBean {
     private boolean pmdEnabled;
     private IWorkingSet projectWorkingSet;
-    private RuleSets projectRuleSet;
+    private RuleSets projectRuleSets;
     private boolean ruleSetStoredInProject;
     private String ruleSetFile;
     private boolean includeDerivedFiles;
@@ -75,17 +74,16 @@ public class PMDPropertyPageBean {
     /**
      * @return Returns the projectRuleSet.
      */
-    public RuleSets getProjectRuleSet() {
-        return projectRuleSet;
+    public RuleSets getProjectRuleSets() {
+        return projectRuleSets;
     }
 
     /**
      * @param projectRuleSet
      *            The projectRuleSet to set.
      */
-    // TODO (pk) rename this
-    public void setProjectRuleSet(final RuleSets projectRuleSet) {
-        this.projectRuleSet = projectRuleSet;
+    public void setProjectRuleSets(final RuleSets projectRuleSets) {
+        this.projectRuleSets = projectRuleSets;
     }
 
     /**

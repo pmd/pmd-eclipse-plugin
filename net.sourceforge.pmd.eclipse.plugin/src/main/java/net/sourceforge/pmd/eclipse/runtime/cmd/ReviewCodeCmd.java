@@ -476,7 +476,7 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
                 if (resource.exists()) {
                     final ResourceVisitor visitor = new ResourceVisitor();
                     visitor.setMonitor(getMonitor());
-                    visitor.setRuleSet(ruleSets);
+                    visitor.setRuleSets(ruleSets);
                     // visitor.setPmdEngine(pmdEngine);
                     visitor.setAccumulator(markersByFile);
                     visitor.setUseTaskMarker(taskMarker);
@@ -560,8 +560,6 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
     }
 
     private RuleSet filteredRuleSet(IProjectProperties properties) throws CommandException, PropertiesException {
-
-      // TODO (pk) Is this ok?
         final RuleSet ruleSet = properties.getProjectRuleSets().getAllRuleSets()[0];
         IPreferences preferences = PMDPlugin.getDefault().getPreferencesManager().loadPreferences();
         Set<String> onlyActiveRuleNames = preferences.getActiveRuleNames();
@@ -625,10 +623,9 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
                   setStepCount(targetCount);
                   LOG.debug("Visiting delta of resource " + resource.getName() + " : " + getStepCount());
   
-                  for(RuleSet ruleSet: ruleSets.getAllRuleSets()) {
                   DeltaVisitor visitor = new DeltaVisitor();
                   visitor.setMonitor(getMonitor());
-                  visitor.setRuleSet(ruleSets);
+                  visitor.setRuleSets(ruleSets);
                   // visitor.setPmdEngine(pmdEngine);
                   visitor.setAccumulator(markersByFile);
                   visitor.setUseTaskMarker(taskMarker);
@@ -638,7 +635,6 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
                   ruleCount = ruleSets.getAllRules().size();
                   fileCount += visitor.getProcessedFilesCount();
                   pmdDuration += visitor.getActualPmdDuration();
-                  }
               } else {
                   String message = "Skipping resourceDelta " + resource.getName()
                           + " because of fullBuildEnabled flag and " + "targetCount is " + targetCount

@@ -57,7 +57,7 @@ public class UpdateProjectPropertiesCmd extends AbstractProjectCommand {
     // private IProject project;
     private boolean pmdEnabled;
     private IWorkingSet projectWorkingSet;
-    private RuleSets projectRuleSet;
+    private RuleSets projectRuleSets;
     private boolean ruleSetStoredInProject;
     private String ruleSetFile;
     private boolean needRebuild;
@@ -84,7 +84,7 @@ public class UpdateProjectPropertiesCmd extends AbstractProjectCommand {
         try {
             final IProjectProperties properties = projectProperties();
             properties.setPmdEnabled(pmdEnabled);
-            properties.setProjectRuleSets(projectRuleSet);
+            properties.setProjectRuleSets(projectRuleSets);
             properties.setProjectWorkingSet(projectWorkingSet);
             properties.setRuleSetStoredInProject(ruleSetStoredInProject);
             properties.setRuleSetFile(ruleSetFile);
@@ -114,9 +114,8 @@ public class UpdateProjectPropertiesCmd extends AbstractProjectCommand {
      * @param projectRuleSet
      *            The projectRuleSet to set.
      */
-    // TODO (pk) rename this
-    public void setProjectRuleSet(final RuleSets projectRuleSet) {
-        this.projectRuleSet = projectRuleSet;
+    public void setProjectRuleSets(final RuleSets projectRuleSets) {
+        this.projectRuleSets = projectRuleSets;
     }
 
     /**
@@ -188,7 +187,7 @@ public class UpdateProjectPropertiesCmd extends AbstractProjectCommand {
     public void reset() {
         setProject(null);
         setPmdEnabled(false);
-        setProjectRuleSet(null);
+        setProjectRuleSets(null);
         setRuleSetStoredInProject(false);
         setRuleSetFile(null);
         setIncludeDerivedFiles(false);
@@ -201,6 +200,6 @@ public class UpdateProjectPropertiesCmd extends AbstractProjectCommand {
      * @see name.herlin.command.Command#isReadyToExecute()
      */
     public boolean isReadyToExecute() {
-        return super.isReadyToExecute() && projectRuleSet != null;
+        return super.isReadyToExecute() && projectRuleSets != null;
     }
 }

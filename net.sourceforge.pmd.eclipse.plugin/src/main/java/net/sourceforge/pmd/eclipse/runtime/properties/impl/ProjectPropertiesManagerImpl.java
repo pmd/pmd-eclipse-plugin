@@ -435,10 +435,8 @@ public class ProjectPropertiesManagerImpl implements IProjectPropertiesManager {
       // 1-If rules have been deleted from preferences, delete them also
       // from the project ruleset
       // 2-For all other rules, replace the current one by the plugin one
-      // TODO (pk) Figure otu what needs done here
-      // RuleSet newRuleSet = RuleSetUtil.newEmpty(projectRuleSet.getName(),
-      // projectRuleSet.getDescription());
-      RuleSet newRuleSet = RuleSetUtil.newEmpty("PHILL NAME", "PHILL DESC");
+      RuleSet ruleset = projectRuleSet.getAllRuleSets()[0];
+      RuleSet newRuleSet = RuleSetUtil.newEmpty(ruleset.getName(), ruleset.getDescription());
       List<Rule> newRules = new ArrayList<Rule>();
       List<Rule> haystack = new ArrayList<Rule>(pluginRuleSet.getRules());
       for (Rule projectRule : projectRuleSet.getAllRules()) {
@@ -454,7 +452,7 @@ public class ProjectPropertiesManagerImpl implements IProjectPropertiesManager {
           haystack.remove(pluginRule);
         }
       }
-      newRuleSet = RuleSetUtil.addRules(newRuleSet, newRules);
+      newRuleSet = RuleSetUtil.addRules(newRuleSet, projectRuleSet.getAllRules());
 
       if (!newRuleSet.getRules().equals(projectRuleSet.getAllRules())) {
         LOG.info("Set the project ruleset according to preferences.");

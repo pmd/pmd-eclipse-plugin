@@ -47,6 +47,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ui.IWorkingSet;
 import org.eclipse.ui.ResourceWorkingSetFilter;
 
+import name.herlin.command.Timer;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.PMDException;
@@ -55,7 +56,6 @@ import net.sourceforge.pmd.Report.ConfigurationError;
 import net.sourceforge.pmd.Report.ProcessingError;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetNotFoundException;
 import net.sourceforge.pmd.RuleSets;
@@ -77,8 +77,6 @@ import net.sourceforge.pmd.util.NumericConstants;
 import net.sourceforge.pmd.util.StringUtil;
 import net.sourceforge.pmd.util.datasource.DataSource;
 import net.sourceforge.pmd.util.datasource.ReaderDataSource;
-
-import name.herlin.command.Timer;
 
 /**
  * Factor some useful features for visitors
@@ -216,8 +214,7 @@ public class BaseVisitor {
     /**
      * @return Returns the ruleSet.
      */
-    // TODO (pk) rename
-    public RuleSets getRuleSet() {
+    public RuleSets getRuleSets() {
         return this.ruleSets;
     }
 
@@ -225,8 +222,7 @@ public class BaseVisitor {
      * @param ruleSet
      *            The ruleSet to set.
      */
-    // TODO (pk) Rename
-    public void setRuleSet(final RuleSets ruleSets) {
+    public void setRuleSets(final RuleSets ruleSets) {
         this.ruleSets = ruleSets;
     }
 
@@ -295,7 +291,7 @@ public class BaseVisitor {
             }
 
             final File sourceCodeFile = file.getRawLocation().toFile();
-            if (included && getRuleSet().applies(sourceCodeFile) && isFileInWorkingSet(file)
+            if (included && getRuleSets().applies(sourceCodeFile) && isFileInWorkingSet(file)
                     && languageVersion != null) {
                 subTask("PMD checking: " + file.getName());
 
@@ -309,25 +305,14 @@ public class BaseVisitor {
                 // getPmdEngine().processFile(sourceCodeFile, getRuleSet(),
                 // context);
 
-                DataSource dataSource = new ReaderDataSource(input, file.getName());
+                DataSource dataSource = new ReaderDataSource(input, file.getRawLocation().toFile().getPath());
                 RuleSetFactory ruleSetFactory = new RuleSetFactory() {
                     @Override
                     public synchronized RuleSets createRuleSets(String referenceString)
                             throws RuleSetNotFoundException {
-                        return new RuleSets(getRuleSet());
+                        return new RuleSets(getRuleSets());
                     }
                 };
-                
-                System.out.println("");
-                System.out.println("");
-                System.out.println("");
-                System.out.println("");
-                System.out.println("(pk): " + sourceCodeFile.getName());
-                for(RuleSet ruleSet: new RuleSets(getRuleSet()).getAllRuleSets()) {
-                  System.out.println("(pk): " + ruleSet.getName());
-                  System.out.println("(pk): " + ruleSet.getExcludePatterns());
-                  System.out.println("(pk): " + ruleSet.getRules().size());
-                }
                 // need to disable multi threading, as the ruleset is
                 // not recreated and shared between threads...
                 // but as we anyway have only one file to process, it won't hurt
@@ -352,7 +337,6 @@ public class BaseVisitor {
                     @Override
                     public void renderFileReport(Report report) throws IOException {
                         for (RuleViolation v : report) {
-                          System.out.println("(pk): " + v.getRule().getName() );
                             collectingReport.addRuleViolation(v);
                         }
                         for (Iterator<ProcessingError> it = report.errors(); it.hasNext();) {

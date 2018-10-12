@@ -641,20 +641,14 @@ class PreferencesManagerImpl implements IPreferencesManager {
                     RuleSets projectRuleSet = properties.getProjectRuleSets();
                     if (projectRuleSet != null) {
                       projectRuleSet.getAllRules().addAll(getNewRules(updatedRuleSet));
-                        //projectRuleSet = RuleSetUtil.addRules(projectRuleSet, getNewRules(updatedRuleSet));
-                     // TODO (pk) Is this wrong?
                       for(RuleSet rs : projectRuleSet.getAllRuleSets()) {
                         rs = RuleSetUtil.setExcludePatterns(rs,
                           updatedRuleSet.getExcludePatterns());
                         rs = RuleSetUtil.setIncludePatterns(rs,
                           updatedRuleSet.getIncludePatterns());
                       }
-//                        projectRuleSet = RuleSetUtil.setExcludePatterns(projectRuleSet,
-//                                updatedRuleSet.getExcludePatterns());
-//                        projectRuleSet = RuleSetUtil.setIncludePatterns(projectRuleSet,
-//                                updatedRuleSet.getIncludePatterns());
-                        properties.setProjectRuleSets(projectRuleSet);
-                        properties.sync();
+                      properties.setProjectRuleSets(projectRuleSet);
+                      properties.sync();
                     }
                 } catch (PropertiesException e) {
                     PMDPlugin.getDefault().logError("Unable to add new rules for project: " + project, e);

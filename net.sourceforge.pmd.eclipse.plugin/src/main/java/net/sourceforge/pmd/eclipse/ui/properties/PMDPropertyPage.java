@@ -467,7 +467,7 @@ public class PMDPropertyPage extends PropertyPage {
      */
     private void populateAvailableRulesTable() {
         availableRulesTableViewer.setInput(controller.getAvailableRules());
-        final RuleSets activeRuleSet = model.getProjectRuleSet();
+        final RuleSets activeRuleSet = model.getProjectRuleSets();
         if (activeRuleSet != null) {
             final Collection<Rule> activeRules = activeRuleSet.getAllRules();
 
@@ -491,7 +491,7 @@ public class PMDPropertyPage extends PropertyPage {
         model.setProjectWorkingSet(selectedWorkingSet);
         RuleSets ruleSets = new RuleSets();
         ruleSets.addRuleSet(getProjectRuleSet());
-        model.setProjectRuleSet(ruleSets);
+        model.setProjectRuleSets(ruleSets);
         model.setRuleSetStoredInProject(ruleSetStoredInProjectButton.getSelection());
         model.setRuleSetFile(ruleSetFileText.getText());
         model.setIncludeDerivedFiles(includeDerivedFilesButton.getSelection());
@@ -526,7 +526,7 @@ public class PMDPropertyPage extends PropertyPage {
             }
         }
 
-        final RuleSets activeRuleSet = model.getProjectRuleSet();
+        final RuleSets activeRuleSet = model.getProjectRuleSets();
         for(RuleSet rs : activeRuleSet.getAllRuleSets()) {
           ruleSet = RuleSetUtil.addExcludePatterns(ruleSet, rs.getExcludePatterns());
           ruleSet = RuleSetUtil.addIncludePatterns(ruleSet, rs.getIncludePatterns());  
