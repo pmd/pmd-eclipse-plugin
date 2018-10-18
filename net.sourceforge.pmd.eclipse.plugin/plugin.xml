@@ -668,5 +668,26 @@
             name="PMD UI Commands">
       </category>
    </extension>
+   <extension
+         point="org.eclipse.wst.xml.core.catalogContributions">
+      <catalogContribution
+            id="PMD schemas">
+         <public
+               id="ruleset_2_0_0"
+               publicId="http://pmd.sourceforge.net/ruleset/2.0.0"
+               uri="platform:/plugin/net.sourceforge.pmd.eclipse.plugin/ruleset_2_0_0.xsd">
+         </public>
+         <public
+               id="report_2_0_0"
+               publicId="http://pmd.sourceforge.net/report/2.0.0"
+               uri="platform:/plugin/net.sourceforge.pmd.eclipse.plugin/report_2_0_0.xsd">
+         </public>
+         <public
+               id="rule-tests_1_0_0"
+               publicId="http://pmd.sourceforge.net/rule-tests"
+               uri="platform:/plugin/net.sourceforge.pmd.eclipse.plugin/rule-tests_1_0_0.xsd">
+         </public>
+      </catalogContribution>
+   </extension>
 
 </plugin>

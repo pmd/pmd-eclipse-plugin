@@ -20,6 +20,7 @@ Eclipse Update Site:
 ### Fixed Issues
 
 *   [#48](https://github.com/pmd/pmd-eclipse-plugin/issues/48): Upgrade to PMD 6.7.0
+*   [#67](https://github.com/pmd/pmd-eclipse-plugin/issues/67): PMD's XML Schemas should be registered in XML Catalog
 
 ### External Contributions
 

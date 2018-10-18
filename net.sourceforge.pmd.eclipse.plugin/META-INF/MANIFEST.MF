@@ -15,7 +15,8 @@ Require-Bundle: org.apache.commons.logging;bundle-version="1.0.4",
  org.eclipse.team.core,
  org.eclipse.search,
  org.eclipse.help,
- org.eclipse.help.ui
+ org.eclipse.help.ui,
+ org.eclipse.wst.xml.core
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-Vendor: %plugin.provider
@@ -61,6 +62,7 @@ Bundle-ClassPath: target/lib/antlr-runtime.jar,
  target/lib/scala-library.jar,
  target/lib/scala-reflect.jar,
  target/classes/,
+ target/schema/,
  .
 Bundle-Localization: plugin
 Export-Package: name.herlin.command,
