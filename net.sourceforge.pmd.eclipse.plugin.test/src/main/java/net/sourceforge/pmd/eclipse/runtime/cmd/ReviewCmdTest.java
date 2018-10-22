@@ -48,15 +48,15 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import name.herlin.command.CommandException;
+import name.herlin.command.UnsetInputPropertiesException;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSet;
+import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.eclipse.EclipseUtils;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties;
 import net.sourceforge.pmd.eclipse.ui.actions.RuleSetUtil;
-
-import name.herlin.command.CommandException;
-import name.herlin.command.UnsetInputPropertiesException;
 
 /**
  * This tests the PMD Processor command
@@ -131,45 +131,44 @@ public class ReviewCmdTest {
      */
     @Test
     public void testProjectBuildPath() throws Exception {
-    	// TODO (pk) Fix this
-//        IProjectProperties properties = PMDPlugin.getDefault().getPropertiesManager()
-//                .loadProjectProperties(testProject);
-//        Rule compareObjectsWithEquals = properties.getProjectRuleSet().getRuleByName("CompareObjectsWithEquals");
-//        RuleSet projectRuleSet = RuleSetUtil.newSingle(compareObjectsWithEquals);
-//        properties.setProjectRuleSets(projectRuleSet);
-//        boolean oldSetting = PMDPlugin.getDefault().getPreferencesManager().loadPreferences()
-//                .isProjectBuildPathEnabled();
-//
-//        try {
-//            PMDPlugin.getDefault().getPreferencesManager().loadPreferences().setProjectBuildPathEnabled(true);
-//            EclipseUtils.createTestSourceFile(testProject, "/src/MyEnum.java", "public enum MyEnum { A, B }");
-//            IFile sourceFile = EclipseUtils.createTestSourceFile(testProject, "/src/Foo.java",
-//                    "class Foo {\n" + "  boolean bar(MyEnum a, MyEnum b) {\n" + "    return a == b;\n" + // line 3
-//                            "  }\n" + "}");
-//            testProject.build(IncrementalProjectBuilder.FULL_BUILD, null);
-//            testProject.refreshLocal(IResource.DEPTH_INFINITE, null);
-//
-//            ReviewCodeCmd cmd = new ReviewCodeCmd();
-//            cmd.addResource(testProject);
-//            cmd.performExecute();
-//            cmd.join();
-//            Map<IFile, Set<MarkerInfo2>> markers = cmd.getMarkers();
-//            // with type resolution, this comparison is ok, as MyEnum is a enum
-//            Assert.assertTrue("Type Resolution didn't work", markers.get(sourceFile).isEmpty());
-//
-//            // without type resolution, there is a violation
-//            PMDPlugin.getDefault().getPreferencesManager().loadPreferences().setProjectBuildPathEnabled(false);
-//            cmd = new ReviewCodeCmd();
-//            cmd.addResource(testProject);
-//            cmd.performExecute();
-//            cmd.join();
-//            markers = cmd.getMarkers();
-//            // there is a violation expected without type resolution
-//            Assert.assertFalse(markers.get(sourceFile).isEmpty());
-//
-//        } finally {
-//            PMDPlugin.getDefault().getPreferencesManager().loadPreferences().setProjectBuildPathEnabled(oldSetting);
-//        }
+        IProjectProperties properties = PMDPlugin.getDefault().getPropertiesManager()
+                .loadProjectProperties(testProject);
+        Rule compareObjectsWithEquals = properties.getProjectRuleSet().getRuleByName("CompareObjectsWithEquals");
+        RuleSet projectRuleSet = RuleSetUtil.newSingle(compareObjectsWithEquals);
+        properties.setProjectRuleSets(new RuleSets(projectRuleSet));
+        boolean oldSetting = PMDPlugin.getDefault().getPreferencesManager().loadPreferences()
+                .isProjectBuildPathEnabled();
+
+        try {
+            PMDPlugin.getDefault().getPreferencesManager().loadPreferences().setProjectBuildPathEnabled(true);
+            EclipseUtils.createTestSourceFile(testProject, "/src/MyEnum.java", "public enum MyEnum { A, B }");
+            IFile sourceFile = EclipseUtils.createTestSourceFile(testProject, "/src/Foo.java",
+                    "class Foo {\n" + "  boolean bar(MyEnum a, MyEnum b) {\n" + "    return a == b;\n" + // line 3
+                            "  }\n" + "}");
+            testProject.build(IncrementalProjectBuilder.FULL_BUILD, null);
+            testProject.refreshLocal(IResource.DEPTH_INFINITE, null);
+
+            ReviewCodeCmd cmd = new ReviewCodeCmd();
+            cmd.addResource(testProject);
+            cmd.performExecute();
+            cmd.join();
+            Map<IFile, Set<MarkerInfo2>> markers = cmd.getMarkers();
+            // with type resolution, this comparison is ok, as MyEnum is a enum
+            Assert.assertTrue("Type Resolution didn't work", markers.get(sourceFile).isEmpty());
+
+            // without type resolution, there is a violation
+            PMDPlugin.getDefault().getPreferencesManager().loadPreferences().setProjectBuildPathEnabled(false);
+            cmd = new ReviewCodeCmd();
+            cmd.addResource(testProject);
+            cmd.performExecute();
+            cmd.join();
+            markers = cmd.getMarkers();
+            // there is a violation expected without type resolution
+            Assert.assertFalse(markers.get(sourceFile).isEmpty());
+
+        } finally {
+            PMDPlugin.getDefault().getPreferencesManager().loadPreferences().setProjectBuildPathEnabled(oldSetting);
+        }
     }
 
     /**

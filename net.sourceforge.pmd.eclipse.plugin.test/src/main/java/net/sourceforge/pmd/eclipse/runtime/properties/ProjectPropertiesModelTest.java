@@ -145,40 +145,40 @@ public class ProjectPropertiesModelTest {
 	 */
 	@Test
 	public void testBug() throws PropertiesException, RuleSetNotFoundException, CoreException {
-		// First ensure that the plugin initial ruleset is equal to the project
-		// ruleset
-		// TODO (pk) Fix this
-//		final IProjectPropertiesManager mgr = PMDPlugin.getDefault().getPropertiesManager();
-//		final IProjectProperties model = mgr.loadProjectProperties(this.testProject);
-//
-//		RuleSets projectRuleSets = model.getProjectRuleSets();
-//		for (RuleSet projectRuleSet : projectRuleSets.getAllRuleSets()) {
-//			Assert.assertEquals(this.initialPluginRuleSet.getRules().size(), projectRuleSet.getRules().size());
-//			compareTwoRuleSets(initialPluginRuleSet, projectRuleSet);
-//			Assert.assertEquals("The project ruleset is not equal to the plugin ruleset",
-//					this.initialPluginRuleSet.getRules(), projectRuleSet.getRules());
-//			int ruleCountBefore = projectRuleSet.getRules().size();
-//
-//			// 2. remove a rule (keep its name for assertion)
-//			RuleSet newRuleSet = RuleSetUtil.newEmpty("test-ruleset", "RuleSet for unit testing");
-//			newRuleSet = RuleSetUtil.addRules(newRuleSet, projectRuleSet.getRules());
-//			final Rule removedRule = newRuleSet.getRuleByName("UnnecessaryParentheses");
-//			newRuleSet = RuleSetUtil.removeRule(newRuleSet, removedRule);
-//			Assert.assertEquals("No rule has been removed - test problem", newRuleSet.getRules().size(),
-//					ruleCountBefore - 1);
-//
-//			model.setProjectRuleSets(newRuleSet);
-//			model.sync();
-//
-//			// 3. test the rule has correctly been removed
-//			projectRuleSet = model.getProjectRuleSet();
-//			Assert.assertEquals("The rule count should 1 less", ruleCountBefore - 1, projectRuleSet.getRules().size());
-//			for (Rule r : projectRuleSet.getRules()) {
-//				if (r.getName().equals(removedRule.getName()) && r.getLanguage() == removedRule.getLanguage()) {
-//					Assert.fail("The rule has not been removed!");
-//				}
-//			}
-//		}
+//		 First ensure that the plugin initial ruleset is equal to the project
+//		 ruleset
+		final IProjectPropertiesManager mgr = PMDPlugin.getDefault().getPropertiesManager();
+		final IProjectProperties model = mgr.loadProjectProperties(this.testProject);
+
+		RuleSets projectRuleSets = model.getProjectRuleSets();
+		for (RuleSet projectRuleSet : projectRuleSets.getAllRuleSets()) {
+			Assert.assertEquals(this.initialPluginRuleSet.getRules().size(), projectRuleSet.getRules().size());
+			compareTwoRuleSets(initialPluginRuleSet, projectRuleSet);
+			Assert.assertEquals("The project ruleset is not equal to the plugin ruleset",
+					this.initialPluginRuleSet.getRules(), projectRuleSet.getRules());
+			int ruleCountBefore = projectRuleSet.getRules().size();
+
+			// 2. remove a rule (keep its name for assertion)
+			RuleSet newRuleSet = RuleSetUtil.newEmpty("test-ruleset", "RuleSet for unit testing");
+			newRuleSet = RuleSetUtil.addRules(newRuleSet, projectRuleSet.getRules());
+			final Rule removedRule = newRuleSet.getRuleByName("UnnecessaryParentheses");
+			newRuleSet = RuleSetUtil.removeRule(newRuleSet, removedRule);
+			Assert.assertEquals("No rule has been removed - test problem", newRuleSet.getRules().size(),
+					ruleCountBefore - 1);
+			
+			RuleSets ruleSets = new RuleSets(newRuleSet);
+			model.setProjectRuleSets(ruleSets);
+			model.sync();
+
+			// 3. test the rule has correctly been removed
+			projectRuleSet = model.getProjectRuleSet();
+			Assert.assertEquals("The rule count should 1 less", ruleCountBefore - 1, projectRuleSet.getRules().size());
+			for (Rule r : projectRuleSet.getRules()) {
+				if (r.getName().equals(removedRule.getName()) && r.getLanguage() == removedRule.getLanguage()) {
+					Assert.fail("The rule has not been removed!");
+				}
+			}
+		}
 	}
 
 	/**
@@ -232,9 +232,8 @@ public class ProjectPropertiesModelTest {
 		ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
 		PrintStream out = new PrintStream(byteStream);
 
-		// TODO (pk) Fix this
-//		Assert.assertTrue("A new project is not created with the default plugin ruleset", EclipseUtils
-//				.assertRuleSetEquals(model.getProjectRuleSet().getRules(), pmgr.getRuleSet().getRules(), out));
+		Assert.assertTrue("A new project is not created with the default plugin ruleset", EclipseUtils
+				.assertRuleSetEquals(model.getProjectRuleSet().getRules(), pmgr.getRuleSet().getRules(), out));
 	}
 
 	/**
@@ -243,24 +242,23 @@ public class ProjectPropertiesModelTest {
 	@Test
 	public void testProjectRuleSet1() throws PropertiesException, RuleSetNotFoundException, CoreException {
 		final IProjectPropertiesManager mgr = PMDPlugin.getDefault().getPropertiesManager();
-		// TODO (pk) Fix this
-//		final IProjectProperties model = mgr.loadProjectProperties(this.testProject);
-//
-//		final RuleSetFactory factory = new RuleSetFactory();
-//
-//		// use the best practices ruleset because it should be included in the plugin
-//		// ruleset.
-//		final RuleSet bestPracticesRuleSet = factory.createRuleSet("category/java/bestpractices.xml");
-//
-//		// First set the project ruleset
-//		model.setProjectRuleSets(bestPracticesRuleSet);
-//		model.sync();
-//
-//		// Test the ruleset we set is equal to the ruleset we queried
-//		final RuleSet projectRuleSet = model.getProjectRuleSet();
-//		Assert.assertNotNull("Project ruleset has not been set", projectRuleSet);
-//		Assert.assertTrue("The project ruleset is not the basic ruleset", EclipseUtils
-//				.assertRuleSetEquals(bestPracticesRuleSet.getRules(), projectRuleSet.getRules(), System.out));
+		final IProjectProperties model = mgr.loadProjectProperties(this.testProject);
+
+		final RuleSetFactory factory = new RuleSetFactory();
+
+		// use the best practices ruleset because it should be included in the plugin
+		// ruleset.
+		final RuleSet bestPracticesRuleSet = factory.createRuleSet("category/java/bestpractices.xml");
+
+		// First set the project rulesets
+		model.setProjectRuleSets(new RuleSets(bestPracticesRuleSet));
+		model.sync();
+
+		// Test the ruleset we set is equal to the ruleset we queried
+		final RuleSet projectRuleSet = model.getProjectRuleSet();
+		Assert.assertNotNull("Project ruleset has not been set", projectRuleSet);
+		Assert.assertTrue("The project ruleset is not the basic ruleset", EclipseUtils
+				.assertRuleSetEquals(bestPracticesRuleSet.getRules(), projectRuleSet.getRules(), System.out));
 	}
 
 	/**
@@ -270,31 +268,30 @@ public class ProjectPropertiesModelTest {
 	@Test
 	@Ignore("implementation is not finished - maybe the behavior would even be wrong")
 	public void testProjectRuleSet2() throws PropertiesException, RuleSetNotFoundException, CoreException {
-		// TODO (pk) Fix this
 		// First ensure that the plugin initial ruleset is equal to the project
 		// // ruleset IProjectPropertiesManager
 		final IProjectPropertiesManager mgr = PMDPlugin.getDefault().getPropertiesManager();
 		final IProjectProperties model = mgr.loadProjectProperties(this.testProject);
 
-//		RuleSet projectRuleSet = model.getProjectRuleSet();
-//		Assert.assertEquals("The project ruleset is not equal to the plugin ruleset",
-//				this.initialPluginRuleSet.getRules(), projectRuleSet.getRules());
-//
-//		final RuleSetFactory factory = new RuleSetFactory();
-//
-//		// use the best practices ruleset because it should be included in the
-//		// plugin ruleset.
-//		final RuleSet bestPracticesRuleSet = factory.createRuleSet("category/java/bestpractices.xml");
-//
-//		IPreferencesManager pmgr = PMDPlugin.getDefault().getPreferencesManager();
-//		pmgr.setRuleSet(bestPracticesRuleSet);
-//
-//		projectRuleSet = model.getProjectRuleSet();
-//
-//		dumpRuleSet(bestPracticesRuleSet);
-//		dumpRuleSet(projectRuleSet);
-//		Assert.assertEquals("The project ruleset is not equal to the plugin ruleset", bestPracticesRuleSet.getRules(),
-//				projectRuleSet.getRules());
+		RuleSet projectRuleSet = model.getProjectRuleSet();
+		Assert.assertEquals("The project ruleset is not equal to the plugin ruleset",
+				this.initialPluginRuleSet.getRules(), projectRuleSet.getRules());
+
+		final RuleSetFactory factory = new RuleSetFactory();
+
+		// use the best practices ruleset because it should be included in the
+		// plugin ruleset.
+		final RuleSet bestPracticesRuleSet = factory.createRuleSet("category/java/bestpractices.xml");
+
+		IPreferencesManager pmgr = PMDPlugin.getDefault().getPreferencesManager();
+		pmgr.setRuleSet(bestPracticesRuleSet);
+
+		projectRuleSet = model.getProjectRuleSet();
+
+		dumpRuleSet(bestPracticesRuleSet);
+		dumpRuleSet(projectRuleSet);
+		Assert.assertEquals("The project ruleset is not equal to the plugin ruleset", bestPracticesRuleSet.getRules(),
+				projectRuleSet.getRules());
 	}
 
 	/**
@@ -303,35 +300,34 @@ public class ProjectPropertiesModelTest {
 	 */
 	@Test
 	public void testProjectRuleSet3() throws PropertiesException, RuleSetNotFoundException, CoreException {
-		// TODO (pk) Fix this
 		// First ensure that the plugin initial ruleset is equal to the project
 		// ruleset
-//		final IProjectPropertiesManager mgr = PMDPlugin.getDefault().getPropertiesManager();
-//		IProjectProperties model = mgr.loadProjectProperties(this.testProject);
-//
-//		RuleSet projectRuleSet = model.getProjectRuleSet();
-//		Assert.assertEquals("The project ruleset is not equal to the plugin ruleset",
-//				this.initialPluginRuleSet.getRules(), projectRuleSet.getRules());
-//
-//		// 2. add a rule to the plugin rule set
-//		final Rule myRule = new AbstractJavaRule() {
-//			@Override
-//			public String getName() {
-//				return "MyRule";
-//			}
-//		};
-//
-//		RuleSet newRuleSet = RuleSetUtil.newEmpty("foo", "bar");
-//		newRuleSet = RuleSetUtil.addRules(newRuleSet, this.initialPluginRuleSet.getRules());
-//		newRuleSet = RuleSetUtil.addRule(newRuleSet, myRule);
-//		PMDPlugin.getDefault().getPreferencesManager().setRuleSet(newRuleSet);
-//
-//		// Test that the project rule set should still be the same as the plugin
-//		// rule set
-//		model = mgr.loadProjectProperties(this.testProject);
-//		projectRuleSet = model.getProjectRuleSet();
-//		Assert.assertEquals("The project ruleset is not equal to the plugin ruleset",
-//				PMDPlugin.getDefault().getPreferencesManager().getRuleSet().getRules(), projectRuleSet.getRules());
+		final IProjectPropertiesManager mgr = PMDPlugin.getDefault().getPropertiesManager();
+		IProjectProperties model = mgr.loadProjectProperties(this.testProject);
+
+		RuleSet projectRuleSet = model.getProjectRuleSet();
+		Assert.assertEquals("The project ruleset is not equal to the plugin ruleset",
+				this.initialPluginRuleSet.getRules(), projectRuleSet.getRules());
+
+		// 2. add a rule to the plugin rule set
+		final Rule myRule = new AbstractJavaRule() {
+			@Override
+			public String getName() {
+				return "MyRule";
+			}
+		};
+
+		RuleSet newRuleSet = RuleSetUtil.newEmpty("foo", "bar");
+		newRuleSet = RuleSetUtil.addRules(newRuleSet, this.initialPluginRuleSet.getRules());
+		newRuleSet = RuleSetUtil.addRule(newRuleSet, myRule);
+		PMDPlugin.getDefault().getPreferencesManager().setRuleSet(newRuleSet);
+
+		// Test that the project rule set should still be the same as the plugin
+		// rule set
+		model = mgr.loadProjectProperties(this.testProject);
+		projectRuleSet = model.getProjectRuleSet();
+		Assert.assertEquals("The project ruleset is not equal to the plugin ruleset",
+				PMDPlugin.getDefault().getPreferencesManager().getRuleSet().getRules(), projectRuleSet.getRules());
 	}
 
 	/**
@@ -401,18 +397,17 @@ public class ProjectPropertiesModelTest {
 	 */
 	@Test
 	public void testRebuild3() throws PropertiesException {
-//		// TODO (pk) Fix this
-//		final IProjectPropertiesManager mgr = PMDPlugin.getDefault().getPropertiesManager();
-//		final IProjectProperties model = mgr.loadProjectProperties(this.testProject);
-//
-//		model.setPmdEnabled(true);
-//
-//		final RuleSet pmdRuleSet = PMDPlugin.getDefault().getPreferencesManager().getRuleSet();
-//		final Rule rule1 = pmdRuleSet.getRuleByName("EmptyCatchBlock");
-//		final RuleSet fooRuleSet = RuleSetUtil.newSingle(rule1);
-//
-//		model.setProjectRuleSets(fooRuleSet);
-//		Assert.assertTrue(model.isNeedRebuild());
+		final IProjectPropertiesManager mgr = PMDPlugin.getDefault().getPropertiesManager();
+		final IProjectProperties model = mgr.loadProjectProperties(this.testProject);
+
+		model.setPmdEnabled(true);
+
+		final RuleSet pmdRuleSet = PMDPlugin.getDefault().getPreferencesManager().getRuleSet();
+		final Rule rule1 = pmdRuleSet.getRuleByName("EmptyCatchBlock");
+		final RuleSet fooRuleSet = RuleSetUtil.newSingle(rule1);
+
+		model.setProjectRuleSets(new RuleSets(fooRuleSet));
+		Assert.assertTrue(model.isNeedRebuild());
 	}
 
 	/**
@@ -422,26 +417,25 @@ public class ProjectPropertiesModelTest {
 	 */
 	@Test
 	public void testRuleSetStoredInProjectFALSE() throws PropertiesException, RuleSetNotFoundException {
-		// TODO (pk) Fix this
-//		final IProjectPropertiesManager mgr = PMDPlugin.getDefault().getPropertiesManager();
-//		final IProjectProperties model = mgr.loadProjectProperties(this.testProject);
-//
-//		final RuleSetFactory factory = new RuleSetFactory();
-//		final RuleSet bestPracticesRuleSet = factory.createRuleSet("category/java/bestpractices.xml");
-//		model.setPmdEnabled(true);
-//		model.setRuleSetStoredInProject(false);
-//		model.setProjectWorkingSet(null);
-//		model.setProjectRuleSets(bestPracticesRuleSet);
-//		model.sync();
-//
-//		model.createDefaultRuleSetFile();
-//		model.setRuleSetStoredInProject(true);
-//		model.sync();
-//
-//		model.setRuleSetStoredInProject(false);
-//		model.sync();
-//		final boolean b = model.isRuleSetStoredInProject();
-//		Assert.assertFalse("the ruleset should'nt be stored in the project", b);
+		final IProjectPropertiesManager mgr = PMDPlugin.getDefault().getPropertiesManager();
+		final IProjectProperties model = mgr.loadProjectProperties(this.testProject);
+
+		final RuleSetFactory factory = new RuleSetFactory();
+		final RuleSet bestPracticesRuleSet = factory.createRuleSet("category/java/bestpractices.xml");
+		model.setPmdEnabled(true);
+		model.setRuleSetStoredInProject(false);
+		model.setProjectWorkingSet(null);
+		model.setProjectRuleSets(new RuleSets(bestPracticesRuleSet));
+		model.sync();
+
+		model.createDefaultRuleSetFile();
+		model.setRuleSetStoredInProject(true);
+		model.sync();
+
+		model.setRuleSetStoredInProject(false);
+		model.sync();
+		final boolean b = model.isRuleSetStoredInProject();
+		Assert.assertFalse("the ruleset should'nt be stored in the project", b);
 	}
 
 	/**
@@ -450,33 +444,32 @@ public class ProjectPropertiesModelTest {
 	 */
 	@Test
 	public void testRuleSetStoredInProjectTRUE() throws PropertiesException, RuleSetNotFoundException {
-		// TODO (pk) Fix this
-//		final IProjectPropertiesManager mgr = PMDPlugin.getDefault().getPropertiesManager();
-//		final IProjectProperties model = mgr.loadProjectProperties(this.testProject);
-//
-//		final RuleSetFactory factory = new RuleSetFactory();
-//		final RuleSet basicRuleSet = factory.createRuleSet("category/java/bestpractices.xml");
-//		model.setPmdEnabled(true);
-//		model.setRuleSetStoredInProject(false);
-//		model.setProjectWorkingSet(null);
-//		model.setProjectRuleSets(basicRuleSet);
-//		model.sync();
-//
-//		model.createDefaultRuleSetFile();
-//		model.setRuleSetStoredInProject(true);
-//		model.sync();
-//
-//		final boolean b = model.isRuleSetStoredInProject();
-//		final IFile file = this.testProject.getFile(".ruleset");
-//		final RuleSet projectRuleSet = factory.createRuleSet(file.getLocation().toOSString());
-//		RuleSet pRuleSet = model.getProjectRuleSet();
-//		Assert.assertTrue("the ruleset should be stored in the project", b);
-//		Assert.assertTrue("The project ruleset must be equal to the one found in the project",
-//				EclipseUtils.assertRuleSetEquals(pRuleSet.getRules(), projectRuleSet.getRules(), System.out));
-		// TODO: this assert does not work, as RuleSetReference doesn't implement equals
-		// Assert.assertEquals("The project ruleset must be equals to the one found in
-		// the project", pRuleSet,
-		// projectRuleSet);
+		final IProjectPropertiesManager mgr = PMDPlugin.getDefault().getPropertiesManager();
+		final IProjectProperties model = mgr.loadProjectProperties(this.testProject);
+
+		final RuleSetFactory factory = new RuleSetFactory();
+		final RuleSet basicRuleSet = factory.createRuleSet("category/java/bestpractices.xml");
+		model.setPmdEnabled(true);
+		model.setRuleSetStoredInProject(false);
+		model.setProjectWorkingSet(null);
+		model.setProjectRuleSets(new RuleSets(basicRuleSet));
+		model.sync();
+
+		model.createDefaultRuleSetFile();
+		model.setRuleSetStoredInProject(true);
+		model.sync();
+
+		final boolean b = model.isRuleSetStoredInProject();
+		final IFile file = this.testProject.getFile(".ruleset");
+		final RuleSet projectRuleSet = factory.createRuleSet(file.getLocation().toOSString());
+		RuleSet pRuleSet = model.getProjectRuleSet();
+		Assert.assertTrue("the ruleset should be stored in the project", b);
+		Assert.assertTrue("The project ruleset must be equal to the one found in the project",
+				EclipseUtils.assertRuleSetEquals(pRuleSet.getRules(), projectRuleSet.getRules(), System.out));
+//		 TODO: this assert does not work, as RuleSetReference doesn't implement equals
+//		 Assert.assertEquals("The project ruleset must be equals to the one found in
+//		 the project", pRuleSet,
+//		 projectRuleSet);
 	}
 
 	private void dumpRuleSet(final RuleSet ruleSet) {
