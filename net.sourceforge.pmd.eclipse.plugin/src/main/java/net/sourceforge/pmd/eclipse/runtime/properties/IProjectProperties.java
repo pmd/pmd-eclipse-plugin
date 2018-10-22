@@ -43,6 +43,7 @@ import java.util.Set;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.ui.IWorkingSet;
 
+import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSets;
 
 /**
@@ -73,6 +74,11 @@ public interface IProjectProperties {
      * @return Returns the project Rule Set.
      */
     RuleSets getProjectRuleSets() throws PropertiesException;
+    
+    /**
+     * @return Returns the first rule set in the project rulesets
+     */
+    RuleSet getProjectRuleSet() throws PropertiesException;
 
     /**
      * @param projectRuleSet

@@ -614,7 +614,6 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
             logInfo("ReviewCodeCmd started on resource delta " + resource.getName() + " in project " + project.getName());
 
             RuleSets ruleSets = properties.getProjectRuleSets();
-          //  RuleSet ruleSet = rulesetFromResourceDelta(); // properties.getProjectRuleSet();
 
               // PMDEngine pmdEngine = getPmdEngineForProject(project);
               int targetCount = countDeltaElement(resourceDelta);

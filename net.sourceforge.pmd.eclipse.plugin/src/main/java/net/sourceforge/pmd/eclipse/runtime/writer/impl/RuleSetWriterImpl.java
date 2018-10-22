@@ -6,7 +6,6 @@ import java.io.OutputStream;
 
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetWriter;
-import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.eclipse.runtime.writer.IRuleSetWriter;
 import net.sourceforge.pmd.eclipse.runtime.writer.WriterException;
 
@@ -27,12 +26,10 @@ class RuleSetWriterImpl implements IRuleSetWriter {
    * @param ruleSet
    *          the ruleset to serialize
    */
-  public void write(OutputStream outputStream, RuleSets ruleSets) throws WriterException {
+  public void write(OutputStream outputStream, RuleSet ruleSet) throws WriterException {
     try {
       RuleSetWriter ruleSetWriter = new RuleSetWriter(outputStream);
-      for (RuleSet ruleSet : ruleSets.getAllRuleSets()) {
-        ruleSetWriter.write(ruleSet);
-      }
+      ruleSetWriter.write(ruleSet);
       outputStream.flush();
     } catch (RuntimeException e) {
       throw new WriterException(e);

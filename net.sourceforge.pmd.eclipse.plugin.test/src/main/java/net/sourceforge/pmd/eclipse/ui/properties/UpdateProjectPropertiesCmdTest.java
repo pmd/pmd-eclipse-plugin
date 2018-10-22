@@ -7,17 +7,17 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import name.herlin.command.CommandException;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;
+import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.eclipse.EclipseUtils;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties;
 import net.sourceforge.pmd.eclipse.runtime.properties.IProjectPropertiesManager;
 import net.sourceforge.pmd.eclipse.runtime.properties.PropertiesException;
 import net.sourceforge.pmd.eclipse.ui.actions.RuleSetUtil;
-
-import name.herlin.command.CommandException;
 
 public class UpdateProjectPropertiesCmdTest {
     private IProject testProject;
@@ -71,7 +71,8 @@ public class UpdateProjectPropertiesCmdTest {
         final UpdateProjectPropertiesCmd cmd = new UpdateProjectPropertiesCmd();
         cmd.setPmdEnabled(true);
         cmd.setProject(this.testProject);
-        cmd.setProjectRuleSet(newRuleSet);
+        RuleSets ruleSets = new RuleSets(newRuleSet);
+        cmd.setProjectRuleSets(ruleSets);
         cmd.setProjectWorkingSet(null);
         cmd.setRuleSetStoredInProject(false);
         cmd.execute();

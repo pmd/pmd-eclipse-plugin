@@ -46,7 +46,6 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSet;
-import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.plugin.UISettings;
 import net.sourceforge.pmd.eclipse.runtime.writer.IRuleSetWriter;
@@ -580,9 +579,7 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
                                     getFileNameWithoutExtension(file.getName()), input.getValue());
                             OutputStream out = new FileOutputStream(fileName);
                             IRuleSetWriter writer = PMDPlugin.getDefault().getRuleSetWriter();
-                            RuleSets ruleSets = new RuleSets();
-                            ruleSets.addRuleSet(ruleSet);
-                            writer.write(out, ruleSets);
+                            writer.write(out, ruleSet);
                             out.close();
                             MessageDialog.openInformation(getShell(), getMessage(StringKeys.INFORMATION_TITLE),
                                     getMessage(StringKeys.INFORMATION_RULESET_EXPORTED));

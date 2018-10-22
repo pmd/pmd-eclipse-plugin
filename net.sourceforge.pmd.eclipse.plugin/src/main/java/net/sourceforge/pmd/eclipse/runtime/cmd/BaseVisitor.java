@@ -56,6 +56,7 @@ import net.sourceforge.pmd.Report.ConfigurationError;
 import net.sourceforge.pmd.Report.ProcessingError;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetNotFoundException;
 import net.sourceforge.pmd.RuleSets;
@@ -218,6 +219,24 @@ public class BaseVisitor {
         return this.ruleSets;
     }
 
+    /**
+     * This returns the first ruleset file.
+     * @return
+     */
+    public RuleSet getRuleSet() {
+      return this.ruleSets.getAllRuleSets()[0];
+    }
+    
+    /**
+     * This removes all the Rulesets from the rulesets
+     * and sets the only ruleset to the one passed in.
+     * 
+     * @param ruleSet
+     */
+    public void setRuleSet(RuleSet ruleSet) {
+      this.ruleSets = new RuleSets(ruleSet);
+    }
+    
     /**
      * @param ruleSet
      *            The ruleSet to set.

@@ -44,7 +44,6 @@ import org.eclipse.swt.widgets.TreeItem;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSet;
-import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.eclipse.runtime.preferences.IPreferences;
 import net.sourceforge.pmd.eclipse.runtime.preferences.impl.PreferenceUIStore;
 import net.sourceforge.pmd.eclipse.runtime.writer.IRuleSetWriter;
@@ -406,9 +405,7 @@ public class RuleTableManager extends AbstractTreeTableManager<Rule> implements 
                         input.getValue());
                 out = new FileOutputStream(fileName);
                 IRuleSetWriter writer = plugin.getRuleSetWriter();
-                RuleSets ruleSets = new RuleSets();
-                ruleSets.addRuleSet(ruleSet);
-                writer.write(out, ruleSets);
+                writer.write(out, ruleSet);
             } finally {
                 IOUtil.closeQuietly(out);
             }

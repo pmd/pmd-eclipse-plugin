@@ -25,7 +25,7 @@ package net.sourceforge.pmd.eclipse.runtime.writer;
 
 import java.io.OutputStream;
 
-import net.sourceforge.pmd.RuleSets;
+import net.sourceforge.pmd.RuleSet;
 
 /**
  * Interface for a rule set writer. A rule set writer is an object used to
@@ -44,5 +44,5 @@ public interface IRuleSetWriter {
      * @param ruleSet
      *            the ruleset to serialize
      */
-    void write(OutputStream outputStream, RuleSets ruleSet) throws WriterException;
+    void write(OutputStream outputStream, RuleSet ruleSet) throws WriterException;
 }

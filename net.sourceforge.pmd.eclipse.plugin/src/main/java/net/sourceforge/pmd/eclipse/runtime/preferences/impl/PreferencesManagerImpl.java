@@ -639,6 +639,7 @@ class PreferencesManagerImpl implements IPreferencesManager {
                 try {
                     IProjectProperties properties = PMDPlugin.getDefault().loadProjectProperties(project);
                     RuleSets projectRuleSet = properties.getProjectRuleSets();
+                    RuleSets newProjectRuleSet = new RuleSets();
                     if (projectRuleSet != null) {
                       projectRuleSet.getAllRules().addAll(getNewRules(updatedRuleSet));
                       for(RuleSet rs : projectRuleSet.getAllRuleSets()) {
@@ -646,8 +647,9 @@ class PreferencesManagerImpl implements IPreferencesManager {
                           updatedRuleSet.getExcludePatterns());
                         rs = RuleSetUtil.setIncludePatterns(rs,
                           updatedRuleSet.getIncludePatterns());
+                        newProjectRuleSet.addRuleSet(rs);
                       }
-                      properties.setProjectRuleSets(projectRuleSet);
+                      properties.setProjectRuleSets(newProjectRuleSet);
                       properties.sync();
                     }
                 } catch (PropertiesException e) {
@@ -668,9 +670,7 @@ class PreferencesManagerImpl implements IPreferencesManager {
             IPath ruleSetLocation = plugin.getStateLocation().append(PREFERENCE_RULESET_FILE);
             out = new FileOutputStream(ruleSetLocation.toOSString());
             IRuleSetWriter writer = plugin.getRuleSetWriter();
-            RuleSets ruleSets = new RuleSets();
-            ruleSets.addRuleSet(ruleSet);
-            writer.write(out, ruleSets);
+            writer.write(out, ruleSet);
             out.flush();
 
         } catch (IOException e) {

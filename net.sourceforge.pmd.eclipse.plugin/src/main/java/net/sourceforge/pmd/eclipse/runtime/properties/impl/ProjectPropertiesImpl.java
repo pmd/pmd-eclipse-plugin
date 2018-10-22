@@ -57,6 +57,7 @@ import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.ui.IWorkingSet;
 
 import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.runtime.cmd.JavaProjectClassLoader;
@@ -176,6 +177,13 @@ public class ProjectPropertiesImpl implements IProjectProperties {
    */
   public RuleSets getProjectRuleSets() throws PropertiesException {
     return projectRuleSets;
+  }
+  
+  /**
+   * @see net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties#getProjectRuleSet()
+   */
+  public RuleSet getProjectRuleSet() throws PropertiesException {
+    return projectRuleSets.getAllRuleSets()[0];
   }
 
   /**
@@ -374,7 +382,9 @@ public class ProjectPropertiesImpl implements IProjectProperties {
     try {
       IRuleSetWriter writer = PMDPlugin.getDefault().getRuleSetWriter();
       baos = new ByteArrayOutputStream();
-      writer.write(baos, projectRuleSets);
+      for(RuleSet rs: projectRuleSets.getAllRuleSets()) {
+        writer.write(baos, rs);
+      }
 
       final IFile file = project.getFile(PROJECT_RULESET_FILE);
       if (file.exists() && file.isAccessible()) {
