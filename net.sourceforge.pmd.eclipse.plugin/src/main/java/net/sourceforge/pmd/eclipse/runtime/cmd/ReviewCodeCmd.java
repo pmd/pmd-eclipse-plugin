@@ -71,8 +71,6 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 
-import name.herlin.command.CommandException;
-import name.herlin.command.Timer;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSets;
@@ -85,6 +83,8 @@ import net.sourceforge.pmd.eclipse.runtime.properties.PropertiesException;
 import net.sourceforge.pmd.eclipse.ui.actions.RuleSetUtil;
 import net.sourceforge.pmd.util.StringUtil;
 
+import name.herlin.command.CommandException;
+import name.herlin.command.Timer;
 
 /**
  * This command executes the PMD engine on a specified resource
@@ -615,33 +615,33 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
 
             RuleSets ruleSets = properties.getProjectRuleSets();
 
-              // PMDEngine pmdEngine = getPmdEngineForProject(project);
-              int targetCount = countDeltaElement(resourceDelta);
-              // Could add a property that lets us set the max number to analyze
-              if (properties.isFullBuildEnabled() || isUserInitiated() || targetCount <= MAXIMUM_RESOURCE_COUNT) {
-                  setStepCount(targetCount);
-                  LOG.debug("Visiting delta of resource " + resource.getName() + " : " + getStepCount());
-  
-                  DeltaVisitor visitor = new DeltaVisitor();
-                  visitor.setMonitor(getMonitor());
-                  visitor.setRuleSets(ruleSets);
-                  // visitor.setPmdEngine(pmdEngine);
-                  visitor.setAccumulator(markersByFile);
-                  visitor.setUseTaskMarker(taskMarker);
-                  visitor.setProjectProperties(properties);
-                  resourceDelta.accept(visitor);
-  
-                  ruleCount = ruleSets.getAllRules().size();
-                  fileCount += visitor.getProcessedFilesCount();
-                  pmdDuration += visitor.getActualPmdDuration();
-              } else {
-                  String message = "Skipping resourceDelta " + resource.getName()
-                          + " because of fullBuildEnabled flag and " + "targetCount is " + targetCount
-                          + ". This is more than " + MAXIMUM_RESOURCE_COUNT + "."
-                          + " If you want to execute PMD, please check \"Full build enabled\" in the project settings";
-                  PMDPlugin.getDefault().logInformation(message);
-                  LOG.debug(message);
-              }
+            // PMDEngine pmdEngine = getPmdEngineForProject(project);
+            int targetCount = countDeltaElement(resourceDelta);
+            // Could add a property that lets us set the max number to analyze
+            if (properties.isFullBuildEnabled() || isUserInitiated() || targetCount <= MAXIMUM_RESOURCE_COUNT) {
+                setStepCount(targetCount);
+                LOG.debug("Visiting delta of resource " + resource.getName() + " : " + getStepCount());
+
+                DeltaVisitor visitor = new DeltaVisitor();
+                visitor.setMonitor(getMonitor());
+                visitor.setRuleSets(ruleSets);
+                // visitor.setPmdEngine(pmdEngine);
+                visitor.setAccumulator(markersByFile);
+                visitor.setUseTaskMarker(taskMarker);
+                visitor.setProjectProperties(properties);
+                resourceDelta.accept(visitor);
+
+                ruleCount = ruleSets.getAllRules().size();
+                fileCount += visitor.getProcessedFilesCount();
+                pmdDuration += visitor.getActualPmdDuration();
+            } else {
+                String message = "Skipping resourceDelta " + resource.getName()
+                        + " because of fullBuildEnabled flag and " + "targetCount is " + targetCount
+                        + ". This is more than " + MAXIMUM_RESOURCE_COUNT + "."
+                        + " If you want to execute PMD, please check \"Full build enabled\" in the project settings";
+                PMDPlugin.getDefault().logInformation(message);
+                LOG.debug(message);
+            }
         } catch (PropertiesException e) {
             throw new CommandException(e);
         } catch (CoreException e) {

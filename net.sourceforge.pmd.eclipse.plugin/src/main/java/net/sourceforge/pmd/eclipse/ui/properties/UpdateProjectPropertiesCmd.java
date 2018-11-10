@@ -38,11 +38,12 @@ package net.sourceforge.pmd.eclipse.ui.properties;
 
 import org.eclipse.ui.IWorkingSet;
 
-import name.herlin.command.CommandException;
 import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.eclipse.runtime.cmd.AbstractProjectCommand;
 import net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties;
 import net.sourceforge.pmd.eclipse.runtime.properties.PropertiesException;
+
+import name.herlin.command.CommandException;
 
 /**
  * Save updated project properties. This is a composite command.

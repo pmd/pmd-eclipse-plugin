@@ -641,16 +641,14 @@ class PreferencesManagerImpl implements IPreferencesManager {
                     RuleSets projectRuleSet = properties.getProjectRuleSets();
                     RuleSets newProjectRuleSet = new RuleSets();
                     if (projectRuleSet != null) {
-                      projectRuleSet.getAllRules().addAll(getNewRules(updatedRuleSet));
-                      for(RuleSet rs : projectRuleSet.getAllRuleSets()) {
-                        rs = RuleSetUtil.setExcludePatterns(rs,
-                          updatedRuleSet.getExcludePatterns());
-                        rs = RuleSetUtil.setIncludePatterns(rs,
-                          updatedRuleSet.getIncludePatterns());
-                        newProjectRuleSet.addRuleSet(rs);
-                      }
-                      properties.setProjectRuleSets(newProjectRuleSet);
-                      properties.sync();
+                        projectRuleSet.getAllRules().addAll(getNewRules(updatedRuleSet));
+                        for (RuleSet rs : projectRuleSet.getAllRuleSets()) {
+                            RuleSet modified = RuleSetUtil.setExcludePatterns(rs, updatedRuleSet.getExcludePatterns());
+                            modified = RuleSetUtil.setIncludePatterns(modified, updatedRuleSet.getIncludePatterns());
+                            newProjectRuleSet.addRuleSet(modified);
+                        }
+                        properties.setProjectRuleSets(newProjectRuleSet);
+                        properties.sync();
                     }
                 } catch (PropertiesException e) {
                     PMDPlugin.getDefault().logError("Unable to add new rules for project: " + project, e);

@@ -615,11 +615,11 @@ public class PMDProjectPropertyPage extends PropertyPage {
         }
 
         final RuleSets activeRuleSet = model.getProjectRuleSets();
-        for(RuleSet rs : activeRuleSet.getAllRuleSets()) {
-          ruleSet = RuleSetUtil.addExcludePatterns(ruleSet, rs.getExcludePatterns());
-          ruleSet = RuleSetUtil.addIncludePatterns(ruleSet, rs.getIncludePatterns());
+        for (RuleSet rs : activeRuleSet.getAllRuleSets()) {
+            ruleSet = RuleSetUtil.addExcludePatterns(ruleSet, rs.getExcludePatterns());
+            ruleSet = RuleSetUtil.addIncludePatterns(ruleSet, rs.getIncludePatterns());
         }
-       
+
         return ruleSet;
     }
 

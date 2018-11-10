@@ -47,7 +47,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ui.IWorkingSet;
 import org.eclipse.ui.ResourceWorkingSetFilter;
 
-import name.herlin.command.Timer;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.PMDException;
@@ -78,6 +77,8 @@ import net.sourceforge.pmd.util.NumericConstants;
 import net.sourceforge.pmd.util.StringUtil;
 import net.sourceforge.pmd.util.datasource.DataSource;
 import net.sourceforge.pmd.util.datasource.ReaderDataSource;
+
+import name.herlin.command.Timer;
 
 /**
  * Factor some useful features for visitors
@@ -224,7 +225,7 @@ public class BaseVisitor {
      * @return
      */
     public RuleSet getRuleSet() {
-      return this.ruleSets.getAllRuleSets()[0];
+        return this.ruleSets.getAllRuleSets()[0];
     }
     
     /**
@@ -234,7 +235,7 @@ public class BaseVisitor {
      * @param ruleSet
      */
     public void setRuleSet(RuleSet ruleSet) {
-      this.ruleSets = new RuleSets(ruleSet);
+        this.ruleSets = new RuleSets(ruleSet);
     }
     
     /**
