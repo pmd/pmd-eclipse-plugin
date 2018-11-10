@@ -189,7 +189,7 @@ public class ProjectPropertiesImpl implements IProjectProperties {
         this.needRebuild |= !this.projectRuleSet.getRules().equals(projectRuleSet.getRules());
         this.projectRuleSet = projectRuleSet;
         if (this.ruleSetStoredInProject) {
-            for (File f : getResolvedRuleSetFile()) {
+            for (File f : getResolvedRuleSetFiles()) {
                 if (f != null) {
                     if (projectRuleFileLastModified < f.lastModified()) {
                         projectRuleFileLastModified = f.lastModified();
@@ -220,7 +220,7 @@ public class ProjectPropertiesImpl implements IProjectProperties {
                 throw new PropertiesException(
                         "The project ruleset file cannot be found for project " + this.project.getName());
             }
-            for (File f : getResolvedRuleSetFile()) {
+            for (File f : getResolvedRuleSetFiles()) {
                 if (f != null) {
                     if (projectRuleFileLastModified < f.lastModified()) {
                         projectRuleFileLastModified = f.lastModified();
@@ -251,7 +251,7 @@ public class ProjectPropertiesImpl implements IProjectProperties {
                 throw new PropertiesException(
                         "The project ruleset file cannot be found for project " + project.getName());
             }
-            for (File f : getResolvedRuleSetFile()) {
+            for (File f : getResolvedRuleSetFiles()) {
                 if (f != null) {
                     if (projectRuleFileLastModified < f.lastModified()) {
                         projectRuleFileLastModified = f.lastModified();
@@ -283,12 +283,13 @@ public class ProjectPropertiesImpl implements IProjectProperties {
     /**
      * @see net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties#isNeedRebuild()
      */
+    @Override
     public boolean isNeedRebuild() {
         LOG.debug("Query if project " + project.getName() + " need rebuild : " + (pmdEnabled && needRebuild));
         LOG.debug("   PMD Enabled = " + pmdEnabled);
         LOG.debug("   Project need rebuild = " + needRebuild);
         if (ruleSetStoredInProject) {
-            for (File f : getResolvedRuleSetFile()) {
+            for (File f : getResolvedRuleSetFiles()) {
                 if (f != null) {
                     needRebuild |= f.lastModified() > projectRuleFileLastModified;
                 }
@@ -310,7 +311,7 @@ public class ProjectPropertiesImpl implements IProjectProperties {
      */
     public final boolean isRuleSetFileExist() {
         boolean ret = true;
-        for (File f : getResolvedRuleSetFile()) {
+        for (File f : getResolvedRuleSetFiles()) {
             if (!f.exists()) {
                 ret = false;
             }
@@ -318,10 +319,20 @@ public class ProjectPropertiesImpl implements IProjectProperties {
         return ret;
     }
 
+    @Deprecated
+    @Override
+    public File getResolvedRuleSetFile() throws PropertiesException {
+        if (isRuleSetFileExist()) {
+            return getResolvedRuleSetFiles().get(0);
+        }
+        return null;
+    }
+
     /**
-     * @see net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties#getResolvedRuleSetFile()
+     * @see net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties#getResolvedRuleSetFiles()
      */
-    public List<File> getResolvedRuleSetFile() {
+    @Override
+    public List<File> getResolvedRuleSetFiles() {
         // Check as project-relative path
         List<File> files = new ArrayList<File>();
         for (String ruleSetFile : getRuleSetFile().split(",")) {

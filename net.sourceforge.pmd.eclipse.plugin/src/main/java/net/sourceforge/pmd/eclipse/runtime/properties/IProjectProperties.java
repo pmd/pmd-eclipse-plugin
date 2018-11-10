@@ -106,8 +106,16 @@ public interface IProjectProperties {
     /**
      * @return Returns the resolved RuleSet File suitable for loading a rule
      *         set.
+     * @deprecated use {@link #getResolvedRuleSetFiles()} instead
      */
-    List<File> getResolvedRuleSetFile() throws PropertiesException;
+    @Deprecated
+    File getResolvedRuleSetFile() throws PropertiesException;
+
+    /**
+     * @return Returns the resolved RuleSet Files suitable for loading multiple
+     * rulesets.
+     */
+    List<File> getResolvedRuleSetFiles() throws PropertiesException;
 
     /**
      * @return Returns the project Working Set.

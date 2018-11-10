@@ -173,7 +173,7 @@ public class ProjectPropertiesManagerImpl implements IProjectPropertiesManager {
             try {
                 final RuleSetFactory factory = new RuleSetFactory();
                 RuleSet allRuleSets = null;
-                for (final File ruleSetFile : projectProperties.getResolvedRuleSetFile()) {
+                for (final File ruleSetFile : projectProperties.getResolvedRuleSetFiles()) {
                     RuleSet rs = factory.createRuleSets(ruleSetFile.getPath()).getAllRuleSets()[0];
                     if (allRuleSets == null) {
                         /* The first ruleset file */
