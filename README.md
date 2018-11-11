@@ -1,6 +1,7 @@
 # PMD Eclipse Plugin
 
 [![Build Status](https://travis-ci.org/pmd/pmd-eclipse-plugin.svg?branch=master)](https://travis-ci.org/pmd/pmd-eclipse-plugin)
+[![Eclipse Marketplace](https://img.shields.io/eclipse-marketplace/v/pmd-eclipse-plugin.svg)](https://marketplace.eclipse.org/content/pmd-eclipse-plugin)
 
 Release Notes: <https://github.com/pmd/pmd-eclipse-plugin/blob/master/ReleaseNotes.md>
 
@@ -8,6 +9,8 @@ Eclipse Update Site:
 
 *   Releases: <https://dl.bintray.com/pmd/pmd-eclipse-plugin/updates/>
 *   Snapshots: <https://dl.bintray.com/pmd/pmd-eclipse-plugin/snapshots/updates/>
+
+Marketplace: [![Drag to your running Eclipse* workspace. *Requires Eclipse Marketplace Client](https://marketplace.eclipse.org/sites/all/themes/solstice/public/images/marketplace/btn-install.png)](http://marketplace.eclipse.org/marketplace-client-intro?mpc_install=2755329 "Drag to your running Eclipse* workspace. *Requires Eclipse Marketplace Client")
 
 ## How to contribute
 
@@ -146,6 +149,13 @@ The release happens in two phases:
     git branch -D pmd-eclipse-plugin-rb-$VERSION
     git push origin master
     git push origin tag $VERSION.$BUILDQUALIFIER
+    echo
+    echo
+    
+    echo
+    echo Update the marketplace entry with the new version:
+    echo https://marketplace.eclipse.org/content/pmd-eclipse-plugin
+    echo
     
     echo Done.
 

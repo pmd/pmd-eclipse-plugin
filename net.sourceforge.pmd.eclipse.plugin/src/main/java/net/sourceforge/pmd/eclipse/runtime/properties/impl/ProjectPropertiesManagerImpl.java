@@ -171,9 +171,8 @@ public class ProjectPropertiesManagerImpl implements IProjectPropertiesManager {
             LOG.debug("Loading ruleset from project ruleset file: " + projectProperties.getRuleSetFile());
             try {
                 final RuleSetFactory factory = new RuleSetFactory();
-
                 RuleSets allRulesets = new RuleSets();
-                for (final File ruleSetFile : projectProperties.getResolvedRuleSetFile()) {
+                for (final File ruleSetFile : projectProperties.getResolvedRuleSetFiles()) {
                     RuleSet ruleSet = factory.createRuleSets(ruleSetFile.getPath()).getAllRuleSets()[0];
                     allRulesets.addRuleSet(ruleSet);
                 }
