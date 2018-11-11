@@ -20,6 +20,7 @@ Eclipse Update Site:
 ### Fixed Issues
 
 *   [#48](https://github.com/pmd/pmd-eclipse-plugin/issues/48): Upgrade to PMD 6.7.0
+*   [#65](https://github.com/pmd/pmd-eclipse-plugin/issues/65): Support multiple rulesets
 
 ### External Contributions
 
@@ -28,7 +29,7 @@ Eclipse Update Site:
 *   [#60](https://github.com/pmd/pmd-eclipse-plugin/pull/60): Update to PMD 6.7.0 - [Jan](https://github.com/jgerken)
 *   [#61](https://github.com/pmd/pmd-eclipse-plugin/pull/61): Support Eclipse SimRel 2018-09 - [jftsunami](https://github.com/jftsunami)
 *   [#63](https://github.com/pmd/pmd-eclipse-plugin/pull/63): Minor changes - [jftsunami](https://github.com/jftsunami)
-
+*   [#66](https://github.com/pmd/pmd-eclipse-plugin/pull/66): Multi ruleset files -  - [Phillip Krall](https://github.com/pkrall520)
 
 ## 01-August-2018: 4.0.17.v20180801-1551
 
