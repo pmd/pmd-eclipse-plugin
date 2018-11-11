@@ -47,6 +47,24 @@
                     <phase>process-sources</phase>
                     <goals><goal>copy-dependencies</goal></goals>
                 </execution>
+                <execution>
+                    <id>copy-rule-tests-schema</id>
+                    <phase>process-sources</phase>
+                    <goals>
+                        <goal>unpack</goal>
+                    </goals>
+                    <configuration>
+                        <artifactItems>
+                            <artifactItem>
+                                <groupId>net.sourceforge.pmd</groupId>
+                                <artifactId>pmd-test</artifactId>
+                                <version>${pmd.version}</version>
+                                <includes>rule-tests_1_0_0.xsd</includes>
+                            </artifactItem>
+                        </artifactItems>
+                        <outputDirectory>${project.build.directory}/schema</outputDirectory>
+                    </configuration>
+                </execution>
             </executions>
         </plugin>
         <plugin>
