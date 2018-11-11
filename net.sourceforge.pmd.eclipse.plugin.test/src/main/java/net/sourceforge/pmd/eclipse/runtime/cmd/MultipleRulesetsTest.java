@@ -81,8 +81,8 @@ public class MultipleRulesetsTest {
         IProjectPropertiesManager propertiesManager = PMDPlugin.getDefault().getPropertiesManager();
         IProjectProperties properties = propertiesManager.loadProjectProperties(testProject);
         properties.setPmdEnabled(true);
-        properties.setRuleSetStoredInProject(true);
         properties.setRuleSetFile("ruleset1.xml,ruleset2.xml");
+        properties.setRuleSetStoredInProject(true);
         propertiesManager.storeProjectProperties(properties);
     }
 
