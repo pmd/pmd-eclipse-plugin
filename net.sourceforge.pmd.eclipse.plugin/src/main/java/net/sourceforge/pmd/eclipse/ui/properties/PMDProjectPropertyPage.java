@@ -577,9 +577,7 @@ public class PMDProjectPropertyPage extends PropertyPage {
         LOG.info("Properties editing accepted");
         model.setPmdEnabled(enablePMDButton.getSelection());
         model.setProjectWorkingSet(selectedWorkingSet);
-        RuleSets ruleSets = new RuleSets();
-        ruleSets.addRuleSet(getProjectRuleSet());
-        model.setProjectRuleSets(ruleSets);
+        model.setProjectRuleSet(getProjectRuleSet());
         model.setRuleSetStoredInProject(ruleSetStoredInProjectButton.getSelection());
         model.setRuleSetFile(ruleSetFileText.getText());
         model.setIncludeDerivedFiles(includeDerivedFilesButton.getSelection());

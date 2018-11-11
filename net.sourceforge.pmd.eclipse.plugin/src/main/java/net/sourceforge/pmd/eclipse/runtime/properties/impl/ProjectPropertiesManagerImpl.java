@@ -294,9 +294,7 @@ public class ProjectPropertiesManagerImpl implements IProjectPropertiesManager {
         ruleSet = RuleSetUtil.addRules(ruleSet, rulesToAdd);
         ruleSet = RuleSetUtil.setExcludePatterns(ruleSet, pluginRuleSet.getExcludePatterns());
         ruleSet = RuleSetUtil.setIncludePatterns(ruleSet, pluginRuleSet.getIncludePatterns());
-        RuleSets ruleSets = new RuleSets();
-        ruleSets.addRuleSet(ruleSet);
-        projectProperties.setProjectRuleSets(ruleSets);
+        projectProperties.setProjectRuleSet(ruleSet);
     }
 
     public String convertProjectPropertiesToString(ProjectPropertiesTO projectProperties) {
@@ -362,16 +360,20 @@ public class ProjectPropertiesManagerImpl implements IProjectPropertiesManager {
         if (!projectProperties.isRuleSetStoredInProject()) {
             final RuleSets ruleSets = projectProperties.getProjectRuleSets();
             final List<RuleSpecTO> rules = new ArrayList<RuleSpecTO>();
+            List<String> excludePatterns = new ArrayList<String>();
+            List<String> includePatterns = new ArrayList<String>();
+
             for (RuleSet ruleSet : ruleSets.getAllRuleSets()) {
                 for (Rule rule : ruleSets.getAllRules()) {
                     rules.add(new RuleSpecTO(rule.getName(), rule.getRuleSetName())); // NOPMD:AvoidInstantiatingObjectInLoop
                 }
-                bean.setRules(rules.toArray(new RuleSpecTO[rules.size()]));
-                bean.setExcludePatterns(
-                        ruleSet.getExcludePatterns().toArray(new String[ruleSet.getExcludePatterns().size()]));
-                bean.setIncludePatterns(
-                        ruleSet.getIncludePatterns().toArray(new String[ruleSet.getIncludePatterns().size()]));
+                excludePatterns.addAll(ruleSet.getExcludePatterns());
+                includePatterns.addAll(ruleSet.getIncludePatterns());
             }
+
+            bean.setRules(rules.toArray(new RuleSpecTO[rules.size()]));
+            bean.setExcludePatterns(excludePatterns.toArray(new String[0]));
+            bean.setIncludePatterns(includePatterns.toArray(new String[0]));
         }
         return bean;
     }
@@ -385,39 +387,40 @@ public class ProjectPropertiesManagerImpl implements IProjectPropertiesManager {
     private boolean synchronizeRuleSet(IProjectProperties projectProperties) throws PropertiesException {
         LOG.debug("Synchronizing the project ruleset with the plugin ruleset");
         final RuleSet pluginRuleSet = PMDPlugin.getDefault().getPreferencesManager().getRuleSet();
-        final RuleSets projectRuleSet = projectProperties.getProjectRuleSets();
+        final RuleSets projectRuleSets = projectProperties.getProjectRuleSets();
         boolean flChanged = false;
 
-        if (!projectRuleSet.getAllRules().equals(pluginRuleSet.getRules())) {
+        if (!projectRuleSets.getAllRules().equals(pluginRuleSet.getRules())) {
             LOG.debug("The project ruleset is different from the plugin ruleset; synchronizing.");
 
             // 1-If rules have been deleted from preferences, delete them also
             // from the project ruleset
             // 2-For all other rules, replace the current one by the plugin one
-            RuleSet ruleset = projectRuleSet.getAllRuleSets()[0];
+            RuleSet ruleset = projectRuleSets.getAllRuleSets()[0];
             RuleSet newRuleSet = RuleSetUtil.newEmpty(ruleset.getName(), ruleset.getDescription());
             List<Rule> newRules = new ArrayList<Rule>();
             List<Rule> haystack = new ArrayList<Rule>(pluginRuleSet.getRules());
-            for (Rule projectRule : projectRuleSet.getAllRules()) {
-                final Rule pluginRule = RuleSetUtil.findSameRule(haystack, projectRule);
-                if (pluginRule == null) {
-                    LOG.debug(
-                            "The rule " + projectRule.getName() + " is not defined in the plugin ruleset. Remove it.");
-                } else {
-                    // log.debug("Keeping rule " + projectRule.getName());
-                    newRules.add(pluginRule);
-                    // consider the found rule as handled - there is no need, to
-                    // find the same rule twice.
-                    haystack.remove(pluginRule);
+            for (RuleSet projectRuleSet : projectRuleSets.getAllRuleSets()) {
+                for (Rule projectRule : projectRuleSet.getRules()) {
+                    final Rule pluginRule = RuleSetUtil.findSameRule(haystack, projectRule);
+                    if (pluginRule == null) {
+                        LOG.debug(
+                                "The rule " + projectRule.getName() + " is not defined in the plugin ruleset. Remove it.");
+                    } else {
+                        // log.debug("Keeping rule " + projectRule.getName());
+                        newRules.add(pluginRule);
+                        // consider the found rule as handled - there is no need, to
+                        // find the same rule twice.
+                        haystack.remove(pluginRule);
+                    }
                 }
             }
-            newRuleSet = RuleSetUtil.addRules(newRuleSet, projectRuleSet.getAllRules());
+            // build a new ruleset based on the collected rules
+            newRuleSet = RuleSetUtil.addRules(newRuleSet, newRules);
 
-            if (!newRuleSet.getRules().equals(projectRuleSet.getAllRules())) {
+            if (!newRuleSet.getRules().equals(projectRuleSets.getAllRules())) {
                 LOG.info("Set the project ruleset according to preferences.");
-                RuleSets ruleSets = new RuleSets();
-                ruleSets.addRuleSet(newRuleSet);
-                projectProperties.setProjectRuleSets(ruleSets);
+                projectProperties.setProjectRuleSet(newRuleSet);
                 flChanged = true;
             }
 

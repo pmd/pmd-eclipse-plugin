@@ -48,15 +48,15 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import name.herlin.command.CommandException;
-import name.herlin.command.UnsetInputPropertiesException;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSet;
-import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.eclipse.EclipseUtils;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties;
 import net.sourceforge.pmd.eclipse.ui.actions.RuleSetUtil;
+
+import name.herlin.command.CommandException;
+import name.herlin.command.UnsetInputPropertiesException;
 
 /**
  * This tests the PMD Processor command
@@ -135,7 +135,7 @@ public class ReviewCmdTest {
                 .loadProjectProperties(testProject);
         Rule compareObjectsWithEquals = properties.getProjectRuleSet().getRuleByName("CompareObjectsWithEquals");
         RuleSet projectRuleSet = RuleSetUtil.newSingle(compareObjectsWithEquals);
-        properties.setProjectRuleSets(new RuleSets(projectRuleSet));
+        properties.setProjectRuleSet(projectRuleSet);
         boolean oldSetting = PMDPlugin.getDefault().getPreferencesManager().loadPreferences()
                 .isProjectBuildPathEnabled();
 

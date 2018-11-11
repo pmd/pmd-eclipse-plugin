@@ -214,7 +214,7 @@ public class BaseVisitor {
     // }
 
     /**
-     * @return Returns the ruleSet.
+     * @return Returns all the ruleSets.
      */
     public RuleSets getRuleSets() {
         return this.ruleSets;

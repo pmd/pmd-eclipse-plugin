@@ -38,6 +38,7 @@ package net.sourceforge.pmd.eclipse.ui.properties;
 
 import org.eclipse.ui.IWorkingSet;
 
+import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.eclipse.runtime.cmd.AbstractProjectCommand;
 import net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties;
@@ -109,6 +110,10 @@ public class UpdateProjectPropertiesCmd extends AbstractProjectCommand {
      */
     public void setPmdEnabled(final boolean pmdEnabled) {
         this.pmdEnabled = pmdEnabled;
+    }
+
+    public void setProjectRuleSet(final RuleSet projectRuleSet) {
+        this.projectRuleSets = new RuleSets(projectRuleSet);
     }
 
     /**

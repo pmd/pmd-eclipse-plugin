@@ -66,6 +66,7 @@ import net.sourceforge.pmd.eclipse.runtime.properties.IProjectPropertiesManager;
 import net.sourceforge.pmd.eclipse.runtime.properties.PropertiesException;
 import net.sourceforge.pmd.eclipse.runtime.writer.IRuleSetWriter;
 import net.sourceforge.pmd.eclipse.runtime.writer.WriterException;
+import net.sourceforge.pmd.eclipse.ui.actions.RuleSetUtil;
 import net.sourceforge.pmd.eclipse.util.IOUtil;
 import net.sourceforge.pmd.util.StringUtil;
 
@@ -184,18 +185,21 @@ public class ProjectPropertiesImpl implements IProjectProperties {
         return projectRuleSets.getAllRuleSets()[0];
     }
 
-    /**
-     * @see net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties#setProjectRuleSet(net.sourceforge.pmd.RuleSet)
-     */
-    public void setProjectRuleSets(final RuleSets projectRuleSets) throws PropertiesException {
+    @Override
+    public void setProjectRuleSet(RuleSet projectRuleSet) throws PropertiesException {
+        setProjectRuleSets(new RuleSets(projectRuleSet));
+    }
+
+    @Override
+    public void setProjectRuleSets(final RuleSets newProjectRuleSets) throws PropertiesException {
         LOG.debug("Set a rule set for project " + this.project.getName());
-        if (projectRuleSets == null) {
+        if (newProjectRuleSets == null) {
             // TODO: NLS
             throw new PropertiesException("Setting a project rule set to null");
         }
 
-        this.needRebuild = true;
-        this.projectRuleSets = projectRuleSets;
+        this.needRebuild = !this.projectRuleSets.getAllRules().equals(newProjectRuleSets.getAllRules());
+        this.projectRuleSets = newProjectRuleSets;
         if (this.ruleSetStoredInProject) {
             for (File f : getResolvedRuleSetFile()) {
                 if (f != null) {
@@ -378,9 +382,17 @@ public class ProjectPropertiesImpl implements IProjectProperties {
         try {
             IRuleSetWriter writer = PMDPlugin.getDefault().getRuleSetWriter();
             baos = new ByteArrayOutputStream();
+            
+            // create a single ruleset from all the rulesets
+            // the ruleset writer is only capable of writing one ruleset
+            RuleSet ruleSet = RuleSetUtil.newEmpty(RuleSetUtil.DEFAULT_RULESET_NAME,
+                    RuleSetUtil.DEFAULT_RULESET_DESCRIPTION);
             for (RuleSet rs : projectRuleSets.getAllRuleSets()) {
-                writer.write(baos, rs);
+                ruleSet = RuleSetUtil.addRules(ruleSet, rs.getRules());
+                ruleSet = RuleSetUtil.addIncludePatterns(ruleSet, rs.getIncludePatterns());
+                ruleSet = RuleSetUtil.addExcludePatterns(ruleSet, rs.getExcludePatterns());
             }
+            writer.write(baos, ruleSet);
 
             final IFile file = project.getFile(PROJECT_RULESET_FILE);
             if (file.exists() && file.isAccessible()) {
@@ -468,7 +480,10 @@ public class ProjectPropertiesImpl implements IProjectProperties {
             projectName = project.getName();
         }
         if (projectRuleSets != null) {
-            projectRuleSetName = projectRuleSets.getAllRuleSets()[0].getName();
+            projectRuleSetName = "";
+            for (RuleSet rs : projectRuleSets.getAllRuleSets()) {
+                projectRuleSetName += rs.getName() + ",";
+            }
         }
         if (projectWorkingSet != null) {
             projectWorkingSetName = projectWorkingSet.getName();

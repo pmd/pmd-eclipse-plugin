@@ -71,20 +71,30 @@ public interface IProjectProperties {
     void setPmdEnabled(boolean pmdEnabled) throws PropertiesException;
 
     /**
-     * @return Returns the project Rule Set.
-     */
-    RuleSets getProjectRuleSets() throws PropertiesException;
-    
-    /**
+     * Only returns the first ruleset. To access all rulesets,
+     * use {@link #getProjectRuleSets()}.
      * @return Returns the first rule set in the project rulesets
      */
     RuleSet getProjectRuleSet() throws PropertiesException;
 
     /**
+     * Sets a single project ruleset.
+     * To use multiple rulesets, see {@link #setProjectRuleSets(RuleSets)}.
      * @param projectRuleSet
      *            The project Rule Set to set.
      */
+    void setProjectRuleSet(RuleSet projectRuleSet) throws PropertiesException;
+
+    /**
+     * @param projectRuleSets
+     *            The project Rule Sets to set.
+     */
     void setProjectRuleSets(RuleSets projectRuleSets) throws PropertiesException;
+
+    /**
+     * @return Returns the project Rule Sets.
+     */
+    RuleSets getProjectRuleSets() throws PropertiesException;
 
     /**
      * @return Returns the whether the project rule set is stored as a file

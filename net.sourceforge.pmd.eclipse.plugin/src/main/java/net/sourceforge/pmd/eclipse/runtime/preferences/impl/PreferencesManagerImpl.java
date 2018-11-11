@@ -638,15 +638,22 @@ class PreferencesManagerImpl implements IPreferencesManager {
             if (project.isAccessible()) {
                 try {
                     IProjectProperties properties = PMDPlugin.getDefault().loadProjectProperties(project);
-                    RuleSets projectRuleSet = properties.getProjectRuleSets();
+                    RuleSets projectRuleSets = properties.getProjectRuleSets();
                     RuleSets newProjectRuleSet = new RuleSets();
-                    if (projectRuleSet != null) {
-                        projectRuleSet.getAllRules().addAll(getNewRules(updatedRuleSet));
-                        for (RuleSet rs : projectRuleSet.getAllRuleSets()) {
-                            RuleSet modified = RuleSetUtil.setExcludePatterns(rs, updatedRuleSet.getExcludePatterns());
-                            modified = RuleSetUtil.setIncludePatterns(modified, updatedRuleSet.getIncludePatterns());
-                            newProjectRuleSet.addRuleSet(modified);
+                    if (projectRuleSets != null && projectRuleSets.getAllRuleSets().length > 0) {
+                        // add the new rules to the first ruleset
+                        RuleSet firstProjectRuleset = properties.getProjectRuleSet();
+                        firstProjectRuleset = RuleSetUtil.addRules(firstProjectRuleset, getNewRules(updatedRuleSet));
+                        firstProjectRuleset = RuleSetUtil.setExcludePatterns(firstProjectRuleset, updatedRuleSet.getExcludePatterns());
+                        firstProjectRuleset = RuleSetUtil.setIncludePatterns(firstProjectRuleset, updatedRuleSet.getIncludePatterns());
+                        newProjectRuleSet.addRuleSet(firstProjectRuleset);
+
+                        // take the remaining rulesets as-is
+                        for (int i = 1; i < projectRuleSets.getAllRuleSets().length; i++) {
+                            newProjectRuleSet.addRuleSet(projectRuleSets.getAllRuleSets()[i]);
                         }
+
+                        // save the new rulesets
                         properties.setProjectRuleSets(newProjectRuleSet);
                         properties.sync();
                     }

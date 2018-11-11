@@ -356,7 +356,8 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
     /**
      * Set the open violations view to run after code review.
      *
-     * @param openPmdViolationsView should open
+     * @param openPmdViolationsView
+     *            should open
      */
     public void setOpenPmdViolationsOverviewView(boolean openPmdViolationsView) {
         this.openPmdViolationsOverviewView = openPmdViolationsView;
@@ -365,7 +366,8 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
     /**
      * Set the open violations outline view to run after code review.
      *
-     * @param openPmdViolationsOutlineView should open
+     * @param openPmdViolationsOutlineView
+     *            should open
      */
     public void setOpenPmdViolationsOutlineView(boolean openPmdViolationsOutlineView) {
         this.openPmdViolationsOutlineView = openPmdViolationsOutlineView;
@@ -444,11 +446,11 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
         return propertyCache;
     }
 
-    private RuleSet rulesetFrom(IResource resource) throws PropertiesException, CommandException {
+    private RuleSets rulesetsFrom(IResource resource) throws PropertiesException, CommandException {
         IProject project = resource.getProject();
         IProjectProperties properties = getProjectProperties(project);
 
-        return filteredRuleSet(properties); // properties.getProjectRuleSet();
+        return filteredRuleSets(properties); // properties.getProjectRuleSet();
     }
 
     /**
@@ -463,7 +465,7 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
                 return;
             }
 
-            RuleSets ruleSets = properties.getProjectRuleSets();
+            RuleSets ruleSets = rulesetsFrom(resource);
             // final PMDEngine pmdEngine = getPmdEngineForProject(project);
             int targetCount = 0;
             if (resource.exists()) {
@@ -510,7 +512,8 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
     private void processProject(IProject project) throws CommandException {
         try {
             setStepCount(countResourceElement(project));
-            logInfo("ReviewCodeCmd: visiting project " + project.getName() + ": " + getStepCount() + " resources found.");
+            logInfo("ReviewCodeCmd: visiting project " + project.getName() + ": " + getStepCount()
+                    + " resources found.");
             LOG.debug("Visiting project " + project.getName() + " : " + getStepCount() + " resources found.");
 
             if (project.hasNature(JavaCore.NATURE_ID)) {
@@ -559,48 +562,53 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
                 + " rules");
     }
 
-    private RuleSet filteredRuleSet(IProjectProperties properties) throws CommandException, PropertiesException {
-        final RuleSet ruleSet = properties.getProjectRuleSets().getAllRuleSets()[0];
+    private RuleSets filteredRuleSets(IProjectProperties properties) throws CommandException, PropertiesException {
+        final RuleSets projectRuleSets = properties.getProjectRuleSets();
         IPreferences preferences = PMDPlugin.getDefault().getPreferencesManager().loadPreferences();
         Set<String> onlyActiveRuleNames = preferences.getActiveRuleNames();
 
-        int rulesBefore = ruleSet.size();
-        RuleSet filteredRuleSet = RuleSetUtil.newCopyOf(ruleSet);
-        if (preferences.getGlobalRuleManagement()) {
-            // TODO: active rules are not language aware... filter by rule
-            // name...
-            List<Rule> rulesToKeep = new ArrayList<Rule>();
-            for (Rule rule : filteredRuleSet.getRules()) {
-                if (onlyActiveRuleNames.contains(rule.getName())) {
-                    rulesToKeep.add(rule);
+        RuleSets filteredRuleSets = new RuleSets();
+
+        for (RuleSet ruleSet : projectRuleSets.getAllRuleSets()) {
+            int rulesBefore = ruleSet.size();
+            RuleSet filteredRuleSet = RuleSetUtil.newCopyOf(ruleSet);
+            if (preferences.getGlobalRuleManagement()) {
+                // TODO: active rules are not language aware... filter by rule
+                // name...
+                List<Rule> rulesToKeep = new ArrayList<Rule>();
+                for (Rule rule : filteredRuleSet.getRules()) {
+                    if (onlyActiveRuleNames.contains(rule.getName())) {
+                        rulesToKeep.add(rule);
+                    }
+                }
+                filteredRuleSet = RuleSetUtil.retainOnly(filteredRuleSet, rulesToKeep);
+                int rulesAfter = filteredRuleSet.size();
+
+                if (rulesAfter < rulesBefore) {
+                    PMDPlugin.getDefault()
+                            .logWarn("Ruleset has been filtered as Global Rule Management is active. " + rulesAfter
+                                    + " of " + rulesBefore + " rules are active and are used. "
+                                    + (rulesBefore - rulesAfter) + " rules will be ignored.");
                 }
             }
-            filteredRuleSet = RuleSetUtil.retainOnly(filteredRuleSet, rulesToKeep);
-            int rulesAfter = filteredRuleSet.size();
-
-            if (rulesAfter < rulesBefore) {
-                PMDPlugin.getDefault()
-                        .logWarn("Ruleset has been filtered as Global Rule Management is active. " + rulesAfter + " of "
-                                + rulesBefore + " rules are active and are used. " + (rulesBefore - rulesAfter)
-                                + " rules will be ignored.");
-            }
+            filteredRuleSet = RuleSetUtil.addExcludePatterns(filteredRuleSet, preferences.activeExclusionPatterns(),
+                    properties.getBuildPathExcludePatterns());
+            filteredRuleSet = RuleSetUtil.addIncludePatterns(filteredRuleSet, preferences.activeInclusionPatterns(),
+                    properties.getBuildPathIncludePatterns());
+            filteredRuleSets.addRuleSet(filteredRuleSet);
         }
-        filteredRuleSet = RuleSetUtil.addExcludePatterns(filteredRuleSet, preferences.activeExclusionPatterns(),
-                properties.getBuildPathExcludePatterns());
-        filteredRuleSet = RuleSetUtil.addIncludePatterns(filteredRuleSet, preferences.activeInclusionPatterns(),
-                properties.getBuildPathIncludePatterns());
 
-        taskScope(filteredRuleSet.getRules().size(), ruleSet.getRules().size());
-        return filteredRuleSet;
+        taskScope(filteredRuleSets.getAllRules().size(), projectRuleSets.getAllRules().size());
+        return filteredRuleSets;
     }
 
-    private RuleSet rulesetFromResourceDelta() throws PropertiesException, CommandException {
+    private RuleSets rulesetsFromResourceDelta() throws PropertiesException, CommandException {
 
         IResource resource = resourceDelta.getResource();
         final IProject project = resource.getProject();
         final IProjectProperties properties = getProjectProperties(project);
 
-        return filteredRuleSet(properties); // properties.getProjectRuleSet();
+        return filteredRuleSets(properties); // properties.getProjectRuleSet();
     }
 
     /**
@@ -611,9 +619,10 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
             IResource resource = resourceDelta.getResource();
             final IProject project = resource.getProject();
             final IProjectProperties properties = getProjectProperties(project);
-            logInfo("ReviewCodeCmd started on resource delta " + resource.getName() + " in project " + project.getName());
+            logInfo("ReviewCodeCmd started on resource delta " + resource.getName() + " in project "
+                    + project.getName());
 
-            RuleSets ruleSets = properties.getProjectRuleSets();
+            final RuleSets ruleSets = rulesetsFromResourceDelta();
 
             // PMDEngine pmdEngine = getPmdEngineForProject(project);
             int targetCount = countDeltaElement(resourceDelta);
