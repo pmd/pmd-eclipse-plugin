@@ -121,12 +121,12 @@ public class MultipleRulesetsTest {
         IMarker[] markersSecond = this.testProject.getFile("src/main/java/second/Second.java")
                 .findMarkers(PMDRuntimeConstants.PMD_MARKER_1, false, 1);
         Assert.assertEquals(1, markersSecond.length);
-        assertHasRuleViolation(markersSecond, "UseUtilityClass");
+        assertHasRuleViolation(markersSecond, "ClassNamingConventions");
 
         IMarker[] markersThird = this.testProject.getFile("src/main/java/third/Third.java")
                 .findMarkers(PMDRuntimeConstants.PMD_MARKER_1, false, 1);
         Assert.assertEquals(1, markersThird.length);
-        assertHasRuleViolation(markersThird, "ClassNamingConventions");
+        assertHasRuleViolation(markersThird, "UseUtilityClass");
     }
 
     private void assertHasRuleViolation(IMarker[] markers, String rulename) throws CoreException {
