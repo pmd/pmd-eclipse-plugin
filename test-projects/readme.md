@@ -9,30 +9,27 @@
 
 3.  Install m2e-code-quality plugin from http://m2e-code-quality.github.io/m2e-code-quality/site/
 
-4.  Just open the workspace with your fresh eclipse.
+4.  Create a new workspace
+
+5.  Import the projects as described.
 
 ## Test projects overview
 
-*   workspace1: Simple java project
-    Global Rule Management is enabled, all rules are activated.
+*   poject1: Simple java project - import as "Existing Projects into Workspace".
     PMD is enabled for the project1. See the source file
     `TestViolation.java` for the expected violations.
 
-*   workspace2: Another simple java project
-    Global Rule Management is enabled, all rules are activated.
-    PMD is enabled for the project, the option "Use the ruleset configured
-    in a project file" is used. The project ruleset file has been created by
-    pmd-eclipse-plugin itself. See `.ruleset`.
-
-*   workspace3: Another simple java project
-    Global Rule Management is enabled, all rules are activated.
+*   project2: Another simple java project - import as "Existing Projects into Workspace".
     PMD is enabled for the project, the option "Use the ruleset configured
     in a project file" is used. The project ruleset file has been
     created manually. See `ruleset.xml`.
 
-*   workspace4: a maven java project with maven-pmd-plugin activated
-    Global Rule Management is enabled, all rules are activated.
-    The pmd plugin should be configured via m2e-code-quality
+*   project3: a maven java project with maven-pmd-plugin activated - import as "Existing Maven Projects".
+    The pmd plugin should be configured automatically via m2e-code-quality.
 
-*   workspace5: a general project called `apexproject1`. It contains
-    one sample apex file which triggered a rule violation.
+*   project4: a maven java project with multiple rulesets - import as "Existing Maven Projects".
+    The pmd plugin should be configured automatically via m2e-code-quality.
+    Known issue: The rules of the two rulesets are combined but not the excludes.
+
+*   project5: a general project called `project5`. It contains
+    one sample apex file which triggers a rule violation.

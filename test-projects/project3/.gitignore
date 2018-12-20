@@ -1,0 +1,6 @@
+/target/
+.settings/
+.classpath
+.pmd
+.pmdruleset.xml
+.project

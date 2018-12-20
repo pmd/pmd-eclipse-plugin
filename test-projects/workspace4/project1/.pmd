@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<pmd>
-    <useProjectRuleSet>true</useProjectRuleSet>
-    <ruleSetFile>/home/andreas/PMD/source/pmd-eclipse-plugin/test-projects/workspace4/project1/.pmdruleset.xml</ruleSetFile>
-    <includeDerivedFiles>false</includeDerivedFiles>
-    <violationsAsErrors>true</violationsAsErrors>
-    <fullBuildEnabled>true</fullBuildEnabled>
-</pmd>

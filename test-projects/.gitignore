@@ -1,4 +1,5 @@
 eclipse*/
-!.project
-!.pmd
-!.classpath
+ws/
+!project*/.project
+!project*/.pmd
+!project*/.classpath

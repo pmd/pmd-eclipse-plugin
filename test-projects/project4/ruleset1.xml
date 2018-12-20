@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ruleset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    name="PMD Custom Ruleset"
+    xmlns="http://pmd.sf.net/ruleset/1.0.0"
+    xsi:noNamespaceSchemaLocation="http://pmd.sf.net/ruleset_xml_schema.xsd"
+    xsi:schemaLocation="http://pmd.sf.net/ruleset/1.0.0 
+                        http://pmd.sf.net/ruleset_xml_schema.xsd" >
+
+    <description>Rules</description>
+
+    <exclude-pattern>.*/src/main/java/project4/third/.*</exclude-pattern>
+
+    <rule ref="category/java/codestyle.xml/ClassNamingConventions">
+        <priority>1</priority>
+    </rule>
+
+    <rule ref="category/java/design.xml" >
+        <exclude name="UseUtilityClass"/>
+    </rule>
+
+</ruleset>
