@@ -22,11 +22,19 @@ echo "TRAVIS_ALLOW_FAILURE: $TRAVIS_ALLOW_FAILURE"
 GITHUB_URL="https://api.github.com/repos/pmd/pmd-eclipse-plugin/releases"
 RELEASE_ID=$(curl -s -H "Authorization: token ${GITHUB_OAUTH_TOKEN}" ${GITHUB_URL}/tags/${TRAVIS_TAG}|jq ".id")
 RELEASE_NAME="PMD For Eclipse ${RELEASE_VERSION} ($(date -u +%d-%B-%Y))"
+
+# extract the release notes
+BEGIN_LINE=$(grep -n "^## " ReleaseNotes.md|head -1|cut -d ":" -f 1)
+END_LINE=$(grep -n "^## " ReleaseNotes.md|head -2|tail -1|cut -d ":" -f 1)
+END_LINE=$((END_LINE - 1))
+
 RELEASE_BODY="A new PMD for Eclipse plugin version has been released.
 It is available via the update site: https://dl.bintray.com/pmd/pmd-eclipse-plugin/updates/
 
-Release notes: https://github.com/pmd/pmd-eclipse-plugin/blob/${TRAVIS_TAG}/ReleaseNotes.md
+$(cat ReleaseNotes.md|head -$END_LINE|tail -$BEGIN_LINE)
 "
+
+
 
 RELEASE_BODY="${RELEASE_BODY//'\'/\\\\}"
 RELEASE_BODY="${RELEASE_BODY//$'\r'/}"
