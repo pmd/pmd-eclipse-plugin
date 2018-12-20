@@ -101,8 +101,8 @@ The release happens in two phases:
     export BUILDQUALIFIER=$(date -u +v%Y%m%d-%H%M) && echo $BUILDQUALIFIER
     
     # Pick the version of the new release and the next development version
-    export VERSION=4.0.15
-    export NEXT=4.0.16
+    export VERSION=4.0.18
+    export NEXT=4.0.19
     
     echo Update the ReleaseNotes with the release date and version:
     echo 
@@ -111,7 +111,7 @@ The release happens in two phases:
     echo
     echo "Press enter to continue..."
     read
-    mvn -Dtycho.mode=maven org.eclipse.tycho:tycho-versions-plugin:set-version -DnewVersion=$VERSION.$BUILDQUALIFIER
+    ./mvnw -Dtycho.mode=maven org.eclipse.tycho:tycho-versions-plugin:set-version -DnewVersion=$VERSION.$BUILDQUALIFIER
     sed -i -e "s/$VERSION.qualifier/$VERSION.$BUILDQUALIFIER/" net.sourceforge.pmd.eclipse.p2updatesite/category.xml
     git commit -a -m "Prepare release pmd-eclipse-plugin $VERSION.$BUILDQUALIFIER"
     git tag $VERSION.$BUILDQUALIFIER
@@ -127,14 +127,14 @@ The release happens in two phases:
     read
     
     echo "Updating version in master to next"
-    mvn -Dtycho.mode=maven org.eclipse.tycho:tycho-versions-plugin:set-version -DnewVersion=$NEXT-SNAPSHOT
+    ./mvnw -Dtycho.mode=maven org.eclipse.tycho:tycho-versions-plugin:set-version -DnewVersion=$NEXT-SNAPSHOT
     sed -i -e "s/$VERSION.$BUILDQUALIFIER/$NEXT.qualifier/" net.sourceforge.pmd.eclipse.p2updatesite/category.xml
     git commit -a -m "Prepare next pmd-eclipse-plugin development version $NEXT-SNAPSHOT"
     
     echo Checkout the release branch and build the plugin
     git checkout pmd-eclipse-plugin-rb-$VERSION
     
-    mvn clean verify
+    ./mvnw clean verify
     
     echo
     echo "Please test now!!!"
