@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <feature id="net.sourceforge.pmd.eclipse" version="4.0.18.qualifier">
+   <feature id="net.sourceforge.pmd.eclipse" version="4.0.18.v20181220-1448">
       <category name="pmdForEclipse"/>
    </feature>
    <category-def name="pmdForEclipse" label="PMD for Eclipse">
