@@ -22,6 +22,7 @@ Eclipse Update Site:
 *   [#48](https://github.com/pmd/pmd-eclipse-plugin/issues/48): Upgrade to PMD 6.10.0
 *   [#65](https://github.com/pmd/pmd-eclipse-plugin/issues/65): Support multiple rulesets
 *   [#67](https://github.com/pmd/pmd-eclipse-plugin/issues/67): PMD's XML Schemas should be registered in XML Catalog
+*   [#73](https://github.com/pmd/pmd-eclipse-plugin/issues/73): Support openjdk 11 as runtime
 
 ### External Contributions
 
