@@ -1,6 +1,7 @@
 
 package net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import net.sourceforge.pmd.Rule;
@@ -23,7 +24,7 @@ public class Configuration {
 
     public static Map<PropertyDescriptor<?>, Object> filteredPropertiesOf(PropertySource source) {
 
-        Map<PropertyDescriptor<?>, Object> valuesByProp = source.getPropertiesByPropertyDescriptor();
+        Map<PropertyDescriptor<?>, Object> valuesByProp = new HashMap<>(source.getPropertiesByPropertyDescriptor());
 
         for (PropertyDescriptor<?> excludedRuleProperty : EXCLUDED_RULE_PROPERTIES) {
             valuesByProp.remove(excludedRuleProperty);
