@@ -13,7 +13,11 @@ Eclipse Update Site:
 
 ### Fixed Issues
 
+*   [#70](https://github.com/pmd/pmd-eclipse-plugin/issues/70): UnsupportedOperationException opening Rule Configuration
+
 ### External Contributions
+
+*   [#75](https://github.com/pmd/pmd-eclipse-plugin/pull/75): Prevent UnsupportedOperationException #70
 
 
 ## 20-December-2018: 4.0.18.v20181220-1448
