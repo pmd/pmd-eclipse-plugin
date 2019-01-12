@@ -17,7 +17,7 @@ Eclipse Update Site:
 
 ### External Contributions
 
-*   [#75](https://github.com/pmd/pmd-eclipse-plugin/pull/75): Prevent UnsupportedOperationException #70
+*   [#75](https://github.com/pmd/pmd-eclipse-plugin/pull/75): Prevent UnsupportedOperationException #70 - [phoenix384](https://github.com/phoenix384)
 
 
 ## 20-December-2018: 4.0.18.v20181220-1448
