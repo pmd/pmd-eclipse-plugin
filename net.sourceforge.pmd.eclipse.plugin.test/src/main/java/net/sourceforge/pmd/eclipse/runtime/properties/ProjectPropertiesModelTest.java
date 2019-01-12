@@ -34,8 +34,11 @@
 
 package net.sourceforge.pmd.eclipse.runtime.properties;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 import java.io.PrintStream;
+import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.Iterator;
 
@@ -466,6 +469,63 @@ public class ProjectPropertiesModelTest {
         // Assert.assertEquals("The project ruleset must be equals to the one found in
         // the project", pRuleSet,
         // projectRuleSet);
+    }
+
+    /**
+     * Bug: when the project properties don't contain any rules, we should
+     * still be able to load the properties.
+     */
+    @Test
+    public void testNoRulesInProperties() throws PropertiesException, RuleSetNotFoundException, CoreException {
+        final IProjectPropertiesManager mgr = PMDPlugin.getDefault().getPropertiesManager();
+        IProjectProperties model = mgr.loadProjectProperties(this.testProject);
+        // remove PMD's cached project properties, so that we reload it from disk again
+        mgr.removeProjectProperties(this.testProject);
+
+        // overwrite the properties file
+        final IFile file = this.testProject.getFile(".pmd");
+        String propertiesContent = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+            + "<pmd>\n"
+            + "    <useProjectRuleSet>false</useProjectRuleSet>\n"
+            + "    <ruleSetFile>.ruleset</ruleSetFile>\n"
+            + "    <includeDerivedFiles>false</includeDerivedFiles>\n"
+            + "    <violationsAsErrors>true</violationsAsErrors>\n"
+            + "    <fullBuildEnabled>true</fullBuildEnabled>\n"
+            + "</pmd>\n";
+        InputStream propertiesStream = new ByteArrayInputStream(propertiesContent.getBytes(StandardCharsets.UTF_8));
+        file.setContents(propertiesStream, 0, null);
+
+        // reload the project properties
+        model = mgr.loadProjectProperties(this.testProject);
+        Assert.assertFalse(model.isRuleSetStoredInProject());
+        RuleSets projectRuleSets = model.getProjectRuleSets();
+        Assert.assertNotNull(projectRuleSets);
+        Assert.assertEquals(1, projectRuleSets.getAllRuleSets().length);
+        Assert.assertEquals(0, projectRuleSets.getAllRules().size());
+    }
+
+    /**
+     * Bug: when the project properties are invalid, we should handle the error correctly
+     * as a PropertiesException.
+     */
+    @Test(expected = PropertiesException.class)
+    public void testInvalidProperties() throws PropertiesException, RuleSetNotFoundException, CoreException {
+        final IProjectPropertiesManager mgr = PMDPlugin.getDefault().getPropertiesManager();
+        IProjectProperties model = mgr.loadProjectProperties(this.testProject);
+        // remove PMD's cached project properties, so that we reload it from disk again
+        mgr.removeProjectProperties(this.testProject);
+
+        // overwrite the properties file
+        final IFile file = this.testProject.getFile(".pmd");
+        String propertiesContent = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+            + "<pmd>\n"
+            + "    <invalid xml"
+            + "</pmd>\n";
+        InputStream propertiesStream = new ByteArrayInputStream(propertiesContent.getBytes(StandardCharsets.UTF_8));
+        file.setContents(propertiesStream, 0, null);
+
+        // reload the project properties
+        model = mgr.loadProjectProperties(this.testProject);
     }
 
     private void dumpRuleSet(final RuleSet ruleSet) {

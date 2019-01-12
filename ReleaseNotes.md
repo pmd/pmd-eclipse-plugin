@@ -15,6 +15,7 @@ Eclipse Update Site:
 
 *   [#70](https://github.com/pmd/pmd-eclipse-plugin/issues/70): UnsupportedOperationException opening Rule Configuration
 *   [#76](https://github.com/pmd/pmd-eclipse-plugin/issues/76): Global rule management is saved even if cancelled
+*   [#78](https://github.com/pmd/pmd-eclipse-plugin/issues/78): Project properties cannot be loaded anymore
 
 ### External Contributions
 
