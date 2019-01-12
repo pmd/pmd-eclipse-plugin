@@ -484,21 +484,19 @@ public class PMDPreferencePage2 extends AbstractPMDPreferencePage
      */
     @Override
     public boolean performOk() {
-
-        saveUIState();
-
         if (isModified()) {
+            preferences.setGlobalRuleManagement(globalRuleManagementCheckButton.getSelection());
             updateRuleSet();
             rebuildProjects();
             storeActiveRules();
         }
+        saveUIState();
 
         return super.performOk();
     }
 
     @Override
     public boolean performCancel() {
-
         saveUIState();
         return super.performCancel();
     }
@@ -536,8 +534,6 @@ public class PMDPreferencePage2 extends AbstractPMDPreferencePage
         tableManager.saveUIState();
         int i = tabFolder.getSelectionIndex();
         PreferenceUIStore.INSTANCE.selectedPropertyTab(i);
-        PreferenceUIStore.INSTANCE.globalRuleManagement(globalRuleManagementCheckButton.getSelection());
-        preferences.setGlobalRuleManagement(globalRuleManagementCheckButton.getSelection());
         PreferenceUIStore.INSTANCE.save();
     }
 
