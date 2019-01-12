@@ -24,7 +24,10 @@ package name.herlin.command;
 /**
  * Exception thrown when a strategy cannot find a processor of a processable
  * command.
+ *
+ * @deprecated This class will be removed with the next major version of the PMD Plugin.
  */
+@Deprecated
 public class UnregisteredCommandException extends CommandException {
 
     private static final long serialVersionUID = 1L;

@@ -29,8 +29,10 @@ import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 /**
  * Default command processor implementation. This processor simply call the
  * execute method of the command.
+ *
+ * @deprecated This class will be removed with the next major version of the PMD Plugin.
  */
-
+@Deprecated
 public class DefaultCommandProcessor implements CommandProcessor {
     private static final Logger LOG = Logger.getLogger(DefaultCommandProcessor.class);
 

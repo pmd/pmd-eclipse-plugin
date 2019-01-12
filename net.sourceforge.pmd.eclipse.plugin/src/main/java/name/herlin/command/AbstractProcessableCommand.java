@@ -29,7 +29,9 @@ import java.util.ResourceBundle;
  * but are explicitly executed by a processor which acts as an execution
  * environment.
  * @see name.herlin.command.CommandProcessor for more details on processor.
+ * @deprecated This class will be removed with the next major version of the PMD Plugin.
  */
+@Deprecated
 public abstract class AbstractProcessableCommand implements Command {
 
     private static final long serialVersionUID = 1L;

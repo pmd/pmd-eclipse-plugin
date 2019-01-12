@@ -32,8 +32,11 @@ package name.herlin.command;
  * class:<br>
  * <pre>
  * strategy.class = class for the concrete strategy
- * </pre> 
+ * </pre>
+ * 
+ * @deprecated This interface will be removed with the next major version of the PMD Plugin.
  */
+@Deprecated
 public interface CommandProcessorStrategy {
     /**
      * Name of the bundle. This is "properties.CommandProcessorStrategy" by

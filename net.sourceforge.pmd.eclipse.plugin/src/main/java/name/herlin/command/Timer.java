@@ -9,8 +9,9 @@ package name.herlin.command;
  * 
  * @author Herlin
  *
+ * @deprecated This class will be removed with the next major version of the PMD Plugin.
  */
-
+@Deprecated
 public class Timer {
     private long topStart;
     private long topStop;

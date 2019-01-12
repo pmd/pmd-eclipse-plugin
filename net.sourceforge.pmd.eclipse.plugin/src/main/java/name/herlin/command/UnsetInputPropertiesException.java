@@ -25,7 +25,10 @@ package name.herlin.command;
  * Exception thrown by the performExcecute method of a Command if not all
  * required input parameters of a command are not set. More formally, this
  * exception is thrown when Command.isReadyToExecute returns false.
+ *
+ * @deprecated This class will be removed with the next major version of the PMD Plugin.
  */
+@Deprecated
 public class UnsetInputPropertiesException extends CommandException {
 
     private static final long serialVersionUID = 1L;

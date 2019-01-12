@@ -31,7 +31,10 @@ import java.util.ResourceBundle;
  * to search for the command among the registered commands (from the bundle). If
  * not found, query the command itself its preferred processor. If none, return
  * the framework default command processor.
+ *
+ * @deprecated This class will be removed with the next major version of the PMD Plugin.
  */
+@Deprecated
 public class DefaultCommandProcessorStrategy implements CommandProcessorStrategy {
     private static final CommandProcessor DEFAULT_COMMAND_PROCESSOR = new DefaultCommandProcessor();
     private final Map<String, String> registeredCommandProcessors = new Hashtable<String, String>();
