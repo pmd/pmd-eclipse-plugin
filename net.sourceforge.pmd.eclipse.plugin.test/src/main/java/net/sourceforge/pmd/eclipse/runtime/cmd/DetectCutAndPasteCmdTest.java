@@ -19,9 +19,6 @@ import net.sourceforge.pmd.cpd.SimpleRenderer;
 import net.sourceforge.pmd.eclipse.EclipseUtils;
 import net.sourceforge.pmd.eclipse.runtime.PMDRuntimeConstants;
 
-import name.herlin.command.CommandException;
-import name.herlin.command.UnsetInputPropertiesException;
-
 /**
  * Test the CPD command
  * 
@@ -70,7 +67,7 @@ public class DetectCutAndPasteCmdTest {
      * 
      */
     @Test
-    public void testDetectCutAndPasteCmdBasic1() throws CommandException, CoreException {
+    public void testDetectCutAndPasteCmdBasic1() throws CoreException {
         final DetectCutAndPasteCmd cmd = new DetectCutAndPasteCmd();
         cmd.setProject(this.testProject);
         cmd.setRenderer(new SimpleRenderer());
@@ -101,7 +98,7 @@ public class DetectCutAndPasteCmdTest {
      * 
      */
     @Test
-    public void testDetectCutAndPasteCmdBasic2() throws CommandException, CoreException {
+    public void testDetectCutAndPasteCmdBasic2() throws CoreException {
         final DetectCutAndPasteCmd cmd = new DetectCutAndPasteCmd();
         cmd.setProject(this.testProject);
         cmd.setCreateReport(false);
@@ -119,135 +116,85 @@ public class DetectCutAndPasteCmdTest {
 
     /**
      * Test robustness #1
-     * 
-     * @throws CommandException
      */
-    @Test
-    public void testDetectCutAndPasteCmdNullArg1() throws CommandException {
-
-        try {
-            final DetectCutAndPasteCmd cmd = new DetectCutAndPasteCmd();
-            cmd.setProject(null);
-            cmd.setRenderer(new SimpleRenderer());
-            cmd.setReportName(PMDRuntimeConstants.SIMPLE_CPDREPORT_NAME);
-            cmd.performExecute();
-            Assert.fail();
-        } catch (final UnsetInputPropertiesException e) {
-            // yes cool
-        }
+    @Test(expected = IllegalStateException.class)
+    public void testDetectCutAndPasteCmdNullArg1() {
+        final DetectCutAndPasteCmd cmd = new DetectCutAndPasteCmd();
+        cmd.setProject(null);
+        cmd.setRenderer(new SimpleRenderer());
+        cmd.setReportName(PMDRuntimeConstants.SIMPLE_CPDREPORT_NAME);
+        cmd.performExecute();
     }
 
     /**
      * Test robustness #2
-     * 
-     * @throws CommandException
      */
-    @Test
-    public void testDetectCutAndPasteCmdNullArg2() throws CommandException {
-        try {
-            final DetectCutAndPasteCmd cmd = new DetectCutAndPasteCmd();
-            cmd.setProject(this.testProject);
-            cmd.setRenderer(null);
-            cmd.setReportName(PMDRuntimeConstants.SIMPLE_CPDREPORT_NAME);
-            cmd.performExecute();
-            Assert.fail();
-        } catch (final UnsetInputPropertiesException e) {
-            // yes cool
-        }
+    @Test(expected = IllegalStateException.class)
+    public void testDetectCutAndPasteCmdNullArg2() {
+        final DetectCutAndPasteCmd cmd = new DetectCutAndPasteCmd();
+        cmd.setProject(this.testProject);
+        cmd.setRenderer(null);
+        cmd.setReportName(PMDRuntimeConstants.SIMPLE_CPDREPORT_NAME);
+        cmd.performExecute();
     }
 
     /**
      * Test robustness #3
-     * 
-     * @throws CommandException
      */
-    @Test
-    public void testDetectCutAndPasteCmdNullArg3() throws CommandException {
-        try {
-            final DetectCutAndPasteCmd cmd = new DetectCutAndPasteCmd();
-            cmd.setProject(this.testProject);
-            cmd.setRenderer(new SimpleRenderer());
-            cmd.setReportName(null);
-            cmd.performExecute();
-            Assert.fail();
-        } catch (final UnsetInputPropertiesException e) {
-            // yes cool
-        }
+    @Test(expected = IllegalStateException.class)
+    public void testDetectCutAndPasteCmdNullArg3() {
+        final DetectCutAndPasteCmd cmd = new DetectCutAndPasteCmd();
+        cmd.setProject(this.testProject);
+        cmd.setRenderer(new SimpleRenderer());
+        cmd.setReportName(null);
+        cmd.performExecute();
     }
 
     /**
      * Test robustness #4
-     * 
-     * @throws CommandException
      */
-    @Test
-    public void testDetectCutAndPasteCmdNullArg4() throws CommandException {
-        try {
-            final DetectCutAndPasteCmd cmd = new DetectCutAndPasteCmd();
-            cmd.setProject(null);
-            cmd.setRenderer(null);
-            cmd.setReportName(PMDRuntimeConstants.SIMPLE_CPDREPORT_NAME);
-            cmd.performExecute();
-            Assert.fail();
-        } catch (final UnsetInputPropertiesException e) {
-            // yes cool
-        }
+    @Test(expected = IllegalStateException.class)
+    public void testDetectCutAndPasteCmdNullArg4() {
+        final DetectCutAndPasteCmd cmd = new DetectCutAndPasteCmd();
+        cmd.setProject(null);
+        cmd.setRenderer(null);
+        cmd.setReportName(PMDRuntimeConstants.SIMPLE_CPDREPORT_NAME);
+        cmd.performExecute();
     }
 
     /**
      * Test robustness #5
-     * 
-     * @throws CommandException
      */
-    @Test
-    public void testDetectCutAndPasteCmdNullArg5() throws CommandException {
-        try {
-            final DetectCutAndPasteCmd cmd = new DetectCutAndPasteCmd();
-            cmd.setProject(null);
-            cmd.setRenderer(new SimpleRenderer());
-            cmd.setReportName(null);
-            cmd.performExecute();
-            Assert.fail();
-        } catch (final UnsetInputPropertiesException e) {
-            // yes cool
-        }
+    @Test(expected = IllegalStateException.class)
+    public void testDetectCutAndPasteCmdNullArg5() {
+        final DetectCutAndPasteCmd cmd = new DetectCutAndPasteCmd();
+        cmd.setProject(null);
+        cmd.setRenderer(new SimpleRenderer());
+        cmd.setReportName(null);
+        cmd.performExecute();
     }
 
     /**
      * Test robustness #6
-     * 
-     * @throws CommandException
      */
-    @Test
-    public void testDetectCutAndPasteCmdNullArg6() throws CommandException {
-        try {
-            final DetectCutAndPasteCmd cmd = new DetectCutAndPasteCmd();
-            cmd.setProject(this.testProject);
-            cmd.setRenderer(null);
-            cmd.setReportName(null);
-            cmd.performExecute();
-            Assert.fail();
-        } catch (final UnsetInputPropertiesException e) {
-            // yes cool
-        }
+    @Test(expected = IllegalStateException.class)
+    public void testDetectCutAndPasteCmdNullArg6() {
+        final DetectCutAndPasteCmd cmd = new DetectCutAndPasteCmd();
+        cmd.setProject(this.testProject);
+        cmd.setRenderer(null);
+        cmd.setReportName(null);
+        cmd.performExecute();
     }
 
     /**
      * Test robustness #7
-     * 
-     * @throws CommandException
      */
-    @Test
-    public void testDetectCutAndPasteCmdNullArg7() throws CommandException {
-        try {
-            final DetectCutAndPasteCmd cmd = new DetectCutAndPasteCmd();
-            cmd.setProject(null);
-            cmd.setRenderer(null);
-            cmd.setReportName(null);
-            cmd.performExecute();
-            Assert.fail();
-        } catch (final UnsetInputPropertiesException e) {
-            // yes cool
-        }
+    @Test(expected = IllegalStateException.class)
+    public void testDetectCutAndPasteCmdNullArg7() {
+        final DetectCutAndPasteCmd cmd = new DetectCutAndPasteCmd();
+        cmd.setProject(null);
+        cmd.setRenderer(null);
+        cmd.setReportName(null);
+        cmd.performExecute();
     }
 }

@@ -33,8 +33,6 @@ import net.sourceforge.pmd.eclipse.ui.views.AbstractStructureInspectorPage;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.rule.errorprone.DataflowAnomalyAnalysisRule;
 
-import name.herlin.command.CommandException;
-
 /**
  * A page for the dataflow - view.
  *
@@ -277,7 +275,7 @@ public class DataflowViewPage extends AbstractStructureInspectorPage implements 
             cmd.setResource(newResource);
             cmd.addPropertyListener(this);
             cmd.performExecute();
-        } catch (CommandException e) {
+        } catch (RuntimeException e) {
             logErrorByKey(StringKeys.ERROR_PMD_EXCEPTION, e);
         }
     }

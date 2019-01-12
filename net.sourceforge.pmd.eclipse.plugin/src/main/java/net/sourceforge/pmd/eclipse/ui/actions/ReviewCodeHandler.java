@@ -28,8 +28,6 @@ import org.eclipse.ui.editors.text.ILocationProvider;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.runtime.cmd.ReviewCodeCmd;
 
-import name.herlin.command.CommandException;
-
 /**
  * 
  * @author Brian Remedios
@@ -88,7 +86,7 @@ public class ReviewCodeHandler extends AbstractHandler {
 
                 try {
                     cmd.performExecute();
-                } catch (CommandException e) {
+                } catch (RuntimeException e) {
                     PMDPlugin.getDefault().log(IStatus.ERROR, "Error processing user-initiated code review", e);
                 }
             }

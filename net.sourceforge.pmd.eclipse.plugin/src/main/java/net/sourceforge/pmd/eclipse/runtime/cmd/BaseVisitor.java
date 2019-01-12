@@ -59,8 +59,6 @@ import net.sourceforge.pmd.util.StringUtil;
 import net.sourceforge.pmd.util.datasource.DataSource;
 import net.sourceforge.pmd.util.datasource.ReaderDataSource;
 
-import name.herlin.command.Timer;
-
 /**
  * Factor some useful features for visitors
  *
@@ -296,7 +294,7 @@ public class BaseVisitor {
                     && languageVersion != null) {
                 subTask("PMD checking: " + file.getName());
 
-                Timer timer = new Timer();
+                long start = System.currentTimeMillis();
 
                 RuleContext context = PMD.newRuleContext(file.getName(), sourceCodeFile);
                 context.setLanguageVersion(languageVersion);
@@ -368,8 +366,7 @@ public class BaseVisitor {
                         context, Arrays.asList(collectingRenderer));
                 LOG.debug("PMD run finished.");
 
-                timer.stop();
-                pmdDuration += timer.getDuration();
+                pmdDuration += System.currentTimeMillis() - start;
 
                 LOG.debug("PMD found " + collectingReport.size() + " violations for file " + file.getName());
 

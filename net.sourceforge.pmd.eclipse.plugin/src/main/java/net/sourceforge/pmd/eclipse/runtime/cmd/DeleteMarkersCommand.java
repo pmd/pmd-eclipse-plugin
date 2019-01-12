@@ -7,8 +7,6 @@ package net.sourceforge.pmd.eclipse.runtime.cmd;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.runtime.CoreException;
 
-import name.herlin.command.CommandException;
-
 /**
  * Command to delete single markers.
  * This is useful if a large number of marker have to be deleted in order to run this in background.
@@ -40,10 +38,7 @@ public class DeleteMarkersCommand extends AbstractDefaultCommand {
         return markers != null;
     }
 
-    /* (non-Javadoc)
-     * @see net.sourceforge.pmd.eclipse.runtime.cmd.AbstractDefaultCommand#execute()
-     */
-    public void execute() throws CommandException {
+    public void execute() {
         try {
             beginTask("Deleting single markers", markers.length);
             for (int j = 0; j < markers.length && !isCanceled(); j++) {
@@ -52,7 +47,7 @@ public class DeleteMarkersCommand extends AbstractDefaultCommand {
             }
             done();
         } catch (CoreException e) {
-            throw new CommandException(e);
+            throw new RuntimeException(e);
         }
     }
 

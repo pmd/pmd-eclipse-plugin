@@ -21,8 +21,6 @@ import net.sourceforge.pmd.eclipse.ui.reports.ReportManager;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.util.StringUtil;
 
-import name.herlin.command.CommandException;
-
 /**
  * Process GenerateReport action menu. Generate a HTML report on the current
  * project.
@@ -93,7 +91,7 @@ public class GenerateReportAction extends AbstractUIAction {
                     registerRenderers(cmd);
                     cmd.performExecute();
                 }
-            } catch (CommandException e) {
+            } catch (RuntimeException e) {
                 showErrorById(StringKeys.ERROR_PMD_EXCEPTION, e);
             }
         }

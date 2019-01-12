@@ -20,9 +20,6 @@ import net.sourceforge.pmd.eclipse.EclipseUtils;
 import net.sourceforge.pmd.eclipse.runtime.PMDRuntimeConstants;
 import net.sourceforge.pmd.renderers.HTMLRenderer;
 
-import name.herlin.command.CommandException;
-import name.herlin.command.UnsetInputPropertiesException;
-
 /**
  * Test the report rendering
  * 
@@ -73,7 +70,7 @@ public class RenderReportCmdTest {
      * 
      */
     @Test
-    public void testRenderReportCmdBasic() throws CommandException, CoreException {
+    public void testRenderReportCmdBasic() throws CoreException {
         final ReviewCodeCmd reviewCmd = new ReviewCodeCmd();
         reviewCmd.addResource(this.testProject);
         reviewCmd.performExecute();
@@ -103,127 +100,78 @@ public class RenderReportCmdTest {
 
     /**
      * Test robustness #1
-     * 
-     * @throws CommandException
      */
-    @Test
-    public void testRenderReportCmdNullArg1() throws CommandException {
-        try {
-            final RenderReportsCmd cmd = new RenderReportsCmd();
-            cmd.setProject(null);
-            cmd.registerRenderer(new HTMLRenderer(), PMDRuntimeConstants.HTML_REPORT_NAME);
-            cmd.performExecute();
-            Assert.fail();
-        } catch (final UnsetInputPropertiesException e) {
-            // yes cool
-        }
+    @Test(expected = IllegalStateException.class)
+    public void testRenderReportCmdNullArg1() {
+        final RenderReportsCmd cmd = new RenderReportsCmd();
+        cmd.setProject(null);
+        cmd.registerRenderer(new HTMLRenderer(), PMDRuntimeConstants.HTML_REPORT_NAME);
+        cmd.performExecute();
     }
 
     /**
      * Test robustness #2
-     * 
-     * @throws CommandException
      */
-    @Test
-    public void testRenderReportCmdNullArg2() throws CommandException {
-        try {
-            final RenderReportsCmd cmd = new RenderReportsCmd();
-            cmd.setProject(this.testProject);
-            cmd.registerRenderer(null, PMDRuntimeConstants.HTML_REPORT_NAME);
-            cmd.performExecute();
-            Assert.fail();
-        } catch (final UnsetInputPropertiesException e) {
-            // yes cool
-        }
+    @Test(expected = IllegalStateException.class)
+    public void testRenderReportCmdNullArg2() {
+        final RenderReportsCmd cmd = new RenderReportsCmd();
+        cmd.setProject(this.testProject);
+        cmd.registerRenderer(null, PMDRuntimeConstants.HTML_REPORT_NAME);
+        cmd.performExecute();
     }
 
     /**
      * Test robustness #3
-     * 
-     * @throws CommandException
      */
-    @Test
-    public void testRenderReportCmdNullArg3() throws CommandException {
-        try {
-            final RenderReportsCmd cmd = new RenderReportsCmd();
-            cmd.setProject(this.testProject);
-            cmd.registerRenderer(new HTMLRenderer(), null);
-            cmd.performExecute();
-            Assert.fail();
-        } catch (final UnsetInputPropertiesException e) {
-            // yes cool
-        }
+    @Test(expected = IllegalStateException.class)
+    public void testRenderReportCmdNullArg3() {
+        final RenderReportsCmd cmd = new RenderReportsCmd();
+        cmd.setProject(this.testProject);
+        cmd.registerRenderer(new HTMLRenderer(), null);
+        cmd.performExecute();
     }
 
     /**
      * Test robustness #4
-     * 
-     * @throws CommandException
      */
-    @Test
-    public void testRenderReportCmdNullArg4() throws CommandException {
-        try {
-            final RenderReportsCmd cmd = new RenderReportsCmd();
-            cmd.setProject(null);
-            cmd.registerRenderer(null, PMDRuntimeConstants.HTML_REPORT_NAME);
-            cmd.performExecute();
-            Assert.fail();
-        } catch (final UnsetInputPropertiesException e) {
-            // yes cool
-        }
+    @Test(expected = IllegalStateException.class)
+    public void testRenderReportCmdNullArg4() {
+        final RenderReportsCmd cmd = new RenderReportsCmd();
+        cmd.setProject(null);
+        cmd.registerRenderer(null, PMDRuntimeConstants.HTML_REPORT_NAME);
+        cmd.performExecute();
     }
 
     /**
      * Test robustness #5
-     * 
-     * @throws CommandException
      */
-    @Test
-    public void testRenderReportCmdNullArg5() throws CommandException {
-        try {
-            final RenderReportsCmd cmd = new RenderReportsCmd();
-            cmd.setProject(null);
-            cmd.registerRenderer(new HTMLRenderer(), null);
-            cmd.performExecute();
-            Assert.fail();
-        } catch (final UnsetInputPropertiesException e) {
-            // yes cool
-        }
+    @Test(expected = IllegalStateException.class)
+    public void testRenderReportCmdNullArg5() {
+        final RenderReportsCmd cmd = new RenderReportsCmd();
+        cmd.setProject(null);
+        cmd.registerRenderer(new HTMLRenderer(), null);
+        cmd.performExecute();
     }
 
     /**
      * Test robustness #6
-     * 
-     * @throws CommandException
      */
-    @Test
-    public void testRenderReportCmdNullArg6() throws CommandException {
-        try {
-            final RenderReportsCmd cmd = new RenderReportsCmd();
-            cmd.setProject(this.testProject);
-            cmd.registerRenderer(null, null);
-            cmd.performExecute();
-            Assert.fail();
-        } catch (final UnsetInputPropertiesException e) {
-            // yes cool
-        }
+    @Test(expected = IllegalStateException.class)
+    public void testRenderReportCmdNullArg6() {
+        final RenderReportsCmd cmd = new RenderReportsCmd();
+        cmd.setProject(this.testProject);
+        cmd.registerRenderer(null, null);
+        cmd.performExecute();
     }
 
     /**
      * Test robustness #7
-     * 
-     * @throws CommandException
      */
-    @Test
-    public void testRenderReportCmdNullArg7() throws CommandException {
-        try {
-            final RenderReportsCmd cmd = new RenderReportsCmd();
-            cmd.setProject(null);
-            cmd.registerRenderer(null, null);
-            cmd.performExecute();
-            Assert.fail();
-        } catch (final UnsetInputPropertiesException e) {
-            // yes cool
-        }
+    @Test(expected = IllegalStateException.class)
+    public void testRenderReportCmdNullArg7() {
+        final RenderReportsCmd cmd = new RenderReportsCmd();
+        cmd.setProject(null);
+        cmd.registerRenderer(null, null);
+        cmd.performExecute();
     }
 }

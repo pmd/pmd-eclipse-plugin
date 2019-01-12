@@ -33,8 +33,6 @@ import net.sourceforge.pmd.eclipse.runtime.properties.PropertiesException;
 import net.sourceforge.pmd.eclipse.util.IOUtil;
 import net.sourceforge.pmd.util.StringUtil;
 
-import name.herlin.command.CommandException;
-
 /**
  * This command produces a report of the Cut And Paste detector
  *
@@ -76,11 +74,8 @@ public class DetectCutAndPasteCmd extends AbstractProjectCommand {
         });
     }
 
-    /**
-     * @see name.herlin.command.AbstractProcessableCommand#execute()
-     */
     @Override
-    public void execute() throws CommandException {
+    public void execute() {
         try {
             List<File> files = findCandidateFiles();
 
@@ -104,18 +99,15 @@ public class DetectCutAndPasteCmd extends AbstractProjectCommand {
             }
         } catch (CoreException e) {
             LOG.debug("Core Exception: " + e.getMessage(), e);
-            throw new CommandException(e);
+            throw new RuntimeException(e);
         } catch (PropertiesException e) {
             LOG.debug("Properties Exception: " + e.getMessage(), e);
-            throw new CommandException(e);
+            throw new RuntimeException(e);
         } finally {
             setTerminated(true);
         }
     }
 
-    /**
-     * @see name.herlin.command.Command#reset()
-     */
     @Override
     public void reset() {
         super.reset();
@@ -184,9 +176,6 @@ public class DetectCutAndPasteCmd extends AbstractProjectCommand {
         return renderer != null && StringUtil.isNotEmpty(reportName);
     }
 
-    /**
-     * @see name.herlin.command.Command#isReadyToExecute()
-     */
     @Override
     public boolean isReadyToExecute() {
         // need a renderer and reportName if a report should be created
@@ -263,9 +252,8 @@ public class DetectCutAndPasteCmd extends AbstractProjectCommand {
      * 
      * @param matches
      *            matches of the CPD
-     * @throws CommandException
      */
-    private void renderReport(Iterator<Match> matches) throws CommandException {
+    private void renderReport(Iterator<Match> matches) {
         InputStream contentsStream = null;
 
         try {
@@ -295,7 +283,7 @@ public class DetectCutAndPasteCmd extends AbstractProjectCommand {
 
         } catch (CoreException e) {
             LOG.debug("Core Exception: " + e.getMessage(), e);
-            throw new CommandException(e);
+            throw new RuntimeException(e);
         } finally {
             IOUtil.closeQuietly(contentsStream);
         }

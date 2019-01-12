@@ -27,8 +27,6 @@ import net.sourceforge.pmd.eclipse.runtime.PMDRuntimeConstants;
 import net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties;
 import net.sourceforge.pmd.eclipse.runtime.properties.IProjectPropertiesManager;
 
-import name.herlin.command.CommandException;
-
 /**
  * This tests execution of PMD with multiple rulesets
  */
@@ -106,7 +104,7 @@ public class MultipleRulesetsTest {
      * Test the basic usage of the processor command
      */
     @Test
-    public void testReviewCmdBasic() throws CommandException, CoreException {
+    public void testReviewCmdBasic() throws CoreException {
         final ReviewCodeCmd cmd = new ReviewCodeCmd();
         cmd.addResource(this.testProject);
         cmd.performExecute();

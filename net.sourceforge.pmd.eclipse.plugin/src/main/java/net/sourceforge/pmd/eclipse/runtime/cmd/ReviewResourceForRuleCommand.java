@@ -25,8 +25,6 @@ import net.sourceforge.pmd.SourceCodeProcessor;
 import net.sourceforge.pmd.eclipse.runtime.PMDRuntimeConstants;
 import net.sourceforge.pmd.eclipse.ui.actions.RuleSetUtil;
 
-import name.herlin.command.CommandException;
-
 /**
  * This command reviews a resource - a file - for a specific rule.
  *
@@ -94,7 +92,7 @@ public class ReviewResourceForRuleCommand extends AbstractDefaultCommand {
      * net.sourceforge.pmd.eclipse.runtime.cmd.AbstractDefaultCommand#execute()
      */
     @Override
-    public void execute() throws CommandException {
+    public void execute() {
         // IProject project = resource.getProject();
         IFile file = (IFile) resource.getAdapter(IFile.class);
         beginTask("PMD checking for rule: " + rule.getName(), 1);
@@ -117,9 +115,9 @@ public class ReviewResourceForRuleCommand extends AbstractDefaultCommand {
                     // } catch (CoreException e) {
                     // throw new CommandException(e);
                 } catch (PMDException e) {
-                    throw new CommandException(e);
+                    throw new RuntimeException(e);
                 } catch (CoreException e) {
-                    throw new CommandException(e);
+                    throw new RuntimeException(e);
                 }
 
                 // trigger event propertyChanged for all listeners

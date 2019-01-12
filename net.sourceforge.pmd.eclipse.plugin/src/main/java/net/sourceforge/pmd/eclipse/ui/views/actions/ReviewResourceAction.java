@@ -16,8 +16,6 @@ import net.sourceforge.pmd.eclipse.runtime.cmd.ReviewCodeCmd;
 import net.sourceforge.pmd.eclipse.ui.PMDUiConstants;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
 
-import name.herlin.command.CommandException;
-
 /**
  * Action for reviewing one single resource.
  * 
@@ -66,7 +64,7 @@ public class ReviewResourceAction extends AbstractPMDAction {
                     cmd.setUserInitiated(true);
                     try {
                         cmd.performExecute();
-                    } catch (CommandException e) {
+                    } catch (RuntimeException e) {
                         logErrorByKey(StringKeys.ERROR_CORE_EXCEPTION, e);
                     }
                     monitor.done();

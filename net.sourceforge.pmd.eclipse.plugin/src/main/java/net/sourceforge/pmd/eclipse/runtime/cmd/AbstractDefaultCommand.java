@@ -10,9 +10,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.lang.Language;
 
-import name.herlin.command.AbstractProcessableCommand;
-import name.herlin.command.CommandException;
-
 /**
  * This is a base implementation for a command inside the PMD plugin. This must
  * be used as a root implementation for all the plugin commands.
@@ -20,7 +17,7 @@ import name.herlin.command.CommandException;
  * @author Philippe Herlin
  *
  */
-public abstract class AbstractDefaultCommand extends AbstractProcessableCommand {
+public abstract class AbstractDefaultCommand {
 
     private static final long serialVersionUID = 1L;
 
@@ -32,6 +29,7 @@ public abstract class AbstractDefaultCommand extends AbstractProcessableCommand 
     private IProgressMonitor monitor;
     private int stepCount;
     private boolean userInitiated;
+    private boolean terminated;
 
     protected AbstractDefaultCommand(String theName, String theDescription) {
         name = theName;
@@ -72,7 +70,6 @@ public abstract class AbstractDefaultCommand extends AbstractProcessableCommand 
     /**
      * @return Returns the readOnly status.
      */
-    @Override
     public boolean isReadOnly() {
         return readOnly;
     }
@@ -88,7 +85,6 @@ public abstract class AbstractDefaultCommand extends AbstractProcessableCommand 
     /**
      * @return Returns the description.
      */
-    @Override
     public String getDescription() {
         return description;
     }
@@ -96,7 +92,6 @@ public abstract class AbstractDefaultCommand extends AbstractProcessableCommand 
     /**
      * @return Returns the name.
      */
-    @Override
     public String getName() {
         return name;
     }
@@ -112,7 +107,6 @@ public abstract class AbstractDefaultCommand extends AbstractProcessableCommand 
     /**
      * @return Returns the outputProperties.
      */
-    @Override
     public boolean hasOutputProperties() {
         return outputProperties;
     }
@@ -120,7 +114,6 @@ public abstract class AbstractDefaultCommand extends AbstractProcessableCommand 
     /**
      * @return Returns the readyToExecute.
      */
-    @Override
     public boolean isReadyToExecute() {
         return readyToExecute;
     }
@@ -178,16 +171,8 @@ public abstract class AbstractDefaultCommand extends AbstractProcessableCommand 
         this.monitor = monitor;
     }
 
-    /**
-     * @see name.herlin.command.AbstractProcessableCommand#execute()
-     */
-    @Override
-    public abstract void execute() throws CommandException;
+    public abstract void execute();
 
-    /**
-     * @see name.herlin.command.Command#reset()
-     */
-    @Override
     public abstract void reset();
 
     /**
@@ -212,6 +197,14 @@ public abstract class AbstractDefaultCommand extends AbstractProcessableCommand 
         }
 
         setTerminated(true);
+    }
+
+    protected void setTerminated(boolean terminated) {
+        this.terminated = terminated;
+    }
+
+    protected boolean isTerminated() {
+        return terminated;
     }
 
     /**
@@ -254,6 +247,14 @@ public abstract class AbstractDefaultCommand extends AbstractProcessableCommand 
         if (monitor != null) {
             monitor.worked(work);
         }
+    }
+
+    public final void performExecute() {
+        JobCommandProcessor.getInstance().processCommand(this);
+    }
+
+    public final void join() {
+        JobCommandProcessor.getInstance().waitCommandToFinish(this);
     }
 
     // /**

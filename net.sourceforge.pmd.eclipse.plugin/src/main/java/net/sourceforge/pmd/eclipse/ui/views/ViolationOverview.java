@@ -46,8 +46,6 @@ import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
 import net.sourceforge.pmd.eclipse.util.PriorityUtil;
 import net.sourceforge.pmd.util.NumericConstants;
 
-import name.herlin.command.CommandException;
-
 /**
  * A View for PMD-Violations, provides an Overview as well as statistical
  * Information
@@ -734,7 +732,7 @@ public class ViolationOverview extends ViewPart implements ISelectionProvider, I
             cmd.setMarkers(markers);
             try {
                 cmd.performExecute();
-            } catch (CommandException e) {
+            } catch (RuntimeException e) {
                 PMDPlugin.getDefault().showError(getString(StringKeys.ERROR_CORE_EXCEPTION), e.getCause());
             }
         }

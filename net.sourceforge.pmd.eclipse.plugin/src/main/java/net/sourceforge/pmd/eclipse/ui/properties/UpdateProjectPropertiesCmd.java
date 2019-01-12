@@ -12,8 +12,6 @@ import net.sourceforge.pmd.eclipse.runtime.cmd.AbstractProjectCommand;
 import net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties;
 import net.sourceforge.pmd.eclipse.runtime.properties.PropertiesException;
 
-import name.herlin.command.CommandException;
-
 /**
  * Save updated project properties. This is a composite command.
  *
@@ -47,10 +45,7 @@ public class UpdateProjectPropertiesCmd extends AbstractProjectCommand {
         setTerminated(false);
     }
 
-    /**
-     * @see name.herlin.command.AbstractProcessableCommand#execute()
-     */
-    public void execute() throws CommandException {
+    public void execute() {
         try {
             final IProjectProperties properties = projectProperties();
             properties.setPmdEnabled(pmdEnabled);
@@ -66,7 +61,7 @@ public class UpdateProjectPropertiesCmd extends AbstractProjectCommand {
             ruleSetFileExists = !properties.isRuleSetFileExist();
 
         } catch (PropertiesException e) {
-            throw new CommandException(e.getMessage(), e);
+            throw new RuntimeException(e.getMessage(), e);
         } finally {
             setTerminated(true);
         }
@@ -155,9 +150,6 @@ public class UpdateProjectPropertiesCmd extends AbstractProjectCommand {
         return ruleSetFileExists;
     }
 
-    /**
-     * @see name.herlin.command.Command#reset()
-     */
     public void reset() {
         setProject(null);
         setPmdEnabled(false);
@@ -170,9 +162,6 @@ public class UpdateProjectPropertiesCmd extends AbstractProjectCommand {
         setTerminated(false);
     }
 
-    /**
-     * @see name.herlin.command.Command#isReadyToExecute()
-     */
     public boolean isReadyToExecute() {
         return super.isReadyToExecute() && projectRuleSets != null;
     }

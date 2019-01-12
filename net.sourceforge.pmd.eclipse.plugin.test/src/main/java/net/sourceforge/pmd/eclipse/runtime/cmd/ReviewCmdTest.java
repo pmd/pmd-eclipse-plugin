@@ -25,9 +25,6 @@ import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties;
 import net.sourceforge.pmd.eclipse.ui.actions.RuleSetUtil;
 
-import name.herlin.command.CommandException;
-import name.herlin.command.UnsetInputPropertiesException;
-
 /**
  * This tests the PMD Processor command
  * 
@@ -84,7 +81,7 @@ public class ReviewCmdTest {
      * 
      */
     @Test
-    public void testReviewCmdBasic() throws CommandException, CoreException {
+    public void testReviewCmdBasic() throws CoreException {
         final ReviewCodeCmd cmd = new ReviewCodeCmd();
         cmd.addResource(this.testProject);
         cmd.performExecute();
@@ -143,11 +140,9 @@ public class ReviewCmdTest {
 
     /**
      * The ReviewCodeCmd must also work on a ResourceDelta
-     * 
-     * @throws CommandException
      */
     @Test
-    public void testReviewCmdDelta() throws CommandException {
+    public void testReviewCmdDelta() {
         // Don't know how to test that yet
         // How to instantiate a ResourceDelta ?
         // Let's comment for now
@@ -155,21 +150,12 @@ public class ReviewCmdTest {
 
     /**
      * Normally a null resource and a null resource delta is not acceptable.
-     * 
-     * @throws CommandException
      */
-    @Test
-    public void testReviewCmdNullResource() throws CommandException {
-        try {
-            final ReviewCodeCmd cmd = new ReviewCodeCmd();
-            cmd.addResource(null);
-            cmd.setResourceDelta(null);
-            cmd.performExecute();
-            Assert.fail("An Exception must be thrown");
-        } catch (final UnsetInputPropertiesException e) {
-            Assert.fail("An IllegalArgumentException must have been thrown before");
-        } catch (final IllegalArgumentException e) {
-            // cool, success
-        }
+    @Test(expected = IllegalArgumentException.class)
+    public void testReviewCmdNullResource() {
+        final ReviewCodeCmd cmd = new ReviewCodeCmd();
+        cmd.addResource(null);
+        cmd.setResourceDelta(null);
+        cmd.performExecute();
     }
 }

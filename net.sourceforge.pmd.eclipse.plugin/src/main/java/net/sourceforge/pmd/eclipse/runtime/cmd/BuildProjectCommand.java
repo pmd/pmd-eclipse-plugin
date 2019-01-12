@@ -9,8 +9,6 @@ import org.eclipse.core.runtime.CoreException;
 
 import net.sourceforge.pmd.eclipse.runtime.properties.PropertiesException;
 
-import name.herlin.command.CommandException;
-
 /**
  * Rebuild a project to force PMD to be run on that project.
  *
@@ -32,18 +30,15 @@ public class BuildProjectCommand extends AbstractProjectCommand {
         setTerminated(false);
     }
 
-    /**
-     * @see name.herlin.command.AbstractProcessableCommand#execute()
-     */
-    public void execute() throws CommandException {
+    public void execute() {
         try {
             project().build(IncrementalProjectBuilder.FULL_BUILD, this.getMonitor());
 
             projectProperties().setNeedRebuild(false);
         } catch (CoreException e) {
-            throw new CommandException(e);
+            throw new RuntimeException(e);
         } catch (PropertiesException e) {
-            throw new CommandException(e);
+            throw new RuntimeException(e);
         } finally {
             this.setTerminated(true);
         }

@@ -34,8 +34,6 @@ import net.sourceforge.pmd.eclipse.util.IOUtil;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.util.StringUtil;
 
-import name.herlin.command.CommandException;
-
 /**
  * This command produce a report for a project using the specified renderer.
  *
@@ -121,11 +119,8 @@ public class RenderReportsCmd extends AbstractProjectCommand {
         contentsStream.close();
     }
 
-    /**
-     * @see name.herlin.command.AbstractProcessableCommand#execute()
-     */
     @Override
-    public void execute() throws CommandException {
+    public void execute() {
 
         try {
             LOG.debug("Starting RenderReport command");
@@ -146,19 +141,16 @@ public class RenderReportsCmd extends AbstractProjectCommand {
             }
         } catch (CoreException e) {
             LOG.debug("Core Exception: " + e.getMessage(), e);
-            throw new CommandException(e);
+            throw new RuntimeException(e);
         } catch (IOException e) {
             LOG.debug("Core Exception: " + e.getMessage(), e);
-            throw new CommandException(e);
+            throw new RuntimeException(e);
         } finally {
             LOG.debug("End of RenderReport command");
             setTerminated(true);
         }
     }
 
-    /**
-     * @see name.herlin.command.Command#reset()
-     */
     @Override
     public void reset() {
         setProject(null);
@@ -166,9 +158,6 @@ public class RenderReportsCmd extends AbstractProjectCommand {
         setTerminated(false);
     }
 
-    /**
-     * @see name.herlin.command.Command#isReadyToExecute()
-     */
     @Override
     public boolean isReadyToExecute() {
         return super.isReadyToExecute() && !renderers.isEmpty();

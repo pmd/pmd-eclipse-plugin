@@ -22,8 +22,6 @@ import net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties;
 import net.sourceforge.pmd.eclipse.runtime.properties.PropertiesException;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
 
-import name.herlin.command.CommandException;
-
 /**
  * This class implements the controler of the Property page
  *
@@ -138,7 +136,7 @@ public class PMDPropertyPageController {
             }
         } catch (PropertiesException e) {
             PMDPlugin.getDefault().showError(e.getMessage(), e);
-        } catch (CommandException e) {
+        } catch (RuntimeException e) {
             PMDPlugin.getDefault().showError(e.getMessage(), e);
         }
 
@@ -194,7 +192,7 @@ public class PMDPropertyPageController {
                 cmd.setProject(project);
                 cmd.setUserInitiated(true);
                 cmd.performExecute();
-            } catch (CommandException e) {
+            } catch (RuntimeException e) {
                 PMDPlugin.getDefault().showError(e.getMessage(), e);
             }
         }

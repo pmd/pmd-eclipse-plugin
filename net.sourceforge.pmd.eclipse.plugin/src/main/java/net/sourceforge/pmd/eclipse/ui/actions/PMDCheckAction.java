@@ -26,8 +26,6 @@ import net.sourceforge.pmd.eclipse.runtime.cmd.ReviewCodeCmd;
 import net.sourceforge.pmd.eclipse.ui.model.AbstractPMDRecord;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
 
-import name.herlin.command.CommandException;
-
 /**
  * Implements action on the "Check code with PMD" action menu on a file
  *
@@ -72,7 +70,7 @@ public class PMDCheckAction extends AbstractUIAction {
                         + targetPartClassName());
             }
 
-        } catch (CommandException e) {
+        } catch (RuntimeException e) {
             showErrorById(StringKeys.ERROR_CORE_EXCEPTION, e);
         }
 
@@ -88,16 +86,15 @@ public class PMDCheckAction extends AbstractUIAction {
      * Run the reviewCode command on a single resource
      *
      * @param resource
-     * @throws CommandException
      */
-    private void reviewSingleResource(IResource resource) throws CommandException {
+    private void reviewSingleResource(IResource resource) {
         ReviewCodeCmd cmd = new ReviewCodeCmd();
         cmd.addResource(resource);
 
         setupAndExecute(cmd, 1);
     }
 
-    private void setupAndExecute(ReviewCodeCmd cmd, int count) throws CommandException {
+    private void setupAndExecute(ReviewCodeCmd cmd, int count) {
         cmd.setStepCount(count);
         cmd.setTaskMarker(true);
         cmd.setOpenPmdPerspective(PMDPlugin.getDefault().loadPreferences().isPmdPerspectiveEnabled());
@@ -114,7 +111,7 @@ public class PMDCheckAction extends AbstractUIAction {
      * @param selection
      *            the selected resources
      */
-    private void reviewSelectedResources(IStructuredSelection selection) throws CommandException {
+    private void reviewSelectedResources(IStructuredSelection selection) {
         ReviewCodeCmd cmd = new ReviewCodeCmd();
 
         // Add selected resources to the list of resources to be reviewed
