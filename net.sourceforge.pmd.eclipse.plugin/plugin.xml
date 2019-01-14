@@ -24,7 +24,7 @@
 
  <extension
          id="pmdMarker1"
-         name="%marker.pmd"
+         name="%marker.pmd.prio1"
          point="org.eclipse.core.resources.markers">
       <super type="net.sourceforge.pmd.eclipse.plugin.pmdMarker"></super>
       <persistent value="true"></persistent>
@@ -32,7 +32,7 @@
 
   <extension
          id="pmdMarker2"
-         name="%marker.pmd"
+         name="%marker.pmd.prio2"
          point="org.eclipse.core.resources.markers">
       <super type="net.sourceforge.pmd.eclipse.plugin.pmdMarker"></super>
       <persistent value="true"></persistent>
@@ -40,7 +40,7 @@
 
   <extension
          id="pmdMarker3"
-         name="%marker.pmd"
+         name="%marker.pmd.prio3"
          point="org.eclipse.core.resources.markers">
       <super type="net.sourceforge.pmd.eclipse.plugin.pmdMarker"></super>
       <persistent value="true"></persistent>
@@ -48,7 +48,7 @@
 
   <extension
          id="pmdMarker4"
-         name="%marker.pmd"
+         name="%marker.pmd.prio4"
          point="org.eclipse.core.resources.markers">
       <super type="net.sourceforge.pmd.eclipse.plugin.pmdMarker"></super>
       <persistent value="true"></persistent>
@@ -56,11 +56,23 @@
 
   <extension
          id="pmdMarker5"
-         name="%marker.pmd"
+         name="%marker.pmd.prio5"
          point="org.eclipse.core.resources.markers">
       <super type="net.sourceforge.pmd.eclipse.plugin.pmdMarker"></super>
-      <persistent value="true">  </persistent>
-      <attribute name="rulename">  </attribute>
+      <persistent value="true"></persistent>
+   </extension>
+
+   <extension point="org.eclipse.ui.ide.markerSupport">
+      <markerTypeCategory name="%marker.category">
+        <markerTypeReference id="net.sourceforge.pmd.eclipse.plugin.pmdMarker"></markerTypeReference>
+        <markerTypeReference id="net.sourceforge.pmd.eclipse.plugin.pmdMarker1"></markerTypeReference>
+        <markerTypeReference id="net.sourceforge.pmd.eclipse.plugin.pmdMarker2"></markerTypeReference>
+        <markerTypeReference id="net.sourceforge.pmd.eclipse.plugin.pmdMarker3"></markerTypeReference>
+        <markerTypeReference id="net.sourceforge.pmd.eclipse.plugin.pmdMarker4"></markerTypeReference>
+        <markerTypeReference id="net.sourceforge.pmd.eclipse.plugin.pmdMarker5"></markerTypeReference>
+        <markerTypeReference id="net.sourceforge.pmd.eclipse.plugin.pmdTaskMarker"></markerTypeReference>
+        <markerTypeReference id="net.sourceforge.pmd.eclipse.plugin.pmdDFAMarker"></markerTypeReference>
+      </markerTypeCategory>
    </extension>
 
 <extension point="org.eclipse.ui.ide.markerImageProviders">

@@ -12,7 +12,7 @@ import net.sourceforge.pmd.properties.IntegerProperty;
  */
 public class PMDRuntimeConstants {
 
-    public static final String PMD_MARKER = PMDPlugin.PLUGIN_ID + ".pmdMarker"; // obsolete
+    public static final String PMD_MARKER = PMDPlugin.PLUGIN_ID + ".pmdMarker";
 
     public static final String PMD_MARKER_1 = PMDPlugin.PLUGIN_ID + ".pmdMarker1";
     public static final String PMD_MARKER_2 = PMDPlugin.PLUGIN_ID + ".pmdMarker2";

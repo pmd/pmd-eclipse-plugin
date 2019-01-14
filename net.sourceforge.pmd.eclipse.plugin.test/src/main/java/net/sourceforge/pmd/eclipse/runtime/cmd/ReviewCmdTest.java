@@ -47,7 +47,6 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jdt.internal.core.search.IRestrictedAccessConstructorRequestor;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
