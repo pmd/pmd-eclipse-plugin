@@ -12,64 +12,53 @@
       </toc>
    </extension>
 
-<!--   original marker
    <extension
          id="pmdMarker"
          name="%marker.pmd"
          point="org.eclipse.core.resources.markers">
-      <super
-            type="org.eclipse.core.resources.problemmarker">
-      </super>
-      <persistent
-            value="true">
-      </persistent>
-      <attribute
-            name="rulename">
-      </attribute>
+      <super type="org.eclipse.core.resources.textmarker"></super>
+      <super type="org.eclipse.core.resources.problemmarker"></super>
+      <persistent value="true"></persistent>
+      <attribute name="rulename"></attribute>
    </extension>
--->
 
  <extension
          id="pmdMarker1"
          name="%marker.pmd"
          point="org.eclipse.core.resources.markers">
-      <super type="org.eclipse.core.resources.textmarker"></super>
-      <persistent value="true"> </persistent>
-      <attribute  name="rulename">  </attribute>
+      <super type="net.sourceforge.pmd.eclipse.plugin.pmdMarker"></super>
+      <persistent value="true"></persistent>
    </extension>
 
   <extension
          id="pmdMarker2"
          name="%marker.pmd"
          point="org.eclipse.core.resources.markers">
-      <super type="org.eclipse.core.resources.textmarker"></super>
-      <persistent value="true">  </persistent>
-      <attribute name="rulename">  </attribute>
+      <super type="net.sourceforge.pmd.eclipse.plugin.pmdMarker"></super>
+      <persistent value="true"></persistent>
    </extension>
 
   <extension
          id="pmdMarker3"
          name="%marker.pmd"
          point="org.eclipse.core.resources.markers">
-      <super type="org.eclipse.core.resources.textmarker"></super>
-      <persistent value="true">  </persistent>
-      <attribute name="rulename">  </attribute>
+      <super type="net.sourceforge.pmd.eclipse.plugin.pmdMarker"></super>
+      <persistent value="true"></persistent>
    </extension>
 
   <extension
          id="pmdMarker4"
          name="%marker.pmd"
          point="org.eclipse.core.resources.markers">
-      <super type="org.eclipse.core.resources.textmarker"></super>
-      <persistent value="true">  </persistent>
-      <attribute name="rulename">  </attribute>
+      <super type="net.sourceforge.pmd.eclipse.plugin.pmdMarker"></super>
+      <persistent value="true"></persistent>
    </extension>
 
   <extension
          id="pmdMarker5"
          name="%marker.pmd"
          point="org.eclipse.core.resources.markers">
-      <super type="org.eclipse.core.resources.textmarker"></super>
+      <super type="net.sourceforge.pmd.eclipse.plugin.pmdMarker"></super>
       <persistent value="true">  </persistent>
       <attribute name="rulename">  </attribute>
    </extension>
