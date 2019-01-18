@@ -17,7 +17,6 @@
          name="%marker.pmd"
          point="org.eclipse.core.resources.markers">
       <super type="org.eclipse.core.resources.textmarker"></super>
-      <super type="org.eclipse.core.resources.problemmarker"></super>
       <persistent value="true"></persistent>
       <attribute name="rulename"></attribute>
    </extension>
@@ -26,6 +25,7 @@
          id="pmdMarker1"
          name="%marker.pmd.prio1"
          point="org.eclipse.core.resources.markers">
+      <super type="org.eclipse.core.resources.problemmarker"></super>
       <super type="net.sourceforge.pmd.eclipse.plugin.pmdMarker"></super>
       <persistent value="true"></persistent>
    </extension>
@@ -34,6 +34,7 @@
          id="pmdMarker2"
          name="%marker.pmd.prio2"
          point="org.eclipse.core.resources.markers">
+      <super type="org.eclipse.core.resources.problemmarker"></super>
       <super type="net.sourceforge.pmd.eclipse.plugin.pmdMarker"></super>
       <persistent value="true"></persistent>
    </extension>
@@ -42,6 +43,7 @@
          id="pmdMarker3"
          name="%marker.pmd.prio3"
          point="org.eclipse.core.resources.markers">
+      <super type="org.eclipse.core.resources.problemmarker"></super>
       <super type="net.sourceforge.pmd.eclipse.plugin.pmdMarker"></super>
       <persistent value="true"></persistent>
    </extension>
@@ -50,6 +52,7 @@
          id="pmdMarker4"
          name="%marker.pmd.prio4"
          point="org.eclipse.core.resources.markers">
+      <super type="org.eclipse.core.resources.problemmarker"></super>
       <super type="net.sourceforge.pmd.eclipse.plugin.pmdMarker"></super>
       <persistent value="true"></persistent>
    </extension>
@@ -58,6 +61,7 @@
          id="pmdMarker5"
          name="%marker.pmd.prio5"
          point="org.eclipse.core.resources.markers">
+      <super type="org.eclipse.core.resources.problemmarker"></super>
       <super type="net.sourceforge.pmd.eclipse.plugin.pmdMarker"></super>
       <persistent value="true"></persistent>
    </extension>
@@ -74,6 +78,159 @@
         <markerTypeReference id="net.sourceforge.pmd.eclipse.plugin.pmdDFAMarker"></markerTypeReference>
       </markerTypeCategory>
    </extension>
+
+    <extension
+        point="org.eclipse.ui.editors.annotationTypes">
+        <type
+            name="net.sourceforge.pmd.eclipse.plugin.annotation.prio1"
+            markerType="net.sourceforge.pmd.eclipse.plugin.pmdMarker1"/>
+        <type
+            name="net.sourceforge.pmd.eclipse.plugin.annotation.prio2"
+            markerType="net.sourceforge.pmd.eclipse.plugin.pmdMarker2"/>
+        <type
+            name="net.sourceforge.pmd.eclipse.plugin.annotation.prio3"
+            markerType="net.sourceforge.pmd.eclipse.plugin.pmdMarker3"/>
+        <type
+            name="net.sourceforge.pmd.eclipse.plugin.annotation.prio4"
+            markerType="net.sourceforge.pmd.eclipse.plugin.pmdMarker4"/>
+        <type
+            name="net.sourceforge.pmd.eclipse.plugin.annotation.prio5"
+            markerType="net.sourceforge.pmd.eclipse.plugin.pmdMarker5"/>
+    </extension>
+
+    <extension
+        point="org.eclipse.ui.editors.markerAnnotationSpecification">
+        <specification
+            annotationType="net.sourceforge.pmd.eclipse.plugin.annotation.prio1"
+            colorPreferenceKey="net.sourceforge.pmd.eclipse.plugin.annotation.prio1.color"
+            overviewRulerPreferenceKey="net.sourceforge.pmd.eclipse.plugin.annotation.prio1.overviewruler"
+            verticalRulerPreferenceKey="net.sourceforge.pmd.eclipse.plugin.annotation.prio1.verticalruler"
+            textPreferenceKey="net.sourceforge.pmd.eclipse.plugin.annotation.prio1.text"
+            label="PMD Violation Prio 1"
+            highlightPreferenceKey="net.sourceforge.pmd.eclipse.plugin.annotation.prio1.highlight"
+            colorPreferenceValue="255,0,0"
+            presentationLayer="5"
+            overviewRulerPreferenceValue="true"
+            verticalRulerPreferenceValue="true"
+            textPreferenceValue="false"
+            highlightPreferenceValue="true"
+            contributesToHeader="true"
+            showInNextPrevDropdownToolbarActionKey="net.sourceforge.pmd.eclipse.plugin.annotation.prio1.dropdown"
+            showInNextPrevDropdownToolbarAction="true"
+            isGoToNextNavigationTargetKey="net.sourceforge.pmd.eclipse.plugin.annotation.prio1.next"
+            isGoToNextNavigationTarget="true"
+            isGoToPreviousNavigationTargetKey="net.sourceforge.pmd.eclipse.plugin.annotation.prio1.previous"
+            isGoToPreviousNavigationTarget="true"
+            icon="icons/markerP1.png"
+            annotationImageProvider="net.sourceforge.pmd.eclipse.ui.PMDMarkerImageProvider"
+            textStylePreferenceKey="net.sourceforge.pmd.eclipse.plugin.annotation.prio1.text.style"
+            textStylePreferenceValue="BOX"
+            includeOnPreferencePage="true" />
+        <specification
+            annotationType="net.sourceforge.pmd.eclipse.plugin.annotation.prio2"
+            colorPreferenceKey="net.sourceforge.pmd.eclipse.plugin.annotation.prio2.color"
+            overviewRulerPreferenceKey="net.sourceforge.pmd.eclipse.plugin.annotation.prio2.overviewruler"
+            verticalRulerPreferenceKey="net.sourceforge.pmd.eclipse.plugin.annotation.prio2.verticalruler"
+            textPreferenceKey="net.sourceforge.pmd.eclipse.plugin.annotation.prio2.text"
+            label="PMD Violation Prio 2"
+            highlightPreferenceKey="net.sourceforge.pmd.eclipse.plugin.annotation.prio2.highlight"
+            colorPreferenceValue="0,255,255"
+            presentationLayer="5"
+            overviewRulerPreferenceValue="true"
+            verticalRulerPreferenceValue="true"
+            textPreferenceValue="false"
+            highlightPreferenceValue="true"
+            contributesToHeader="true"
+            showInNextPrevDropdownToolbarActionKey="net.sourceforge.pmd.eclipse.plugin.annotation.prio2.dropdown"
+            showInNextPrevDropdownToolbarAction="true"
+            isGoToNextNavigationTargetKey="net.sourceforge.pmd.eclipse.plugin.annotation.prio2.next"
+            isGoToNextNavigationTarget="true"
+            isGoToPreviousNavigationTargetKey="net.sourceforge.pmd.eclipse.plugin.annotation.prio2.previous"
+            isGoToPreviousNavigationTarget="true"
+            icon="icons/markerP2.png"
+            annotationImageProvider="net.sourceforge.pmd.eclipse.ui.PMDMarkerImageProvider"
+            textStylePreferenceKey="net.sourceforge.pmd.eclipse.plugin.annotation.prio2.text.style"
+            textStylePreferenceValue="BOX"
+            includeOnPreferencePage="true" />
+        <specification
+            annotationType="net.sourceforge.pmd.eclipse.plugin.annotation.prio3"
+            colorPreferenceKey="net.sourceforge.pmd.eclipse.plugin.annotation.prio3.color"
+            overviewRulerPreferenceKey="net.sourceforge.pmd.eclipse.plugin.annotation.prio3.overviewruler"
+            verticalRulerPreferenceKey="net.sourceforge.pmd.eclipse.plugin.annotation.prio3.verticalruler"
+            textPreferenceKey="net.sourceforge.pmd.eclipse.plugin.annotation.prio3.text"
+            label="PMD Violation Prio 3"
+            highlightPreferenceKey="net.sourceforge.pmd.eclipse.plugin.annotation.prio3.highlight"
+            colorPreferenceValue="0,255,0"
+            presentationLayer="4"
+            overviewRulerPreferenceValue="true"
+            verticalRulerPreferenceValue="true"
+            textPreferenceValue="false"
+            highlightPreferenceValue="true"
+            contributesToHeader="true"
+            showInNextPrevDropdownToolbarActionKey="net.sourceforge.pmd.eclipse.plugin.annotation.prio3.dropdown"
+            showInNextPrevDropdownToolbarAction="true"
+            isGoToNextNavigationTargetKey="net.sourceforge.pmd.eclipse.plugin.annotation.prio3.next"
+            isGoToNextNavigationTarget="true"
+            isGoToPreviousNavigationTargetKey="net.sourceforge.pmd.eclipse.plugin.annotation.prio3.previous"
+            isGoToPreviousNavigationTarget="true"
+            icon="icons/markerP3.png"
+            annotationImageProvider="net.sourceforge.pmd.eclipse.ui.PMDMarkerImageProvider"
+            textStylePreferenceKey="net.sourceforge.pmd.eclipse.plugin.annotation.prio3.text.style"
+            textStylePreferenceValue="BOX"
+            includeOnPreferencePage="true" />
+        <specification
+            annotationType="net.sourceforge.pmd.eclipse.plugin.annotation.prio4"
+            colorPreferenceKey="net.sourceforge.pmd.eclipse.plugin.annotation.prio4.color"
+            overviewRulerPreferenceKey="net.sourceforge.pmd.eclipse.plugin.annotation.prio4.overviewruler"
+            verticalRulerPreferenceKey="net.sourceforge.pmd.eclipse.plugin.annotation.prio4.verticalruler"
+            textPreferenceKey="net.sourceforge.pmd.eclipse.plugin.annotation.prio4.text"
+            label="PMD Violation Prio 4"
+            highlightPreferenceKey="net.sourceforge.pmd.eclipse.plugin.annotation.prio4.highlight"
+            colorPreferenceValue="255,0,255"
+            presentationLayer="4"
+            overviewRulerPreferenceValue="true"
+            verticalRulerPreferenceValue="true"
+            textPreferenceValue="false"
+            highlightPreferenceValue="true"
+            contributesToHeader="true"
+            showInNextPrevDropdownToolbarActionKey="net.sourceforge.pmd.eclipse.plugin.annotation.prio4.dropdown"
+            showInNextPrevDropdownToolbarAction="true"
+            isGoToNextNavigationTargetKey="net.sourceforge.pmd.eclipse.plugin.annotation.prio4.next"
+            isGoToNextNavigationTarget="true"
+            isGoToPreviousNavigationTargetKey="net.sourceforge.pmd.eclipse.plugin.annotation.prio4.previous"
+            isGoToPreviousNavigationTarget="true"
+            icon="icons/markerP4.png"
+            annotationImageProvider="net.sourceforge.pmd.eclipse.ui.PMDMarkerImageProvider"
+            textStylePreferenceKey="net.sourceforge.pmd.eclipse.plugin.annotation.prio4.text.style"
+            textStylePreferenceValue="BOX"
+            includeOnPreferencePage="true" />
+        <specification
+            annotationType="net.sourceforge.pmd.eclipse.plugin.annotation.prio5"
+            colorPreferenceKey="net.sourceforge.pmd.eclipse.plugin.annotation.prio5.color"
+            overviewRulerPreferenceKey="net.sourceforge.pmd.eclipse.plugin.annotation.prio5.overviewruler"
+            verticalRulerPreferenceKey="net.sourceforge.pmd.eclipse.plugin.annotation.prio5.verticalruler"
+            textPreferenceKey="net.sourceforge.pmd.eclipse.plugin.annotation.prio5.text"
+            label="PMD Violation Prio 5"
+            highlightPreferenceKey="net.sourceforge.pmd.eclipse.plugin.annotation.prio5.highlight"
+            colorPreferenceValue="0,0,255"
+            presentationLayer="3"
+            overviewRulerPreferenceValue="true"
+            verticalRulerPreferenceValue="true"
+            textPreferenceValue="false"
+            highlightPreferenceValue="true"
+            contributesToHeader="true"
+            showInNextPrevDropdownToolbarActionKey="net.sourceforge.pmd.eclipse.plugin.annotation.prio5.dropdown"
+            showInNextPrevDropdownToolbarAction="true"
+            isGoToNextNavigationTargetKey="net.sourceforge.pmd.eclipse.plugin.annotation.prio5.next"
+            isGoToNextNavigationTarget="true"
+            isGoToPreviousNavigationTargetKey="net.sourceforge.pmd.eclipse.plugin.annotation.prio5.previous"
+            isGoToPreviousNavigationTarget="true"
+            icon="icons/markerP5.png"
+            annotationImageProvider="net.sourceforge.pmd.eclipse.ui.PMDMarkerImageProvider"
+            textStylePreferenceKey="net.sourceforge.pmd.eclipse.plugin.annotation.prio5.text.style"
+            textStylePreferenceValue="BOX"
+            includeOnPreferencePage="true" />
+    </extension>
 
 <extension point="org.eclipse.ui.ide.markerImageProviders">
     <imageprovider
