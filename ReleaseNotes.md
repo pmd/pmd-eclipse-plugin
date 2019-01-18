@@ -11,10 +11,17 @@ Eclipse Update Site:
 
 ### New and noteworthy
 
+*   PMD markers are now problem markers again. This means, that rule violations appear in the Problem View.
+    The project property "Handle high priority violations as Eclipse errors" now works again.
+*   The PMD markers are now also visible on the overview ruler. They can be customized or disabled via
+    workspace preferences, General, Editors, Text Editors, Annotations.
+
 ### Fixed Issues
 
+*   [#54](https://github.com/pmd/pmd-eclipse-plugin/issues/54): "violationsAsErrors" is completely ineffective
 *   [#70](https://github.com/pmd/pmd-eclipse-plugin/issues/70): UnsupportedOperationException opening Rule Configuration
 *   [#76](https://github.com/pmd/pmd-eclipse-plugin/issues/76): Global rule management is saved even if cancelled
+*   [#1359](https://sourceforge.net/p/pmd/bugs/1359/): PMD violations in eclipse should be shown on editor by scrollbar
 
 ### External Contributions
 
