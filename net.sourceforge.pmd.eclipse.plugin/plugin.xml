@@ -232,46 +232,6 @@
             includeOnPreferencePage="true" />
     </extension>
 
-<extension point="org.eclipse.ui.ide.markerImageProviders">
-    <imageprovider
-          id="PMD.imageProvider1"
-          icon="icons/markerP1.png"
-          markertype="net.sourceforge.pmd.eclipse.plugin.pmdMarker1">
-    </imageprovider>
-</extension>
-
-<extension point="org.eclipse.ui.ide.markerImageProviders">
-    <imageprovider
-          id="PMD.imageProvider2"
-          icon="icons/markerP2.png"
-          markertype="net.sourceforge.pmd.eclipse.plugin.pmdMarker2">
-    </imageprovider>
-</extension>
-
-<extension point="org.eclipse.ui.ide.markerImageProviders">
-    <imageprovider
-          id="PMD.imageProvider3"
-          icon="icons/markerP3.png"
-          markertype="net.sourceforge.pmd.eclipse.plugin.pmdMarker3">
-    </imageprovider>
-</extension>
-
-<extension point="org.eclipse.ui.ide.markerImageProviders">
-    <imageprovider
-          id="PMD.imageProvider4"
-          icon="icons/markerP4.png"
-          markertype="net.sourceforge.pmd.eclipse.plugin.pmdMarker4">
-    </imageprovider>
-</extension>
-
-<extension point="org.eclipse.ui.ide.markerImageProviders">
-    <imageprovider
-          id="PMD.imageProvider5"
-          icon="icons/markerP5.png"
-          markertype="net.sourceforge.pmd.eclipse.plugin.pmdMarker5">
-    </imageprovider>
-</extension>
-
    <extension
          id="pmdTaskMarker"
          name="%marker.task"
