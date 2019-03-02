@@ -460,19 +460,16 @@ public class BaseVisitor {
     }
 
     public static String markerTypeFor(RuleViolation violation) {
-
-        int priorityId = violation.getRule().getPriority().getPriority();
-
-        switch (priorityId) {
-        case 1:
+        switch (violation.getRule().getPriority()) {
+        case HIGH:
             return PMDRuntimeConstants.PMD_MARKER_1;
-        case 2:
+        case MEDIUM_HIGH:
             return PMDRuntimeConstants.PMD_MARKER_2;
-        case 3:
+        case MEDIUM:
             return PMDRuntimeConstants.PMD_MARKER_3;
-        case 4:
+        case MEDIUM_LOW:
             return PMDRuntimeConstants.PMD_MARKER_4;
-        case 5:
+        case LOW:
             return PMDRuntimeConstants.PMD_MARKER_5;
         default:
             return PMDRuntimeConstants.PMD_MARKER;
@@ -625,35 +622,23 @@ public class BaseVisitor {
         info.add(PMDRuntimeConstants.KEY_MARKERATT_LINE2, violation.getEndLine());
         info.add(PMDRuntimeConstants.KEY_MARKERATT_RULENAME, rule.getName());
         info.add(PMDRuntimeConstants.KEY_MARKERATT_PRIORITY, rule.getPriority().getPriority());
+        info.add(IMarker.PRIORITY, IMarker.PRIORITY_NORMAL);
 
-        switch (rule.getPriority().getPriority()) {
-        case 1:
-            info.add(IMarker.PRIORITY, IMarker.PRIORITY_HIGH);
+        switch (rule.getPriority()) {
+        case HIGH:
+        case MEDIUM_HIGH:
             info.add(IMarker.SEVERITY,
                     projectProperties.violationsAsErrors() ? IMarker.SEVERITY_ERROR : IMarker.SEVERITY_WARNING);
             break;
-        case 2:
-            if (projectProperties.violationsAsErrors()) {
-                info.add(IMarker.SEVERITY, IMarker.SEVERITY_ERROR);
-            } else {
-                info.add(IMarker.SEVERITY, IMarker.SEVERITY_WARNING);
-                info.add(IMarker.PRIORITY, IMarker.PRIORITY_HIGH);
-            }
-            break;
 
-        case 5:
-            info.add(IMarker.SEVERITY, IMarker.SEVERITY_INFO);
-            break;
-
-        case 3:
-            info.add(IMarker.PRIORITY, IMarker.PRIORITY_HIGH);
+        case MEDIUM:
+        case MEDIUM_LOW:
             info.add(IMarker.SEVERITY, IMarker.SEVERITY_WARNING);
             break;
 
-        case 4:
+        case LOW:
         default:
-            info.add(IMarker.PRIORITY, IMarker.PRIORITY_HIGH);
-            info.add(IMarker.SEVERITY, IMarker.SEVERITY_WARNING);
+            info.add(IMarker.SEVERITY, IMarker.SEVERITY_INFO);
             break;
         }
 

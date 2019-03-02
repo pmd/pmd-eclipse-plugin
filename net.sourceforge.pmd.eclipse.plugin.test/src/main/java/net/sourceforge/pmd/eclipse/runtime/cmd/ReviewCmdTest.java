@@ -5,10 +5,14 @@
 package net.sourceforge.pmd.eclipse.runtime.cmd;
 
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
@@ -22,6 +26,7 @@ import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.eclipse.EclipseUtils;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
+import net.sourceforge.pmd.eclipse.runtime.PMDRuntimeConstants;
 import net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties;
 import net.sourceforge.pmd.eclipse.ui.actions.RuleSetUtil;
 
@@ -91,6 +96,17 @@ public class ReviewCmdTest {
         // We do not test PMD, only a non-empty report is enough
         Assert.assertNotNull(markers);
         Assert.assertTrue("Report size = " + markers.size(), markers.size() > 0);
+
+        // test the marker types - they should be problem markers...
+        final IFile sourceFile = this.testProject.getFile("/src/Test.java");
+        List<IMarker> imarkers = new ArrayList<>();
+        for (String markerType : PMDRuntimeConstants.RULE_MARKER_TYPES) {
+            imarkers.addAll(Arrays.asList(sourceFile.findMarkers(markerType, false, IResource.DEPTH_ONE)));
+        }
+        Assert.assertEquals(markers.get(sourceFile).size(), imarkers.size());
+        for (IMarker marker : imarkers) {
+            Assert.assertTrue(marker.isSubtypeOf(IMarker.PROBLEM));
+        }
     }
 
     /**

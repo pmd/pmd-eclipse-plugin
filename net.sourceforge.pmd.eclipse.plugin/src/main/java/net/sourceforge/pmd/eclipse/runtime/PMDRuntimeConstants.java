@@ -15,7 +15,8 @@ import net.sourceforge.pmd.properties.IntegerProperty;
  */
 public class PMDRuntimeConstants {
 
-    public static final String PMD_MARKER = PMDPlugin.PLUGIN_ID + ".pmdMarker"; // obsolete
+    /** This marker type is the super type for all PMD markers (for rules, task, and dfa). */
+    public static final String PMD_MARKER = PMDPlugin.PLUGIN_ID + ".pmdMarker";
 
     public static final String PMD_MARKER_1 = PMDPlugin.PLUGIN_ID + ".pmdMarker1";
     public static final String PMD_MARKER_2 = PMDPlugin.PLUGIN_ID + ".pmdMarker2";
@@ -25,7 +26,7 @@ public class PMDRuntimeConstants {
 
     public static final String PMD_DFA_MARKER = PMDPlugin.PLUGIN_ID + ".pmdDFAMarker";
     public static final String PMD_TASKMARKER = PMDPlugin.PLUGIN_ID + ".pmdTaskMarker";
-    public static final String[] RULE_MARKER_TYPES = new String[] { PMD_MARKER, PMD_MARKER_1, PMD_MARKER_2,
+    public static final String[] RULE_MARKER_TYPES = new String[] { PMD_MARKER_1, PMD_MARKER_2,
         PMD_MARKER_3, PMD_MARKER_4, PMD_MARKER_5 };
     public static final String[] ALL_MARKER_TYPES = new String[] { PMD_MARKER, PMD_DFA_MARKER, PMD_TASKMARKER,
         PMD_MARKER_1, PMD_MARKER_2, PMD_MARKER_3, PMD_MARKER_4, PMD_MARKER_5 };

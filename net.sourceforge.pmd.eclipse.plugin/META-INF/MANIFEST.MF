@@ -16,7 +16,8 @@ Require-Bundle: org.apache.commons.logging;bundle-version="1.0.4",
  org.eclipse.search,
  org.eclipse.help,
  org.eclipse.help.ui,
- org.eclipse.wst.xml.core
+ org.eclipse.wst.xml.core,
+ org.eclipse.ui.workbench.texteditor
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-Vendor: %plugin.provider
