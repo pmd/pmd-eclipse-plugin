@@ -23,7 +23,9 @@ package name.herlin.command;
 
 /**
  * A command interface
+ * @deprecated This interface will be removed with the next major version of the PMD Plugin.
  */
+@Deprecated
 public interface Command extends java.io.Serializable {
     
     /**

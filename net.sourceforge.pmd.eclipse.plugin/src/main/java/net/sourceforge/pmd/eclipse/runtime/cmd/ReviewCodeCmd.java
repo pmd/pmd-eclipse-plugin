@@ -1,37 +1,5 @@
-/*
- * Created on 12 avr. 2005
- *
- * Copyright (c) 2005, PMD for Eclipse Development Team
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are
- * met:
- *
- *     * Redistributions of source code must retain the above copyright
- *       notice, this list of conditions and the following disclaimer.
- *     * Redistributions in binary form must reproduce the above copyright
- *       notice, this list of conditions and the following disclaimer in the
- *       documentation and/or other materials provided with the distribution.
- *     * The end-user documentation included with the redistribution, if
- *       any, must include the following acknowledgement:
- *       "This product includes software developed in part by support from
- *        the Defense Advanced Research Project Agency (DARPA)"
- *     * Neither the name of "PMD for Eclipse Development Team" nor the names of its
- *       contributors may be used to endorse or promote products derived from
- *       this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
- * IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
- * TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
- * PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER
- * OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
- * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
- * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
- * PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
- * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
- * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
 package net.sourceforge.pmd.eclipse.runtime.cmd;
@@ -82,9 +50,6 @@ import net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties;
 import net.sourceforge.pmd.eclipse.runtime.properties.PropertiesException;
 import net.sourceforge.pmd.eclipse.ui.actions.RuleSetUtil;
 import net.sourceforge.pmd.util.StringUtil;
-
-import name.herlin.command.CommandException;
-import name.herlin.command.Timer;
 
 /**
  * This command executes the PMD engine on a specified resource
@@ -140,9 +105,8 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
      * Easy way to refresh a set of files.
      *
      * @param files
-     * @throws CommandException
      */
-    public static void runCodeReviewOnFiles(Set<IFile> files) throws CommandException {
+    public static void runCodeReviewOnFiles(Set<IFile> files) {
         ReviewCodeCmd cmd = new ReviewCodeCmd();
         cmd.setStepCount(files.size());
         cmd.setTaskMarker(true);
@@ -193,11 +157,8 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
                 "Continue anyways?");
     }
 
-    /**
-     * @see name.herlin.command.AbstractProcessableCommand#execute()
-     */
     @Override
-    public void execute() throws CommandException {
+    public void execute() {
 
         boolean doReview = checkForMisconfiguredRules();
         if (!doReview) {
@@ -270,7 +231,7 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
             }
 
         } catch (CoreException e) {
-            throw new CommandException("Core exception when reviewing code", e);
+            throw new RuntimeException("Core exception when reviewing code", e);
         } finally {
             LOG.info("ReviewCode command has ended.");
             setTerminated(true);
@@ -373,9 +334,6 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
         this.openPmdViolationsOutlineView = openPmdViolationsOutlineView;
     }
 
-    /**
-     * @see name.herlin.command.Command#reset()
-     */
     @Override
     public void reset() {
         resources.clear();
@@ -388,9 +346,6 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
         runAlways = false;
     }
 
-    /**
-     * @see name.herlin.command.Command#isReadyToExecute()
-     */
     @Override
     public boolean isReadyToExecute() {
         return resources.size() != 0 || resourceDelta != null;
@@ -419,10 +374,8 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
 
     /**
      * Process the list of workbench resources
-     *
-     * @throws CommandException
      */
-    private void processResources() throws CommandException {
+    private void processResources() {
         Set<String> projects = new HashSet<String>();
         for (IResource resource : resources) {
             projects.add(resource.getProject().getName());
@@ -439,14 +392,14 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
         }
     }
 
-    private IProjectProperties getProjectProperties(IProject project) throws PropertiesException, CommandException {
+    private IProjectProperties getProjectProperties(IProject project) throws PropertiesException {
         if (propertyCache == null || !propertyCache.getProject().getName().equals(project.getName())) {
             propertyCache = PMDPlugin.getDefault().loadProjectProperties(project);
         }
         return propertyCache;
     }
 
-    private RuleSets rulesetsFrom(IResource resource) throws PropertiesException, CommandException {
+    private RuleSets rulesetsFrom(IResource resource) throws PropertiesException {
         IProject project = resource.getProject();
         IProjectProperties properties = getProjectProperties(project);
 
@@ -456,7 +409,7 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
     /**
      * Review a single resource
      */
-    private void processResource(IResource resource) throws CommandException {
+    private void processResource(IResource resource) {
         try {
 
             final IProject project = resource.getProject();
@@ -500,16 +453,16 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
             worked(1); // TODO - temp fix? BR
 
         } catch (PropertiesException e) {
-            throw new CommandException(e);
+            throw new RuntimeException(e);
         } catch (CoreException e) {
-            throw new CommandException(e);
+            throw new RuntimeException(e);
         }
     }
 
     /**
      * Review an entire project
      */
-    private void processProject(IProject project) throws CommandException {
+    private void processProject(IProject project) {
         try {
             setStepCount(countResourceElement(project));
             logInfo("ReviewCodeCmd: visiting project " + project.getName() + ": " + getStepCount()
@@ -523,11 +476,11 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
             }
 
         } catch (CoreException e) {
-            throw new CommandException(e);
+            throw new RuntimeException(e);
         }
     }
 
-    private void processJavaProject(IProject project) throws CoreException, CommandException {
+    private void processJavaProject(IProject project) throws CoreException {
         final IJavaProject javaProject = JavaCore.create(project);
         final IClasspathEntry[] entries = javaProject.getRawClasspath();
         final IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
@@ -562,7 +515,7 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
                 + " rules");
     }
 
-    private RuleSets filteredRuleSets(IProjectProperties properties) throws CommandException, PropertiesException {
+    private RuleSets filteredRuleSets(IProjectProperties properties) throws PropertiesException {
         final RuleSets projectRuleSets = properties.getProjectRuleSets();
         IPreferences preferences = PMDPlugin.getDefault().getPreferencesManager().loadPreferences();
         Set<String> onlyActiveRuleNames = preferences.getActiveRuleNames();
@@ -602,7 +555,7 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
         return filteredRuleSets;
     }
 
-    private RuleSets rulesetsFromResourceDelta() throws PropertiesException, CommandException {
+    private RuleSets rulesetsFromResourceDelta() throws PropertiesException {
 
         IResource resource = resourceDelta.getResource();
         final IProject project = resource.getProject();
@@ -614,7 +567,7 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
     /**
      * Review a resource delta
      */
-    private void processResourceDelta() throws CommandException {
+    private void processResourceDelta() {
         try {
             IResource resource = resourceDelta.getResource();
             final IProject project = resource.getProject();
@@ -652,9 +605,9 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
                 LOG.debug(message);
             }
         } catch (PropertiesException e) {
-            throw new CommandException(e);
+            throw new RuntimeException(e);
         } catch (CoreException e) {
-            throw new CommandException(e);
+            throw new RuntimeException(e);
         }
     }
 
@@ -665,7 +618,7 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
     private void applyMarkers() {
         LOG.info("Processing marker directives");
         int violationCount = 0;
-        final Timer timer = new Timer();
+        long start = System.currentTimeMillis();
 
         String currentFile = ""; // for logging
 
@@ -689,9 +642,9 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
             // TODO: NLS
             LOG.warn("CoreException when setting marker for file " + currentFile + " : " + e.getMessage());
         } finally {
-            timer.stop();
+            long duration = System.currentTimeMillis() - start;
             int count = markersByFile.size();
-            LOG.info("" + violationCount + " markers applied on " + count + " files in " + timer.getDuration() + "ms.");
+            LOG.info("" + violationCount + " markers applied on " + count + " files in " + duration + "ms.");
             LOG.info("End of processing marker directives. " + violationCount + " violations for " + count + " files.");
         }
     }

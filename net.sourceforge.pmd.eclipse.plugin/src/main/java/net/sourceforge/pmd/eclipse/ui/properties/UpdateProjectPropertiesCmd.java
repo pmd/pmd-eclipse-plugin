@@ -1,37 +1,5 @@
-/*
- * Created on 21 nov. 2004
- *
- * Copyright (c) 2004, PMD for Eclipse Development Team
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are
- * met:
- *
- *     * Redistributions of source code must retain the above copyright
- *       notice, this list of conditions and the following disclaimer.
- *     * Redistributions in binary form must reproduce the above copyright
- *       notice, this list of conditions and the following disclaimer in the
- *       documentation and/or other materials provided with the distribution.
- *     * The end-user documentation included with the redistribution, if
- *       any, must include the following acknowledgement:
- *       "This product includes software developed in part by support from
- *        the Defense Advanced Research Project Agency (DARPA)"
- *     * Neither the name of "PMD for Eclipse Development Team" nor the names of its
- *       contributors may be used to endorse or promote products derived from
- *       this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
- * IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
- * TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
- * PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER
- * OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
- * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
- * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
- * PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
- * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
- * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
 package net.sourceforge.pmd.eclipse.ui.properties;
@@ -43,8 +11,6 @@ import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.eclipse.runtime.cmd.AbstractProjectCommand;
 import net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties;
 import net.sourceforge.pmd.eclipse.runtime.properties.PropertiesException;
-
-import name.herlin.command.CommandException;
 
 /**
  * Save updated project properties. This is a composite command.
@@ -79,10 +45,7 @@ public class UpdateProjectPropertiesCmd extends AbstractProjectCommand {
         setTerminated(false);
     }
 
-    /**
-     * @see name.herlin.command.AbstractProcessableCommand#execute()
-     */
-    public void execute() throws CommandException {
+    public void execute() {
         try {
             final IProjectProperties properties = projectProperties();
             properties.setPmdEnabled(pmdEnabled);
@@ -98,7 +61,7 @@ public class UpdateProjectPropertiesCmd extends AbstractProjectCommand {
             ruleSetFileExists = !properties.isRuleSetFileExist();
 
         } catch (PropertiesException e) {
-            throw new CommandException(e.getMessage(), e);
+            throw new RuntimeException(e.getMessage(), e);
         } finally {
             setTerminated(true);
         }
@@ -187,9 +150,6 @@ public class UpdateProjectPropertiesCmd extends AbstractProjectCommand {
         return ruleSetFileExists;
     }
 
-    /**
-     * @see name.herlin.command.Command#reset()
-     */
     public void reset() {
         setProject(null);
         setPmdEnabled(false);
@@ -202,9 +162,6 @@ public class UpdateProjectPropertiesCmd extends AbstractProjectCommand {
         setTerminated(false);
     }
 
-    /**
-     * @see name.herlin.command.Command#isReadyToExecute()
-     */
     public boolean isReadyToExecute() {
         return super.isReadyToExecute() && projectRuleSets != null;
     }

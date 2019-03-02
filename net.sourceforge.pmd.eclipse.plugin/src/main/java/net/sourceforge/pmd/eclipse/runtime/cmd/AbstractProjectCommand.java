@@ -1,3 +1,6 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
 
 package net.sourceforge.pmd.eclipse.runtime.cmd;
 
@@ -24,9 +27,6 @@ public abstract class AbstractProjectCommand extends AbstractDefaultCommand {
         super(theName, theDescription);
     }
 
-    /**
-     * @see name.herlin.command.Command#reset()
-     */
     public void reset() {
         setProject(null);
         setTerminated(false);
@@ -49,9 +49,6 @@ public abstract class AbstractProjectCommand extends AbstractDefaultCommand {
         project.accept(visitor);
     }
 
-    /**
-     * @see name.herlin.command.Command#isReadyToExecute()
-     */
     public boolean isReadyToExecute() {
         return project != null;
     }

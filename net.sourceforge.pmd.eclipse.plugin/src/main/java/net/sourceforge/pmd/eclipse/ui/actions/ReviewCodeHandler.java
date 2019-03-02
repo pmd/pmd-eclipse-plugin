@@ -1,3 +1,6 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
 
 package net.sourceforge.pmd.eclipse.ui.actions;
 
@@ -24,8 +27,6 @@ import org.eclipse.ui.editors.text.ILocationProvider;
 
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.runtime.cmd.ReviewCodeCmd;
-
-import name.herlin.command.CommandException;
 
 /**
  * 
@@ -85,7 +86,7 @@ public class ReviewCodeHandler extends AbstractHandler {
 
                 try {
                     cmd.performExecute();
-                } catch (CommandException e) {
+                } catch (RuntimeException e) {
                     PMDPlugin.getDefault().log(IStatus.ERROR, "Error processing user-initiated code review", e);
                 }
             }

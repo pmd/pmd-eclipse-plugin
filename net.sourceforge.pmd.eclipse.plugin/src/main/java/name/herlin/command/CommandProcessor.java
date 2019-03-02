@@ -21,6 +21,8 @@
 
 package name.herlin.command;
 
+import java.rmi.Remote;
+
 /**
  * Command Processor interface. A command processor implements a way to execute
  * a processable command. For instance the default command processor simply call
@@ -28,9 +30,10 @@ package name.herlin.command;
  * processor that could sent the command to a remote system, execute the command
  * and send back the result. The trick is that the command doesn't know where
  * and how it will be executed.
+ *
+ * @deprecated This interface will be removed with the next major version of the PMD Plugin.
  */
-import java.rmi.Remote;
-
+@Deprecated
 public interface CommandProcessor extends Remote {
     
     /**

@@ -1,3 +1,7 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
+
 package net.sourceforge.pmd.eclipse.ui.actions;
 
 import java.util.Iterator;
@@ -26,8 +30,6 @@ import net.sourceforge.pmd.eclipse.ui.PMDUiConstants;
 import net.sourceforge.pmd.eclipse.ui.dialogs.CPDCheckDialog;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
 import net.sourceforge.pmd.eclipse.ui.views.cpd2.CPDView2;
-
-import name.herlin.command.CommandException;
 
 /**
  * Process CPD action menu. Run CPD against the selected project.
@@ -97,7 +99,6 @@ public class CPDCheckProjectAction extends AbstractUIAction {
      * 
      * @param project a project
      * @param dialog the object of the dialog with the selected values
-     * @throws CommandException 
      */
     private void detectCutAndPaste(final IProject project, CPDCheckDialog dialog) {
         final String selectedLanguage = dialog.getSelectedLanguage();
@@ -118,7 +119,7 @@ public class CPDCheckProjectAction extends AbstractUIAction {
             detectCmd.setUserInitiated(true);
             detectCmd.addPropertyListener(view);
             detectCmd.performExecute();
-        } catch (CommandException e) {
+        } catch (RuntimeException e) {
             logError(getString(StringKeys.ERROR_PMD_EXCEPTION), e);
         }
     }

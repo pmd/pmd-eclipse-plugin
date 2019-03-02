@@ -1,3 +1,6 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
 
 package net.sourceforge.pmd.eclipse.plugin;
 
@@ -16,8 +19,6 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 
 import net.sourceforge.pmd.eclipse.runtime.cmd.ReviewCodeCmd;
-
-import name.herlin.command.CommandException;
 
 /**
  * Monitors for changes in the workspace and initiates the ReviewCodeCmd when
@@ -104,7 +105,7 @@ public class FileChangeReviewer implements IResourceChangeListener {
 
         try {
             cmd.performExecute();
-        } catch (CommandException e) {
+        } catch (RuntimeException e) {
             PMDPlugin.getDefault().log(IStatus.ERROR, "Error processing code review upon file changes", e);
         }
     }

@@ -11,6 +11,8 @@ Eclipse Update Site:
 
 ### New and noteworthy
 
+*   The package `name.herlin` is deprecated and will be removed with the next major version of the plugin.
+
 ### Fixed Issues
 
 *   [#70](https://github.com/pmd/pmd-eclipse-plugin/issues/70): UnsupportedOperationException opening Rule Configuration

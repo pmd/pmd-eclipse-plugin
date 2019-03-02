@@ -1,37 +1,5 @@
-/*
- * Created on 3 d�c. 2004
- *
- * Copyright (c) 2004, PMD for Eclipse Development Team
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are
- * met:
- *
- *     * Redistributions of source code must retain the above copyright
- *       notice, this list of conditions and the following disclaimer.
- *     * Redistributions in binary form must reproduce the above copyright
- *       notice, this list of conditions and the following disclaimer in the
- *       documentation and/or other materials provided with the distribution.
- *     * The end-user documentation included with the redistribution, if
- *       any, must include the following acknowledgement:
- *       "This product includes software developed in part by support from
- *        the Defense Advanced Research Project Agency (DARPA)"
- *     * Neither the name of "PMD for Eclipse Development Team" nor the names of its
- *       contributors may be used to endorse or promote products derived from
- *       this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
- * IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
- * TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
- * PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER
- * OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
- * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
- * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
- * PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
- * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
- * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
 package net.sourceforge.pmd.eclipse.runtime.cmd;
@@ -40,6 +8,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -51,12 +20,6 @@ import org.eclipse.core.runtime.jobs.Job;
 
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 
-import name.herlin.command.AbstractProcessableCommand;
-import name.herlin.command.CommandException;
-import name.herlin.command.CommandProcessor;
-import name.herlin.command.Timer;
-import name.herlin.command.UnsetInputPropertiesException;
-
 /**
  * This is a particular processor for Eclipse in order to handle long running
  * commands.
@@ -64,22 +27,25 @@ import name.herlin.command.UnsetInputPropertiesException;
  * @author Philippe Herlin
  *
  */
-public class JobCommandProcessor implements CommandProcessor {
+public class JobCommandProcessor {
     private static final Logger LOG = Logger.getLogger(JobCommandProcessor.class);
-    private final Map<AbstractProcessableCommand, Job> jobs = Collections
-            .synchronizedMap(new HashMap<AbstractProcessableCommand, Job>());
+    private final Map<AbstractDefaultCommand, Job> jobs = Collections
+            .synchronizedMap(new HashMap<AbstractDefaultCommand, Job>());
 
     private static ConcurrentLinkedQueue<Job> outstanding = new ConcurrentLinkedQueue<Job>();
     private static AtomicInteger count = new AtomicInteger();
+    
+    private static final JobCommandProcessor INSTANCE = new JobCommandProcessor();
 
-    /**
-     * @see name.herlin.command.CommandProcessor#processCommand(name.herlin.command.AbstractProcessableCommand)
-     */
-    public void processCommand(final AbstractProcessableCommand aCommand) throws CommandException {
+    public static JobCommandProcessor getInstance() {
+        return INSTANCE;
+    }
+
+    public void processCommand(final AbstractDefaultCommand aCommand) {
         LOG.debug("Begining job command " + aCommand.getName());
 
         if (!aCommand.isReadyToExecute()) {
-            throw new UnsetInputPropertiesException();
+            throw new IllegalStateException();
         }
 
         final Job job = new Job(aCommand.getName()) {
@@ -89,12 +55,12 @@ public class JobCommandProcessor implements CommandProcessor {
                     if (aCommand instanceof AbstractDefaultCommand) {
                         ((AbstractDefaultCommand) aCommand).setMonitor(monitor);
                     }
-                    Timer timer = new Timer();
+                    long start = System.currentTimeMillis();
                     aCommand.execute();
-                    timer.stop();
+                    long duration = System.currentTimeMillis() - start;
                     PMDPlugin.getDefault().logInformation(
-                            "Command " + aCommand.getName() + " excecuted in " + timer.getDuration() + "ms");
-                } catch (CommandException e) {
+                            "Command " + aCommand.getName() + " excecuted in " + duration + "ms");
+                } catch (RuntimeException e) {
                     PMDPlugin.getDefault().logError("Error executing command " + aCommand.getName(), e);
                 }
 
@@ -125,16 +91,13 @@ public class JobCommandProcessor implements CommandProcessor {
         LOG.debug("Ending job command " + aCommand.getName());
     }
 
-    /**
-     * @see name.herlin.command.CommandProcessor#waitCommandToFinish(name.herlin.command.AbstractProcessableCommand)
-     */
-    public void waitCommandToFinish(final AbstractProcessableCommand aCommand) throws CommandException {
+    public void waitCommandToFinish(final AbstractDefaultCommand aCommand) {
         final Job job = this.jobs.get(aCommand);
         if (job != null) {
             try {
                 job.join();
             } catch (InterruptedException e) {
-                throw new CommandException(e);
+                throw new RuntimeException(e);
             }
         }
 
@@ -148,16 +111,19 @@ public class JobCommandProcessor implements CommandProcessor {
      * @param job
      *            a job to keep until it is finished
      */
-    private void addJob(final AbstractProcessableCommand command, final Job job) {
+    private void addJob(final AbstractDefaultCommand command, final Job job) {
         this.jobs.put(command, job);
 
         // clear terminated command
-        final Iterator<AbstractProcessableCommand> i = this.jobs.keySet().iterator();
-        while (i.hasNext()) {
-            final AbstractProcessableCommand aCommand = i.next();
-            final Job aJob = this.jobs.get(aCommand);
-            if (aJob == null || aJob.getResult() != null) {
-                this.jobs.remove(aCommand);
+        Set<AbstractDefaultCommand> keySet = this.jobs.keySet();
+        synchronized (this.jobs) {
+            final Iterator<AbstractDefaultCommand> i = keySet.iterator();
+            while (i.hasNext()) {
+                final AbstractDefaultCommand aCommand = i.next();
+                final Job aJob = this.jobs.get(aCommand);
+                if (aJob == null || aJob.getResult() != null) {
+                    i.remove();
+                }
             }
         }
     }

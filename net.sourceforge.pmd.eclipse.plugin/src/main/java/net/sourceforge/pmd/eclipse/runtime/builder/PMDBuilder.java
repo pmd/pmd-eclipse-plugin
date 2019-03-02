@@ -1,3 +1,6 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
 
 package net.sourceforge.pmd.eclipse.runtime.builder;
 
@@ -14,8 +17,6 @@ import org.eclipse.core.runtime.Status;
 
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.runtime.cmd.ReviewCodeCmd;
-
-import name.herlin.command.CommandException;
 
 /**
  * Implements an incremental builder for PMD. Use ResourceVisitor and
@@ -51,7 +52,7 @@ public class PMDBuilder extends IncrementalProjectBuilder {
             } else {
                 LOG.warn("This kind of build is not supported : " + kind);
             }
-        } catch (CommandException e) {
+        } catch (RuntimeException e) {
             throw new CoreException(new Status(IStatus.ERROR, PMDPlugin.getDefault().getBundle().getSymbolicName(), 0,
                     e.getMessage(), e));
         }
@@ -67,7 +68,7 @@ public class PMDBuilder extends IncrementalProjectBuilder {
      *            a progress monitor
      * @throws CommandException
      */
-    private void buildAuto(IProgressMonitor monitor) throws CommandException {
+    private void buildAuto(IProgressMonitor monitor) {
         this.buildIncremental(monitor);
     }
 
@@ -78,7 +79,7 @@ public class PMDBuilder extends IncrementalProjectBuilder {
      *            A progress monitor.
      * @throws CommandException
      */
-    private void buildFull(IProgressMonitor monitor) throws CommandException {
+    private void buildFull(IProgressMonitor monitor) {
         IProject currentProject = this.getProject();
         if (currentProject != null) {
             this.processProjectFiles(currentProject, monitor);
@@ -90,9 +91,8 @@ public class PMDBuilder extends IncrementalProjectBuilder {
      * 
      * @param monitor
      *            a progress monitor.
-     * @throws CommandException
      */
-    private void buildIncremental(IProgressMonitor monitor) throws CommandException {
+    private void buildIncremental(IProgressMonitor monitor) {
         /*
         * Check the user preference to see if the user wants to run PMD on a save
         * */
@@ -124,9 +124,8 @@ public class PMDBuilder extends IncrementalProjectBuilder {
      *            the project
      * @param monitor
      *            a progress monitor
-     * @throws CommandException
      */
-    private void processProjectFiles(IProject project, IProgressMonitor monitor) throws CommandException {
+    private void processProjectFiles(IProject project, IProgressMonitor monitor) {
         ReviewCodeCmd cmd = new ReviewCodeCmd();
         cmd.addResource(project);
         cmd.setTaskMarker(false);

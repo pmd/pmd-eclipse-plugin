@@ -23,7 +23,9 @@ package name.herlin.command;
 
 /**
  * Root exception of the command framework
+ * @deprecated This class will be removed with the next major version of the PMD Plugin.
  */
+@Deprecated
 public class CommandException extends Exception {
 
     private static final long serialVersionUID = 1L;

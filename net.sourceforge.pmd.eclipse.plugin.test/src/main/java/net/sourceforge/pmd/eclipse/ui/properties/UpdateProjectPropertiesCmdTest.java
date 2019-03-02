@@ -1,3 +1,6 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
 
 package net.sourceforge.pmd.eclipse.ui.properties;
 
@@ -16,8 +19,6 @@ import net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties;
 import net.sourceforge.pmd.eclipse.runtime.properties.IProjectPropertiesManager;
 import net.sourceforge.pmd.eclipse.runtime.properties.PropertiesException;
 import net.sourceforge.pmd.eclipse.ui.actions.RuleSetUtil;
-
-import name.herlin.command.CommandException;
 
 public class UpdateProjectPropertiesCmdTest {
     private IProject testProject;
@@ -49,7 +50,7 @@ public class UpdateProjectPropertiesCmdTest {
      * Bug: when a user deselect a project rule it is not saved
      */
     @Test
-    public void testBug() throws CommandException, PropertiesException {
+    public void testBug() throws PropertiesException {
         final RuleSetFactory factory = new RuleSetFactory();
 
         // First ensure that the plugin initial ruleset is equal to the project

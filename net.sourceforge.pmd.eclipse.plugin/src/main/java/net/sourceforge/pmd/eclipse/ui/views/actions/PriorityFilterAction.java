@@ -1,3 +1,6 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
 
 package net.sourceforge.pmd.eclipse.ui.views.actions;
 
@@ -15,8 +18,6 @@ import net.sourceforge.pmd.eclipse.ui.priority.PriorityDescriptor;
 import net.sourceforge.pmd.eclipse.ui.views.PriorityFilter;
 import net.sourceforge.pmd.eclipse.ui.views.ViolationOutline;
 import net.sourceforge.pmd.eclipse.ui.views.ViolationOverview;
-
-import name.herlin.command.CommandException;
 
 /**
  * Filters elements by the Marker priorities
@@ -162,7 +163,7 @@ public class PriorityFilterAction extends Action {
         /* Get all the opened files and tell them to run a "review code" on the file */
         try {
             ReviewCodeCmd.runCodeReviewOnFiles(PMDPlugin.getDefault().getOpenFiles());
-        } catch (CommandException e) {
+        } catch (RuntimeException e) {
             LOG.error(e);
         }
     }
