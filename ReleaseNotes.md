@@ -13,6 +13,7 @@ This is a minor release.
 
 ### New and noteworthy
 
+*   Updated PMD to 6.12.0
 *   The package `name.herlin` is deprecated and will be removed with the next major version of the plugin.
 *   PMD markers are now problem markers again. This means, that rule violations appear in the Problem View.
     The project property "Handle high priority violations as Eclipse errors" now works again.
@@ -26,6 +27,7 @@ This is a minor release.
 *   [#76](https://github.com/pmd/pmd-eclipse-plugin/issues/76): Global rule management is saved even if cancelled
 *   [#78](https://github.com/pmd/pmd-eclipse-plugin/issues/78): Project properties cannot be loaded anymore
 *   [#86](https://github.com/pmd/pmd-eclipse-plugin/issues/86): Add Markers next to Scroll bar
+*   [#89](https://github.com/pmd/pmd-eclipse-plugin/issues/89): Upgrade to PMD 6.12.0
 *   [#1359](https://sourceforge.net/p/pmd/bugs/1359/): PMD violations in eclipse should be shown on editor by scrollbar
 
 ### External Contributions
