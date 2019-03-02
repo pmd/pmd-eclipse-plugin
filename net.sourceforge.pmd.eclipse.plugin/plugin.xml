@@ -236,14 +236,9 @@
          id="pmdTaskMarker"
          name="%marker.task"
          point="org.eclipse.core.resources.markers">
-      <super
-            type="net.sourceforge.pmd.eclipse.plugin.pmdMarker">
-      </super>
-      <super
-            type="org.eclipse.core.resources.taskmarker">
-      </super>
-      <persistent
-            value="true">
+      <super type="net.sourceforge.pmd.eclipse.plugin.pmdMarker"></super>
+      <super type="org.eclipse.core.resources.taskmarker"></super>
+      <persistent value="true">
       </persistent>
    </extension>
   
@@ -251,6 +246,7 @@
          id="pmdDFAMarker"
          name="%marker.dfa"
          point="org.eclipse.core.resources.markers">
+      <super type="net.sourceforge.pmd.eclipse.plugin.pmdMarker"></super>
       <super type="org.eclipse.core.resources.problemmarker"/>
       <persistent value="false"/>
    </extension>
