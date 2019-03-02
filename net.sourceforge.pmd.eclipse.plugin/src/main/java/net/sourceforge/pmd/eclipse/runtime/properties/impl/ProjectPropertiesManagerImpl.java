@@ -9,6 +9,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -178,7 +179,7 @@ public class ProjectPropertiesManagerImpl implements IProjectPropertiesManager {
 
             final IFile propertiesFile = project.getFile(PROPERTIES_FILE);
             if (propertiesFile.exists() && propertiesFile.isAccessible()) {
-                String properties = IOUtils.toString(propertiesFile.getContents());
+                String properties = IOUtils.toString(propertiesFile.getContents(), StandardCharsets.UTF_8);
                 projectProperties = convertProjectPropertiesFromString(properties);
             }
 
@@ -187,6 +188,8 @@ public class ProjectPropertiesManagerImpl implements IProjectPropertiesManager {
         } catch (IOException e) {
             throw new PropertiesException(e);
         } catch (CoreException e) {
+            throw new PropertiesException(e);
+        } catch (DataBindingException e) {
             throw new PropertiesException(e);
         }
     }
@@ -236,11 +239,13 @@ public class ProjectPropertiesManagerImpl implements IProjectPropertiesManager {
 
         // de-duplicate rules
         Set<String> ruleNamesToAdd = new HashSet<>();
-        for (RuleSpecTO rule : rules) {
-            if (!ruleNamesToAdd.add(rule.getName())) {
-                PMDPlugin.getDefault()
-                        .logInformation("Duplicated Rule found: " + rule.getName() + ". This rule will be ignored.");
-                LOG.debug("Duplicated Rule found: " + rule.getName() + ". This rule will be ignored.");
+        if (rules != null) {
+            for (RuleSpecTO rule : rules) {
+                if (!ruleNamesToAdd.add(rule.getName())) {
+                    PMDPlugin.getDefault()
+                            .logInformation("Duplicated Rule found: " + rule.getName() + ". This rule will be ignored.");
+                    LOG.debug("Duplicated Rule found: " + rule.getName() + ". This rule will be ignored.");
+                }
             }
         }
 

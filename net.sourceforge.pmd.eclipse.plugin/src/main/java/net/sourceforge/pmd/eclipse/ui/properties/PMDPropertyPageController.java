@@ -19,7 +19,9 @@ import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.runtime.cmd.BuildProjectCommand;
 import net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties;
+import net.sourceforge.pmd.eclipse.runtime.properties.IProjectPropertiesManager;
 import net.sourceforge.pmd.eclipse.runtime.properties.PropertiesException;
+import net.sourceforge.pmd.eclipse.runtime.properties.impl.PropertiesFactoryImpl;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
 
 /**
@@ -75,9 +77,22 @@ public class PMDPropertyPageController {
 
         if (this.propertyPageBean == null) {
             LOG.debug("Building a property page bean");
-            try {
-                final IProjectProperties properties = PMDPlugin.getDefault().loadProjectProperties(this.project);
+            IProjectProperties properties;
 
+            try {
+                properties = PMDPlugin.getDefault().loadProjectProperties(this.project);
+            } catch (PropertiesException e) {
+                PMDPlugin.getDefault().showError("Error loading project properties. Recreating empty properties.", e);
+                IProjectPropertiesManager propertiesManager = PMDPlugin.getDefault().getPropertiesManager();
+                properties = new PropertiesFactoryImpl().newProjectProperties(project, propertiesManager);
+                try {
+                    propertiesManager.storeProjectProperties(properties);
+                } catch (PropertiesException e1) {
+                    PMDPlugin.getDefault().showError(e.getMessage(), e);
+                }
+            }
+
+            try {
                 propertyPageBean = new PMDPropertyPageBean();
                 propertyPageBean.setPmdEnabled(properties.isPmdEnabled());
                 propertyPageBean.setProjectWorkingSet(properties.getProjectWorkingSet());
@@ -88,7 +103,6 @@ public class PMDPropertyPageController {
                 propertyPageBean.setFullBuildEnabled(properties.isFullBuildEnabled());
                 propertyPageBean.setViolationsAsErrors(properties.violationsAsErrors());
                 pmdAlreadyActivated = properties.isPmdEnabled();
-
             } catch (PropertiesException e) {
                 PMDPlugin.getDefault().showError(e.getMessage(), e);
             }
