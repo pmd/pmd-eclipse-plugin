@@ -100,6 +100,7 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
     private TableViewer tableViewer;
     private IPreferences preferences;
     private BasicTableManager priorityTableMgr;
+    private Button determineFiletypesAutomatically;
 
     private Control[] nameFields;
 
@@ -165,6 +166,7 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
         showViolationsOutlineViewBox = buildShowViolationOutlineBoxButton(group);
         useProjectBuildPath = buildUseProjectBuildPathButton(group);
         checkCodeOnSave = buildCheckCodeOnSaveButton(group);
+        determineFiletypesAutomatically = buildDetermineFiletypesAutomatically(group);
         Label separator = new Label(group, SWT.SEPARATOR | SWT.SHADOW_IN | SWT.HORIZONTAL);
         maxViolationsPerFilePerRule = buildMaxViolationsPerFilePerRuleText(group);
 
@@ -709,6 +711,13 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
         return spinner;
     }
 
+    private Button buildDetermineFiletypesAutomatically(Composite viewGroup) {
+        Button button = new Button(viewGroup, SWT.CHECK);
+        button.setText(getMessage(StringKeys.PREF_GENERAL_LABEL_DETERMINE_FILETYPES_AUTOMATICALLY));
+        button.setSelection(preferences.isDetermineFiletypesAutomatically());
+        return button;
+    }
+
     /**
      * Build the check box for enabling PMD review style
      * 
@@ -752,6 +761,7 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
         setSelection(useCustomPriorityNames, IPreferences.PMD_USE_CUSTOM_PRIORITY_NAMES_DEFAULT);
         setSelection(useProjectBuildPath, IPreferences.PROJECT_BUILD_PATH_ENABLED_DEFAULT);
         setSelection(reviewPmdStyleBox, IPreferences.REVIEW_PMD_STYLE_ENABLED_DEFAULT);
+        setSelection(determineFiletypesAutomatically, IPreferences.DETERMINE_FILETYPES_AUTOMATICALLY_DEFAULT);
 
         if (maxViolationsPerFilePerRule != null) {
             maxViolationsPerFilePerRule.setMinimum(IPreferences.MAX_VIOLATIONS_PFPR_DEFAULT);
@@ -884,6 +894,10 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
         if (maxViolationsPerFilePerRule != null) {
             preferences
                     .setMaxViolationsPerFilePerRule(Integer.valueOf(maxViolationsPerFilePerRule.getText()).intValue());
+        }
+
+        if (determineFiletypesAutomatically != null) {
+            preferences.setDetermineFiletypesAutomatically(determineFiletypesAutomatically.getSelection());
         }
 
         if (reviewPmdStyleBox != null) {

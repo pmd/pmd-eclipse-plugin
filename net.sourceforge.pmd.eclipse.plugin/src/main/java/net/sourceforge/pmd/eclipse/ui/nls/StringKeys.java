@@ -41,6 +41,7 @@ public class StringKeys {
     public static final String PREF_GENERAL_LABEL_USE_DFA = "preference.pmd.label.use_dfa";
     public static final String PREF_GENERAL_LABEL_USE_PROJECT_BUILD_PATH = "preference.pmd.label.use_project_build_path";
     public static final String PREF_GENERAL_LABEL_MAX_VIOLATIONS_PFPR = "preference.pmd.label.max_violations_pfpr";
+    public static final String PREF_GENERAL_LABEL_DETERMINE_FILETYPES_AUTOMATICALLY = "preference.pmd.label.determine_filetypes_automatically";
     public static final String PREF_GENERAL_TOOLTIP_MAX_VIOLATIONS_PFPR = "preference.pmd.tooltip.max_violations_pfpr";
     public static final String PREF_GENERAL_MESSAGE_INVALID_NUMERIC_VALUE = "preference.pmd.message.invalid_numeric_value";
     public static final String PREF_GENERAL_REVIEW_PMD_STYLE = "preference.pmd.label.review_pmd_style";

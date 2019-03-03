@@ -29,6 +29,7 @@ public interface IPreferences {
     boolean PMD_CHECK_AFTER_SAVE_DEFAULT = false;
     boolean PMD_USE_CUSTOM_PRIORITY_NAMES_DEFAULT = true;
     int MAX_VIOLATIONS_PFPR_DEFAULT = 5;
+    boolean DETERMINE_FILETYPES_AUTOMATICALLY_DEFAULT = true;
     String REVIEW_ADDITIONAL_COMMENT_DEFAULT = "by {0} on {1}";
     boolean REVIEW_PMD_STYLE_ENABLED_DEFAULT = true;
     int MIN_TILE_SIZE_DEFAULT = 25;
@@ -142,6 +143,19 @@ public interface IPreferences {
      * @param maxViolationPerFilePerRule
      */
     void setMaxViolationsPerFilePerRule(int maxViolationPerFilePerRule);
+
+    /**
+     * If true: When checking, whether a given file should be analyzed by PMD, take
+     * the rule's language and the language's file extensions into account.
+     * @return
+     */
+    boolean isDetermineFiletypesAutomatically();
+
+    /**
+     * Sets whether the rule's language file extensions should be considered or not.
+     * @param determineFiletypesAutomatically
+     */
+    void setDetermineFiletypesAutomatically(boolean determineFiletypesAutomatically);
 
     /**
      * Get the review additional comment. This comment is a text appended to the
