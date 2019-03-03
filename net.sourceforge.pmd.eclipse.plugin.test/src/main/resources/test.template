@@ -9,6 +9,7 @@ public class Test {
 
     public void foo() {
         try {
+        // EmptyCatchBlock!!
         } catch (Exception e) {
 
         }
