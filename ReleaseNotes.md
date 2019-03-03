@@ -26,6 +26,7 @@ This is a minor release.
 *   [#76](https://github.com/pmd/pmd-eclipse-plugin/issues/76): Global rule management is saved even if cancelled
 *   [#78](https://github.com/pmd/pmd-eclipse-plugin/issues/78): Project properties cannot be loaded anymore
 *   [#86](https://github.com/pmd/pmd-eclipse-plugin/issues/86): Add Markers next to Scroll bar
+*   [#88](https://github.com/pmd/pmd-eclipse-plugin/issues/88): PMD is executed for all file types regardless of active rules
 *   [#1359](https://sourceforge.net/p/pmd/bugs/1359/): PMD violations in eclipse should be shown on editor by scrollbar
 
 ### External Contributions
