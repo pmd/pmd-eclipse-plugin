@@ -34,6 +34,7 @@ import org.eclipse.swt.widgets.Tree;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
+import net.sourceforge.pmd.eclipse.runtime.preferences.IPreferences;
 import net.sourceforge.pmd.eclipse.runtime.preferences.impl.PreferenceUIStore;
 import net.sourceforge.pmd.eclipse.ui.ModifyListener;
 import net.sourceforge.pmd.eclipse.ui.actions.RuleSetUtil;
@@ -62,6 +63,7 @@ public class PMDPreferencePage2 extends AbstractPMDPreferencePage
     private RulePropertyManager[] rulePropertyManagers;
     private RuleTableManager tableManager;
     private Button globalRuleManagementCheckButton;
+    private Composite contentPanel;
 
     // columns shown in the rule treetable in the desired order
     public static final RuleColumnDescriptor[] AVAILABLE_COLUMNS = new RuleColumnDescriptor[] { RuleTableColumns.NAME,
@@ -133,13 +135,9 @@ public class PMDPreferencePage2 extends AbstractPMDPreferencePage
         int i = PreferenceUIStore.INSTANCE.selectedPropertyTab();
         tabFolder.setSelection(i);
 
-        return composite;
-    }
-
-    public void createControl(Composite parent) {
-        super.createControl(parent);
-
         setModified(false);
+
+        return composite;
     }
 
     /**
@@ -421,7 +419,7 @@ public class PMDPreferencePage2 extends AbstractPMDPreferencePage
         final Button checkButton = new Button(checkboxPanel, SWT.CHECK);
         globalRuleManagementCheckButton = checkButton;
 
-        final Composite contentPanel = new Composite(parent, 0);
+        contentPanel = new Composite(parent, 0);
         contentPanel.setLayout(new FormLayout());
         contentPanel.setLayoutData(new GridData(GridData.FILL_BOTH));
 
@@ -490,8 +488,8 @@ public class PMDPreferencePage2 extends AbstractPMDPreferencePage
         if (isModified()) {
             preferences.setGlobalRuleManagement(globalRuleManagementCheckButton.getSelection());
             updateRuleSet();
-            rebuildProjects();
             storeActiveRules();
+            rebuildProjects();
         }
         saveUIState();
 
@@ -504,12 +502,16 @@ public class PMDPreferencePage2 extends AbstractPMDPreferencePage
         return super.performCancel();
     }
 
-    /**
-     * @see org.eclipse.jface.preference.PreferencePage#performDefaults()
-     */
     @Override
     protected void performDefaults() {
+        globalRuleManagementCheckButton.setSelection(IPreferences.GLOBAL_RULE_MANAGEMENT_DEFAULT);
+        SWTUtil.setEnabledRecursive(contentPanel.getChildren(), globalRuleManagementCheckButton.getSelection());
+
+        RuleSet defaultRuleSet = plugin.getPreferencesManager().getDefaultRuleSet();
+        tableManager.useRuleSet(defaultRuleSet);
+        tableManager.setAllItemsActive();
         tableManager.populateRuleTable();
+
         super.performDefaults();
     }
 

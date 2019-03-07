@@ -25,6 +25,7 @@ This is a minor release.
 *   [#70](https://github.com/pmd/pmd-eclipse-plugin/issues/70): UnsupportedOperationException opening Rule Configuration
 *   [#76](https://github.com/pmd/pmd-eclipse-plugin/issues/76): Global rule management is saved even if cancelled
 *   [#78](https://github.com/pmd/pmd-eclipse-plugin/issues/78): Project properties cannot be loaded anymore
+*   [#83](https://github.com/pmd/pmd-eclipse-plugin/issues/83): "Restore defaults" button in PMD prefences is always deactivated
 *   [#86](https://github.com/pmd/pmd-eclipse-plugin/issues/86): Add Markers next to Scroll bar
 *   [#1359](https://sourceforge.net/p/pmd/bugs/1359/): PMD violations in eclipse should be shown on editor by scrollbar
 

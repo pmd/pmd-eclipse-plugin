@@ -45,7 +45,12 @@ public interface IPreferencesManager {
      * Get the configured rule set
      */
     RuleSet getRuleSet();
-    
+
+    /**
+     * Gets the default rule set. This means, all rules, that the Plugin is aware of.
+     */
+    RuleSet getDefaultRuleSet();
+
     /**
      * Set the rule set and store it in the preferences
      */
