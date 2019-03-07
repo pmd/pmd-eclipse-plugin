@@ -43,14 +43,17 @@ curl ${BASE_URL}/${CONTENT_FILE} > ${CONTENT_FILE}
 
 # we keep some versions
 artifacts=$(grep "<child location" ${ARTIFACTS_FILE} | tail -${KEEP})
-count=$(grep "<child location" ${ARTIFACTS_FILE} | tail -${KEEP}|wc -l)
-artifacts_remove=$(grep "<child location" ${ARTIFACTS_FILE} | grep -v "${artifacts}")
-artifacts_remove_count=$(echo "${artifacts_remove}" | grep -c "<child location")
-
 #echo "Artifacts to keep:"
 #echo "$artifacts"
+
+count=$(grep "<child location" ${ARTIFACTS_FILE} | tail -${KEEP}|wc -l)
+echo "Total artifacts count: ${count}"
+
+artifacts_remove=$(grep "<child location" ${ARTIFACTS_FILE} | grep -v "${artifacts}" || true)
 #echo "Artifacts to remove:"
 #echo "$artifacts_remove"
+
+artifacts_remove_count=$(echo "${artifacts_remove}" | grep -c "<child location" || true)
 #echo "Artifacts to remove count: ${artifacts_remove_count}"
 
 if [[ $artifacts_remove_count -eq 0 ]]; then
