@@ -31,7 +31,7 @@ END_LINE=$((END_LINE - 1))
 RELEASE_BODY="A new PMD for Eclipse plugin version has been released.
 It is available via the update site: https://dl.bintray.com/pmd/pmd-eclipse-plugin/updates/
 
-$(cat ReleaseNotes.md|head -$END_LINE|tail -$BEGIN_LINE)
+$(cat ReleaseNotes.md|head -$END_LINE|tail -$((END_LINE - BEGIN_LINE)))
 "
 
 
