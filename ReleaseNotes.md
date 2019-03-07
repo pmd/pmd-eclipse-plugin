@@ -19,6 +19,9 @@ This is a minor release.
     The project property "Handle high priority violations as Eclipse errors" now works again.
 *   The PMD markers are now also visible on the overview ruler. They can be customized or disabled via
     workspace preferences, General, Editors, Text Editors, Annotations.
+*   In PMD's general preferences, there is a new option "Determine applicable file types automatically". This new
+    option is enabled by default. When enabled, only the files of the languages, for which rules are active,
+    are considered. This is a fix for [bug #88](https://github.com/pmd/pmd-eclipse-plugin/issues/88).
 
 ### Fixed Issues
 
@@ -27,6 +30,7 @@ This is a minor release.
 *   [#76](https://github.com/pmd/pmd-eclipse-plugin/issues/76): Global rule management is saved even if cancelled
 *   [#78](https://github.com/pmd/pmd-eclipse-plugin/issues/78): Project properties cannot be loaded anymore
 *   [#86](https://github.com/pmd/pmd-eclipse-plugin/issues/86): Add Markers next to Scroll bar
+*   [#88](https://github.com/pmd/pmd-eclipse-plugin/issues/88): PMD is executed for all file types regardless of active rules
 *   [#89](https://github.com/pmd/pmd-eclipse-plugin/issues/89): Upgrade to PMD 6.12.0
 *   [#1359](https://sourceforge.net/p/pmd/bugs/1359/): PMD violations in eclipse should be shown on editor by scrollbar
 

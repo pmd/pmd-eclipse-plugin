@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
@@ -72,6 +73,7 @@ public class BaseVisitor {
     private Map<IFile, Set<MarkerInfo2>> accumulator;
     // private PMDEngine pmdEngine;
     private RuleSets ruleSets;
+    private Set<String> fileExtensions;
     private int fileCount;
     private long pmdDuration;
     private IProjectProperties projectProperties;
@@ -225,6 +227,10 @@ public class BaseVisitor {
         this.ruleSets = ruleSets;
     }
 
+    public void setFileExtensions(Set<String> fileExtensions) {
+        this.fileExtensions = fileExtensions;
+    }
+
     /**
      * @return the number of files that has been processed
      */
@@ -262,6 +268,18 @@ public class BaseVisitor {
         IFile file = (IFile) resource.getAdapter(IFile.class);
         if (file == null || file.getFileExtension() == null) {
             return;
+        }
+
+        if (PMDPlugin.getDefault().loadPreferences().isDetermineFiletypesAutomatically()) {
+            if (fileExtensions != null) {
+                if (!fileExtensions.contains(file.getFileExtension().toLowerCase(Locale.ROOT))) {
+                    PMDPlugin.getDefault().logInformation("Skipping file " + file.getName() + " based on file extension");
+                    LOG.debug("Skipping file " + file.getName() + " based on file extension");
+                    return;
+                }
+            } else {
+                LOG.warn("Can't check for file extensions.");
+            }
         }
 
         Reader input = null;

@@ -9,6 +9,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -49,6 +50,7 @@ import net.sourceforge.pmd.eclipse.runtime.preferences.IPreferences;
 import net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties;
 import net.sourceforge.pmd.eclipse.runtime.properties.PropertiesException;
 import net.sourceforge.pmd.eclipse.ui.actions.RuleSetUtil;
+import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.util.StringUtil;
 
 /**
@@ -419,6 +421,7 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
             }
 
             RuleSets ruleSets = rulesetsFrom(resource);
+            Set<String> fileExtensions = determineFileExtensions(ruleSets);
             // final PMDEngine pmdEngine = getPmdEngineForProject(project);
             int targetCount = 0;
             if (resource.exists()) {
@@ -432,6 +435,7 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
                     final ResourceVisitor visitor = new ResourceVisitor();
                     visitor.setMonitor(getMonitor());
                     visitor.setRuleSets(ruleSets);
+                    visitor.setFileExtensions(fileExtensions);
                     // visitor.setPmdEngine(pmdEngine);
                     visitor.setAccumulator(markersByFile);
                     visitor.setUseTaskMarker(taskMarker);
@@ -457,6 +461,22 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
         } catch (CoreException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private Set<String> determineFileExtensions(RuleSets ruleSets) {
+        Set<Language> languages = new HashSet<Language>();
+        for (Rule rule : ruleSets.getAllRules()) {
+            languages.add(rule.getLanguage());
+        }
+        Set<String> fileExtensions = new HashSet<String>();
+        for (Language language : languages) {
+            for (String extension : language.getExtensions()) {
+                fileExtensions.add(extension.toLowerCase(Locale.ROOT));
+            }
+        }
+        logInfo("Determined applicable file extensions: " + fileExtensions);
+        LOG.debug("Determined applicable file extensions: " + fileExtensions);
+        return fileExtensions;
     }
 
     /**
@@ -576,6 +596,7 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
                     + project.getName());
 
             final RuleSets ruleSets = rulesetsFromResourceDelta();
+            Set<String> fileExtensions = determineFileExtensions(ruleSets);
 
             // PMDEngine pmdEngine = getPmdEngineForProject(project);
             int targetCount = countDeltaElement(resourceDelta);
@@ -587,6 +608,7 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
                 DeltaVisitor visitor = new DeltaVisitor();
                 visitor.setMonitor(getMonitor());
                 visitor.setRuleSets(ruleSets);
+                visitor.setFileExtensions(fileExtensions);
                 // visitor.setPmdEngine(pmdEngine);
                 visitor.setAccumulator(markersByFile);
                 visitor.setUseTaskMarker(taskMarker);

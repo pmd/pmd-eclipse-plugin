@@ -27,6 +27,7 @@ import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.eclipse.EclipseUtils;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.runtime.PMDRuntimeConstants;
+import net.sourceforge.pmd.eclipse.runtime.preferences.IPreferences;
 import net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties;
 import net.sourceforge.pmd.eclipse.ui.actions.RuleSetUtil;
 
@@ -173,5 +174,65 @@ public class ReviewCmdTest {
         cmd.addResource(null);
         cmd.setResourceDelta(null);
         cmd.performExecute();
+    }
+
+    private static Rule findRuleByName(RuleSet ruleset, String ruleName, String language) {
+        for (Rule rule : ruleset.getRules()) {
+            if (rule.getName().equals(ruleName) && rule.getLanguage().getTerseName().equals(language)) {
+                return rule;
+            }
+        }
+        return null;
+    }
+
+    @Test
+    public void testReviewCmdBasicAllFilesDefault() throws Exception {
+        // add a second file
+        EclipseUtils.createTestSourceFile(testProject, "/src/Test.js", "function(arg) { notDeclaredVariable = 1; }");
+        testProject.refreshLocal(IResource.DEPTH_INFINITE, null);
+
+        IProjectProperties projectProperties = PMDPlugin.getDefault().getPropertiesManager().loadProjectProperties(testProject);
+        RuleSet projectRuleSet = projectProperties.getProjectRuleSet();
+        Rule emptyCatchBlock = findRuleByName(projectRuleSet, "EmptyCatchBlock", "java");
+        projectRuleSet = RuleSetUtil.clearRules(projectRuleSet);
+        projectRuleSet = RuleSetUtil.addRule(projectRuleSet, emptyCatchBlock);
+        projectProperties.setProjectRuleSet(projectRuleSet);
+        PMDPlugin.getDefault().getPropertiesManager().storeProjectProperties(projectProperties);
+
+        final ReviewCodeCmd cmd = new ReviewCodeCmd();
+        cmd.addResource(this.testProject);
+        cmd.performExecute();
+        cmd.join();
+
+        Assert.assertEquals(1, cmd.getFileCount()); // only one file analyzed
+    }
+
+    @Test
+    public void testReviewCmdBasicAllFiles() throws Exception {
+        try {
+            // add a second file
+            EclipseUtils.createTestSourceFile(testProject, "/src/Test.js", "function(arg) { notDeclaredVariable = 1; }");
+            testProject.refreshLocal(IResource.DEPTH_INFINITE, null);
+
+            PMDPlugin.getDefault().loadPreferences().setDetermineFiletypesAutomatically(false);
+
+            IProjectProperties projectProperties = PMDPlugin.getDefault().getPropertiesManager().loadProjectProperties(testProject);
+            RuleSet projectRuleSet = projectProperties.getProjectRuleSet();
+            Rule emptyCatchBlock = findRuleByName(projectRuleSet, "EmptyCatchBlock", "java");
+            projectRuleSet = RuleSetUtil.clearRules(projectRuleSet);
+            projectRuleSet = RuleSetUtil.addRule(projectRuleSet, emptyCatchBlock);
+            projectProperties.setProjectRuleSet(projectRuleSet);
+            PMDPlugin.getDefault().getPropertiesManager().storeProjectProperties(projectProperties);
+
+            final ReviewCodeCmd cmd = new ReviewCodeCmd();
+            cmd.addResource(this.testProject);
+            cmd.performExecute();
+            cmd.join();
+
+            Assert.assertEquals(2, cmd.getFileCount()); // both files analyzed, although unnecessary, since only
+            // the one java rule is active and no javascript rules
+        } finally {
+            PMDPlugin.getDefault().loadPreferences().setDetermineFiletypesAutomatically(IPreferences.DETERMINE_FILETYPES_AUTOMATICALLY_DEFAULT);
+        }
     }
 }

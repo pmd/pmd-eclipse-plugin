@@ -39,6 +39,7 @@ class PreferencesImpl implements IPreferences {
     private boolean checkAfterSaveEnabled;
     private boolean useCustomPriorityNames;
     private int maxViolationsPerFilePerRule;
+    private boolean determineFiletypesAutomatically;
     private String reviewAdditionalComment;
     private boolean reviewPmdStyleEnabled;
     private int minTileSize;
@@ -144,6 +145,16 @@ class PreferencesImpl implements IPreferences {
      */
     public void setMaxViolationsPerFilePerRule(int maxViolationPerFilePerRule) {
         this.maxViolationsPerFilePerRule = maxViolationPerFilePerRule;
+    }
+
+    @Override
+    public boolean isDetermineFiletypesAutomatically() {
+        return determineFiletypesAutomatically;
+    }
+
+    @Override
+    public void setDetermineFiletypesAutomatically(boolean determineFiletypesAutomatically) {
+        this.determineFiletypesAutomatically = determineFiletypesAutomatically;
     }
 
     /**
