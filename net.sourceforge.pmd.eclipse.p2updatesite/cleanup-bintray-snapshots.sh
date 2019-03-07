@@ -24,7 +24,7 @@ echo
 BINTRAY_REPO=pmd-eclipse-plugin
 BINTRAY_OWNER=pmd
 
-BASE_PATH=pmd/pmd-eclipse-plugin/snapshots/updates/4.0
+BASE_PATH=pmd/pmd-eclipse-plugin/snapshots/updates/4.1
 BASE_URL=https://dl.bintray.com/${BASE_PATH}
 BASE_PATH_SNAPSHOT_BUILDS=pmd/pmd-eclipse-plugin/snapshots/builds
 ARTIFACTS_FILE=compositeArtifacts.xml
