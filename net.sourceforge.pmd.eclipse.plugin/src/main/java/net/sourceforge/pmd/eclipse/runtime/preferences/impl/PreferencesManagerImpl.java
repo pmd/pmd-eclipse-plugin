@@ -577,17 +577,23 @@ class PreferencesManagerImpl implements IPreferencesManager {
 
         // Finally, build a default ruleset
         if (preferredRuleSet == null) {
-            preferredRuleSet = RuleSetUtil.newEmpty(RuleSetUtil.DEFAULT_RULESET_NAME,
-                    RuleSetUtil.DEFAULT_RULESET_DESCRIPTION);
-
-            IRuleSetManager ruleSetManager = PMDPlugin.getDefault().getRuleSetManager();
-            for (RuleSet ruleSet : ruleSetManager.getDefaultRuleSets()) {
-                preferredRuleSet = RuleSetUtil.addRuleSetByReference(preferredRuleSet, ruleSet, false);
-            }
+            preferredRuleSet = getDefaultRuleSet();
         }
 
         return preferredRuleSet;
 
+    }
+
+    @Override
+    public RuleSet getDefaultRuleSet() {
+        RuleSet defaultRuleSet = RuleSetUtil.newEmpty(RuleSetUtil.DEFAULT_RULESET_NAME,
+                RuleSetUtil.DEFAULT_RULESET_DESCRIPTION);
+
+        IRuleSetManager ruleSetManager = PMDPlugin.getDefault().getRuleSetManager();
+        for (RuleSet ruleSet : ruleSetManager.getDefaultRuleSets()) {
+            defaultRuleSet = RuleSetUtil.addRuleSetByReference(defaultRuleSet, ruleSet, false);
+        }
+        return defaultRuleSet;
     }
 
     /**

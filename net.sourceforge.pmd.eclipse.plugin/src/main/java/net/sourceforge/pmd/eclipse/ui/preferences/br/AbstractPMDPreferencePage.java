@@ -20,7 +20,6 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.runtime.preferences.IPreferences;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
-import net.sourceforge.pmd.eclipse.ui.preferences.editors.SWTUtil;
 
 public abstract class AbstractPMDPreferencePage extends PreferencePage implements IWorkbenchPreferencePage {
 
@@ -52,9 +51,6 @@ public abstract class AbstractPMDPreferencePage extends PreferencePage implement
      */
     public void setModified(boolean isModified) {
         modified = isModified;
-
-        SWTUtil.setEnabled(getApplyButton(), modified);
-        SWTUtil.setEnabled(getDefaultsButton(), !modified);
     }
 
     /**

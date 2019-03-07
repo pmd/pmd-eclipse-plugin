@@ -29,6 +29,7 @@ This is a minor release.
 *   [#70](https://github.com/pmd/pmd-eclipse-plugin/issues/70): UnsupportedOperationException opening Rule Configuration
 *   [#76](https://github.com/pmd/pmd-eclipse-plugin/issues/76): Global rule management is saved even if cancelled
 *   [#78](https://github.com/pmd/pmd-eclipse-plugin/issues/78): Project properties cannot be loaded anymore
+*   [#83](https://github.com/pmd/pmd-eclipse-plugin/issues/83): "Restore defaults" button in PMD prefences is always deactivated
 *   [#86](https://github.com/pmd/pmd-eclipse-plugin/issues/86): Add Markers next to Scroll bar
 *   [#88](https://github.com/pmd/pmd-eclipse-plugin/issues/88): PMD is executed for all file types regardless of active rules
 *   [#89](https://github.com/pmd/pmd-eclipse-plugin/issues/89): Upgrade to PMD 6.12.0
