@@ -13,6 +13,8 @@ This is a bugfix release.
 
 ### Fixed Issues
 
+*   [#94](https://github.com/pmd/pmd-eclipse-plugin/issues/94): Changing a project's PMD configuration no longer prompts for build
+
 ## 07-March-2019: 4.1.0.v20190307-2036
 
 This is a minor release.

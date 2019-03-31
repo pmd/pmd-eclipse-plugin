@@ -142,6 +142,7 @@ public class PMDPropertyPageController {
             cmd.setViolationsAsErrors(propertyPageBean.violationsAsErrors());
             cmd.setUserInitiated(true);
             cmd.performExecute();
+            cmd.join(); // need to wait, otherwise cmd.isNeedRebuild() is not updated
 
             // If rebuild is needed, then rebuild the project
             LOG.debug("Updating command terminated, checking whether the project need to be rebuilt");
