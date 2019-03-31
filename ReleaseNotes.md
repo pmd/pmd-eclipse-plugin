@@ -10,10 +10,14 @@ Eclipse Update Site:
 ## ????: 4.1.1.v????
 
 This is a bugfix release.
+### New and noteworthy
+
+*   Updated PMD to 6.13.0
 
 ### Fixed Issues
 
 *   [#94](https://github.com/pmd/pmd-eclipse-plugin/issues/94): Changing a project's PMD configuration no longer prompts for build
+*   [#95](https://github.com/pmd/pmd-eclipse-plugin/issues/95): Upgrade to PMD 6.13.0
 
 ## 07-March-2019: 4.1.0.v20190307-2036
 
