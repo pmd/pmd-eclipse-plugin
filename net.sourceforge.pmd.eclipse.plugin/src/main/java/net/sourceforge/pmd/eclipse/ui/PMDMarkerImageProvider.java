@@ -5,10 +5,12 @@
 package net.sourceforge.pmd.eclipse.ui;
 
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.jface.text.source.Annotation;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.texteditor.IAnnotationImageProvider;
 
+import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 
 public class PMDMarkerImageProvider implements IAnnotationImageProvider {
@@ -39,5 +41,12 @@ public class PMDMarkerImageProvider implements IAnnotationImageProvider {
             return plugin.getImage(type, "icons/markerP5.png");
         }
         return null;
+    }
+
+    public static void removeCachedImages() {
+        ImageRegistry imageRegistry = PMDPlugin.getDefault().getImageRegistry();
+        for (RulePriority priority : RulePriority.values()) {
+            imageRegistry.remove("net.sourceforge.pmd.eclipse.plugin.annotation.prio" + priority.getPriority());
+        }
     }
 }

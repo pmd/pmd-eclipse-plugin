@@ -25,6 +25,7 @@ import org.eclipse.swt.widgets.Display;
 import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.eclipse.runtime.preferences.IPreferences;
 import net.sourceforge.pmd.eclipse.runtime.preferences.IPreferencesManager;
+import net.sourceforge.pmd.eclipse.ui.PMDMarkerImageProvider;
 import net.sourceforge.pmd.eclipse.ui.Shape;
 import net.sourceforge.pmd.eclipse.ui.ShapeDescriptor;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
@@ -151,9 +152,9 @@ public class UISettings {
             String fullPath = markerFilenameFor(priority);
             PMDPlugin.getDefault().logInformation("Writing marker icon to: " + fullPath);
             loader.save(fullPath, SWT.IMAGE_PNG);
-
             image.dispose();
         }
+        PMDMarkerImageProvider.removeCachedImages();
     }
 
     private static String pLabelFor(RulePriority priority, boolean useCustom) {
