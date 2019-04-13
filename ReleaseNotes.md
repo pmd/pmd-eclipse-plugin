@@ -13,6 +13,7 @@ This is a bugfix release.
 
 ### Fixed Issues
 
+*   [#85](https://github.com/pmd/pmd-eclipse-plugin/issues/85): Gutter Markers not Configured Color
 
 ## 31-March-2019: 4.2.0.v20190331-1136
 
