@@ -87,8 +87,8 @@ public class PriorityDescriptorCache {
     }
 
     private void refreshImages() {
-       for (PriorityDescriptor pd : uiDescriptorsByPriority.values()) {
-           pd.refreshImages();
-       }
+        for (PriorityDescriptor pd : uiDescriptorsByPriority.values()) {
+            pd.refreshImages();
+        }
     }
 }

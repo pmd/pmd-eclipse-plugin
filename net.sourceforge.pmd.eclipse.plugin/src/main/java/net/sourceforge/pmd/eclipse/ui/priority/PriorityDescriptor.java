@@ -186,17 +186,21 @@ public class PriorityDescriptor implements Cloneable {
 
     private Map<Integer, Image> cachedImages = new HashMap<>(3);
     private static final int ANNOTATION_IMAGE_DIMENSION = 9;
+
     public Image getAnnotationImage() {
         return getImage(ANNOTATION_IMAGE_DIMENSION);
     }
+
     public ImageDescriptor getAnnotationImageDescriptor() {
         return ImageDescriptor.createFromImage(getAnnotationImage());
     }
+
     private Image createImage(final int size) {
         return ShapePainter.newDrawnImage(Display.getCurrent(), size, size, shape.shape, PROTO_TRANSPARENT_COLOR,
                 shape.rgbColor // fillColour
         );
     }
+
     /**
      * Gets the marker image in a specific size. The image is cached and reused.
      * @param size
