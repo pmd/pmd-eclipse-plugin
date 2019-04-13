@@ -18,6 +18,7 @@ import net.sourceforge.pmd.eclipse.plugin.UISettings;
  * 
  * @author Brian Remedios
  */
+@Deprecated
 public abstract class AbstractViolationLabelProvider extends LabelProvider implements ITableLabelProvider {
 
     private static Map<Integer, Image> imagesByPriorityIndex;
@@ -41,7 +42,6 @@ public abstract class AbstractViolationLabelProvider extends LabelProvider imple
     }
 
     protected static Image getPriorityImage(int priority) {
-
         return imagesByPriorityIndex.get(priority);
     }
 }

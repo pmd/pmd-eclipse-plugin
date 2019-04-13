@@ -6,11 +6,15 @@ package net.sourceforge.pmd.eclipse.ui.views;
 
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jface.viewers.ITableLabelProvider;
+import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
 
+import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.ui.PMDUiConstants;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
+import net.sourceforge.pmd.eclipse.ui.priority.PriorityDescriptorCache;
 import net.sourceforge.pmd.util.NumericConstants;
 
 /**
@@ -18,13 +22,8 @@ import net.sourceforge.pmd.util.NumericConstants;
  * 
  * @author SebastianRaffel ( 08.05.2005 )
  */
-public class ViolationOutlineLabelProvider extends AbstractViolationLabelProvider {
+public class ViolationOutlineLabelProvider extends LabelProvider implements ITableLabelProvider {
 
-    /*
-     * @see
-     * org.eclipse.jface.viewers.ITableLabelProvider#getColumnImage(java.lang.
-     * Object, int)
-     */
     public Image getColumnImage(Object element, int columnIndex) {
         IMarker marker;
         if (element instanceof IMarker) {
@@ -41,7 +40,7 @@ public class ViolationOutlineLabelProvider extends AbstractViolationLabelProvide
                 PMDPlugin.getDefault().logError(StringKeys.ERROR_CORE_EXCEPTION + toString(), ce);
             }
 
-            return getPriorityImage(priority);
+            return PriorityDescriptorCache.INSTANCE.descriptorFor(RulePriority.valueOf(priority)).getAnnotationImage();
         }
 
         return null;
@@ -71,5 +70,4 @@ public class ViolationOutlineLabelProvider extends AbstractViolationLabelProvide
             return "";
         }
     }
-
 }

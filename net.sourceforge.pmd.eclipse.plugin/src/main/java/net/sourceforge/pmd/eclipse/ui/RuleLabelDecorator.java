@@ -6,7 +6,6 @@ package net.sourceforge.pmd.eclipse.ui;
 
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.core.resources.IResource;
@@ -17,23 +16,18 @@ import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ILightweightLabelDecorator;
 import org.eclipse.jface.viewers.LabelProviderChangedEvent;
 
-import net.sourceforge.pmd.eclipse.plugin.UISettings;
+import net.sourceforge.pmd.RulePriority;
+import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.runtime.PMDRuntimeConstants;
 import net.sourceforge.pmd.eclipse.runtime.builder.MarkerUtil;
+import net.sourceforge.pmd.eclipse.ui.priority.PriorityDescriptorCache;
 
 /**
  * 
  * @author Brian Remedios
  */
 public class RuleLabelDecorator implements ILightweightLabelDecorator {
-
     private Collection<ILabelProviderListener> listeners;
-
-    private Map<Integer, ImageDescriptor> overlaysByPriority;
-
-    public RuleLabelDecorator() {
-        reloadDecorators();
-    }
 
     public void addListener(ILabelProviderListener listener) {
         if (listeners == null) {
@@ -59,8 +53,11 @@ public class RuleLabelDecorator implements ILightweightLabelDecorator {
 
     }
 
+    /**
+     * reloading is not necessary anymore
+     */
+    @Deprecated
     public void reloadDecorators() {
-        overlaysByPriority = UISettings.markerImgDescriptorsByPriority();
     }
 
     public boolean isLabelProperty(Object element, String property) {
@@ -93,7 +90,7 @@ public class RuleLabelDecorator implements ILightweightLabelDecorator {
         }
 
         Integer first = range.iterator().next();
-        ImageDescriptor overlay = overlaysByPriority.get(first);
+        ImageDescriptor overlay = PriorityDescriptorCache.INSTANCE.descriptorFor(RulePriority.valueOf(first)).getAnnotationImageDescriptor();
 
         try {
             boolean hasMarkers = MarkerUtil.hasAnyRuleMarkers(resource);
@@ -101,10 +98,7 @@ public class RuleLabelDecorator implements ILightweightLabelDecorator {
                 decoration.addOverlay(overlay);
             }
         } catch (CoreException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            PMDPlugin.getDefault().logError("Error while adding overlay icon", e);
         }
-
     }
-
 }

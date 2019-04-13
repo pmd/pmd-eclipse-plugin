@@ -138,38 +138,39 @@ public class PriorityDescriptor implements Cloneable {
         sb.append(shape.size).append(DELIMITER);
     }
 
+    @Deprecated
     public ImageDescriptor getImageDescriptor() {
         return PMDPlugin.getImageDescriptor(iconId);
     }
 
     public PriorityDescriptor clone() {
-
         PriorityDescriptor copy = new PriorityDescriptor(priority);
         copy.label = label;
         copy.description = description;
         copy.filterText = filterText;
         copy.iconId = iconId;
         copy.shape = shape.clone();
-
         return copy;
     }
 
+    /**
+     * @deprecated Use {@link #getAnnotationImage()} or {@link #getAnnotationImageDescriptor()} instead.
+     */
     public Image getImage(Display display) {
-
-        return ShapePainter.newDrawnImage(display, shape.size, shape.size, shape.shape, PROTO_TRANSPARENT_COLOR,
-                shape.rgbColor // fillColour
-        );
+        return createImage();
     }
 
+    /**
+     * @deprecated Use {@link #getAnnotationImage()} or {@link #getAnnotationImageDescriptor()} instead.
+     */
+    @Deprecated
     public Image getImage(Display display, int maxDimension) {
-
         return ShapePainter.newDrawnImage(display, Math.min(shape.size, maxDimension),
                 Math.min(shape.size, maxDimension), shape.shape, PROTO_TRANSPARENT_COLOR, shape.rgbColor // fillColour
         );
     }
 
     public String toString() {
-
         StringBuilder sb = new StringBuilder();
         sb.append("RuleDescriptor: ");
         sb.append(priority).append(", ");
@@ -179,5 +180,39 @@ public class PriorityDescriptor implements Cloneable {
         sb.append(iconId).append(", ");
         sb.append(shape);
         return sb.toString();
+    }
+
+    private static final int ANNOTATION_IMAGE_DIMENSION = 9;
+    private Image cachedAnnotationImage = null;
+    private ImageDescriptor cachedAnnotationImageDescriptor = null;
+    public void createAnnotationImageDescriptor() {
+        if (cachedAnnotationImage != null) {
+            cachedAnnotationImage.dispose();
+        }
+        cachedAnnotationImage = createAnnotationImage();
+        cachedAnnotationImageDescriptor = ImageDescriptor.createFromImage(cachedAnnotationImage);
+    }
+    public Image getAnnotationImage() {
+        return cachedAnnotationImageDescriptor.createImage();
+    }
+    public ImageDescriptor getAnnotationImageDescriptor() {
+        return cachedAnnotationImageDescriptor;
+    }
+    private Image createAnnotationImage() {
+        return ShapePainter.newDrawnImage(Display.getCurrent(), Math.min(shape.size, ANNOTATION_IMAGE_DIMENSION),
+                Math.min(shape.size, ANNOTATION_IMAGE_DIMENSION), shape.shape, PROTO_TRANSPARENT_COLOR, shape.rgbColor // fillColour
+        );
+    }
+
+    /**
+     * Creates a new image with the current setting. This is needed during the configuration, when
+     * the priority descriptor is changed, but not persisted yet. The cached image returned by
+     * {@link #getAnnotationImage()} would not reflect that change and a preview is not possible.
+     * @return
+     */
+    public Image createImage() {
+        return ShapePainter.newDrawnImage(Display.getCurrent(), shape.size, shape.size, shape.shape, PROTO_TRANSPARENT_COLOR,
+                shape.rgbColor // fillColour
+        );
     }
 }

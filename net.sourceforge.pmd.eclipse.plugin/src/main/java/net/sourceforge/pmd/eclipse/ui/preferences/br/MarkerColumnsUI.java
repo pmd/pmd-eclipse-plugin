@@ -9,7 +9,6 @@ import java.util.Comparator;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.widgets.Display;
 
 import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.eclipse.runtime.builder.MarkerUtil;
@@ -41,11 +40,9 @@ public interface MarkerColumnsUI {
     };
 
     ItemFieldAccessor<Image, IMarker> PRIORITY_IMG_ACC = new ItemFieldAccessorAdapter<Image, IMarker>(null) {
-        final Display display = Display.getCurrent();
-
         public Image imageFor(IMarker marker) {
             RulePriority rp = PRIORITY_ACC.valueFor(marker);
-            return PriorityDescriptorCache.INSTANCE.descriptorFor(rp).getImage(display);
+            return PriorityDescriptorCache.INSTANCE.descriptorFor(rp).getAnnotationImage();
         }
     };
 

@@ -25,23 +25,23 @@ public class PriorityDescriptorCache {
     public static final PriorityDescriptorCache INSTANCE = new PriorityDescriptorCache();
 
     private PriorityDescriptorCache() {
-        uiDescriptorsByPriority = new HashMap<RulePriority, PriorityDescriptor>(5);
+        uiDescriptorsByPriority = new HashMap<RulePriority, PriorityDescriptor>(RulePriority.values().length);
         loadFromPreferences();
+        recreateAnnotationImages();
     }
 
     private IPreferencesManager preferencesManager() {
         return PMDPlugin.getDefault().getPreferencesManager();
     }
 
+    @Deprecated
     public void dumpTo(PrintStream out) {
-
         for (Map.Entry<RulePriority, PriorityDescriptor> entry : uiDescriptorsByPriority.entrySet()) {
             out.println(entry.getKey() + " : " + entry.getValue());
         }
     }
 
     public void loadFromPreferences() {
-
         IPreferences preferences = preferencesManager().loadPreferences();
         for (RulePriority rp : UISettings.currentPriorities(true)) {
             uiDescriptorsByPriority.put(rp, preferences.getPriorityDescriptor(rp).clone());
@@ -49,16 +49,14 @@ public class PriorityDescriptorCache {
     }
 
     public void storeInPreferences() {
-
         IPreferencesManager mgr = preferencesManager();
-
         IPreferences prefs = mgr.loadPreferences();
 
         for (Map.Entry<RulePriority, PriorityDescriptor> entry : uiDescriptorsByPriority.entrySet()) {
             prefs.setPriorityDescriptor(entry.getKey(), entry.getValue());
         }
-
         mgr.storePreferences(prefs);
+        recreateAnnotationImages();
     }
 
     public PriorityDescriptor descriptorFor(RulePriority priority) {
@@ -78,5 +76,11 @@ public class PriorityDescriptorCache {
             return true;
         }
         return false;
+    }
+
+    private void recreateAnnotationImages() {
+        for (PriorityDescriptor pd : uiDescriptorsByPriority.values()) {
+            pd.createAnnotationImageDescriptor();
+        }
     }
 }

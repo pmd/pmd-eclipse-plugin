@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.eclipse.plugin;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -23,9 +21,7 @@ import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Display;
 
 import net.sourceforge.pmd.RulePriority;
-import net.sourceforge.pmd.eclipse.runtime.preferences.IPreferences;
 import net.sourceforge.pmd.eclipse.runtime.preferences.IPreferencesManager;
-import net.sourceforge.pmd.eclipse.ui.PMDMarkerImageProvider;
 import net.sourceforge.pmd.eclipse.ui.Shape;
 import net.sourceforge.pmd.eclipse.ui.ShapeDescriptor;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
@@ -46,32 +42,16 @@ public class UISettings {
 
     private static String[] priorityLabels;
 
-    private static Map<Object, ShapeDescriptor> shapesByPriority;
-    private static Map<Integer, RulePriority> prioritiesByIntValue;
     private static Map<RulePriority, String> labelsByPriority = new HashMap<RulePriority, String>();
 
     private static final int MAX_MARKER_DIMENSION = 9;
     private static IPreferencesManager preferencesManager = PMDPlugin.getDefault().getPreferencesManager();
-    private static final Map<RulePriority, PriorityDescriptor> UI_DESCRIPTORS_BY_PRIORITY = new HashMap<RulePriority, PriorityDescriptor>(
-            5);
 
     public static final FontBuilder CODE_FONT_BUILDER = new FontBuilder("Courier", 11, SWT.NORMAL);
 
+    @Deprecated
     public static void reloadPriorities() {
-        UI_DESCRIPTORS_BY_PRIORITY.clear();
-        uiDescriptorsByPriority(); // cause a reload
-    }
-
-    private static Map<RulePriority, PriorityDescriptor> uiDescriptorsByPriority() {
-
-        if (UI_DESCRIPTORS_BY_PRIORITY.isEmpty()) {
-            IPreferences preferences = preferencesManager.loadPreferences();
-            for (RulePriority rp : currentPriorities(true)) {
-                UI_DESCRIPTORS_BY_PRIORITY.put(rp, preferences.getPriorityDescriptor(rp));
-            }
-        }
-
-        return UI_DESCRIPTORS_BY_PRIORITY;
+        // no-op - nothing to be done anymore. The priority descriptor are cached by PriorityDescriptorCache and not here.
     }
 
     public static Shape[] allShapes() {
@@ -104,34 +84,37 @@ public class UISettings {
         return shapes;
     }
 
+    /**
+     * @deprecated Use {@link PriorityDescriptorCache#descriptorFor(RulePriority)} to retrieve the {@link PriorityDescriptor}.
+     */
+    @Deprecated
     public static String markerFilenameFor(RulePriority priority) {
         String fileDir = PMDPlugin.getPluginFolder().getAbsolutePath();
         return fileDir + "/" + relativeMarkerFilenameFor(priority);
     }
 
+    /**
+     * @deprecated Use {@link PriorityDescriptorCache#descriptorFor(RulePriority)} to retrieve the {@link PriorityDescriptor}.
+     */
+    @Deprecated
     public static String relativeMarkerFilenameFor(RulePriority priority) {
         return "icons/markerP" + priority.getPriority() + ".png";
     }
 
-    private static ImageDescriptor getImageDescriptor(final String fileName) {
-
-        URL installURL = PMDPlugin.getDefault().getBundle().getEntry("/");
-        try {
-            URL url = new URL(installURL, fileName);
-            return ImageDescriptor.createFromURL(url);
-        } catch (MalformedURLException mue) {
-            mue.printStackTrace();
-            return null;
-        }
-    }
-
+    /**
+     * @deprecated Use {@link PriorityDescriptorCache#descriptorFor(RulePriority)} to retrieve the {@link PriorityDescriptor}.
+     */
+    @Deprecated
     public static ImageDescriptor markerDescriptorFor(RulePriority priority) {
-        String path = relativeMarkerFilenameFor(priority);
-        return getImageDescriptor(path);
+        PriorityDescriptor pd = PriorityDescriptorCache.INSTANCE.descriptorFor(priority);
+        return pd.getAnnotationImageDescriptor();
     }
 
+    /**
+     * @deprecated Use {@link PriorityDescriptorCache#descriptorFor(RulePriority)} to retrieve the {@link PriorityDescriptor}.
+     */
+    @Deprecated
     public static Map<Integer, ImageDescriptor> markerImgDescriptorsByPriority() {
-
         RulePriority[] priorities = currentPriorities(true);
         Map<Integer, ImageDescriptor> overlaysByPriority = new HashMap<Integer, ImageDescriptor>(priorities.length);
         for (RulePriority priority : priorities) {
@@ -140,21 +123,24 @@ public class UISettings {
         return overlaysByPriority;
     }
 
+    /**
+     * Marker Icons are not stored to files anymore. They are generated on the fly and cached by {@link PriorityDescriptorCache}.
+     * @deprecated Use {@link PriorityDescriptorCache#descriptorFor(RulePriority)} to retrieve the {@link PriorityDescriptor}.
+     */
+    @Deprecated
     public static void createRuleMarkerIcons(Display display) {
-
         ImageLoader loader = new ImageLoader();
 
         PriorityDescriptorCache pdc = PriorityDescriptorCache.INSTANCE;
 
         for (RulePriority priority : currentPriorities(true)) {
-            Image image = pdc.descriptorFor(priority).getImage(display, MAX_MARKER_DIMENSION);
+            Image image = pdc.descriptorFor(priority).getAnnotationImage();
             loader.data = new ImageData[] { image.getImageData() };
             String fullPath = markerFilenameFor(priority);
             PMDPlugin.getDefault().logInformation("Writing marker icon to: " + fullPath);
             loader.save(fullPath, SWT.IMAGE_PNG);
             image.dispose();
         }
-        PMDMarkerImageProvider.removeCachedImages();
     }
 
     private static String pLabelFor(RulePriority priority, boolean useCustom) {
@@ -176,12 +162,20 @@ public class UISettings {
         }
     }
 
+    /**
+     * @deprecated Use {@link PriorityDescriptorCache#descriptorFor(RulePriority)} to retrieve the {@link PriorityDescriptor#description}.
+     */
+    @Deprecated
     public static String descriptionFor(RulePriority priority) {
         return descriptorFor(priority).description;
     }
 
+    /**
+     * @deprecated Use {@link PriorityDescriptorCache#descriptorFor(RulePriority)} to retrieve the {@link PriorityDescriptor}.
+     */
+    @Deprecated
     public static PriorityDescriptor descriptorFor(RulePriority priority) {
-        return uiDescriptorsByPriority().get(priority);
+        return PriorityDescriptorCache.INSTANCE.descriptorFor(priority);
     }
 
     public static String labelFor(RulePriority priority) {
@@ -192,29 +186,19 @@ public class UISettings {
     }
 
     public static Map<Object, ShapeDescriptor> shapesByPriority() {
-
-        if (shapesByPriority != null) {
-            return shapesByPriority;
+        Map<Object, ShapeDescriptor> shapesByPriority = new HashMap<Object, ShapeDescriptor>(RulePriority.values().length);
+        for (RulePriority priority : RulePriority.values()) {
+            shapesByPriority.put(priority, PriorityDescriptorCache.INSTANCE.descriptorFor(priority).shape);
         }
-
-        Map<Object, ShapeDescriptor> shapesByPriority = new HashMap<Object, ShapeDescriptor>(
-                uiDescriptorsByPriority().size());
-        for (Map.Entry<RulePriority, PriorityDescriptor> entry : uiDescriptorsByPriority().entrySet()) {
-            shapesByPriority.put(entry.getKey(), entry.getValue().shape);
-        }
-
         return shapesByPriority;
     }
 
+    /**
+     * @deprecated Use {@link RulePriority#valueOf(int)} directly.
+     */
+    @Deprecated
     public static RulePriority priorityFor(int value) {
-
-        if (prioritiesByIntValue == null) {
-            prioritiesByIntValue = new HashMap<Integer, RulePriority>(uiDescriptorsByPriority().size());
-            for (Map.Entry<RulePriority, PriorityDescriptor> entry : uiDescriptorsByPriority().entrySet()) {
-                prioritiesByIntValue.put(entry.getKey().getPriority(), entry.getKey());
-            }
-        }
-        return prioritiesByIntValue.get(value);
+        return RulePriority.valueOf(value);
     }
 
     /**
@@ -222,6 +206,7 @@ public class UISettings {
      * 
      * @deprecated - not referenced in the modern UI
      */
+    @Deprecated
     public static String[] getPriorityLabels() {
         if (priorityLabels == null) {
             final StringTable stringTable = PMDPlugin.getDefault().getStringTable();
