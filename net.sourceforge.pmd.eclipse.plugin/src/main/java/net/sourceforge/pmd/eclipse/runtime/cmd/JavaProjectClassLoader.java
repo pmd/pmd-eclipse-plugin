@@ -62,7 +62,8 @@ public class JavaProjectClassLoader extends URLClassLoader {
 
         try {
             // Add default output location
-            addURL(javaProject.getOutputLocation());
+            IPath projectLocation = javaProject.getProject().getLocation().removeLastSegments(1);
+            addURL(projectLocation.append(javaProject.getOutputLocation()));
 
             // Add each classpath entry
             IClasspathEntry[] classpathEntries = javaProject.getResolvedClasspath(true);
@@ -89,7 +90,7 @@ public class JavaProjectClassLoader extends URLClassLoader {
                     case IClasspathEntry.CPE_SOURCE:
                         IPath outputLocation = classpathEntry.getOutputLocation();
                         if (outputLocation != null) {
-                            addURL(outputLocation);
+                            addURL(projectLocation.append(outputLocation));
                         }
                         break;
 
