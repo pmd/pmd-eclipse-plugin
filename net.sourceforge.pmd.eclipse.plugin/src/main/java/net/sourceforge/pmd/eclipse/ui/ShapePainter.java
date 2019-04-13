@@ -4,9 +4,6 @@
 
 package net.sourceforge.pmd.eclipse.ui;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
@@ -22,10 +19,6 @@ import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
  *
  */
 public class ShapePainter {
-
-    /** Provides a simple cache for the images. */
-    private static Map<String, Image> shapes = new HashMap<String, Image>();
-
     private ShapePainter() {
     }
 
@@ -36,11 +29,6 @@ public class ShapePainter {
      */
     public static Image newDrawnImage(Display display, int width, int height, Shape shape, RGB transparentColour,
             RGB fillColour) {
-        String key = width + "x" + height + " " + shape + " " + transparentColour + " " + fillColour;
-        if (shapes.containsKey(key)) {
-            return shapes.get(key);
-        }
-
         Image image = new Image(display, width, height);
         GC gc = new GC(image);
 
@@ -61,15 +49,11 @@ public class ShapePainter {
 
         gc.dispose();
 
-        shapes.put(key, newImage);
         return newImage;
     }
 
+    @Deprecated
     public static void disposeAll() {
-        for (Image i : shapes.values()) {
-            i.dispose();
-        }
-        shapes.clear();
     }
 
     public static void drawShape(int width, int height, Shape shapeId, GC gc, int x, int y, String optionalText) {

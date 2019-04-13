@@ -823,12 +823,6 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
 
         PriorityDescriptorCache.INSTANCE.storeInPreferences();
 
-        // ensure that the decorator gets these new images...
-        RuleLabelDecorator decorator = PMDPlugin.getDefault().ruleLabelDecorator();
-        if (decorator != null) {
-            decorator.reloadDecorators();
-        }
-
         RootRecord root = new RootRecord(ResourcesPlugin.getWorkspace().getRoot());
         Set<IFile> files = MarkerUtil.allMarkedFiles(root);
         PMDPlugin.getDefault().changedFiles(files);
@@ -836,8 +830,6 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
         /* Refresh the views to pick up the marker change */ 
         PMDPlugin.getDefault().refreshView(PMDPlugin.VIOLATIONS_OVERVIEW_ID); 
         PMDPlugin.getDefault().refreshView(PMDPlugin.VIOLATIONS_OUTLINE_ID); 
-        PMDPlugin.getDefault().refreshView(IPageLayout.ID_PROJECT_EXPLORER); 
-        PMDPlugin.getDefault().refreshView(IPageLayout.ID_OUTLINE); 
     }
 
     public boolean performCancel() {

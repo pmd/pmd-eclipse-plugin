@@ -5,6 +5,8 @@
 package net.sourceforge.pmd.eclipse.ui.priority;
 
 import java.util.EnumSet;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Image;
@@ -172,7 +174,7 @@ public class PriorityDescriptor implements Cloneable {
 
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("RuleDescriptor: ");
+        sb.append("PriorityDescriptor: ");
         sb.append(priority).append(", ");
         sb.append(label).append(", ");
         sb.append(description).append(", ");
@@ -182,37 +184,68 @@ public class PriorityDescriptor implements Cloneable {
         return sb.toString();
     }
 
+    private Map<Integer, Image> cachedImages = new HashMap<>(3);
     private static final int ANNOTATION_IMAGE_DIMENSION = 9;
-    private Image cachedAnnotationImage = null;
-    private ImageDescriptor cachedAnnotationImageDescriptor = null;
-    public void createAnnotationImageDescriptor() {
-        if (cachedAnnotationImage != null) {
-            cachedAnnotationImage.dispose();
-        }
-        cachedAnnotationImage = createAnnotationImage();
-        cachedAnnotationImageDescriptor = ImageDescriptor.createFromImage(cachedAnnotationImage);
-    }
     public Image getAnnotationImage() {
-        return cachedAnnotationImageDescriptor.createImage();
+        return getImage(ANNOTATION_IMAGE_DIMENSION);
     }
     public ImageDescriptor getAnnotationImageDescriptor() {
-        return cachedAnnotationImageDescriptor;
+        return ImageDescriptor.createFromImage(getAnnotationImage());
     }
-    private Image createAnnotationImage() {
-        return ShapePainter.newDrawnImage(Display.getCurrent(), Math.min(shape.size, ANNOTATION_IMAGE_DIMENSION),
-                Math.min(shape.size, ANNOTATION_IMAGE_DIMENSION), shape.shape, PROTO_TRANSPARENT_COLOR, shape.rgbColor // fillColour
+    private Image createImage(final int size) {
+        return ShapePainter.newDrawnImage(Display.getCurrent(), size, size, shape.shape, PROTO_TRANSPARENT_COLOR,
+                shape.rgbColor // fillColour
         );
+    }
+    /**
+     * Gets the marker image in a specific size. The image is cached and reused.
+     * @param size
+     * @return
+     */
+    public Image getImage(int size) {
+        Image cached = cachedImages.get(size);
+        if (cached == null) {
+            cached = createImage(size);
+            cachedImages.put(size, cached);
+        }
+        return cached;
     }
 
     /**
      * Creates a new image with the current setting. This is needed during the configuration, when
      * the priority descriptor is changed, but not persisted yet. The cached image returned by
      * {@link #getAnnotationImage()} would not reflect that change and a preview is not possible.
+     *
+     * <p>The image is not cached.
      * @return
      */
     public Image createImage() {
-        return ShapePainter.newDrawnImage(Display.getCurrent(), shape.size, shape.size, shape.shape, PROTO_TRANSPARENT_COLOR,
-                shape.rgbColor // fillColour
-        );
+        return createImage(shape.size);
+    }
+
+    public void dispose() {
+        for (Image image : cachedImages.values()) {
+            image.dispose();
+        }
+        cachedImages.clear();
+    }
+
+    /**
+     * Eagerly create the images. This must be called in a UI thread!
+     */
+    public void refreshImages() {
+        if (Display.getCurrent() == null) {
+            throw new IllegalStateException("Must be called in the UI thread");
+        }
+
+        dispose();
+        Image image = getAnnotationImage();
+        if (image == null) {
+            throw new RuntimeException("Could not create annotation image");
+        }
+        image = getImage(16);
+        if (image == null) {
+            throw new RuntimeException("Could not create marker image");
+        }
     }
 }

@@ -6,6 +6,7 @@ package net.sourceforge.pmd.eclipse.ui.views.actions;
 
 import org.apache.log4j.Logger;
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ViewerFilter;
 
 import net.sourceforge.pmd.RulePriority;
@@ -79,7 +80,7 @@ public class PriorityFilterAction extends Action {
      */
     private void setupActionLook() {
         PriorityDescriptor desc = PriorityDescriptorCache.INSTANCE.descriptorFor(priority);
-        setImageDescriptor(desc.getAnnotationImageDescriptor());
+        setImageDescriptor(ImageDescriptor.createFromImage(desc.getImage(16)));
         setText(desc.label);
         String toolTip = String.format(desc.filterText, UISettings.labelFor(priority));
         setToolTipText(toolTip);

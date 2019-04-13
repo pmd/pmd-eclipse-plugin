@@ -19,7 +19,6 @@ import net.sourceforge.pmd.eclipse.runtime.preferences.IPreferencesManager;
  * @author Brian Remedios
  */
 public class PriorityDescriptorCache {
-
     private Map<RulePriority, PriorityDescriptor> uiDescriptorsByPriority;
 
     public static final PriorityDescriptorCache INSTANCE = new PriorityDescriptorCache();
@@ -27,7 +26,6 @@ public class PriorityDescriptorCache {
     private PriorityDescriptorCache() {
         uiDescriptorsByPriority = new HashMap<RulePriority, PriorityDescriptor>(RulePriority.values().length);
         loadFromPreferences();
-        recreateAnnotationImages();
     }
 
     private IPreferencesManager preferencesManager() {
@@ -46,6 +44,7 @@ public class PriorityDescriptorCache {
         for (RulePriority rp : UISettings.currentPriorities(true)) {
             uiDescriptorsByPriority.put(rp, preferences.getPriorityDescriptor(rp).clone());
         }
+        refreshImages();
     }
 
     public void storeInPreferences() {
@@ -56,7 +55,8 @@ public class PriorityDescriptorCache {
             prefs.setPriorityDescriptor(entry.getKey(), entry.getValue());
         }
         mgr.storePreferences(prefs);
-        recreateAnnotationImages();
+        // recreate images with the changed settings
+        refreshImages();
     }
 
     public PriorityDescriptor descriptorFor(RulePriority priority) {
@@ -64,7 +64,6 @@ public class PriorityDescriptorCache {
     }
 
     public boolean hasChanges() {
-
         IPreferences preferences = preferencesManager().reloadPreferences();
 
         for (RulePriority rp : UISettings.currentPriorities(true)) {
@@ -78,9 +77,15 @@ public class PriorityDescriptorCache {
         return false;
     }
 
-    private void recreateAnnotationImages() {
+    public void dispose() {
         for (PriorityDescriptor pd : uiDescriptorsByPriority.values()) {
-            pd.createAnnotationImageDescriptor();
+            pd.dispose();
         }
+    }
+
+    private void refreshImages() {
+       for (PriorityDescriptor pd : uiDescriptorsByPriority.values()) {
+           pd.refreshImages();
+       }
     }
 }

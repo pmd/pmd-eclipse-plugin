@@ -63,7 +63,8 @@ public class ViolationOverviewLabelProvider extends LabelProvider implements ITa
             } else if (element instanceof MarkerRecord) {
                 MarkerRecord markerRecord = (MarkerRecord) element;
                 int priority = markerRecord.getPriority();
-                image = PriorityDescriptorCache.INSTANCE.descriptorFor(RulePriority.valueOf(priority)).getAnnotationImage();
+                // image must be 16x16 pixels, since the other images in the table are 16x16 as well (ICON_PACKAGE)
+                image = PriorityDescriptorCache.INSTANCE.descriptorFor(RulePriority.valueOf(priority)).getImage(16);
             }
         }
 
