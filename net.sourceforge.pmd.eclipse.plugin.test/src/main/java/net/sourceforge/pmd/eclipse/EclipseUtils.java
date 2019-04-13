@@ -213,7 +213,7 @@ public class EclipseUtils {
      * @param project
      * @throws CoreException
      */
-    private static void addJavaNature(final IProject project) throws CoreException {
+    public static void addJavaNature(final IProject project) throws CoreException {
         if (!project.hasNature(JavaCore.NATURE_ID)) {
             final IProjectDescription description = project.getDescription();
             final String[] prevNatures = description.getNatureIds();

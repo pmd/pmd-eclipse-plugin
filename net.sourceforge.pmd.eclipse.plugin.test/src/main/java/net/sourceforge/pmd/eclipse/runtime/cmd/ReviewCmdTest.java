@@ -5,6 +5,8 @@
 package net.sourceforge.pmd.eclipse.runtime.cmd;
 
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -14,8 +16,11 @@ import java.util.Set;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.junit.After;
 import org.junit.Assert;
@@ -152,6 +157,70 @@ public class ReviewCmdTest {
 
         } finally {
             PMDPlugin.getDefault().getPreferencesManager().loadPreferences().setProjectBuildPathEnabled(oldSetting);
+        }
+    }
+
+    /**
+     * https://github.com/pmd/pmd-eclipse-plugin/issues/96
+     */
+    @Test
+    public void testProjectBuildPathOutsideWorkspace() throws Exception {
+        String projectName = "PMDTestProject2";
+        Path tempDir = Files.createTempDirectory(projectName);
+        boolean oldSetting = PMDPlugin.getDefault().getPreferencesManager().loadPreferences()
+                .isProjectBuildPathEnabled();
+        final IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
+        final IProject newProject = root.getProject(projectName);
+
+        try {
+            final IProjectDescription description = newProject.getWorkspace().newProjectDescription(projectName);
+            if (!newProject.exists()) {
+                description.setLocationURI(tempDir.toUri());
+                newProject.create(description, null);
+            }
+
+            if (!newProject.isOpen()) {
+                newProject.open(null);
+            }
+            EclipseUtils.addJavaNature(newProject);
+
+            IProjectProperties properties = PMDPlugin.getDefault().getPropertiesManager()
+                    .loadProjectProperties(newProject);
+            properties.setPmdEnabled(true);
+            Rule compareObjectsWithEquals = properties.getProjectRuleSet().getRuleByName("CompareObjectsWithEquals");
+            RuleSet projectRuleSet = RuleSetUtil.newSingle(compareObjectsWithEquals);
+            properties.setProjectRuleSet(projectRuleSet);
+
+            PMDPlugin.getDefault().getPreferencesManager().loadPreferences().setProjectBuildPathEnabled(true);
+            EclipseUtils.createTestSourceFile(newProject, "/src/MyEnum.java", "public enum MyEnum { A, B }");
+            IFile sourceFile = EclipseUtils.createTestSourceFile(newProject, "/src/Foo.java",
+                    "class Foo {\n" + "  boolean bar(MyEnum a, MyEnum b) {\n" + "    return a == b;\n" + // line 3
+                            "  }\n" + "}");
+            newProject.build(IncrementalProjectBuilder.FULL_BUILD, null);
+            newProject.refreshLocal(IResource.DEPTH_INFINITE, null);
+
+            ReviewCodeCmd cmd = new ReviewCodeCmd();
+            cmd.addResource(newProject);
+            cmd.performExecute();
+            cmd.join();
+            Map<IFile, Set<MarkerInfo2>> markers = cmd.getMarkers();
+            // with type resolution, this comparison is ok, as MyEnum is a enum
+            Assert.assertTrue("Type Resolution didn't work", markers.get(sourceFile).isEmpty());
+
+            // without type resolution, there is a violation
+            PMDPlugin.getDefault().getPreferencesManager().loadPreferences().setProjectBuildPathEnabled(false);
+            cmd = new ReviewCodeCmd();
+            cmd.addResource(newProject);
+            cmd.performExecute();
+            cmd.join();
+            markers = cmd.getMarkers();
+            // there is a violation expected without type resolution
+            Assert.assertFalse(markers.get(sourceFile).isEmpty());
+
+        } finally {
+            PMDPlugin.getDefault().getPreferencesManager().loadPreferences().setProjectBuildPathEnabled(oldSetting);
+
+            newProject.delete(true, true, null);
         }
     }
 

@@ -12,7 +12,6 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jdt.core.IClasspathEntry;
@@ -27,7 +26,6 @@ public class JavaProjectClassLoader extends URLClassLoader {
     private static final Logger LOG = Logger.getLogger(JavaProjectClassLoader.class);
 
     private Set<IJavaProject> javaProjects = new HashSet<IJavaProject>();
-    private IWorkspaceRoot workspaceRoot;
 
     public JavaProjectClassLoader(ClassLoader parent, IProject project) {
         super(new URL[0], parent);
@@ -38,14 +36,12 @@ public class JavaProjectClassLoader extends URLClassLoader {
         } catch (CoreException e) {
             throw new IllegalArgumentException("The project " + project + " is not a java project", e);
         }
-        workspaceRoot = project.getProject().getWorkspace().getRoot();
 
         IJavaProject javaProject = JavaCore.create(project);
         addURLs(javaProject, false);
 
         // No longer need these things, drop references
         javaProjects = null;
-        workspaceRoot = null;
     }
 
     private static IProject projectFor(IJavaProject javaProject, IClasspathEntry classpathEntry) {
@@ -62,8 +58,8 @@ public class JavaProjectClassLoader extends URLClassLoader {
 
         try {
             // Add default output location
-            IPath projectLocation = javaProject.getProject().getLocation().removeLastSegments(1);
-            addURL(projectLocation.append(javaProject.getOutputLocation()));
+            IPath projectLocation = javaProject.getProject().getLocation();
+            addURL(projectLocation.append(javaProject.getOutputLocation().removeFirstSegments(1)));
 
             // Add each classpath entry
             IClasspathEntry[] classpathEntries = javaProject.getResolvedClasspath(true);
@@ -90,7 +86,7 @@ public class JavaProjectClassLoader extends URLClassLoader {
                     case IClasspathEntry.CPE_SOURCE:
                         IPath outputLocation = classpathEntry.getOutputLocation();
                         if (outputLocation != null) {
-                            addURL(projectLocation.append(outputLocation));
+                            addURL(projectLocation.append(outputLocation.removeFirstSegments(1)));
                         }
                         break;
 
@@ -114,11 +110,6 @@ public class JavaProjectClassLoader extends URLClassLoader {
 
     private void addURL(IPath path) {
         try {
-            if (workspaceRoot.exists(path)) {
-                // path = workspaceRoot.getFileForLocation(path).getFullPath();
-                // path = workspaceRoot.getFile(path).getFullPath();
-                path = workspaceRoot.getLocation().append(path);
-            }
             URL url = path.toFile().getAbsoluteFile().toURI().toURL();
             addURL(url);
         } catch (MalformedURLException e) {
