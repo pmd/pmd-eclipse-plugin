@@ -22,10 +22,6 @@ public class ShapeDescriptor implements Cloneable {
         size = theSize;
     }
 
-    private ShapeDescriptor() {
-
-    }
-
     public boolean equals(Object other) {
         if (other == null) {
             return false;
@@ -47,11 +43,7 @@ public class ShapeDescriptor implements Cloneable {
     }
 
     public ShapeDescriptor clone() {
-
-        ShapeDescriptor copy = new ShapeDescriptor();
-        copy.shape = shape;
-        copy.rgbColor = new RGB(rgbColor.red, rgbColor.green, rgbColor.blue);
-        copy.size = size;
+        ShapeDescriptor copy = new ShapeDescriptor(shape, new RGB(rgbColor.red, rgbColor.green, rgbColor.blue), size);
         return copy;
     }
 

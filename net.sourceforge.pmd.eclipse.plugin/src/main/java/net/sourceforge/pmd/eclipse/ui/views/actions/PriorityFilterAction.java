@@ -8,13 +8,13 @@ import org.apache.log4j.Logger;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ViewerFilter;
-import org.eclipse.swt.widgets.Display;
 
 import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.plugin.UISettings;
 import net.sourceforge.pmd.eclipse.runtime.cmd.ReviewCodeCmd;
 import net.sourceforge.pmd.eclipse.ui.priority.PriorityDescriptor;
+import net.sourceforge.pmd.eclipse.ui.priority.PriorityDescriptorCache;
 import net.sourceforge.pmd.eclipse.ui.views.PriorityFilter;
 import net.sourceforge.pmd.eclipse.ui.views.ViolationOutline;
 import net.sourceforge.pmd.eclipse.ui.views.ViolationOverview;
@@ -79,57 +79,8 @@ public class PriorityFilterAction extends Action {
      * Setup the Actions Look by giving the right Image, Text and ToolTip-Text to it, depending on its Priority
      */
     private void setupActionLook() {
-        // ImageDescriptor image = null;
-        // String text = null;
-        // String tooltipText = null;
-        //
-        // // we set the Look - meaning Image, Text and ToolTip-Text -
-        // // depending on the Action's Priority
-        // switch (priority.intValue()) {
-        // case 1:
-        // image =
-        // PMDPlugin.getImageDescriptor(PMDUiConstants.ICON_BUTTON_PRIO1);
-        // text =
-        // AbstractPMDAction.getString(StringKeys.MSGKEY_VIEW_FILTER_PRIORITY_1);
-        // tooltipText =
-        // AbstractPMDAction.getString(StringKeys.MSGKEY_VIEW_TOOLTIP_FILTER_PRIORITY_1);
-        // break;
-        // case 2:
-        // image =
-        // PMDPlugin.getImageDescriptor(PMDUiConstants.ICON_BUTTON_PRIO2);
-        // text =
-        // AbstractPMDAction.getString(StringKeys.MSGKEY_VIEW_FILTER_PRIORITY_2);
-        // tooltipText =
-        // AbstractPMDAction.getString(StringKeys.MSGKEY_VIEW_TOOLTIP_FILTER_PRIORITY_2);
-        // break;
-        // case 3:
-        // image =
-        // PMDPlugin.getImageDescriptor(PMDUiConstants.ICON_BUTTON_PRIO3);
-        // text =
-        // AbstractPMDAction.getString(StringKeys.MSGKEY_VIEW_FILTER_PRIORITY_3);
-        // tooltipText =
-        // AbstractPMDAction.getString(StringKeys.MSGKEY_VIEW_TOOLTIP_FILTER_PRIORITY_3);
-        // break;
-        // case 4:
-        // image =
-        // PMDPlugin.getImageDescriptor(PMDUiConstants.ICON_BUTTON_PRIO4);
-        // text =
-        // AbstractPMDAction.getString(StringKeys.MSGKEY_VIEW_FILTER_PRIORITY_4);
-        // tooltipText =
-        // AbstractPMDAction.getString(StringKeys.MSGKEY_VIEW_TOOLTIP_FILTER_PRIORITY_4);
-        // break;
-        // case 5:
-        // image =
-        // PMDPlugin.getImageDescriptor(PMDUiConstants.ICON_BUTTON_PRIO5);
-        // text =
-        // AbstractPMDAction.getString(StringKeys.MSGKEY_VIEW_FILTER_PRIORITY_5);
-        // tooltipText =
-        // AbstractPMDAction.getString(StringKeys.MSGKEY_VIEW_TOOLTIP_FILTER_PRIORITY_5);
-        // break;
-        // }
-
-        PriorityDescriptor desc = UISettings.descriptorFor(priority);
-        setImageDescriptor(ImageDescriptor.createFromImage(desc.getImage(Display.getCurrent())));
+        PriorityDescriptor desc = PriorityDescriptorCache.INSTANCE.descriptorFor(priority);
+        setImageDescriptor(ImageDescriptor.createFromImage(desc.getImage(16)));
         setText(desc.label);
         String toolTip = String.format(desc.filterText, UISettings.labelFor(priority));
         setToolTipText(toolTip);

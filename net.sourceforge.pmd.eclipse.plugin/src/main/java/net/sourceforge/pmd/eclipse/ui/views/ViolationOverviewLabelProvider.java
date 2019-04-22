@@ -8,9 +8,12 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Locale;
 
+import org.eclipse.jface.viewers.ITableLabelProvider;
+import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
 
 import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.runtime.PMDRuntimeConstants;
 import net.sourceforge.pmd.eclipse.ui.PMDUiConstants;
@@ -19,6 +22,7 @@ import net.sourceforge.pmd.eclipse.ui.model.FileRecord;
 import net.sourceforge.pmd.eclipse.ui.model.FileToMarkerRecord;
 import net.sourceforge.pmd.eclipse.ui.model.MarkerRecord;
 import net.sourceforge.pmd.eclipse.ui.model.PackageRecord;
+import net.sourceforge.pmd.eclipse.ui.priority.PriorityDescriptorCache;
 
 /**
  * Provides the Violation Overview with Texts and Images
@@ -26,7 +30,7 @@ import net.sourceforge.pmd.eclipse.ui.model.PackageRecord;
  * @author SebastianRaffel ( 09.05.2005 ), Philippe Herlin
  *
  */
-public class ViolationOverviewLabelProvider extends AbstractViolationLabelProvider {
+public class ViolationOverviewLabelProvider extends LabelProvider implements ITableLabelProvider {
 
     private static final String KEY_IMAGE_PACKAGE = "package";
     private static final String KEY_IMAGE_JAVAFILE = "javafile";
@@ -59,7 +63,8 @@ public class ViolationOverviewLabelProvider extends AbstractViolationLabelProvid
             } else if (element instanceof MarkerRecord) {
                 MarkerRecord markerRecord = (MarkerRecord) element;
                 int priority = markerRecord.getPriority();
-                image = getPriorityImage(priority);
+                // image must be 16x16 pixels, since the other images in the table are 16x16 as well (ICON_PACKAGE)
+                image = PriorityDescriptorCache.INSTANCE.descriptorFor(RulePriority.valueOf(priority)).getImage(16);
             }
         }
 
@@ -210,7 +215,7 @@ public class ViolationOverviewLabelProvider extends AbstractViolationLabelProvid
     }
 
     /**
-     * Return the label for the Vioaltions per Method column.
+     * Return the label for the Violations per Method column.
      *
      * @param element
      * @return

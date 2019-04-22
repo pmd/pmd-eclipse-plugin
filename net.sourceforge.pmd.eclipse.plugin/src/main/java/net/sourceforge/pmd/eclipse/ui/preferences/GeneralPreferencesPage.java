@@ -45,7 +45,6 @@ import org.eclipse.swt.widgets.Scale;
 import org.eclipse.swt.widgets.Spinner;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.dialogs.PreferencesUtil;
@@ -57,7 +56,6 @@ import net.sourceforge.pmd.eclipse.plugin.UISettings;
 import net.sourceforge.pmd.eclipse.runtime.builder.MarkerUtil;
 import net.sourceforge.pmd.eclipse.runtime.preferences.IPreferences;
 import net.sourceforge.pmd.eclipse.ui.BasicTableLabelProvider;
-import net.sourceforge.pmd.eclipse.ui.RuleLabelDecorator;
 import net.sourceforge.pmd.eclipse.ui.Shape;
 import net.sourceforge.pmd.eclipse.ui.ShapePicker;
 import net.sourceforge.pmd.eclipse.ui.model.RootRecord;
@@ -817,35 +815,19 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
     }
 
     private void updateMarkerIcons() {
-
         if (!PriorityDescriptorCache.INSTANCE.hasChanges()) {
             return;
         }
 
-        // TODO show in UI...could take a while to update
-
-        System.out.println("updating icons");
-
         PriorityDescriptorCache.INSTANCE.storeInPreferences();
-        UISettings.createRuleMarkerIcons(getShell().getDisplay());
-        UISettings.reloadPriorities();
-
-        // ensure that the decorator gets these new images...
-        RuleLabelDecorator decorator = PMDPlugin.getDefault().ruleLabelDecorator();
-        if (decorator != null) {
-            decorator.reloadDecorators();
-        }
 
         RootRecord root = new RootRecord(ResourcesPlugin.getWorkspace().getRoot());
         Set<IFile> files = MarkerUtil.allMarkedFiles(root);
         PMDPlugin.getDefault().changedFiles(files);
-        
+
         /* Refresh the views to pick up the marker change */ 
         PMDPlugin.getDefault().refreshView(PMDPlugin.VIOLATIONS_OVERVIEW_ID); 
         PMDPlugin.getDefault().refreshView(PMDPlugin.VIOLATIONS_OUTLINE_ID); 
-        PMDPlugin.getDefault().refreshView(IPageLayout.ID_PROJECT_EXPLORER); 
-        PMDPlugin.getDefault().refreshView(IPageLayout.ID_OUTLINE); 
-        
     }
 
     public boolean performCancel() {

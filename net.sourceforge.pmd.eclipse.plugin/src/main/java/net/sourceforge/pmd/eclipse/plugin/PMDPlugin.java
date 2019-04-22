@@ -81,6 +81,7 @@ import net.sourceforge.pmd.eclipse.ui.RuleLabelDecorator;
 import net.sourceforge.pmd.eclipse.ui.ShapePainter;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
 import net.sourceforge.pmd.eclipse.ui.nls.StringTable;
+import net.sourceforge.pmd.eclipse.ui.priority.PriorityDescriptorCache;
 import net.sourceforge.pmd.eclipse.util.ResourceManager;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
@@ -330,8 +331,8 @@ public class PMDPlugin extends AbstractUIPlugin {
      *  
      * @param viewId id of the view 
      */ 
-    public void refreshView(final String viewId) { 
-        Display.getDefault().asyncExec(new Runnable() { 
+    public void refreshView(final String viewId) {
+        Display.getCurrent().asyncExec(new Runnable() {
             @Override 
             public void run() { 
                 try { 
@@ -371,6 +372,7 @@ public class PMDPlugin extends AbstractUIPlugin {
         disposeResources();
         ShapePainter.disposeAll();
         ResourceManager.dispose();
+        PriorityDescriptorCache.INSTANCE.dispose();
         super.stop(context);
     }
 
@@ -734,5 +736,4 @@ public class PMDPlugin extends AbstractUIPlugin {
 
         decorator.changed(changes);
     }
-
 }

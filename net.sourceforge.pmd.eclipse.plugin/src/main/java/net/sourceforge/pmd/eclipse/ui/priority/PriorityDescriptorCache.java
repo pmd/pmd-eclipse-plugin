@@ -19,13 +19,12 @@ import net.sourceforge.pmd.eclipse.runtime.preferences.IPreferencesManager;
  * @author Brian Remedios
  */
 public class PriorityDescriptorCache {
-
     private Map<RulePriority, PriorityDescriptor> uiDescriptorsByPriority;
 
     public static final PriorityDescriptorCache INSTANCE = new PriorityDescriptorCache();
 
     private PriorityDescriptorCache() {
-        uiDescriptorsByPriority = new HashMap<RulePriority, PriorityDescriptor>(5);
+        uiDescriptorsByPriority = new HashMap<RulePriority, PriorityDescriptor>(RulePriority.values().length);
         loadFromPreferences();
     }
 
@@ -33,32 +32,34 @@ public class PriorityDescriptorCache {
         return PMDPlugin.getDefault().getPreferencesManager();
     }
 
+    @Deprecated
     public void dumpTo(PrintStream out) {
-
         for (Map.Entry<RulePriority, PriorityDescriptor> entry : uiDescriptorsByPriority.entrySet()) {
             out.println(entry.getKey() + " : " + entry.getValue());
         }
     }
 
     public void loadFromPreferences() {
-
         IPreferences preferences = preferencesManager().loadPreferences();
         for (RulePriority rp : UISettings.currentPriorities(true)) {
+            // note: the priority descriptors are cloned here, so that any changes to them
+            // does not automatically get stored. Changes might occur while configuring the
+            // preferences, but the user might cancel.
             uiDescriptorsByPriority.put(rp, preferences.getPriorityDescriptor(rp).clone());
         }
+        refreshImages();
     }
 
     public void storeInPreferences() {
-
         IPreferencesManager mgr = preferencesManager();
-
         IPreferences prefs = mgr.loadPreferences();
 
         for (Map.Entry<RulePriority, PriorityDescriptor> entry : uiDescriptorsByPriority.entrySet()) {
             prefs.setPriorityDescriptor(entry.getKey(), entry.getValue());
         }
-
-        mgr.storePreferences(prefs);
+        prefs.sync();
+        // recreate images with the changed settings
+        refreshImages();
     }
 
     public PriorityDescriptor descriptorFor(RulePriority priority) {
@@ -66,17 +67,28 @@ public class PriorityDescriptorCache {
     }
 
     public boolean hasChanges() {
-
-        IPreferences preferences = preferencesManager().reloadPreferences();
+        IPreferences currentPreferences = preferencesManager().loadPreferences();
 
         for (RulePriority rp : UISettings.currentPriorities(true)) {
             PriorityDescriptor newOne = uiDescriptorsByPriority.get(rp);
-            PriorityDescriptor currentOne = preferences.getPriorityDescriptor(rp);
+            PriorityDescriptor currentOne = currentPreferences.getPriorityDescriptor(rp);
             if (newOne.equals(currentOne)) {
                 continue;
             }
             return true;
         }
         return false;
+    }
+
+    public void dispose() {
+        for (PriorityDescriptor pd : uiDescriptorsByPriority.values()) {
+            pd.dispose();
+        }
+    }
+
+    private void refreshImages() {
+        for (PriorityDescriptor pd : uiDescriptorsByPriority.values()) {
+            pd.refreshImages();
+        }
     }
 }

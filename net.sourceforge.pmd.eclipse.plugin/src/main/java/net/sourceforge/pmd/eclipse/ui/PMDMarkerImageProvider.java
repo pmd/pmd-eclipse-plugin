@@ -9,7 +9,8 @@ import org.eclipse.jface.text.source.Annotation;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.texteditor.IAnnotationImageProvider;
 
-import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
+import net.sourceforge.pmd.RulePriority;
+import net.sourceforge.pmd.eclipse.ui.priority.PriorityDescriptorCache;
 
 public class PMDMarkerImageProvider implements IAnnotationImageProvider {
 
@@ -25,19 +26,20 @@ public class PMDMarkerImageProvider implements IAnnotationImageProvider {
 
     @Override
     public Image getManagedImage(Annotation annotation) {
-        PMDPlugin plugin = PMDPlugin.getDefault();
         String type = annotation.getType();
+        RulePriority priority = RulePriority.HIGH;
+
         if ("net.sourceforge.pmd.eclipse.plugin.annotation.prio1".equals(type)) {
-            return plugin.getImage(type, "icons/markerP1.png");
+            priority = RulePriority.HIGH;
         } else if ("net.sourceforge.pmd.eclipse.plugin.annotation.prio2".equals(type)) {
-            return plugin.getImage(type, "icons/markerP2.png");
+            priority = RulePriority.MEDIUM_HIGH;
         } else if ("net.sourceforge.pmd.eclipse.plugin.annotation.prio3".equals(type)) {
-            return plugin.getImage(type, "icons/markerP3.png");
+            priority = RulePriority.MEDIUM;
         } else if ("net.sourceforge.pmd.eclipse.plugin.annotation.prio4".equals(type)) {
-            return plugin.getImage(type, "icons/markerP4.png");
+            priority = RulePriority.MEDIUM_LOW;
         } else if ("net.sourceforge.pmd.eclipse.plugin.annotation.prio5".equals(type)) {
-            return plugin.getImage(type, "icons/markerP5.png");
+            priority = RulePriority.LOW;
         }
-        return null;
+        return PriorityDescriptorCache.INSTANCE.descriptorFor(priority).getAnnotationImage();
     }
 }

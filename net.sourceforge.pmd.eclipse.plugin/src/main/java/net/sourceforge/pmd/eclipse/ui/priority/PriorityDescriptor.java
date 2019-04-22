@@ -5,6 +5,8 @@
 package net.sourceforge.pmd.eclipse.ui.priority;
 
 import java.util.EnumSet;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Image;
@@ -138,40 +140,41 @@ public class PriorityDescriptor implements Cloneable {
         sb.append(shape.size).append(DELIMITER);
     }
 
+    @Deprecated
     public ImageDescriptor getImageDescriptor() {
         return PMDPlugin.getImageDescriptor(iconId);
     }
 
     public PriorityDescriptor clone() {
-
         PriorityDescriptor copy = new PriorityDescriptor(priority);
         copy.label = label;
         copy.description = description;
         copy.filterText = filterText;
         copy.iconId = iconId;
         copy.shape = shape.clone();
-
         return copy;
     }
 
+    /**
+     * @deprecated Use {@link #getAnnotationImage()} or {@link #getAnnotationImageDescriptor()} instead.
+     */
     public Image getImage(Display display) {
-
-        return ShapePainter.newDrawnImage(display, shape.size, shape.size, shape.shape, PROTO_TRANSPARENT_COLOR,
-                shape.rgbColor // fillColour
-        );
+        return createImage();
     }
 
+    /**
+     * @deprecated Use {@link #getAnnotationImage()} or {@link #getAnnotationImageDescriptor()} instead.
+     */
+    @Deprecated
     public Image getImage(Display display, int maxDimension) {
-
         return ShapePainter.newDrawnImage(display, Math.min(shape.size, maxDimension),
                 Math.min(shape.size, maxDimension), shape.shape, PROTO_TRANSPARENT_COLOR, shape.rgbColor // fillColour
         );
     }
 
     public String toString() {
-
         StringBuilder sb = new StringBuilder();
-        sb.append("RuleDescriptor: ");
+        sb.append("PriorityDescriptor: ");
         sb.append(priority).append(", ");
         sb.append(label).append(", ");
         sb.append(description).append(", ");
@@ -179,5 +182,74 @@ public class PriorityDescriptor implements Cloneable {
         sb.append(iconId).append(", ");
         sb.append(shape);
         return sb.toString();
+    }
+
+    private Map<Integer, Image> cachedImages = new HashMap<>(3);
+    private static final int ANNOTATION_IMAGE_DIMENSION = 9;
+
+    public Image getAnnotationImage() {
+        return getImage(ANNOTATION_IMAGE_DIMENSION);
+    }
+
+    public ImageDescriptor getAnnotationImageDescriptor() {
+        return ImageDescriptor.createFromImage(getAnnotationImage());
+    }
+
+    private Image createImage(final int size) {
+        return ShapePainter.newDrawnImage(Display.getCurrent(), size, size, shape.shape, PROTO_TRANSPARENT_COLOR,
+                shape.rgbColor // fillColour
+        );
+    }
+
+    /**
+     * Gets the marker image in a specific size. The image is cached and reused.
+     * @param size
+     * @return
+     */
+    public Image getImage(int size) {
+        Image cached = cachedImages.get(size);
+        if (cached == null) {
+            cached = createImage(size);
+            cachedImages.put(size, cached);
+        }
+        return cached;
+    }
+
+    /**
+     * Creates a new image with the current setting. This is needed during the configuration, when
+     * the priority descriptor is changed, but not persisted yet. The cached image returned by
+     * {@link #getAnnotationImage()} would not reflect that change and a preview is not possible.
+     *
+     * <p>The image is not cached.
+     * @return
+     */
+    public Image createImage() {
+        return createImage(shape.size);
+    }
+
+    public void dispose() {
+        for (Image image : cachedImages.values()) {
+            image.dispose();
+        }
+        cachedImages.clear();
+    }
+
+    /**
+     * Eagerly create the images. This must be called in a UI thread!
+     */
+    public void refreshImages() {
+        if (Display.getCurrent() == null) {
+            throw new IllegalStateException("Must be called in the UI thread");
+        }
+
+        dispose();
+        Image image = getAnnotationImage();
+        if (image == null) {
+            throw new RuntimeException("Could not create annotation image");
+        }
+        image = getImage(16);
+        if (image == null) {
+            throw new RuntimeException("Could not create marker image");
+        }
     }
 }

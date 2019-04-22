@@ -7,7 +7,6 @@ package net.sourceforge.pmd.eclipse.ui.priority;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.RGB;
-import org.eclipse.swt.widgets.Display;
 
 import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.eclipse.ui.ItemColumnDescriptor;
@@ -62,7 +61,9 @@ public interface PriorityColumnUI {
 
     ItemFieldAccessor<Image, RulePriority> IMAGE_ACC = new ItemFieldAccessorAdapter<Image, RulePriority>(null) {
         public Image imageFor(RulePriority priority) {
-            return PriorityDescriptorCache.INSTANCE.descriptorFor(priority).getImage(Display.getCurrent());
+            // Note: Not using the cached annotation image, but create a new image based on the
+            // current priority descriptor settings.
+            return PriorityDescriptorCache.INSTANCE.descriptorFor(priority).createImage();
         }
     };
 
