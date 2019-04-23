@@ -43,7 +43,6 @@ import net.sourceforge.pmd.eclipse.ui.model.MarkerRecord;
 import net.sourceforge.pmd.eclipse.ui.model.PackageRecord;
 import net.sourceforge.pmd.eclipse.ui.model.RootRecord;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
-import net.sourceforge.pmd.eclipse.util.PriorityUtil;
 import net.sourceforge.pmd.util.NumericConstants;
 
 /**
@@ -96,7 +95,7 @@ public class ViolationOverview extends ViewPart implements ISelectionProvider, I
         root = (RootRecord) getInitialInput();
         contentProvider = new ViolationOverviewContentProvider(this);
         labelProvider = new ViolationOverviewLabelProvider(this);
-        priorityFilter = PriorityUtil.getPriorityFilter();
+        priorityFilter = PriorityFilter.getInstance();
         projectFilter = new ProjectFilter();
         doubleClickListener = new ViolationOverviewDoubleClickListener(this);
         menuManager = new ViolationOverviewMenuManager(this);
@@ -106,7 +105,7 @@ public class ViolationOverview extends ViewPart implements ISelectionProvider, I
         // we can load the Memento here
         memento = new ViewMemento(PMDUiConstants.MEMENTO_OVERVIEW_FILE);
         if (memento != null) {
-            rememberFilterSettings();
+            restoreFilterSettings();
         }
     }
 
@@ -141,7 +140,7 @@ public class ViolationOverview extends ViewPart implements ISelectionProvider, I
 
         // load the State from a Memento into the View if there is one
         if (memento != null) {
-            rememberTreeSettings();
+            restoreTreeSettings();
         }
     }
 
@@ -458,7 +457,7 @@ public class ViolationOverview extends ViewPart implements ISelectionProvider, I
      * must be sure memento is not null.
      *
      */
-    private void rememberFilterSettings() {
+    private void restoreFilterSettings() {
 
         // Provide the Filters with their last State
         List<Integer> priorityList = memento.getIntegerList(PRIORITY_LIST);
@@ -491,7 +490,7 @@ public class ViolationOverview extends ViewPart implements ISelectionProvider, I
      * one must be sure memento is not null.
      *
      */
-    private void rememberTreeSettings() {
+    private void restoreTreeSettings() {
 
         // the Memento sets the Widths of Columns
         List<Integer> widthList = memento.getIntegerList(COLUMN_WIDTHS);

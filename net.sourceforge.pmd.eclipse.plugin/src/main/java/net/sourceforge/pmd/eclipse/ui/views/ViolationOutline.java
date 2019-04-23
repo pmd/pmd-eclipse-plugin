@@ -78,7 +78,7 @@ public class ViolationOutline extends AbstractPMDPagebookView implements ISelect
     public void init(IViewSite site) throws PartInitException {
         super.init(site);
 
-        priorityFilter = new PriorityFilter();
+        priorityFilter = PriorityFilter.getInstance();
 
         List<Integer> priorityList = getIntegerList(PRIORITY_LIST);
         if (!priorityList.isEmpty()) {

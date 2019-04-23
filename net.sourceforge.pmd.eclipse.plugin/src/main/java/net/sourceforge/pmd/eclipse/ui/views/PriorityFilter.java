@@ -12,6 +12,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 
+import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.plugin.UISettings;
 import net.sourceforge.pmd.eclipse.ui.PMDUiConstants;
@@ -23,7 +24,8 @@ import net.sourceforge.pmd.eclipse.ui.model.PackageRecord;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
 
 /**
- * The ViewerFilter for Priorities
+ * The ViewerFilter for Priorities.
+ * This is used for both Violation Outline and Violation Overview.
  *
  * @author SebastianRaffel ( 17.05.2005 )
  */
@@ -31,16 +33,21 @@ public class PriorityFilter extends ViewerFilter {
 
     private List<Integer> priorityList;
 
+    private static final PriorityFilter INSTANCE = new PriorityFilter();
+
     /**
      * Constructor
      *
      * @author SebastianRaffel ( 29.06.2005 )
+     * @deprecated will be made private in the future.
      */
+    @Deprecated
     public PriorityFilter() {
-        super();
-        // priorityList = new
-        // ArrayList<Integer>(Arrays.asList(PMDPlugin.getDefault().getPriorityValues()));
         priorityList = UISettings.getPriorityIntValues();
+    }
+
+    public static PriorityFilter getInstance() {
+        return INSTANCE;
     }
 
     /*
@@ -70,12 +77,7 @@ public class PriorityFilter extends ViewerFilter {
         } else if (element instanceof MarkerRecord) {
             // ViolationOverview
             final MarkerRecord markerRec = (MarkerRecord) element;
-            for (Integer priority : priorityList) {
-                if (markerRec.getPriority() == priority.intValue()) {
-                    select = true;
-                    break;
-                }
-            }
+            select = isPriorityEnabled(markerRec.getPriority());
         } else if (element instanceof FileToMarkerRecord) {
             select = true;
         }
@@ -94,6 +96,10 @@ public class PriorityFilter extends ViewerFilter {
             }
         }
         return isEnabled;
+    }
+
+    public boolean isPriorityEnabled(RulePriority priority) {
+        return isPriorityEnabled(priority.getPriority());
     }
 
     private boolean hasMarkersToShow(AbstractPMDRecord record) {

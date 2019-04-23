@@ -27,7 +27,6 @@ import net.sourceforge.pmd.eclipse.ui.views.actions.CollapseAllAction;
 import net.sourceforge.pmd.eclipse.ui.views.actions.PriorityFilterAction;
 import net.sourceforge.pmd.eclipse.ui.views.actions.ProjectFilterAction;
 import net.sourceforge.pmd.eclipse.ui.views.actions.ViolationPresentationTypeAction;
-import net.sourceforge.pmd.eclipse.util.PriorityUtil;
 
 /**
  *
@@ -54,7 +53,7 @@ public class ViolationOverviewMenuManager {
         // create the Actions for the PriorityFilter
         for (int i = 0; i < priorities.length; i++) {
             priorityActions[i] = new PriorityFilterAction(priorities[i], overview); // NOPMD by Herlin on 09/10/06 15:02
-            priorityActions[i].setChecked(PriorityUtil.isPriorityActive(priorities[i]));
+            priorityActions[i].setChecked(PriorityFilter.getInstance().isPriorityEnabled(priorities[i]));
         }
     }
 

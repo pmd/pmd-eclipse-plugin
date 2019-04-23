@@ -17,10 +17,10 @@ import net.sourceforge.pmd.eclipse.ui.views.PriorityFilter;
  * 
  * @author Phillip Krall
  *
+ * @deprecated use directly {@link PriorityFilter} instead.
  */
+@Deprecated
 public class PriorityUtil {
-
-    private static PriorityFilter priorityFilter = new PriorityFilter();
 
     private PriorityUtil() {
     }
@@ -30,32 +30,43 @@ public class PriorityUtil {
      * 
      * @param priority
      * @return
+     * @deprecated use {@link PriorityFilter#isPriorityEnabled(RulePriority)} instead.
      */
+    @Deprecated
     public static boolean isPriorityActive(RulePriority priority) {
-        return getActivePriorites().contains(priority);
+        return PriorityFilter.getInstance().isPriorityEnabled(priority);
     }
 
     /**
      * Get all the priorities that are turned on right now.
      * 
      * @return
+     * @deprecated not needed, will be removed.
      */
+    @Deprecated
     public static List<RulePriority> getActivePriorites() {
         List<RulePriority> active = new ArrayList<RulePriority>();
         for (RulePriority priority : UISettings.currentPriorities(true)) {
-            if (priorityFilter.getPriorityFilterList().contains(priority.getPriority())) {
+            if (PriorityFilter.getInstance().getPriorityFilterList().contains(priority.getPriority())) {
                 active.add(priority);
             }
         }
         return active;
     }
 
+    /**
+     * @deprecated use {@link PriorityFilter#getInstance()} instead.
+     */
+    @Deprecated
     public static PriorityFilter getPriorityFilter() {
-        return priorityFilter;
+        return PriorityFilter.getInstance();
     }
 
+    /**
+     * @deprecated to be removed without replacement.
+     */
+    @Deprecated
     public static void setPriorityFilter(PriorityFilter priorityFilter) {
-        PriorityUtil.priorityFilter = priorityFilter;
     }
 
 }
