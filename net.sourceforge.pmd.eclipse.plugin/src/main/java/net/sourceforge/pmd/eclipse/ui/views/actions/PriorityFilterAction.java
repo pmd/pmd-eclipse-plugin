@@ -18,6 +18,7 @@ import net.sourceforge.pmd.eclipse.ui.priority.PriorityDescriptorCache;
 import net.sourceforge.pmd.eclipse.ui.views.PriorityFilter;
 import net.sourceforge.pmd.eclipse.ui.views.ViolationOutline;
 import net.sourceforge.pmd.eclipse.ui.views.ViolationOverview;
+import net.sourceforge.pmd.eclipse.ui.views.PriorityFilter.PriorityFilterChangeListener;
 
 /**
  * Filters elements by the Marker priorities
@@ -25,7 +26,7 @@ import net.sourceforge.pmd.eclipse.ui.views.ViolationOverview;
  * @author SebastianRaffel ( 22.05.2005 )
  * @author bremedios (15.9.2010)
  */
-public class PriorityFilterAction extends Action {
+public class PriorityFilterAction extends Action implements PriorityFilterChangeListener {
 
     private ViolationOutline outlineView;
     private ViolationOverview overviewView;
@@ -71,6 +72,7 @@ public class PriorityFilterAction extends Action {
         for (Object filter : filters) {
             if (filter instanceof PriorityFilter) {
                 priorityFilter = (PriorityFilter) filter;
+                priorityFilter.addPriorityFilterChangeListener(this);
             }
         }
     }
@@ -119,4 +121,17 @@ public class PriorityFilterAction extends Action {
         }
     }
 
+    @Override
+    public void priorityEnabled(RulePriority priority) {
+        if (this.priority == priority) {
+            this.setChecked(true);
+        }
+    }
+
+    @Override
+    public void priorityDisabled(RulePriority priority) {
+        if (this.priority == priority) {
+            this.setChecked(false);
+        }
+    }
 }

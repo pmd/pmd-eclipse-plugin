@@ -41,7 +41,7 @@ public class PriorityUtil {
      * Get all the priorities that are turned on right now.
      * 
      * @return
-     * @deprecated not needed, will be removed.
+     * @deprecated not needed, will be removed. Use {@link PriorityFilter#isPriorityEnabled(RulePriority)}.
      */
     @Deprecated
     public static List<RulePriority> getActivePriorites() {

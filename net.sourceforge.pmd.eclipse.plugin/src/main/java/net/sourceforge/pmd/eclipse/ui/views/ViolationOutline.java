@@ -135,13 +135,12 @@ public class ViolationOutline extends AbstractPMDPagebookView implements ISelect
      */
     private void addFilterControls() {
         IMenuManager manager = getViewSite().getActionBars().getMenuManager();
-        List<Integer> filterList = priorityFilter.getPriorityFilterList();
 
         // we add the PriorityFilter-Actions to this Menu
         RulePriority[] priorities = UISettings.currentPriorities(true);
         for (RulePriority priority : priorities) {
             Action filterAction = new PriorityFilterAction(priority, this);
-            if (filterList.contains(priority.getPriority())) {
+            if (priorityFilter.isPriorityEnabled(priority)) {
                 filterAction.setChecked(true);
             }
 

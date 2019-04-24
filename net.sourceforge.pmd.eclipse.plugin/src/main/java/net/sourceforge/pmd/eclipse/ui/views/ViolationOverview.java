@@ -342,7 +342,9 @@ public class ViolationOverview extends ViewPart implements ISelectionProvider, I
      * Delegate method for {@link ProjectFilter#getProjectFilterList()}.
      * 
      * @return project filter list
+     * @deprecated not needed - will be removed
      */
+    @Deprecated
     public List<Integer> getPriorityFilterList() {
         return priorityFilter.getPriorityFilterList();
     }

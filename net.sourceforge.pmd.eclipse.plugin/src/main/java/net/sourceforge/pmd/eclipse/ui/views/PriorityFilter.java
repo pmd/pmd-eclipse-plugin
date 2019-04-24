@@ -5,7 +5,11 @@
 package net.sourceforge.pmd.eclipse.ui.views;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.EnumSet;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.runtime.CoreException;
@@ -14,7 +18,6 @@ import org.eclipse.jface.viewers.ViewerFilter;
 
 import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
-import net.sourceforge.pmd.eclipse.plugin.UISettings;
 import net.sourceforge.pmd.eclipse.ui.PMDUiConstants;
 import net.sourceforge.pmd.eclipse.ui.model.AbstractPMDRecord;
 import net.sourceforge.pmd.eclipse.ui.model.FileRecord;
@@ -30,10 +33,11 @@ import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
  * @author SebastianRaffel ( 17.05.2005 )
  */
 public class PriorityFilter extends ViewerFilter {
-
-    private List<Integer> priorityList;
-
     private static final PriorityFilter INSTANCE = new PriorityFilter();
+
+    private final Set<RulePriority> enabledPriorities;
+
+    private Set<PriorityFilterChangeListener> listeners = Collections.synchronizedSet(new HashSet<PriorityFilterChangeListener>());
 
     /**
      * Constructor
@@ -43,7 +47,7 @@ public class PriorityFilter extends ViewerFilter {
      */
     @Deprecated
     public PriorityFilter() {
-        priorityList = UISettings.getPriorityIntValues();
+        enabledPriorities = Collections.synchronizedSet(EnumSet.allOf(RulePriority.class));
     }
 
     public static PriorityFilter getInstance() {
@@ -88,12 +92,7 @@ public class PriorityFilter extends ViewerFilter {
         boolean isEnabled = false;
         // for some unknown reasons markerPrio may be null.
         if (markerPrio != null) {
-            for (Integer priority : priorityList) {
-                if (markerPrio.equals(priority)) {
-                    isEnabled = true;
-                    break;
-                }
-            }
+            isEnabled = enabledPriorities.contains(RulePriority.valueOf(markerPrio));
         }
         return isEnabled;
     }
@@ -104,8 +103,8 @@ public class PriorityFilter extends ViewerFilter {
 
     private boolean hasMarkersToShow(AbstractPMDRecord record) {
         boolean hasMarkers = false;
-        for (Integer priority : priorityList) {
-            final IMarker[] markers = record.findMarkersByAttribute(PMDUiConstants.KEY_MARKERATT_PRIORITY, priority);
+        for (RulePriority priority : enabledPriorities) {
+            final IMarker[] markers = record.findMarkersByAttribute(PMDUiConstants.KEY_MARKERATT_PRIORITY, priority.getPriority());
             if (markers.length > 0) {
                 hasMarkers = true;
                 break;
@@ -121,7 +120,10 @@ public class PriorityFilter extends ViewerFilter {
      *            an ArrayLust of Integers
      */
     public void setPriorityFilterList(List<Integer> newList) {
-        priorityList = newList;
+        enabledPriorities.clear();
+        for (Integer priority : newList) {
+            enabledPriorities.add(RulePriority.valueOf(priority));
+        }
     }
 
     /**
@@ -130,6 +132,10 @@ public class PriorityFilter extends ViewerFilter {
      * @return an List of Integers
      */
     public List<Integer> getPriorityFilterList() {
+        List<Integer> priorityList = new ArrayList<>();
+        for (RulePriority priority : enabledPriorities) {
+            priorityList.add(priority.getPriority());
+        }
         return priorityList;
     }
 
@@ -139,7 +145,12 @@ public class PriorityFilter extends ViewerFilter {
      * @param priority
      */
     public void addPriorityToList(Integer priority) {
-        priorityList.add(priority);
+        if (priority != null) {
+            RulePriority rulePriority = RulePriority.valueOf(priority);
+            if (enabledPriorities.add(rulePriority)) {
+                notifyPriorityEnabled(rulePriority);
+            }
+        }
     }
 
     /**
@@ -148,7 +159,12 @@ public class PriorityFilter extends ViewerFilter {
      * @param priority
      */
     public void removePriorityFromList(Integer priority) {
-        priorityList.remove(priority);
+        if (priority != null) {
+            RulePriority rulePriority = RulePriority.valueOf(priority);
+            if (enabledPriorities.remove(rulePriority)) {
+                notifyPriorityDisabled(rulePriority);
+            }
+        }
     }
 
     /**
@@ -159,7 +175,9 @@ public class PriorityFilter extends ViewerFilter {
      *            the List-String
      * @param splitter,
      *            the List splitter (in general ",")
+     * @deprecated will be removed
      */
+    @Deprecated
     public void setPriorityFilterListFromString(String newList, String splitter) {
         if (newList != null) {
             final String[] newArray = newList.split(splitter);
@@ -169,7 +187,7 @@ public class PriorityFilter extends ViewerFilter {
                 priorities.add(Integer.valueOf(element));
             }
 
-            priorityList = priorities;
+            setPriorityFilterList(priorities);
         }
     }
 
@@ -180,16 +198,52 @@ public class PriorityFilter extends ViewerFilter {
      * @param splitter,
      *            The String splitter (in general ",")
      * @return the List-String
+     * @deprecated will be removed
      */
+    @Deprecated
     public String getPriorityFilterListAsString(String splitter) {
-        if (priorityList.isEmpty()) {
+        if (enabledPriorities.isEmpty()) {
             return "";
         }
 
-        final StringBuilder listString = new StringBuilder(priorityList.get(0));
-        for (int i = 1; i < priorityList.size(); i++) {
-            listString.append(splitter).append(priorityList.get(i));
+        StringBuilder listString = new StringBuilder();
+        int i = 0;
+        for (RulePriority priority : enabledPriorities) {
+            if (i > 0) {
+                listString.append(splitter);
+            }
+            listString.append(priority.getPriority());
+            i++;
         }
         return listString.toString();
+    }
+
+    public void addPriorityFilterChangeListener(PriorityFilterChangeListener listener) {
+        listeners.add(listener);
+    }
+
+    public void removePriorityFilterChangeListener(PriorityFilterChangeListener listener) {
+        listeners.remove(listener);
+    }
+
+    private void notifyPriorityEnabled(RulePriority priority) {
+        synchronized (listeners) {
+            for (PriorityFilterChangeListener listener : listeners) {
+                listener.priorityEnabled(priority);
+            }
+        }
+    }
+
+    private void notifyPriorityDisabled(RulePriority priority) {
+        synchronized (listeners) {
+            for (PriorityFilterChangeListener listener : listeners) {
+                listener.priorityDisabled(priority);
+            }
+        }
+    }
+
+    public interface PriorityFilterChangeListener {
+        void priorityEnabled(RulePriority priority);
+        void priorityDisabled(RulePriority priority);
     }
 }
