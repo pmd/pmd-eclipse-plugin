@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.eclipse.ui.views;
 
-import java.util.List;
-
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
@@ -49,7 +47,6 @@ public class ViolationOutline extends AbstractPMDPagebookView implements ISelect
     private FileRecord resourceRecord;
     private PriorityFilter priorityFilter;
 
-    protected static final String PRIORITY_LIST = "priorityFilterList";
     protected static final String COLUMN_WIDTHS = "tableColumnWidths";
     protected static final String COLUMN_SORTER = "tableColumnSorter";
 
@@ -77,19 +74,11 @@ public class ViolationOutline extends AbstractPMDPagebookView implements ISelect
     @Override
     public void init(IViewSite site) throws PartInitException {
         super.init(site);
-
         priorityFilter = PriorityFilter.getInstance();
-
-        List<Integer> priorityList = getIntegerList(PRIORITY_LIST);
-        if (!priorityList.isEmpty()) {
-            // set the loaded List for the Priority Filter
-            priorityFilter.setPriorityFilterList(priorityList);
-        }
     }
 
     @Override
     public void dispose() {
-        save(PRIORITY_LIST, priorityFilter.getPriorityFilterList());
         super.dispose();
     }
 

@@ -7,9 +7,9 @@ package net.sourceforge.pmd.eclipse.ui.views;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumSet;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.runtime.CoreException;
@@ -30,14 +30,19 @@ import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
  * The ViewerFilter for Priorities.
  * This is used for both Violation Outline and Violation Overview.
  *
+ * <p>The current enabled filters are saved automatically in the preferences.
+ * See {@link #PREFERENCE_KEY}.
+ *
  * @author SebastianRaffel ( 17.05.2005 )
  */
 public class PriorityFilter extends ViewerFilter {
     private static final PriorityFilter INSTANCE = new PriorityFilter();
 
+    private static final String PREFERENCE_KEY = PriorityFilter.class.getName() + ".enabledPriorities";
+
     private final Set<RulePriority> enabledPriorities;
 
-    private Set<PriorityFilterChangeListener> listeners = Collections.synchronizedSet(new HashSet<PriorityFilterChangeListener>());
+    private Set<PriorityFilterChangeListener> listeners = new CopyOnWriteArraySet<>();
 
     /**
      * Constructor
@@ -52,6 +57,42 @@ public class PriorityFilter extends ViewerFilter {
 
     public static PriorityFilter getInstance() {
         return INSTANCE;
+    }
+
+    /**
+     * Initialize the priority filter by loading the preferences and making sure, that
+     * any change to the filter is stored to the preferences.
+     */
+    public final void initialize() {
+        addPriorityFilterChangeListener(new PriorityFilterChangeListener() {
+            @Override
+            public void priorityEnabled(RulePriority priority) {
+                saveToPreferenceStore();
+            }
+            @Override
+            public void priorityDisabled(RulePriority priority) {
+                saveToPreferenceStore();
+            }
+        });
+        loadFromPreferenceStore();
+    }
+
+    private void saveToPreferenceStore() {
+        StringBuilder asString = new StringBuilder(50);
+        for (RulePriority rulePriority : enabledPriorities) {
+            asString.append(rulePriority.name()).append(',');
+        }
+        PMDPlugin.getDefault().getPreferenceStore().setValue(PREFERENCE_KEY, asString.toString());
+    }
+
+    private void loadFromPreferenceStore() {
+        String priorities = PMDPlugin.getDefault().getPreferenceStore().getString(PREFERENCE_KEY);
+        if (priorities != null && !priorities.isEmpty()) {
+            enabledPriorities.clear();
+            for (String priority : priorities.split(",")) {
+                enabledPriorities.add(RulePriority.valueOf(priority));
+            }
+        }
     }
 
     /*
@@ -92,13 +133,13 @@ public class PriorityFilter extends ViewerFilter {
         boolean isEnabled = false;
         // for some unknown reasons markerPrio may be null.
         if (markerPrio != null) {
-            isEnabled = enabledPriorities.contains(RulePriority.valueOf(markerPrio));
+            isEnabled = isPriorityEnabled(RulePriority.valueOf(markerPrio));
         }
         return isEnabled;
     }
 
     public boolean isPriorityEnabled(RulePriority priority) {
-        return isPriorityEnabled(priority.getPriority());
+        return enabledPriorities.contains(priority);
     }
 
     private boolean hasMarkersToShow(AbstractPMDRecord record) {
@@ -118,7 +159,9 @@ public class PriorityFilter extends ViewerFilter {
      *
      * @param newList,
      *            an ArrayLust of Integers
+     * @deprecated will be removed. The enabled priorities are stored in the preferences automatically now.
      */
+    @Deprecated
     public void setPriorityFilterList(List<Integer> newList) {
         enabledPriorities.clear();
         for (Integer priority : newList) {
@@ -130,7 +173,9 @@ public class PriorityFilter extends ViewerFilter {
      * Gets the FilterList with the Priorities
      *
      * @return an List of Integers
+     * @deprecated will be removed. Use {@link #isPriorityEnabled(RulePriority)} instead.
      */
+    @Deprecated
     public List<Integer> getPriorityFilterList() {
         List<Integer> priorityList = new ArrayList<>();
         for (RulePriority priority : enabledPriorities) {
@@ -227,18 +272,14 @@ public class PriorityFilter extends ViewerFilter {
     }
 
     private void notifyPriorityEnabled(RulePriority priority) {
-        synchronized (listeners) {
-            for (PriorityFilterChangeListener listener : listeners) {
-                listener.priorityEnabled(priority);
-            }
+        for (PriorityFilterChangeListener listener : listeners) {
+            listener.priorityEnabled(priority);
         }
     }
 
     private void notifyPriorityDisabled(RulePriority priority) {
-        synchronized (listeners) {
-            for (PriorityFilterChangeListener listener : listeners) {
-                listener.priorityDisabled(priority);
-            }
+        for (PriorityFilterChangeListener listener : listeners) {
+            listener.priorityDisabled(priority);
         }
     }
 

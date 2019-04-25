@@ -32,6 +32,7 @@ import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.ViewPart;
 
+import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.runtime.builder.MarkerUtil;
 import net.sourceforge.pmd.eclipse.runtime.cmd.DeleteMarkersCommand;
@@ -71,7 +72,6 @@ public class ViolationOverview extends ViewPart implements ISelectionProvider, I
     private int showType;
 
     protected static final String PACKAGE_SWITCH = "packageSwitch";
-    protected static final String PRIORITY_LIST = "priorityFilterList";
     protected static final String PROJECT_LIST = "projectFilterList";
     protected static final String COLUMN_WIDTHS = "tableColumnWidths";
     protected static final String COLUMN_SORTER = "tableColumnSorter";
@@ -149,8 +149,6 @@ public class ViolationOverview extends ViewPart implements ISelectionProvider, I
      */
     @Override
     public void dispose() {
-        memento.putList(PRIORITY_LIST, priorityFilter.getPriorityFilterList());
-
         // on Dispose of the View we save its State into a Memento
 
         // we save the filtered Projects
@@ -302,10 +300,10 @@ public class ViolationOverview extends ViewPart implements ISelectionProvider, I
     public int getNumberOfFilteredViolations(AbstractPMDRecord record) {
         int number = 0;
 
-        List<Integer> filterList = priorityFilter.getPriorityFilterList();
-        for (int i = 0; i < filterList.size(); i++) {
-            Integer priority = filterList.get(i);
-            number += record.getNumberOfViolationsToPriority(priority.intValue(), getShowType() == SHOW_MARKERS_FILES);
+        for (RulePriority rulePriority : RulePriority.values()) {
+            if (priorityFilter.isPriorityEnabled(rulePriority)) {
+                number += record.getNumberOfViolationsToPriority(rulePriority.getPriority(), getShowType() == SHOW_MARKERS_FILES);
+            }
         }
         return number;
     }
@@ -460,13 +458,7 @@ public class ViolationOverview extends ViewPart implements ISelectionProvider, I
      *
      */
     private void restoreFilterSettings() {
-
         // Provide the Filters with their last State
-        List<Integer> priorityList = memento.getIntegerList(PRIORITY_LIST);
-        if (!priorityList.isEmpty()) {
-            priorityFilter.setPriorityFilterList(priorityList);
-        }
-        
         List<String> projectNames = memento.getStringList(PROJECT_LIST);
         if (!projectNames.isEmpty()) {
             List<AbstractPMDRecord> projectList = new ArrayList<AbstractPMDRecord>();

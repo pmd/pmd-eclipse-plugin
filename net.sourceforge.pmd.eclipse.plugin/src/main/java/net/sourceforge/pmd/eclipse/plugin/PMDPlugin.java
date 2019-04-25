@@ -82,6 +82,7 @@ import net.sourceforge.pmd.eclipse.ui.ShapePainter;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
 import net.sourceforge.pmd.eclipse.ui.nls.StringTable;
 import net.sourceforge.pmd.eclipse.ui.priority.PriorityDescriptorCache;
+import net.sourceforge.pmd.eclipse.ui.views.PriorityFilter;
 import net.sourceforge.pmd.eclipse.util.ResourceManager;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
@@ -127,6 +128,7 @@ public class PMDPlugin extends AbstractUIPlugin {
      * The constructor
      */
     public PMDPlugin() {
+        plugin = this;
     }
 
     public Color colorFor(RGB rgb) {
@@ -232,7 +234,6 @@ public class PMDPlugin extends AbstractUIPlugin {
      */
     public void start(BundleContext context) throws Exception {
         super.start(context);
-        plugin = this;
 
         // this needs to be executed before the preferences are loaded, because
         // the standard
@@ -252,6 +253,10 @@ public class PMDPlugin extends AbstractUIPlugin {
                 }
             }
         });
+
+        // the initialization can only take place, after the plugin has been started.
+        // otherwise the preferences are not available yet.
+        PriorityFilter.getInstance().initialize();
 
         version = context.getBundle().getHeaders().get("Bundle-Version");
     }
