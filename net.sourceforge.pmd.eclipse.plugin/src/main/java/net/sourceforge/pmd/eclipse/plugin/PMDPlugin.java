@@ -265,7 +265,9 @@ public class PMDPlugin extends AbstractUIPlugin {
      * Get a list of all the files that are open in eclipse currently
      * 
      * @return
+     * @deprecated will be removed since it is not needed
      */
+    @Deprecated
     public Set<IFile> getOpenFiles() {
         Set<IFile> files = new HashSet<IFile>();
         IEditorReference[] refs = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
@@ -279,7 +281,7 @@ public class PMDPlugin extends AbstractUIPlugin {
         }
         return files;
     }
-    
+
     /**
      * Open a view to the id passed in.
      * 

@@ -4,21 +4,18 @@
 
 package net.sourceforge.pmd.eclipse.ui.views.actions;
 
-import org.apache.log4j.Logger;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ViewerFilter;
 
 import net.sourceforge.pmd.RulePriority;
-import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.plugin.UISettings;
-import net.sourceforge.pmd.eclipse.runtime.cmd.ReviewCodeCmd;
 import net.sourceforge.pmd.eclipse.ui.priority.PriorityDescriptor;
 import net.sourceforge.pmd.eclipse.ui.priority.PriorityDescriptorCache;
 import net.sourceforge.pmd.eclipse.ui.views.PriorityFilter;
+import net.sourceforge.pmd.eclipse.ui.views.PriorityFilter.PriorityFilterChangeListener;
 import net.sourceforge.pmd.eclipse.ui.views.ViolationOutline;
 import net.sourceforge.pmd.eclipse.ui.views.ViolationOverview;
-import net.sourceforge.pmd.eclipse.ui.views.PriorityFilter.PriorityFilterChangeListener;
 
 /**
  * Filters elements by the Marker priorities
@@ -32,7 +29,6 @@ public class PriorityFilterAction extends Action implements PriorityFilterChange
     private ViolationOverview overviewView;
     private PriorityFilter priorityFilter;
     private final RulePriority priority;
-    private static final Logger LOG = Logger.getLogger(PriorityFilterAction.class);
 
     private PriorityFilterAction(ViewerFilter[] filters, RulePriority thePriority) {
         priority = thePriority;
@@ -102,22 +98,17 @@ public class PriorityFilterAction extends Action implements PriorityFilterChange
         // we add or remove an Integer with the Priority to a List
         // of Priorities, the Filter does the Rest
         if (isChecked()) {
-            priorityFilter.addPriorityToList(priority.getPriority());
+            priorityFilter.enablePriority(priority);
         } else {
-            priorityFilter.removePriorityFromList(priority.getPriority());
+            priorityFilter.disablePriority(priority);
         }
+    }
 
+    private void refreshView() {
         if (outlineView != null) {
             outlineView.refresh();
         } else if (overviewView != null) {
             overviewView.refresh();
-        }
-
-        /* Get all the opened files and tell them to run a "review code" on the file */
-        try {
-            ReviewCodeCmd.runCodeReviewOnFiles(PMDPlugin.getDefault().getOpenFiles());
-        } catch (RuntimeException e) {
-            LOG.error(e);
         }
     }
 
@@ -125,6 +116,7 @@ public class PriorityFilterAction extends Action implements PriorityFilterChange
     public void priorityEnabled(RulePriority priority) {
         if (this.priority == priority) {
             this.setChecked(true);
+            refreshView();
         }
     }
 
@@ -132,6 +124,7 @@ public class PriorityFilterAction extends Action implements PriorityFilterChange
     public void priorityDisabled(RulePriority priority) {
         if (this.priority == priority) {
             this.setChecked(false);
+            refreshView();
         }
     }
 }

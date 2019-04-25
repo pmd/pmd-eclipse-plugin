@@ -184,17 +184,33 @@ public class PriorityFilter extends ViewerFilter {
         return priorityList;
     }
 
+    public void enablePriority(RulePriority priority) {
+        if (priority != null) {
+            if (enabledPriorities.add(priority)) {
+                notifyPriorityEnabled(priority);
+            }
+        }
+    }
+
+    public void disablePriority(RulePriority priority) {
+        if (priority != null) {
+            if (enabledPriorities.remove(priority)) {
+                notifyPriorityDisabled(priority);
+            }
+        }
+    }
+
     /**
      * Adds a Priority to The List
      *
      * @param priority
+     * @deprecated use {@link #enablePriority(RulePriority)}
      */
+    @Deprecated
     public void addPriorityToList(Integer priority) {
         if (priority != null) {
             RulePriority rulePriority = RulePriority.valueOf(priority);
-            if (enabledPriorities.add(rulePriority)) {
-                notifyPriorityEnabled(rulePriority);
-            }
+            enablePriority(rulePriority);
         }
     }
 
@@ -202,13 +218,13 @@ public class PriorityFilter extends ViewerFilter {
      * Removes a Priority From the List
      *
      * @param priority
+     * @deprecated use {@link #disablePriority(RulePriority)}
      */
+    @Deprecated
     public void removePriorityFromList(Integer priority) {
         if (priority != null) {
             RulePriority rulePriority = RulePriority.valueOf(priority);
-            if (enabledPriorities.remove(rulePriority)) {
-                notifyPriorityDisabled(rulePriority);
-            }
+            disablePriority(rulePriority);
         }
     }
 
