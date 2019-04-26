@@ -12,6 +12,7 @@ import java.util.Set;
 import org.apache.log4j.Level;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.preference.ColorSelector;
 import org.eclipse.jface.preference.PreferenceDialog;
 import org.eclipse.jface.preference.PreferencePage;
@@ -48,6 +49,7 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.dialogs.PreferencesUtil;
+import org.eclipse.ui.preferences.ScopedPreferenceStore;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.RulePriority;
@@ -821,13 +823,23 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
 
         PriorityDescriptorCache.INSTANCE.storeInPreferences();
 
+        // refresh the resources so that the rule label decorator is updated
         RootRecord root = new RootRecord(ResourcesPlugin.getWorkspace().getRoot());
         Set<IFile> files = MarkerUtil.allMarkedFiles(root);
         PMDPlugin.getDefault().changedFiles(files);
 
-        /* Refresh the views to pick up the marker change */ 
+        // Refresh the views to pick up the marker change
         PMDPlugin.getDefault().refreshView(PMDPlugin.VIOLATIONS_OVERVIEW_ID); 
-        PMDPlugin.getDefault().refreshView(PMDPlugin.VIOLATIONS_OUTLINE_ID); 
+        PMDPlugin.getDefault().refreshView(PMDPlugin.VIOLATIONS_OUTLINE_ID);
+
+        // Take the color to set the overview ruler color
+        // net.sourceforge.pmd.eclipse.plugin.annotation.prio1.color
+        ScopedPreferenceStore editorsPreferenceStore = new ScopedPreferenceStore(InstanceScope.INSTANCE, "org.eclipse.ui.editors");
+        for (RulePriority priority : RulePriority.values()) {
+            PriorityDescriptor descriptor = PriorityDescriptorCache.INSTANCE.descriptorFor(priority);
+            editorsPreferenceStore.setValue("net.sourceforge.pmd.eclipse.plugin.annotation.prio" + priority.getPriority() + ".color",
+                    descriptor.shape.rgbColor.red + "," + descriptor.shape.rgbColor.green + "," + descriptor.shape.rgbColor.blue);
+        }
     }
 
     public boolean performCancel() {
