@@ -4,12 +4,19 @@
 
 package net.sourceforge.pmd.eclipse.ui.views.actions;
 
+import java.util.Set;
+
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ViewerFilter;
 
 import net.sourceforge.pmd.RulePriority;
+import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.plugin.UISettings;
+import net.sourceforge.pmd.eclipse.runtime.builder.MarkerUtil;
+import net.sourceforge.pmd.eclipse.ui.model.RootRecord;
 import net.sourceforge.pmd.eclipse.ui.priority.PriorityDescriptor;
 import net.sourceforge.pmd.eclipse.ui.priority.PriorityDescriptorCache;
 import net.sourceforge.pmd.eclipse.ui.views.PriorityFilter;
@@ -40,10 +47,8 @@ public class PriorityFilterAction extends Action implements PriorityFilterChange
     /**
      * Constructor, used for Violations Outline only
      * 
-     * @param prio,
-     *            the Priority to filter
-     * @param view,
-     *            the ViolationOutline
+     * @param prio the Priority to filter
+     * @param view the ViolationOutline
      */
     public PriorityFilterAction(RulePriority prio, ViolationOutline view) {
         this(view.getFilters(), prio);
@@ -53,10 +58,8 @@ public class PriorityFilterAction extends Action implements PriorityFilterChange
     /**
      * Constructor, used for Violations Overview only
      * 
-     * @param prio,
-     *            the Priority to filter
-     * @param view,
-     *            the violations Overview
+     * @param prio the Priority to filter
+     * @param view the violations Overview
      */
     public PriorityFilterAction(RulePriority prio, ViolationOverview view) {
         this(view.getViewer().getFilters(), prio);
@@ -110,6 +113,11 @@ public class PriorityFilterAction extends Action implements PriorityFilterChange
         } else if (overviewView != null) {
             overviewView.refresh();
         }
+
+        // refresh all resources to update the rule label decorator
+        RootRecord root = new RootRecord(ResourcesPlugin.getWorkspace().getRoot());
+        Set<IFile> files = MarkerUtil.allMarkedFiles(root);
+        PMDPlugin.getDefault().changedFiles(files);
     }
 
     @Override
