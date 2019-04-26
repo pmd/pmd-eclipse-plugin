@@ -112,7 +112,6 @@ The release happens in two phases:
     echo "Press enter to continue..."
     read
     ./mvnw -Dtycho.mode=maven org.eclipse.tycho:tycho-versions-plugin:set-version -DnewVersion=$VERSION.$BUILDQUALIFIER
-    sed -i -e "s/$VERSION.qualifier/$VERSION.$BUILDQUALIFIER/" net.sourceforge.pmd.eclipse.p2updatesite/category.xml
     git commit -a -m "Prepare release pmd-eclipse-plugin $VERSION.$BUILDQUALIFIER"
     git tag $VERSION.$BUILDQUALIFIER
     echo "Create (temporary) release branch"
@@ -128,7 +127,6 @@ The release happens in two phases:
     
     echo "Updating version in master to next"
     ./mvnw -Dtycho.mode=maven org.eclipse.tycho:tycho-versions-plugin:set-version -DnewVersion=$NEXT-SNAPSHOT
-    sed -i -e "s/$VERSION.$BUILDQUALIFIER/$NEXT.qualifier/" net.sourceforge.pmd.eclipse.p2updatesite/category.xml
     git commit -a -m "Prepare next pmd-eclipse-plugin development version $NEXT-SNAPSHOT"
     
     echo Checkout the release branch and build the plugin
@@ -139,7 +137,7 @@ The release happens in two phases:
     echo
     echo "Please test now!!!"
     echo
-    echo Update-Site: file://`pwd`/net.sourceforge.pmd.eclipse.p2updatesite/target/net.sourceforge.pmd.eclipse.p2updatesite-$VERSION.$BUILDQUALIFIER.zip
+    echo "Update-site: jar:file:$(pwd)/net.sourceforge.pmd.eclipse.p2updatesite/target/net.sourceforge.pmd.eclipse.p2updatesite-$VERSION.$BUILDQUALIFIER.zip!/"
     echo
     read
     
