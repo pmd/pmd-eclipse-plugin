@@ -25,6 +25,46 @@ This is a bugfix release.
 *   [#85](https://github.com/pmd/pmd-eclipse-plugin/issues/85): Gutter Markers not Configured Color
 *   [#96](https://github.com/pmd/pmd-eclipse-plugin/issues/96): Wrong auxclasspath if project is stored outside of workspace
 
+### API Changes
+
+*   In `net.sourceforge.pmd.eclipse.plugin.UISettings` the following methods are deprecated for removal:
+    *   `reloadPriorities()`
+    *   `markerFilenameFor(RulePriority)`
+    *   `relativeMarkerFilenameFor(RulePriority)`
+    *   `markerDescriptorFor(RulePriority)`
+    *   `markerImgDescriptorsByPriority()`
+    *   `createRuleMarkerIcons(Display)`
+    *   `descriptionFor(RulePriority)`
+    *   `descriptorFor(RulePriority)`
+    *   `priorityFor(int)`
+    *   `getPriorityLabels()`
+*   In `net.sourceforge.pmd.eclipse.ui.RuleLabelDecorator` the method `reloadDecorators()` is deprecated
+    for removal.
+*   In `net.sourceforge.pmd.eclipse.ui.ShapePainter` the method `disposeAll()` is deprecated for removal.
+*   In `net.sourceforge.pmd.eclipse.ui.priority.PriorityDescriptor` the following methods are deprecated
+    for removal:
+    *   `getImageDescriptor()`
+    *   `getImage(Display)`
+    *   `getImage(Display, int)`
+*   In `net.sourceforge.pmd.eclipse.ui.priority.PriorityDescriptorCache` the method `dumpTo(PrintStream)` is
+    deprecated for removal.
+*   The whole class `net.sourceforge.pmd.eclipse.ui.views.AbstractViolationLabelProvider` is deprecated
+    for removal.
+*   In `net.sourceforge.pmd.eclipse.plugin.PMDPlugin` the method `getOpenFiles()` is deprecated
+    for removal.
+*   The class `net.sourceforge.pmd.eclipse.ui.views.PriorityFilter` must not be instantiated directly
+    in the future. Therefore the public constructor has been deprecated. Additionally the following methods
+    are deprecated for removal:
+    *   `setPriorityFilterList(List<Integer>)`
+    *   `getPriorityFilterList()`
+    *   `addPriorityToList(Integer)`
+    *   `removePriorityFromList(Integer)`
+    *   `setPriorityFilterListFromString(String, String)`
+    *   `getPriorityFilterListAsString(String)`
+*   In `net.sourceforge.pmd.eclipse.ui.views.ViolationOverview` the method `getPriorityFilterList()`
+    is deprecated for removal.
+*   The whole class `net.sourceforge.pmd.eclipse.util.PriorityUtil` is deprecated for removal.
+
 ## 31-March-2019: 4.2.0.v20190331-1136
 
 This is a minor release.

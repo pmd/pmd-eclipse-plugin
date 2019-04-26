@@ -140,6 +140,9 @@ public class PriorityDescriptor implements Cloneable {
         sb.append(shape.size).append(DELIMITER);
     }
 
+    /**
+     * @deprecated use {@link #getAnnotationImageDescriptor()} instead.
+     */
     @Deprecated
     public ImageDescriptor getImageDescriptor() {
         return PMDPlugin.getImageDescriptor(iconId);
@@ -158,6 +161,7 @@ public class PriorityDescriptor implements Cloneable {
     /**
      * @deprecated Use {@link #getAnnotationImage()} or {@link #getAnnotationImageDescriptor()} instead.
      */
+    @Deprecated
     public Image getImage(Display display) {
         return createImage();
     }
