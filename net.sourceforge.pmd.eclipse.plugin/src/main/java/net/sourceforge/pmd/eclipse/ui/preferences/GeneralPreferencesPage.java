@@ -751,6 +751,14 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
      * @see org.eclipse.jface.preference.PreferencePage#performDefaults()
      */
     protected void performDefaults() {
+        for (RulePriority priority : RulePriority.values()) {
+            PriorityDescriptor defaultDescriptor = PMDPlugin.getDefault().getPreferencesManager().defaultDescriptorFor(priority);
+            PriorityDescriptor descriptor = PriorityDescriptorCache.INSTANCE.descriptorFor(priority);
+            descriptor.shape.shape = defaultDescriptor.shape.shape;
+            descriptor.shape.rgbColor = defaultDescriptor.shape.rgbColor;
+            descriptor.label = defaultDescriptor.label;
+        }
+        tableViewer.refresh();
 
         setText(additionalCommentText, IPreferences.REVIEW_ADDITIONAL_COMMENT_DEFAULT);
 

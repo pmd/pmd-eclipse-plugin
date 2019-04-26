@@ -57,13 +57,13 @@ public class ShapePicker<T extends Object> extends Canvas implements ISelectionP
 
         itemWidth = theItemWidth;
 
-        ShapePicker.this.addPaintListener(new PaintListener() {
+        addPaintListener(new PaintListener() {
             public void paintControl(PaintEvent pe) {
                 doPaint(pe);
             }
         });
 
-        ShapePicker.this.addMouseMoveListener(new MouseMoveListener() {
+        addMouseMoveListener(new MouseMoveListener() {
             public void mouseMove(MouseEvent e) {
                 if (!getEnabled()) {
                     return;
@@ -77,7 +77,7 @@ public class ShapePicker<T extends Object> extends Canvas implements ISelectionP
             }
         });
 
-        ShapePicker.this.addMouseListener(new MouseListener() {
+        this.addMouseListener(new MouseListener() {
             public void mouseDoubleClick(MouseEvent e) {
             }
 
@@ -98,7 +98,7 @@ public class ShapePicker<T extends Object> extends Canvas implements ISelectionP
             }
         });
 
-        ShapePicker.this.addFocusListener(new FocusListener() {
+        addFocusListener(new FocusListener() {
             public void focusGained(FocusEvent e) {
                 redraw();
             }

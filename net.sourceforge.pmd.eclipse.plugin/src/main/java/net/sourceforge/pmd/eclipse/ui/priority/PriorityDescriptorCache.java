@@ -43,7 +43,7 @@ public class PriorityDescriptorCache {
         IPreferences preferences = preferencesManager().loadPreferences();
         for (RulePriority rp : UISettings.currentPriorities(true)) {
             // note: the priority descriptors are cloned here, so that any changes to them
-            // does not automatically get stored. Changes might occur while configuring the
+            // do not automatically get stored. Changes might occur while configuring the
             // preferences, but the user might cancel.
             uiDescriptorsByPriority.put(rp, preferences.getPriorityDescriptor(rp).clone());
         }
@@ -55,7 +55,10 @@ public class PriorityDescriptorCache {
         IPreferences prefs = mgr.loadPreferences();
 
         for (Map.Entry<RulePriority, PriorityDescriptor> entry : uiDescriptorsByPriority.entrySet()) {
-            prefs.setPriorityDescriptor(entry.getKey(), entry.getValue());
+            // note: the priority descriptors are cloned here, so that any changes to them
+            // do not automatically get stored. Changes might occur while configuring the
+            // preferences, but the user might cancel.
+            prefs.setPriorityDescriptor(entry.getKey(), entry.getValue().clone());
         }
         prefs.sync();
         // recreate images with the changed settings
