@@ -13,8 +13,10 @@ import java.util.concurrent.CopyOnWriteArraySet;
 
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
+import org.eclipse.ui.preferences.ScopedPreferenceStore;
 
 import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
@@ -44,6 +46,8 @@ public class PriorityFilter extends ViewerFilter {
 
     private Set<PriorityFilterChangeListener> listeners = new CopyOnWriteArraySet<>();
 
+    private final ScopedPreferenceStore editorsPreferences = new ScopedPreferenceStore(InstanceScope.INSTANCE, "org.eclipse.ui.editors");
+
     /**
      * Constructor
      *
@@ -68,10 +72,13 @@ public class PriorityFilter extends ViewerFilter {
             @Override
             public void priorityEnabled(RulePriority priority) {
                 saveToPreferenceStore();
+                showMarkers(priority);
             }
+
             @Override
             public void priorityDisabled(RulePriority priority) {
                 saveToPreferenceStore();
+                hideMarkers(priority);
             }
         });
         loadFromPreferenceStore();
@@ -93,6 +100,24 @@ public class PriorityFilter extends ViewerFilter {
                 enabledPriorities.add(RulePriority.valueOf(priority));
             }
         }
+    }
+
+    private String getMarkerKeyVerticalRuler(RulePriority priority) {
+        return "net.sourceforge.pmd.eclipse.plugin.annotation.prio" + priority.getPriority() + ".verticalruler";
+    }
+
+    private String getMarkerKeyOverviewRuler(RulePriority priority) {
+        return "net.sourceforge.pmd.eclipse.plugin.annotation.prio" + priority.getPriority() + ".overviewruler";
+    }
+
+    private void showMarkers(RulePriority priority) {
+        editorsPreferences.setValue(getMarkerKeyVerticalRuler(priority), true);
+        editorsPreferences.setValue(getMarkerKeyOverviewRuler(priority), true);
+    }
+
+    private void hideMarkers(RulePriority priority) {
+        editorsPreferences.setValue(getMarkerKeyVerticalRuler(priority), false);
+        editorsPreferences.setValue(getMarkerKeyOverviewRuler(priority), false);
     }
 
     /*
@@ -301,6 +326,7 @@ public class PriorityFilter extends ViewerFilter {
 
     public interface PriorityFilterChangeListener {
         void priorityEnabled(RulePriority priority);
+
         void priorityDisabled(RulePriority priority);
     }
 }
