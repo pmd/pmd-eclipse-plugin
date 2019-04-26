@@ -105,7 +105,7 @@ class PreferencesManagerImpl implements IPreferencesManager {
                         StringKeys.VIEW_TOOLTIP_FILTER_PRIORITY, null, Shape.triangleRight, new RGB(255, 0, 0), 13)); // red
         DEFAULT_DESCRIPTORS_BY_PRIORITY.put(RulePriority.MEDIUM_HIGH,
                 new PriorityDescriptor(RulePriority.MEDIUM_HIGH, StringKeys.VIEW_FILTER_PRIORITY_2,
-                        StringKeys.VIEW_TOOLTIP_FILTER_PRIORITY, null, Shape.triangleRight, new RGB(0, 255, 255), 13)); // yellow
+                        StringKeys.VIEW_TOOLTIP_FILTER_PRIORITY, null, Shape.triangleRight, new RGB(0, 255, 255), 13)); // cyan
         DEFAULT_DESCRIPTORS_BY_PRIORITY.put(RulePriority.MEDIUM,
                 new PriorityDescriptor(RulePriority.MEDIUM, StringKeys.VIEW_FILTER_PRIORITY_3,
                         StringKeys.VIEW_TOOLTIP_FILTER_PRIORITY, null, Shape.triangleRight, new RGB(0, 255, 0), 13)); // green

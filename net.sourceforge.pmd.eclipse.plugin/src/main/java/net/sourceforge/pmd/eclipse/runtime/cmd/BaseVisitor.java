@@ -47,7 +47,6 @@ import net.sourceforge.pmd.eclipse.runtime.PMDRuntimeConstants;
 import net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties;
 import net.sourceforge.pmd.eclipse.runtime.properties.PropertiesException;
 import net.sourceforge.pmd.eclipse.util.IOUtil;
-import net.sourceforge.pmd.eclipse.util.PriorityUtil;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.LanguageVersionDiscoverer;
@@ -520,11 +519,6 @@ public class BaseVisitor {
             rule = violation.getRule();
             review.ruleName = rule.getName();
             review.lineNumber = violation.getBeginLine();
-
-            /* Only show active violations */
-            if (!PriorityUtil.isPriorityActive(rule.getPriority())) {
-                continue;
-            }
 
             if (reviewsList.contains(review)) {
                 LOG.debug("Ignoring violation of rule " + rule.getName() + " at line " + violation.getBeginLine()
