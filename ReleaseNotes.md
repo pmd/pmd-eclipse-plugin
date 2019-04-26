@@ -11,8 +11,17 @@ Eclipse Update Site:
 
 This is a bugfix release.
 
+### New and noteworthy
+
+*   Filtering by priority has been revamped. In both views "Violation Outline" and "Violation Overview" you can
+    enable and disable the priorities. Changes in one view affects the other view as well as the markers displayed
+    in the files. The selected priorities are stored in the preferences. PMD is not rerun when the priority filter
+    is changed. The markers are only hidden instead. Changing the priority filter therefore affects the settings under
+    General, Editors, Text Editors, Annotation for PMD Marker Annotations.
+
 ### Fixed Issues
 
+*   [#56](https://github.com/pmd/pmd-eclipse-plugin/issues/56): PMD not filtering
 *   [#85](https://github.com/pmd/pmd-eclipse-plugin/issues/85): Gutter Markers not Configured Color
 *   [#96](https://github.com/pmd/pmd-eclipse-plugin/issues/96): Wrong auxclasspath if project is stored outside of workspace
 
