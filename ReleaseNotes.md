@@ -13,6 +13,8 @@ This is a minor release.
 
 ### New and noteworthy
 
+*   Updated PMD to 6.14.0
+
 ### Fixed Issues
 
 ### API Changes
