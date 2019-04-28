@@ -43,8 +43,7 @@ notifications:
   email:
     recipients:
     - andreas.dangel@adangel.org
-    - pmd-commits@lists.sourceforge.net
-    on_success: always
+    on_success: change
     on_failure: always
 cache:
   directories:
