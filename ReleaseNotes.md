@@ -17,6 +17,10 @@ This is a bugfix release.
 
 ### API Changes
 
+### External Contributions
+
+*   [#100](https://github.com/pmd/pmd-eclipse-plugin/pull/100): Add missing french translations - [Nicolas HENRY](https://github.com/nicolashenry)
+
 ## 28-April-2019: 4.3.0.v20190428-0918
 
 This is a minor release.
