@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.eclipse.ui;
 
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
@@ -19,6 +18,8 @@ import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
  *
  */
 public class ShapePainter {
+    private static final RGB RGB_BLACK = new RGB(0, 0, 0);
+
     private ShapePainter() {
     }
 
@@ -35,7 +36,7 @@ public class ShapePainter {
         gc.setBackground(PMDPlugin.getDefault().colorFor(transparentColour));
         gc.fillRectangle(0, 0, width, height);
 
-        gc.setForeground(display.getSystemColor(SWT.COLOR_BLACK));
+        gc.setForeground(PMDPlugin.getDefault().colorFor(RGB_BLACK));
         gc.setBackground(PMDPlugin.getDefault().colorFor(fillColour));
 
         drawShape(width - 1, height - 1, shape, gc, 0, 0, null);

@@ -239,13 +239,9 @@ public class PriorityDescriptor implements Cloneable {
     }
 
     /**
-     * Eagerly create the images. This must be called in a UI thread!
+     * Eagerly create the images.
      */
     public void refreshImages() {
-        if (Display.getCurrent() == null) {
-            throw new IllegalStateException("Must be called in the UI thread");
-        }
-
         dispose();
         Image image = getAnnotationImage();
         if (image == null) {

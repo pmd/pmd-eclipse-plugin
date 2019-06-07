@@ -13,6 +13,8 @@ Eclipse Update Site:
 
 ### Fixed Issues
 
+*   [#103](https://github.com/pmd/pmd-eclipse-plugin/issues/103): IllegalStateException: Must be called in the UI thread
+
 ### API Changes
 
 ### External Contributions
