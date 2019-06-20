@@ -7,17 +7,13 @@ Eclipse Update Site:
 *   Releases: <https://dl.bintray.com/pmd/pmd-eclipse-plugin/updates/>
 *   Snapshots: <https://dl.bintray.com/pmd/pmd-eclipse-plugin/snapshots/updates/>
 
-## ????: 4.4.1.v????
+## 20-June-2019: 4.4.1.v20190620-0836
 
-### New and noteworthy
+This is a bugfix release.
 
 ### Fixed Issues
 
 *   [#103](https://github.com/pmd/pmd-eclipse-plugin/issues/103): IllegalStateException: Must be called in the UI thread
-
-### API Changes
-
-### External Contributions
 
 ## 26-May-2019: 4.4.0.v20190526-1012
 
