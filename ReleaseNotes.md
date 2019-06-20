@@ -13,7 +13,13 @@ This is a minor release.
 
 ### New and noteworthy
 
+*   PMD specific marker property page: This version adds a PMD specific property page to the
+    marker properties which shows more information from the rule violation and rule itself.
+    For more information, see [Marker Property Page (wiki)](https://github.com/pmd/pmd-eclipse-plugin/wiki/Marker-Property-Page).
+
 ### Fixed Issues
+
+*   [#84](https://github.com/pmd/pmd-eclipse-plugin/issues/84): Rule Name in Tooltip
 
 ### API Changes
 
