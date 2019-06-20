@@ -359,6 +359,22 @@
             class="net.sourceforge.pmd.eclipse.ui.properties.PMDProjectPropertyPage"
             id="net.sourceforge.pmd.eclipse.ui.properties.pmdPropertyPage">
       </page>
+      <page
+            adaptable="true"
+            class="net.sourceforge.pmd.eclipse.ui.properties.PMDMarkerPropertyPage"
+            id="net.sourceforge.pmd.eclipse.ui.properties.markerPropertyPage"
+            name="PMD Marker"
+            nameFilter="*"
+            objectClass="org.eclipse.core.resources.IMarker">
+         <enabledWhen>
+            <adapt
+                  type="org.eclipse.core.resources.IMarker">
+               <test
+                     property="net.sourceforge.pmd.eclipse.plugin.isPMDMarker">
+               </test>
+            </adapt>
+         </enabledWhen>
+      </page>
    </extension>
 
    <extension
@@ -802,6 +818,16 @@
                uri="platform:/plugin/net.sourceforge.pmd.eclipse.plugin/rule-tests_1_0_0.xsd">
          </public>
       </catalogContribution>
+   </extension>
+   <extension
+         point="org.eclipse.core.expressions.propertyTesters">
+      <propertyTester
+            class="net.sourceforge.pmd.eclipse.ui.properties.MarkerPropertyTester"
+            id="net.sourceforge.pmd.eclipse.isPMDMarker"
+            namespace="net.sourceforge.pmd.eclipse.plugin"
+            properties="isPMDMarker"
+            type="org.eclipse.core.resources.IMarker">
+      </propertyTester>
    </extension>
 
 </plugin>

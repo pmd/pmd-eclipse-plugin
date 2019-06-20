@@ -630,6 +630,7 @@ public class BaseVisitor {
         MarkerInfo2 info = new MarkerInfo2(type, 7);
 
         info.add(IMarker.MESSAGE, rule.getName() + ": " + violation.getDescription());
+        info.add(PMDRuntimeConstants.KEY_MARKERATT_MESSAGE, violation.getDescription());
         info.add(IMarker.LINE_NUMBER, violation.getBeginLine());
         info.add(PMDRuntimeConstants.KEY_MARKERATT_LINE2, violation.getEndLine());
         info.add(PMDRuntimeConstants.KEY_MARKERATT_RULENAME, rule.getName());

@@ -41,6 +41,11 @@ public class PMDRuntimeConstants {
     public static final String KEY_MARKERATT_LINE2 = "line2";
     public static final String KEY_MARKERATT_VARIABLE = "variable";
     public static final String KEY_MARKERATT_METHODNAME = "method";
+    /**
+     * The message from the rule violation. This is additionally here, since IMarker.MESSAGE will
+     * contain both rule name + message.
+     */
+    public static final String KEY_MARKERATT_MESSAGE = "pmd_message";
 
     public static final String PLUGIN_STYLE_REVIEW_COMMENT = "// @PMD:REVIEWED:";
     public static final String PMD_STYLE_REVIEW_COMMENT = "// NOPMD";
