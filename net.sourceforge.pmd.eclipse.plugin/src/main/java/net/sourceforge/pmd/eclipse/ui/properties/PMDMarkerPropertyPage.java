@@ -28,6 +28,7 @@ import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.runtime.PMDRuntimeConstants;
 import net.sourceforge.pmd.eclipse.runtime.builder.MarkerUtil;
+import net.sourceforge.pmd.eclipse.ui.nls.StringTable;
 
 public class PMDMarkerPropertyPage extends PropertyPage {
 
@@ -46,23 +47,25 @@ public class PMDMarkerPropertyPage extends PropertyPage {
         Rule rule = PMDPlugin.getDefault().getPreferencesManager().getRuleSet()
                 .getRuleByName(MarkerUtil.ruleNameFor(marker));
 
+        StringTable messages = PMDPlugin.getDefault().getStringTable();
+
         try {
-            addLabel(composite, "Rule:");
+            addLabel(composite, messages.getString("markerPropertyPage.label.rulename"));
             addText(composite, rule.getName());
 
-            addLabel(composite, "Category:");
+            addLabel(composite, messages.getString("markerPropertyPage.label.category"));
             addText(composite, rule.getRuleSetName());
 
-            addLabel(composite, "Priority:");
+            addLabel(composite, messages.getString("markerPropertyPage.label.priority"));
             addText(composite, rule.getPriority().name());
 
-            addLabel(composite, "Message:");
+            addLabel(composite, messages.getString("markerPropertyPage.label.message"));
             addText(composite, getViolationMessage(marker));
 
-            addLabel(composite, "Description:", 2);
+            addLabel(composite, messages.getString("markerPropertyPage.label.description"), 2);
             addDescription(composite, rule);
 
-            addLabel(composite, "External URL Info:");
+            addLabel(composite, messages.getString("markerPropertyPage.label.externalInfoUrl"));
             addLink(composite, rule);
         } catch (CoreException e) {
             PMDPlugin.getDefault().logError(e.getMessage(), e);
