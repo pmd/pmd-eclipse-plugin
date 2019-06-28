@@ -10,6 +10,7 @@ import java.util.Map;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Display;
 
@@ -53,7 +54,10 @@ public class PriorityDescriptor implements Cloneable {
         label = AbstractPMDAction.getString(theLabelKey);
         description = "--"; // TODO
         filterText = AbstractPMDAction.getString(theFilterTextKey);
-        iconId = theIconId;
+        iconId = null;
+        if (theIconId != null && !theIconId.isEmpty() && !"null".equals(theIconId)) {
+            iconId = theIconId;
+        }
         shape = theShape;
     }
 
@@ -133,7 +137,10 @@ public class PriorityDescriptor implements Cloneable {
         sb.append(label).append(DELIMITER);
         // sb.append(description).append(DELIMITER);
         sb.append(filterText).append(DELIMITER);
-        sb.append(iconId).append(DELIMITER);
+        if (iconId != null) {
+            sb.append(iconId);
+        }
+        sb.append(DELIMITER);
         sb.append(shape.shape.id).append(DELIMITER);
         rgbOn(sb, shape.rgbColor);
         sb.append(DELIMITER);
@@ -200,9 +207,19 @@ public class PriorityDescriptor implements Cloneable {
     }
 
     private Image createImage(final int size) {
-        return ShapePainter.newDrawnImage(Display.getCurrent(), size, size, shape.shape, PROTO_TRANSPARENT_COLOR,
-                shape.rgbColor // fillColour
-        );
+        if (iconId == null || iconId.isEmpty() || "null".equals(iconId)) {
+            return ShapePainter.newDrawnImage(Display.getCurrent(), size, size, shape.shape, PROTO_TRANSPARENT_COLOR,
+                    shape.rgbColor // fillColour
+            );
+        } else {
+            Image srcImage = PriorityDescriptorIcon.getById(iconId).getImage();
+            // need to create a copy since the image of the PropertyDescriptor might be disposed
+            // if the image is changed. See #refreshImages()
+            // also, we might need to scale the icon.
+            ImageData imageData = srcImage.getImageData().scaledTo(size, size);
+            Image copy = new Image(srcImage.getDevice(), imageData);
+            return copy;
+        }
     }
 
     /**

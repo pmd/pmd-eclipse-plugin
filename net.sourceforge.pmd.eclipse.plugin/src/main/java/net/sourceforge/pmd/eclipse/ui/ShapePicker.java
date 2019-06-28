@@ -144,7 +144,10 @@ public class ShapePicker<T extends Object> extends Canvas implements ISelectionP
         if (listeners == null) {
             return;
         }
-        IStructuredSelection selection = new StructuredSelection(new Object[] { selectedItem });
+        IStructuredSelection selection = StructuredSelection.EMPTY;
+        if (selectedItem != null) {
+            selection = new StructuredSelection(new Object[] { selectedItem });
+        }
         SelectionChangedEvent event = new SelectionChangedEvent(this, selection);
         for (ISelectionChangedListener listener : listeners) {
             listener.selectionChanged(event);
@@ -302,9 +305,11 @@ public class ShapePicker<T extends Object> extends Canvas implements ISelectionP
     }
 
     public void setSelection(ISelection selection) {
-
         setSelection((T) ((StructuredSelection) selection).getFirstElement());
+    }
 
+    public void removeSelection() {
+        setSelection((T) null);
     }
 
     // public void setTooltipMap(Map<T, String> theTooltips) {
