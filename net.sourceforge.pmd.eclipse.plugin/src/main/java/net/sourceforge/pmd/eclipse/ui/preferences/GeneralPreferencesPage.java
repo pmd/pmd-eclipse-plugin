@@ -779,6 +779,7 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
             descriptor.shape.shape = defaultDescriptor.shape.shape;
             descriptor.shape.rgbColor = defaultDescriptor.shape.rgbColor;
             descriptor.label = defaultDescriptor.label;
+            descriptor.iconId = defaultDescriptor.iconId;
         }
         tableViewer.refresh();
 
