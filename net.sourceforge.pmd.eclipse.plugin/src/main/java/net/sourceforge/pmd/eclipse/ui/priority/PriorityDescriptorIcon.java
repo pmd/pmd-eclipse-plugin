@@ -34,6 +34,10 @@ public class PriorityDescriptorIcon {
         new PriorityDescriptorIcon("icon-prio-3", "icons/prio_3.gif"),
         new PriorityDescriptorIcon("icon-prio-4", "icons/prio_4.gif"),
         new PriorityDescriptorIcon("icon-prio-5", "icons/prio_5.gif"),
+        new PriorityDescriptorIcon("icon-pmd", "icons/pmd-icon-16.gif"),
+        new PriorityDescriptorIcon("icon-error", "icons/error.gif"),
+        new PriorityDescriptorIcon("icon-warn", "icons/warn.gif"),
+        new PriorityDescriptorIcon("icon-info", "icons/info.gif"),
     };
 
     private static final Map<String, PriorityDescriptorIcon> ICONS_BY_ID;
