@@ -21,7 +21,7 @@ import net.sourceforge.pmd.eclipse.ui.priority.PriorityDescriptorIcon;
 
 public class IconSelector {
     private Composite composite;
-    private ListenerList<IPropertyChangeListener> listeners = new ListenerList<>();
+    private ListenerList listeners = new ListenerList();
     private PriorityDescriptorIcon selectedIcon;
 
     public IconSelector(Composite parent) {
@@ -71,8 +71,8 @@ public class IconSelector {
         PropertyChangeEvent event = new PropertyChangeEvent(this, "selectedIcon", this.selectedIcon, icon);
         this.selectedIcon = icon;
 
-        for (IPropertyChangeListener listener : listeners) {
-            listener.propertyChange(event);
+        for (Object listener : listeners.getListeners()) {
+            ((IPropertyChangeListener) listener).propertyChange(event);
         }
     }
 
