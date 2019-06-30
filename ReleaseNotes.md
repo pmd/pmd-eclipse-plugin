@@ -17,8 +17,13 @@ This is a minor release.
     marker properties which shows more information from the rule violation and rule itself.
     For more information, see [Marker Property Page (wiki)](https://github.com/pmd/pmd-eclipse-plugin/wiki/Marker-Property-Page).
 
+*   Marker Icons: Instead of the geometrical figures, the old icons for the PMD markers can
+    be selected again:
+    ![Screenshot of PMD Marker Property Page](https://raw.githubusercontent.com/wiki/pmd/pmd-eclipse-plugin/images/PMDMarkerPriorityIcons.png)
+
 ### Fixed Issues
 
+*   [#82](https://github.com/pmd/pmd-eclipse-plugin/issues/82): Support old PMD icons
 *   [#84](https://github.com/pmd/pmd-eclipse-plugin/issues/84): Rule Name in Tooltip
 
 ### API Changes

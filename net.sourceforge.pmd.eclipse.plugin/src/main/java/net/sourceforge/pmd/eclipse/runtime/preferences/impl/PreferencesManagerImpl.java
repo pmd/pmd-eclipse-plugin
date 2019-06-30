@@ -368,11 +368,16 @@ class PreferencesManagerImpl implements IPreferencesManager {
 
         if (STORE_KEYS_BY_PRIORITY != null) {
             for (Map.Entry<RulePriority, String> entry : STORE_KEYS_BY_PRIORITY.entrySet()) {
-                PriorityDescriptor desc = defaultDescriptorFor(entry.getKey());
-                loadPreferencesStore.setDefault(entry.getValue(), desc.storeString());
+                PriorityDescriptor defaultPriorityDescriptor = defaultDescriptorFor(entry.getKey());
+                loadPreferencesStore.setDefault(entry.getValue(), defaultPriorityDescriptor.storeString());
                 String storeKey = STORE_KEYS_BY_PRIORITY.get(entry.getKey());
-                preferences.setPriorityDescriptor(entry.getKey(),
-                        PriorityDescriptor.from(loadPreferencesStore.getString(storeKey)));
+                PriorityDescriptor loadedPriorityDescriptor = PriorityDescriptor.from(loadPreferencesStore.getString(storeKey));
+                if (loadedPriorityDescriptor != null) {
+                    preferences.setPriorityDescriptor(entry.getKey(), loadedPriorityDescriptor);
+                } else {
+                    loadPreferencesStore.setValue(entry.getValue(), defaultPriorityDescriptor.storeString());
+                    preferences.setPriorityDescriptor(entry.getKey(), defaultPriorityDescriptor);
+                }
             }
         }
     }

@@ -66,6 +66,7 @@ import net.sourceforge.pmd.eclipse.ui.preferences.br.BasicTableManager;
 import net.sourceforge.pmd.eclipse.ui.priority.PriorityColumnUI;
 import net.sourceforge.pmd.eclipse.ui.priority.PriorityDescriptor;
 import net.sourceforge.pmd.eclipse.ui.priority.PriorityDescriptorCache;
+import net.sourceforge.pmd.eclipse.ui.priority.PriorityDescriptorIcon;
 import net.sourceforge.pmd.util.StringUtil;
 
 /**
@@ -282,12 +283,12 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
         // for (TableColumn column : columns) column.pack();
 
         Composite editorPanel = new Composite(group, SWT.None);
-        editorPanel.setLayoutData(new GridData(GridData.FILL, GridData.CENTER, true, true));
-        editorPanel.setLayout(new GridLayout(6, false));
+        editorPanel.setLayoutData(new GridData(GridData.FILL, GridData.CENTER, true, true, 2, 1));
+        editorPanel.setLayout(new GridLayout(3, false));
 
         Label shapeLabel = new Label(editorPanel, SWT.None);
         shapeLabel.setLayoutData(new GridData());
-        shapeLabel.setText("Shape:");
+        shapeLabel.setText("Shape and Color:");
 
         final ShapePicker<Shape> ssc = new ShapePicker<Shape>(editorPanel, SWT.None, 14);
         ssc.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false, 1, 1));
@@ -295,18 +296,18 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
         ssc.setShapeMap(UISettings.shapeSet(SHAPE_COLOR, 10));
         ssc.setItems(UISettings.allShapes());
 
-        Label colourLabel = new Label(editorPanel, SWT.None);
-        colourLabel.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false, 1, 1));
-        colourLabel.setText("Color:");
-
         final ColorSelector colorPicker = new ColorSelector(editorPanel);
 
-        Label nameLabel = new Label(editorPanel, SWT.None);
+        new Label(editorPanel, SWT.NONE).setText("Icon:");
+        final IconSelector iconSelector = new IconSelector(editorPanel);
+        iconSelector.setLayoutData(new GridData(SWT.LEFT, GridData.CENTER, true, true, 2, 1));
+
+        Label nameLabel = new Label(editorPanel, SWT.NONE);
         nameLabel.setLayoutData(new GridData());
         nameLabel.setText("Name:");
 
         final Text priorityName = new Text(editorPanel, SWT.BORDER);
-        priorityName.setLayoutData(new GridData(GridData.FILL, GridData.CENTER, true, true));
+        priorityName.setLayoutData(new GridData(GridData.FILL, GridData.CENTER, true, true, 2, 1));
 
         nameFields = new Control[] { nameLabel, priorityName };
 
@@ -322,14 +323,31 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
         tableViewer.addSelectionChangedListener(new ISelectionChangedListener() {
             public void selectionChanged(SelectionChangedEvent event) {
                 IStructuredSelection selection = (IStructuredSelection) event.getSelection();
-                selectedPriorities(selection.toList(), ssc, colorPicker, priorityName);
+                selectedPriorities(selection.toList(), ssc, colorPicker, priorityName, iconSelector);
             }
         });
 
         ssc.addSelectionChangedListener(new ISelectionChangedListener() {
             public void selectionChanged(SelectionChangedEvent event) {
                 IStructuredSelection selection = (IStructuredSelection) event.getSelection();
-                setShape((Shape) selection.getFirstElement());
+                if (!selection.isEmpty()) {
+                    setShape((Shape) selection.getFirstElement());
+                    iconSelector.setSelectedIcon(null);
+                }
+            }
+        });
+
+        iconSelector.addListener(new IPropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent event) {
+                if (event.getNewValue() != null) {
+                    ssc.removeSelection();
+                    for (PriorityDescriptor pd : selectedDescriptors()) {
+                        pd.iconId = ((PriorityDescriptorIcon) event.getNewValue()).getIconId();
+                    }
+
+                    tableViewer.refresh();
+                }
             }
         });
 
@@ -359,9 +377,8 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
 
         for (PriorityDescriptor pd : selectedDescriptors()) {
             pd.shape.shape = shape;
+            pd.iconId = null;
         }
-
-        // PriorityDescriptorCache.instance.dump(System.out);
 
         tableViewer.refresh();
     }
@@ -396,7 +413,7 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
     }
 
     private static void selectedPriorities(List<RulePriority> items, ShapePicker<Shape> ssc, ColorSelector colorPicker,
-            Text nameField) {
+            Text nameField, IconSelector iconSelector) {
 
         if (items.size() != 1) {
             ssc.setSelection((Shape) null);
@@ -407,9 +424,14 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
         RulePriority priority = items.get(0);
         PriorityDescriptor desc = PriorityDescriptorCache.INSTANCE.descriptorFor(priority);
 
-        ssc.setSelection(desc.shape.shape);
         nameField.setText(desc.label);
         colorPicker.setColorValue(desc.shape.rgbColor);
+        if (desc.iconId == null) {
+            ssc.setSelection(desc.shape.shape);
+        } else {
+            ssc.removeSelection();
+        }
+        iconSelector.setSelectedIcon(PriorityDescriptorIcon.getById(desc.iconId));
     }
 
     /**
@@ -757,6 +779,7 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
             descriptor.shape.shape = defaultDescriptor.shape.shape;
             descriptor.shape.rgbColor = defaultDescriptor.shape.rgbColor;
             descriptor.label = defaultDescriptor.label;
+            descriptor.iconId = defaultDescriptor.iconId;
         }
         tableViewer.refresh();
 
