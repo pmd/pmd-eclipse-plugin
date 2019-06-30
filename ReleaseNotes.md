@@ -13,6 +13,8 @@ This is a minor release.
 
 ### New and noteworthy
 
+*   Updated PMD to 6.16.0
+
 *   PMD specific marker property page: This version adds a PMD specific property page to the
     marker properties which shows more information from the rule violation and rule itself.
     For more information, see [Marker Property Page (wiki)](https://github.com/pmd/pmd-eclipse-plugin/wiki/Marker-Property-Page).
