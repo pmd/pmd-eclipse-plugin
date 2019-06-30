@@ -112,6 +112,8 @@ public class ReviewCmdTest {
         Assert.assertEquals(markers.get(sourceFile).size(), imarkers.size());
         for (IMarker marker : imarkers) {
             Assert.assertTrue(marker.isSubtypeOf(IMarker.PROBLEM));
+            Assert.assertTrue(((String) marker.getAttribute(IMarker.MESSAGE))
+                    .startsWith((String) marker.getAttribute(PMDRuntimeConstants.KEY_MARKERATT_RULENAME)));
         }
     }
 
