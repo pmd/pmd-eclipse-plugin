@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>net.sourceforge.pmd</groupId>
   <artifactId>net.sourceforge.pmd.eclipse.parent</artifactId>
-  <version>4.5.1-SNAPSHOT</version>
+  <version>4.6.0.v20190728-0905</version>
   <packaging>pom</packaging>
   <modules>
     <module>net.sourceforge.pmd.eclipse</module>
