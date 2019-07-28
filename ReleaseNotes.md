@@ -13,6 +13,8 @@ This is a bugfix release.
 
 ### New and noteworthy
 
+*   Updated PMD to 6.17.0
+
 ### Fixed Issues
 
 ### External Contributions
