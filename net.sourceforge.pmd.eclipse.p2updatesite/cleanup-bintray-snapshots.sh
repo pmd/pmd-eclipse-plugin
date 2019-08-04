@@ -24,9 +24,16 @@ echo
 BINTRAY_REPO=pmd-eclipse-plugin
 BINTRAY_OWNER=pmd
 
-BASE_PATH=pmd/pmd-eclipse-plugin/snapshots/updates/4.1
+#VERSION=4.6
+VERSION=$(grep "<version>" pom.xml|head -1|sed -e 's/\s*<version>\([0-9]\{1,\}\.[0-9]\{1,\}\)\.[0-9]\{1,\}-SNAPSHOT<\/version>/\1/')
+echo "  -> Cleaning up for version $VERSION"
+echo
+echo
+
+BASE_PATH=pmd/pmd-eclipse-plugin/snapshots/updates/${VERSION}
 BASE_URL=https://dl.bintray.com/${BASE_PATH}
 BASE_PATH_SNAPSHOT_BUILDS=pmd/pmd-eclipse-plugin/snapshots/builds
+BASE_PATH_SNAPSHOT_ZIPPED=pmd/pmd-eclipse-plugin/snapshots/zipped
 ARTIFACTS_FILE=compositeArtifacts.xml
 CONTENT_FILE=compositeContent.xml
 WORKING_DIR=target/cleanup-bintray-snapshots
@@ -71,8 +78,16 @@ for v in $artifacts_versions; do
     echo "Deleting $v ..."
     
     for file in artifacts.jar artifacts.xml.xz content.jar content.xml.xz p2.index features/net.sourceforge.pmd.eclipse_${v}.jar plugins/net.sourceforge.pmd.eclipse.plugin_${v}.jar; do
-        ${DRY_RUN} curl -X DELETE -u${BINTRAY_USER}:${BINTRAY_APIKEY} "https://api.bintray.com/content/${BASE_PATH_SNAPSHOT_BUILDS}/${v}/${file}"
+        path="${BASE_PATH_SNAPSHOT_BUILDS}/${v}/${file}"
+        echo "Deleting ${path}"
+        ${DRY_RUN} curl -X DELETE -u${BINTRAY_USER}:${BINTRAY_APIKEY} "https://api.bintray.com/content/${path}"
     done
+    
+    path="${BASE_PATH_SNAPSHOT_ZIPPED}/net.sourceforge.pmd.eclipse.p2updatesite-${v}.zip"
+    echo "Deleting ${path}"
+    ${DRY_RUN} curl -X DELETE -u${BINTRAY_USER}:${BINTRAY_APIKEY} "https://api.bintray.com/content/${path}"
+    echo "Deleting version $v"
+    ${DRY_RUN} curl -X DELETE -u${BINTRAY_USER}:${BINTRAY_APIKEY} "https://api.bintray.com/packages/pmd/pmd-eclipse-plugin/snapshots/versions/${v}"
     echo
     echo ----------------------------------------
 done
@@ -84,7 +99,7 @@ echo "Updating metadata"
 
 artifactsTemplate="<?xml version='1.0' encoding='UTF-8'?>
 <?compositeArtifactRepository version='1.0.0'?>
-<repository name='PMD for Eclipse Update Site 4.0' type='org.eclipse.equinox.internal.p2.artifact.repository.CompositeArtifactRepository' version='1.0.0'>
+<repository name='PMD for Eclipse Update Site ${VERSION}' type='org.eclipse.equinox.internal.p2.artifact.repository.CompositeArtifactRepository' version='1.0.0'>
   <properties size='2'>
     <property name='p2.timestamp' value='$(date +%s)000'/>
     <property name='p2.atomic.composite.loading' value='true'/>
@@ -109,7 +124,7 @@ content_remove=$(grep "<child location" ${CONTENT_FILE} | grep -v "${content}")
 
 contentTemplate="<?xml version='1.0' encoding='UTF-8'?>
 <?compositeMetadataRepository version='1.0.0'?>
-<repository name='PMD for Eclipse Update Site 4.0' type='org.eclipse.equinox.internal.p2.metadata.repository.CompositeMetadataRepository' version='1.0.0'>
+<repository name='PMD for Eclipse Update Site ${VERSION}' type='org.eclipse.equinox.internal.p2.metadata.repository.CompositeMetadataRepository' version='1.0.0'>
   <properties size='2'>
     <property name='p2.timestamp' value='$(date +%s)000'/>
     <property name='p2.atomic.composite.loading' value='true'/>
