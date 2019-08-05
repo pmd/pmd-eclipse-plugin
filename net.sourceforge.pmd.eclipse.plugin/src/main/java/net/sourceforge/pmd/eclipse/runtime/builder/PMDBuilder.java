@@ -61,6 +61,11 @@ public class PMDBuilder extends IncrementalProjectBuilder {
         return EMPTY_PROJECT_ARRAY;
     }
 
+    @Override
+    protected void clean(IProgressMonitor monitor) throws CoreException {
+        MarkerUtil.deleteAllMarkersIn(getProject());
+    }
+
     /**
      * Automatic build
      * 
