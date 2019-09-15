@@ -15,9 +15,13 @@ This is a minor release.
 
 ### Fixed Issues
 
+*   [#110](https://github.com/pmd/pmd-eclipse-plugin/issues/110): PMD markers should be removed on Project->Clean
+
 ### API Changes
 
 ### External Contributions
+
+*   [#111](https://github.com/pmd/pmd-eclipse-plugin/pull/111): Delete project markers on Project -> Clean - [Sebastian Ratz](https://github.com/sratz)
 
 ## 28-July-2019: 4.6.0.v20190728-0905
 
