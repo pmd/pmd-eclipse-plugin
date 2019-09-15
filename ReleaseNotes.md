@@ -13,6 +13,8 @@ This is a minor release.
 
 ### New and noteworthy
 
+*   Updated PMD to 6.18.0
+
 ### Fixed Issues
 
 *   [#110](https://github.com/pmd/pmd-eclipse-plugin/issues/110): PMD markers should be removed on Project->Clean
