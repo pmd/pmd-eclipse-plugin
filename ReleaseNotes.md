@@ -7,18 +7,7 @@ Eclipse Update Site:
 *   Releases: <https://dl.bintray.com/pmd/pmd-eclipse-plugin/updates/>
 *   Snapshots: <https://dl.bintray.com/pmd/pmd-eclipse-plugin/snapshots/updates/>
 
-## ????: 4.7.1.v????
-
-### New and noteworthy
-
-### Fixed Issues
-
-### API Changes
-
-### External Contributions
-
-
-## 15-September-2019: 4.7.0.v20190915-0906
+## 15-September-2019: 4.7.0.v20190915-0943
 
 This is a minor release.
 
