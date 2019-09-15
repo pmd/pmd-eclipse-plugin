@@ -25,7 +25,7 @@ BINTRAY_REPO=pmd-eclipse-plugin
 BINTRAY_OWNER=pmd
 
 #VERSION=4.6
-VERSION=$(grep "<version>" pom.xml|head -1|sed -e 's/\s*<version>\([0-9]\{1,\}\.[0-9]\{1,\}\)\.[0-9]\{1,\}-SNAPSHOT<\/version>/\1/')
+VERSION=$(grep "<version>" pom.xml|head -1|sed -e 's/\s*<version>\([0-9]\{1,\}\.[0-9]\{1,\}\)\.[0-9]\{1,\}.\{1,\}<\/version>/\1/')
 echo "  -> Cleaning up for version $VERSION"
 echo
 echo
