@@ -52,7 +52,7 @@ public class ReviewCmdTest {
     public void setUp() throws Exception {
 
         // 1. Create a Java project
-        this.testProject = EclipseUtils.createJavaProject("PMDTestProject");
+        this.testProject = EclipseUtils.createJavaProject("ReviewCmdTest");
         Assert.assertTrue("A test project cannot be created; the tests cannot be performed.",
                 this.testProject != null && this.testProject.exists() && this.testProject.isAccessible());
 

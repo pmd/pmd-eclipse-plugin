@@ -24,7 +24,7 @@ public class ReviewCodeCmdNonJavaTest {
 
     @Test
     public void checkCodeForNonJavaProject() throws Exception {
-        IProject testProject = EclipseUtils.createProject("TestNonJavaProject");
+        IProject testProject = EclipseUtils.createProject("ReviewCodeCmdNonJavaTest");
         Assert.assertTrue("A test project cannot be created; the tests cannot be performed.",
                 testProject != null && testProject.exists() && testProject.isAccessible());
         Assert.assertFalse(testProject.hasNature(JavaCore.NATURE_ID));
