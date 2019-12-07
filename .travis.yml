@@ -19,23 +19,6 @@ before_script:
 
 script: "source .travis/build.sh"
 
-
-before_deploy: true
-deploy:
-  provider: releases
-  api_key: ${GITHUB_OAUTH_TOKEN}
-  file_glob: true
-  file:
-  - net.sourceforge.pmd.eclipse.p2updatesite/target/net.sourceforge.pmd.eclipse.p2updatesite-*.zip
-  skip_cleanup: true
-  on:
-    tags: true
-    repo: pmd/pmd-eclipse-plugin
-    condition: "${TRAVIS_SECURE_ENV_VARS} = true"
-after_deploy: source .travis/release.sh
-
-
-
 notifications:
   email:
     recipients:
