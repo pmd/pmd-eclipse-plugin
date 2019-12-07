@@ -1,4 +1,5 @@
-sudo: false
+os: linux
+dist: bionic
 
 addons:
   ssh_known_hosts:
