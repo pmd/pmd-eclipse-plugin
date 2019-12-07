@@ -2,7 +2,6 @@ os: linux
 dist: bionic
 
 language: java
-jdk: openjdk8
 
 services:
   - xvfb
@@ -10,6 +9,8 @@ services:
 before_install:
   - bash .travis/setup-secrets.sh
   - bash .travis/configure-maven.sh
+  - bash .travis/install-openjdk.sh
+  - source ${HOME}/java.env
 install: true
 before_script: true
 script: "source .travis/build.sh"
@@ -23,6 +24,7 @@ notifications:
 cache:
   directories:
   - "$HOME/.m2"
+  - "$HOME/.cache"
 
 env:
   global:
