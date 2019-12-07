@@ -20,14 +20,14 @@ function gh_releases_createDraftRelease() {
 
     log_debug "$FUNCNAME: Creating new draft release for tag=$tagName and commit=$targetCommitish"
 
-    local request=$(cat <<-EOF
-        {
-            "tag_name": "${tagName}",
-            "target_commitish": "${targetCommitish}",
-            "name": "${tagName}",
-            "draft": true
-        }
-        EOF
+    local request=$(cat <<EOF
+{
+    "tag_name": "${tagName}",
+    "target_commitish": "${targetCommitish}",
+    "name": "${tagName}",
+    "draft": true
+}
+EOF
     )
 
     log_debug "POST https://api.github.com/repos/pmd/pmd-eclipse-plugin/releases"
@@ -148,12 +148,12 @@ function gh_release_updateRelease() {
     body="${body//$'\n'/\\r\\n}"
     body="${body//'"'/\\\"}"
 
-    local request=$(cat <<-EOF
-        {
-            "name": "${name}",
-            "body": "${body}"
-        }
-        EOF
+    local request=$(cat <<EOF
+{
+    "name": "${name}",
+    "body": "${body}"
+}
+EOF
     )
 
     log_debug "PATCH https://api.github.com/repos/pmd/pmd-eclipse-plugin/releases/${releaseId}"
