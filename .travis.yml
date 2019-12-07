@@ -1,12 +1,7 @@
 os: linux
 dist: bionic
 
-addons:
-  ssh_known_hosts:
-    - web.sourceforge.net
-
 language: java
-
 jdk: openjdk8
 
 before_install:
