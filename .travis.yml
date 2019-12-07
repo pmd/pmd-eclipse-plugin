@@ -4,15 +4,14 @@ dist: bionic
 language: java
 jdk: openjdk8
 
+services:
+  - xvfb
+
 before_install:
   - bash .travis/setup-secrets.sh
   - bash .travis/configure-maven.sh
 install: true
-before_script:
-  - "export DISPLAY=:99.0"
-  - "/sbin/start-stop-daemon --start --quiet --pidfile /tmp/custom_xvfb_99.pid --make-pidfile --background --exec /usr/bin/Xvfb -- :99 -ac -screen 0 1280x1024x16"
-  - sleep 3 # give xvfb some time to start
-
+before_script: true
 script: "source .travis/build.sh"
 
 notifications:
