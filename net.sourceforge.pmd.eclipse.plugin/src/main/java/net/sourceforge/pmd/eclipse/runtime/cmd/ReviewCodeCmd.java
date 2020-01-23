@@ -13,7 +13,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -39,6 +38,8 @@ import org.eclipse.ui.IPerspectiveRegistry;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSet;
@@ -61,7 +62,7 @@ import net.sourceforge.pmd.util.StringUtil;
  */
 public class ReviewCodeCmd extends AbstractDefaultCommand {
 
-    private static final Logger LOG = Logger.getLogger(ReviewCodeCmd.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ReviewCodeCmd.class);
 
     private final List<IResource> resources = new ArrayList<IResource>();
     private IResourceDelta resourceDelta;

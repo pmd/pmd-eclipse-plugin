@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 
-import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
@@ -28,6 +27,8 @@ import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkingSet;
 import org.eclipse.ui.dialogs.PropertyPage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSet;
@@ -70,7 +71,7 @@ public class PMDPropertyPage extends PropertyPage {
     private final RuleTableViewerSorter availableRuleTableViewerSorter = new RuleTableViewerSorter(
             RuleTableViewerSorter.RULE_DEFAULT_COMPARATOR);
 
-    private static final Logger LOG = Logger.getLogger(PMDPropertyPage.class);
+    private static final Logger LOG = LoggerFactory.getLogger(PMDPropertyPage.class);
 
     /**
      * @see PropertyPage#createContents(Composite)

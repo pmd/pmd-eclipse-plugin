@@ -12,11 +12,12 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 
@@ -28,7 +29,7 @@ import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
  *
  */
 public class JobCommandProcessor {
-    private static final Logger LOG = Logger.getLogger(JobCommandProcessor.class);
+    private static final Logger LOG = LoggerFactory.getLogger(JobCommandProcessor.class);
     private final Map<AbstractDefaultCommand, Job> jobs = Collections
             .synchronizedMap(new HashMap<AbstractDefaultCommand, Job>());
 

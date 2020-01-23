@@ -25,12 +25,13 @@ import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ui.IWorkingSetManager;
 import org.eclipse.ui.PlatformUI;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSet;
@@ -51,7 +52,7 @@ import net.sourceforge.pmd.eclipse.ui.actions.RuleSetUtil;
  *
  */
 public class ProjectPropertiesManagerImpl implements IProjectPropertiesManager {
-    private static final Logger LOG = Logger.getLogger(ProjectPropertiesManagerImpl.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ProjectPropertiesManagerImpl.class);
 
     private static final String PROPERTIES_FILE = ".pmd";
 

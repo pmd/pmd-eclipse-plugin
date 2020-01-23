@@ -15,7 +15,6 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
@@ -51,6 +50,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.PMDConfiguration;
@@ -89,7 +89,7 @@ import net.sourceforge.pmd.lang.java.JavaLanguageModule;
  * The activator class controls the plug-in life cycle
  */
 public class PMDPlugin extends AbstractUIPlugin {
-    private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(PMDPlugin.class);
+    private static final Logger LOG = LoggerFactory.getLogger(PMDPlugin.class);
 
     private static File pluginFolder;
 
@@ -110,8 +110,6 @@ public class PMDPlugin extends AbstractUIPlugin {
 
     private static final Integer[] PRIORITY_VALUES = new Integer[] { Integer.valueOf(1), Integer.valueOf(2),
         Integer.valueOf(3), Integer.valueOf(4), Integer.valueOf(5), };
-
-    private static final Logger LOG = Logger.getLogger(PMDPlugin.class);
 
     private StringTable stringTable; // NOPMD by Herlin on 11/10/06 00:22
 
@@ -260,7 +258,7 @@ public class PMDPlugin extends AbstractUIPlugin {
         PriorityFilter.getInstance().initialize();
 
         version = context.getBundle().getHeaders().get("Bundle-Version");
-        LOGGER.debug("PMD Plugin {} has started...", version);
+        LOG.debug("PMD Plugin {} has started...", version);
     }
 
     /**
@@ -296,7 +294,7 @@ public class PMDPlugin extends AbstractUIPlugin {
                 try {
                     PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(viewId);
                 } catch (PartInitException e) {
-                    LOG.error(e);
+                    LOG.error("Error while showing {}", viewId, e);
                 }
             }
         });
@@ -362,7 +360,7 @@ public class PMDPlugin extends AbstractUIPlugin {
                     PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().hideView(view); 
                     PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(viewId); 
                 } catch (PartInitException e) { 
-                    LOG.error(e); 
+                    LOG.error("Error while refreshing view {}", viewId, e);
                 } 
             } 
         }); 

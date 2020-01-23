@@ -11,7 +11,6 @@ import java.util.Comparator;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -35,6 +34,8 @@ import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkingSet;
 import org.eclipse.ui.dialogs.PropertyPage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSet;
@@ -79,7 +80,7 @@ public class PMDProjectPropertyPage extends PropertyPage {
     private final RuleTableViewerSorter availableRuleTableViewerSorter = new RuleTableViewerSorter(
             RuleTableViewerSorter.RULE_DEFAULT_COMPARATOR);
 
-    private static final Logger LOG = Logger.getLogger(PMDProjectPropertyPage.class);
+    private static final Logger LOG = LoggerFactory.getLogger(PMDProjectPropertyPage.class);
 
     /**
      * @see PropertyPage#createContents(Composite)

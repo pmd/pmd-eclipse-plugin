@@ -21,7 +21,8 @@
 
 package name.herlin.command;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 
@@ -34,7 +35,7 @@ import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
  */
 @Deprecated
 public class DefaultCommandProcessor implements CommandProcessor {
-    private static final Logger LOG = Logger.getLogger(DefaultCommandProcessor.class);
+    private static final Logger LOG = LoggerFactory.getLogger(DefaultCommandProcessor.class);
 
     /**
      * Execute the command.

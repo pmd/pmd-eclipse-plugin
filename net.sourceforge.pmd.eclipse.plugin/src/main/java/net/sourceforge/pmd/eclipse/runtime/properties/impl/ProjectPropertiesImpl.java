@@ -13,7 +13,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspaceRoot;
@@ -23,6 +22,8 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.ui.IWorkingSet;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.RuleSet;
@@ -45,7 +46,7 @@ import net.sourceforge.pmd.util.StringUtil;
  *
  */
 public class ProjectPropertiesImpl implements IProjectProperties {
-    private static final Logger LOG = Logger.getLogger(ProjectPropertiesImpl.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ProjectPropertiesImpl.class);
 
     private static final String PROJECT_RULESET_FILE = ".ruleset";
 

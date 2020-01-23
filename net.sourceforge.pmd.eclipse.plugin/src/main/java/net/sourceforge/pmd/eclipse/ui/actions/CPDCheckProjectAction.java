@@ -6,7 +6,6 @@ package net.sourceforge.pmd.eclipse.ui.actions;
 
 import java.util.Iterator;
 
-import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.action.IAction;
@@ -18,6 +17,8 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPartSite;
 import org.eclipse.ui.PartInitException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.cpd.CSVRenderer;
 import net.sourceforge.pmd.cpd.LanguageFactory;
@@ -40,7 +41,7 @@ import net.sourceforge.pmd.eclipse.ui.views.cpd2.CPDView2;
  * 
  */
 public class CPDCheckProjectAction extends AbstractUIAction {
-    private static final Logger LOG = Logger.getLogger(CPDCheckProjectAction.class);
+    private static final Logger LOG = LoggerFactory.getLogger(CPDCheckProjectAction.class);
    
     private static final String XML_KEY = "XML";
     private static final String SIMPLE_KEY = "Simple Text";

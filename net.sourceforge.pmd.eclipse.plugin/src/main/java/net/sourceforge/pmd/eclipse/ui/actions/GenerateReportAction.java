@@ -6,13 +6,14 @@ package net.sourceforge.pmd.eclipse.ui.actions;
 
 import java.util.List;
 
-import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.runtime.cmd.RenderReportsCmd;
@@ -30,7 +31,7 @@ import net.sourceforge.pmd.util.StringUtil;
  */
 public class GenerateReportAction extends AbstractUIAction {
 
-    private static final Logger LOG = Logger.getLogger(GenerateReportAction.class);
+    private static final Logger LOG = LoggerFactory.getLogger(GenerateReportAction.class);
 
     private static final String DEFAULT_REPORT_NAME = "pmd-report";
 

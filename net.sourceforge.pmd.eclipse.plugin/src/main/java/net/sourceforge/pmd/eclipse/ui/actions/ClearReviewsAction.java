@@ -13,7 +13,6 @@ import java.io.PrintWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Iterator;
 
-import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IMarker;
@@ -34,6 +33,8 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.IViewActionDelegate;
 import org.eclipse.ui.IViewPart;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.eclipse.runtime.PMDRuntimeConstants;
 import net.sourceforge.pmd.eclipse.runtime.cmd.AbstractDefaultCommand;
@@ -48,7 +49,7 @@ import net.sourceforge.pmd.eclipse.util.IOUtil;
  */
 public class ClearReviewsAction extends AbstractUIAction implements IResourceVisitor, IViewActionDelegate {
 
-    private static final Logger LOG = Logger.getLogger(ClearReviewsAction.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ClearReviewsAction.class);
     private IProgressMonitor monitor;
 
     /**

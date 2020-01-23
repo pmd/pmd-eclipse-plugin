@@ -12,7 +12,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.text.MessageFormat;
 import java.util.Date;
 
-import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResource;
@@ -27,6 +26,8 @@ import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.runtime.PMDRuntimeConstants;
@@ -42,7 +43,7 @@ import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
  */
 public class ReviewAction extends AbstractViolationSelectionAction {
 
-    private static final Logger LOG = Logger.getLogger(ReviewAction.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ReviewAction.class);
     private IProgressMonitor monitor;
 
     /**

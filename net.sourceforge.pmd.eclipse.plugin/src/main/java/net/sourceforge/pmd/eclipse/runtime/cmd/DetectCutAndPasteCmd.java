@@ -12,13 +12,14 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IPropertyListener;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.cpd.CPD;
 import net.sourceforge.pmd.cpd.CPDConfiguration;
@@ -49,7 +50,7 @@ public class DetectCutAndPasteCmd extends AbstractProjectCommand {
     private List<IPropertyListener> listeners;
 
     private static final long serialVersionUID = 1L;
-    private static final Logger LOG = Logger.getLogger(DetectCutAndPasteCmd.class);
+    private static final Logger LOG = LoggerFactory.getLogger(DetectCutAndPasteCmd.class);
 
     /**
      * Default Constructor

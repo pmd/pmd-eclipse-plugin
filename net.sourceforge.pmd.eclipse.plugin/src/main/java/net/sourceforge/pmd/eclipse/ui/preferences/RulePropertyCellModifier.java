@@ -4,10 +4,11 @@
 
 package net.sourceforge.pmd.eclipse.ui.preferences;
 
-import org.apache.log4j.Logger;
 import org.eclipse.jface.viewers.ICellModifier;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.widgets.TableItem;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This class allows the modifications of the element of the rule properties
@@ -17,7 +18,7 @@ import org.eclipse.swt.widgets.TableItem;
  *
  */
 public class RulePropertyCellModifier implements ICellModifier {
-    private static final Logger LOG = Logger.getLogger(RulePropertyCellModifier.class);
+    private static final Logger LOG = LoggerFactory.getLogger(RulePropertyCellModifier.class);
     private TableViewer tableViewer;
 
     /**

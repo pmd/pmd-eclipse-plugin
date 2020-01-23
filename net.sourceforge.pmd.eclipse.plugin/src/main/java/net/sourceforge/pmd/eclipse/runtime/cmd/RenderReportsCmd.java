@@ -11,7 +11,6 @@ import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IMarker;
@@ -23,6 +22,8 @@ import org.eclipse.jdt.core.IPackageDeclaration;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Rule;
@@ -44,7 +45,7 @@ public class RenderReportsCmd extends AbstractProjectCommand {
 
     private static final long serialVersionUID = 1L;
 
-    private static final Logger LOG = Logger.getLogger(RenderReportsCmd.class);
+    private static final Logger LOG = LoggerFactory.getLogger(RenderReportsCmd.class);
 
     /**
      * Table containing the renderers indexed by the file name.
