@@ -9,9 +9,11 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.slf4j.ILoggerFactory;
 import org.slf4j.LoggerFactory;
+import org.slf4j.bridge.SLF4JBridgeHandler;
 
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 
+import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.encoder.PatternLayoutEncoder;
 import ch.qos.logback.classic.filter.ThresholdFilter;
@@ -43,8 +45,12 @@ public class LogbackConfiguration {
         logbackEclipseAppender.setName(PMDPlugin.PLUGIN_ID);
         logbackEclipseAppender.start();
 
-        ch.qos.logback.classic.Logger l = logbackContext.getLogger(ROOT_LOG_ID);
+        Logger l = logbackContext.getLogger(ROOT_LOG_ID);
         l.addAppender(logbackEclipseAppender);
+
+        if (!SLF4JBridgeHandler.isInstalled()) {
+            SLF4JBridgeHandler.install();
+        }
     }
 
     public void unconfigureLogback() {
@@ -53,8 +59,10 @@ public class LogbackConfiguration {
             return;
         }
 
-        ch.qos.logback.classic.Logger l = logbackContext.getLogger(ROOT_LOG_ID);
+        Logger l = logbackContext.getLogger(ROOT_LOG_ID);
         l.detachAndStopAllAppenders();
+
+        SLF4JBridgeHandler.uninstall();
     }
 
     private void configureLogs(String logFileName, String logLevel) {
@@ -96,7 +104,7 @@ public class LogbackConfiguration {
 
         appender.start();
 
-        ch.qos.logback.classic.Logger rootLogger = logbackContext.getLogger(ROOT_LOG_ID);
+        Logger rootLogger = logbackContext.getLogger(ROOT_LOG_ID);
         rootLogger.addAppender(appender);
     }
 
@@ -106,7 +114,7 @@ public class LogbackConfiguration {
             return;
         }
 
-        ch.qos.logback.classic.Logger rootLogger = logbackContext.getLogger(ROOT_LOG_ID);
+        Logger rootLogger = logbackContext.getLogger(ROOT_LOG_ID);
         Appender<ILoggingEvent> appender = rootLogger.getAppender(PMD_ECLIPSE_APPENDER_NAME);
         if (appender != null) {
             rootLogger.detachAppender(appender);
