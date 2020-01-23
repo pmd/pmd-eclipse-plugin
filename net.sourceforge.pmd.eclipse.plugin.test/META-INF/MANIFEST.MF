@@ -15,3 +15,4 @@ Require-Bundle: org.eclipse.ui,
  org.junit,
  org.apache.log4j,
  org.apache.commons.io
+Import-Package: org.slf4j
