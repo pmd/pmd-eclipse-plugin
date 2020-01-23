@@ -56,6 +56,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
+import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.RuleSet;
@@ -64,6 +65,7 @@ import net.sourceforge.pmd.RuleSetNotFoundException;
 import net.sourceforge.pmd.eclipse.core.IRuleSetManager;
 import net.sourceforge.pmd.eclipse.core.ext.RuleSetsExtensionProcessor;
 import net.sourceforge.pmd.eclipse.core.impl.RuleSetManagerImpl;
+import net.sourceforge.pmd.eclipse.logging.internal.EclipseLogAppender;
 import net.sourceforge.pmd.eclipse.runtime.cmd.JavaProjectClassLoader;
 import net.sourceforge.pmd.eclipse.runtime.preferences.IPreferences;
 import net.sourceforge.pmd.eclipse.runtime.preferences.IPreferencesFactory;
@@ -88,10 +90,13 @@ import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.java.JavaLanguageModule;
 
+import ch.qos.logback.classic.LoggerContext;
+
 /**
  * The activator class controls the plug-in life cycle
  */
 public class PMDPlugin extends AbstractUIPlugin {
+    private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(PMDPlugin.class);
 
     private static File pluginFolder;
 
@@ -123,6 +128,8 @@ public class PMDPlugin extends AbstractUIPlugin {
     private IPropertiesFactory propertiesFactory = new PropertiesFactoryImpl();
 
     private final IRuleSetManager ruleSetManager = new RuleSetManagerImpl(); // NOPMD:SingularField
+
+    private EclipseLogAppender logbackEclipseAppender;
 
     /**
      * The constructor
@@ -234,6 +241,7 @@ public class PMDPlugin extends AbstractUIPlugin {
      */
     public void start(BundleContext context) throws Exception {
         super.start(context);
+        configureLogback();
 
         // this needs to be executed before the preferences are loaded, because
         // the standard
@@ -259,6 +267,32 @@ public class PMDPlugin extends AbstractUIPlugin {
         PriorityFilter.getInstance().initialize();
 
         version = context.getBundle().getHeaders().get("Bundle-Version");
+        LOGGER.debug("PMD Plugin {} has started...", version);
+    }
+
+    private void configureLogback() {
+        unconfigureLogback();
+
+        LoggerContext logbackContext = (LoggerContext) LoggerFactory.getILoggerFactory();
+        logbackEclipseAppender = new EclipseLogAppender(PLUGIN_ID, getLog());
+        logbackEclipseAppender.setContext(logbackContext);
+        logbackEclipseAppender.setName(PLUGIN_ID);
+        logbackEclipseAppender.start();
+
+        ch.qos.logback.classic.Logger l = logbackContext.getLogger("net.sourceforge.pmd");
+        l.addAppender(logbackEclipseAppender);
+    }
+
+    private void unconfigureLogback() {
+        if (logbackEclipseAppender == null) {
+            return;
+        }
+
+        LoggerContext logbackContext = (LoggerContext) LoggerFactory.getILoggerFactory();
+        ch.qos.logback.classic.Logger l = logbackContext.getLogger("net.sourceforge.pmd");
+        l.detachAppender(logbackEclipseAppender);
+        logbackEclipseAppender.stop();
+        logbackEclipseAppender = null;
     }
 
     /**
@@ -380,6 +414,7 @@ public class PMDPlugin extends AbstractUIPlugin {
         ShapePainter.disposeAll();
         ResourceManager.dispose();
         PriorityDescriptorCache.INSTANCE.dispose();
+        unconfigureLogback();
         super.stop(context);
     }
 

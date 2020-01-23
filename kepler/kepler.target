@@ -19,6 +19,8 @@
             <unit id="org.junit.source" version="4.11.0.v201303080030"/>
             <unit id="org.slf4j.api" version="1.7.2.v20121108-1250"/>
             <unit id="org.slf4j.api.source" version="1.7.2.v20121108-1250"/>
+            <unit id="ch.qos.logback.slf4j" version="1.0.7.v20121108-1250"/>
+            <unit id="ch.qos.logback.slf4j.source" version="1.0.7.v20121108-1250"/>
         </location>
     </locations>
     <targetJRE path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7"/>

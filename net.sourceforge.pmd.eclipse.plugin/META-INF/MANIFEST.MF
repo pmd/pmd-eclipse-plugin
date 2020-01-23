@@ -17,7 +17,10 @@ Require-Bundle: org.apache.commons.logging;bundle-version="1.0.4",
  org.eclipse.help,
  org.eclipse.help.ui,
  org.eclipse.wst.xml.core,
- org.eclipse.ui.workbench.texteditor
+ org.eclipse.ui.workbench.texteditor,
+ org.slf4j.api,
+ ch.qos.logback.classic,
+ ch.qos.logback.core
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-Vendor: %plugin.provider
