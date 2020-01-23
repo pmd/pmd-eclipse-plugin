@@ -56,6 +56,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
+import org.slf4j.ILoggerFactory;
 import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.PMDConfiguration;
@@ -272,8 +273,11 @@ public class PMDPlugin extends AbstractUIPlugin {
 
     private void configureLogback() {
         unconfigureLogback();
+        LoggerContext logbackContext = getLogbackContext();
+        if (logbackContext == null) {
+            return;
+        }
 
-        LoggerContext logbackContext = (LoggerContext) LoggerFactory.getILoggerFactory();
         logbackEclipseAppender = new EclipseLogAppender(PLUGIN_ID, getLog());
         logbackEclipseAppender.setContext(logbackContext);
         logbackEclipseAppender.setName(PLUGIN_ID);
@@ -288,11 +292,34 @@ public class PMDPlugin extends AbstractUIPlugin {
             return;
         }
 
-        LoggerContext logbackContext = (LoggerContext) LoggerFactory.getILoggerFactory();
+        LoggerContext logbackContext = getLogbackContext();
+        if (logbackContext == null) {
+            return;
+        }
+
         ch.qos.logback.classic.Logger l = logbackContext.getLogger("net.sourceforge.pmd");
         l.detachAppender(logbackEclipseAppender);
         logbackEclipseAppender.stop();
         logbackEclipseAppender = null;
+    }
+
+    private LoggerContext getLogbackContext() {
+        ILoggerFactory loggerFactory = LoggerFactory.getILoggerFactory();
+        int maxTries = 10;
+        while (!(loggerFactory instanceof LoggerContext) && maxTries > 0) {
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                return null;
+            }
+            maxTries--;
+            loggerFactory = LoggerFactory.getILoggerFactory();
+        }
+        if (loggerFactory instanceof LoggerContext) {
+            return (LoggerContext) loggerFactory;
+        }
+        return null;
     }
 
     /**
