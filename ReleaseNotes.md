@@ -17,6 +17,10 @@ This is a bugfix release.
 
 ### API Changes
 
+*   The minimum eclipse version is now definitely Kepler (4.3) as
+    it is declared in the market place. This is enforced via a
+    target definition.
+
 ### External Contributions
 
 ## 29-November-2019: 4.9.0.v20191129-1951

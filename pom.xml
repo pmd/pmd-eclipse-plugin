@@ -11,9 +11,12 @@
     <module>net.sourceforge.pmd.eclipse.plugin.test.fragment</module>
     <module>net.sourceforge.pmd.eclipse.plugin.test</module>
     <module>net.sourceforge.pmd.eclipse.p2updatesite</module>
+    <module>kepler</module>
   </modules>
 
   <properties>
+    <target.platform>kepler</target.platform>
+
     <tycho.version>1.4.0</tycho.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <pmd.version>6.20.0</pmd.version>
@@ -23,11 +26,6 @@
   </properties>
 
   <repositories>
-   <repository>
-     <id>juno</id>
-     <layout>p2</layout>
-     <url>http://download.eclipse.org/releases/juno</url>
-   </repository>
    <repository>
      <id>sonatype-nexus-snapshots</id>
      <name>Sonatype Nexus Snapshots</name>
@@ -53,6 +51,13 @@
         <groupId>org.eclipse.tycho</groupId>
         <artifactId>target-platform-configuration</artifactId>
         <configuration>
+          <target>
+            <artifact>
+              <groupId>${project.groupId}</groupId>
+              <artifactId>${target.platform}</artifactId>
+              <version>${project.version}</version>
+            </artifact>
+          </target>
           <environments>
             <environment>
               <os>linux</os>
