@@ -183,15 +183,6 @@
           <groupId>org.eclipse.tycho</groupId>
           <artifactId>tycho-p2-plugin</artifactId>
           <version>${tycho.version}</version>
-          <configuration>
-            <baselineMode>warn</baselineMode>
-            <baselineReplace>none</baselineReplace>
-            <baselineRepositories>
-              <repository>
-                <url>http://download.eclipse.org/eclipse/updates/4.2</url>
-              </repository>
-            </baselineRepositories>
-          </configuration>
         </plugin>
         <plugin>
           <groupId>org.eclipse.tycho.extras</groupId>
