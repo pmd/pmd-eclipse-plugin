@@ -42,7 +42,6 @@ Bundle-ClassPath: target/lib/antlr-runtime.jar,
  target/lib/jaxb-impl.jar,
  target/lib/jcommander.jar,
  target/lib/lenses_2.13.jar,
- target/lib/log4j.jar,
  target/lib/parsers_2.13.jar,
  target/lib/pmd-apex-jorje-lib.jar,
  target/lib/pmd-apex.jar,
@@ -175,4 +174,5 @@ Export-Package: name.herlin.command,
  net.sourceforge.pmd.renderers,
  net.sourceforge.pmd.util;uses:="net.sourceforge.pmd.lang.java.ast",
  net.sourceforge.pmd.util.datasource
-Import-Package: org.slf4j
+Import-Package: org.apache.log4j,
+ org.slf4j

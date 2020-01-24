@@ -240,7 +240,7 @@ public class PMDPlugin extends AbstractUIPlugin {
         registerStandardRuleSets();
 
         IPreferences prefs = loadPreferences();
-        logbackConfiguration.applyLogPreferences(prefs.getLogFileName(), prefs.getLogLevel().toString());
+        logbackConfiguration.applyLogPreferences(prefs.getLogFileName(), prefs.getLogLevelName());
         registerAdditionalRuleSets();
         fileChangeListenerEnabled(prefs.isCheckAfterSaveEnabled());
 
@@ -551,7 +551,7 @@ public class PMDPlugin extends AbstractUIPlugin {
     }
 
     public void applyLogPreferences(IPreferences preferences) {
-        logbackConfiguration.applyLogPreferences(preferences.getLogFileName(), preferences.getLogLevel().toString());
+        logbackConfiguration.applyLogPreferences(preferences.getLogFileName(), preferences.getLogLevelName());
     }
 
     /**

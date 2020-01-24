@@ -19,7 +19,6 @@ import java.util.Properties;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Level;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -336,8 +335,8 @@ class PreferencesManagerImpl implements IPreferencesManager {
     }
 
     private void loadLogLevel() {
-        loadPreferencesStore.setDefault(LOG_LEVEL, IPreferences.LOG_LEVEL.toString());
-        preferences.setLogLevel(Level.toLevel(loadPreferencesStore.getString(LOG_LEVEL)));
+        loadPreferencesStore.setDefault(LOG_LEVEL, IPreferences.LOG_LEVEL_DEFAULT);
+        preferences.setLogLevel(loadPreferencesStore.getString(LOG_LEVEL));
     }
 
     private void loadGlobalRuleManagement() {
@@ -521,7 +520,7 @@ class PreferencesManagerImpl implements IPreferencesManager {
     }
 
     private void storeLogLevel() {
-        storePreferencesStore.setValue(LOG_LEVEL, preferences.getLogLevel().toString());
+        storePreferencesStore.setValue(LOG_LEVEL, preferences.getLogLevelName());
     }
 
     private void storePriorityDescriptors() {
