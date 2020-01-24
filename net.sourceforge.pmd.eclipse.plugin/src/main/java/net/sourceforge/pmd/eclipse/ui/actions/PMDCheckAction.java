@@ -6,7 +6,6 @@ package net.sourceforge.pmd.eclipse.ui.actions;
 
 import java.util.Iterator;
 
-import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceVisitor;
@@ -19,6 +18,8 @@ import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.IWorkingSet;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.runtime.cmd.AbstractDefaultCommand;
@@ -34,7 +35,7 @@ import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
  */
 public class PMDCheckAction extends AbstractUIAction {
 
-    private static final Logger LOG = Logger.getLogger(PMDCheckAction.class);
+    private static final Logger LOG = LoggerFactory.getLogger(PMDCheckAction.class);
 
     /**
      * @see org.eclipse.ui.IActionDelegate#run(IAction)

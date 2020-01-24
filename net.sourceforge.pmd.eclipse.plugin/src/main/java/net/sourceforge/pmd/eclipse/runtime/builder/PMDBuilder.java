@@ -6,7 +6,6 @@ package net.sourceforge.pmd.eclipse.runtime.builder;
 
 import java.util.Map;
 
-import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
@@ -14,6 +13,8 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.runtime.cmd.ReviewCodeCmd;
@@ -27,7 +28,7 @@ import net.sourceforge.pmd.eclipse.runtime.cmd.ReviewCodeCmd;
  */
 public class PMDBuilder extends IncrementalProjectBuilder {
 
-    public static final Logger LOG = Logger.getLogger(PMDBuilder.class);
+    public static final Logger LOG = LoggerFactory.getLogger(PMDBuilder.class);
     public static final String PMD_BUILDER = "net.sourceforge.pmd.eclipse.plugin.pmdBuilder";
 
     public static final IProject[] EMPTY_PROJECT_ARRAY = new IProject[0];

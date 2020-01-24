@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.eclipse.ui.properties;
 
-import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.window.Window;
@@ -14,6 +13,8 @@ import org.eclipse.ui.IWorkingSet;
 import org.eclipse.ui.IWorkingSetManager;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.IWorkingSetSelectionDialog;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
@@ -31,7 +32,7 @@ import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
  *
  */
 public class PMDPropertyPageController {
-    private static final Logger LOG = Logger.getLogger(PMDPropertyPageController.class);
+    private static final Logger LOG = LoggerFactory.getLogger(PMDPropertyPageController.class);
     private final Shell shell;
     private IProject project;
     private PMDPropertyPageBean propertyPageBean;

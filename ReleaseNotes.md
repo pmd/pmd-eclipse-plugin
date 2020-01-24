@@ -17,6 +17,16 @@ This is a bugfix release.
 
 ### API Changes
 
+*   The minimum eclipse version is now definitely Kepler (4.3) as
+    it is declared in the market place. This is enforced via a
+    target definition.
+*   Usage of Log4j is deprecated and is going to be removed. Logback via slf4j is replacing it.
+    Therefore the following methods/fields are deprecated for removal in `net.sourceforge.pmd.eclipse.runtime.preferences.IPreferences`:
+    *   `getLogLevel()`
+    *   `setLogLevel(Level)`
+    *   `LOG_LEVEL`
+*   `net.sourceforge.pmd.eclipse.plugin.PMDPlugin#ROOT_LOG_ID`
+
 ### External Contributions
 
 ## 29-November-2019: 4.9.0.v20191129-1951

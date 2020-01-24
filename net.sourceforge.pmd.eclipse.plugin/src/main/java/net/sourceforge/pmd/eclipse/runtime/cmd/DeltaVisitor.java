@@ -4,12 +4,13 @@
 
 package net.sourceforge.pmd.eclipse.runtime.cmd;
 
-import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.IResourceDeltaVisitor;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A PMD visitor for processing resource deltas
@@ -19,7 +20,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
  */
 public class DeltaVisitor extends BaseVisitor implements IResourceDeltaVisitor {
 
-    private static final Logger LOG = Logger.getLogger(DeltaVisitor.class);
+    private static final Logger LOG = LoggerFactory.getLogger(DeltaVisitor.class);
 
     /**
      * Default constructor

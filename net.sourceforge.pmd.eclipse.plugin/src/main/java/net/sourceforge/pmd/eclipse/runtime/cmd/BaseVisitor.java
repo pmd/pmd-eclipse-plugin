@@ -20,7 +20,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
 
-import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResource;
@@ -28,6 +27,8 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ui.IWorkingSet;
 import org.eclipse.ui.ResourceWorkingSetFilter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.PMDConfiguration;
@@ -66,7 +67,7 @@ import net.sourceforge.pmd.util.datasource.ReaderDataSource;
  *
  */
 public class BaseVisitor {
-    private static final Logger LOG = Logger.getLogger(BaseVisitor.class);
+    private static final Logger LOG = LoggerFactory.getLogger(BaseVisitor.class);
     private IProgressMonitor monitor;
     private boolean useTaskMarker = false;
     private Map<IFile, Set<MarkerInfo2>> accumulator;
@@ -394,8 +395,7 @@ public class BaseVisitor {
                         ConfigurationError error = errors.next();
                         message.append(error.rule().getName()).append(": ").append(error.issue()).append('\n');
                     }
-                    PMDPlugin.getDefault().logWarn(message.toString());
-                    LOG.warn(message);
+                    LOG.warn(message.toString());
                 }
                 if (collectingReport.hasErrors()) {
                     StringBuilder message = new StringBuilder("There were processing errors!\n");

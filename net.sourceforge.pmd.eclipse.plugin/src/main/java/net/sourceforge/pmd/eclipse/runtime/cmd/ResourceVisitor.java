@@ -4,9 +4,10 @@
 
 package net.sourceforge.pmd.eclipse.runtime.cmd;
 
-import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceVisitor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This class visits all of the resources in the Eclipse Workspace, and runs PMD
@@ -18,7 +19,7 @@ import org.eclipse.core.resources.IResourceVisitor;
  *
  */
 public class ResourceVisitor extends BaseVisitor implements IResourceVisitor {
-    private static final Logger LOG = Logger.getLogger(ResourceVisitor.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ResourceVisitor.class);
 
     /**
      * @see org.eclipse.core.resources.IResourceVisitor#visit(IResource)

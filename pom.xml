@@ -11,23 +11,24 @@
     <module>net.sourceforge.pmd.eclipse.plugin.test.fragment</module>
     <module>net.sourceforge.pmd.eclipse.plugin.test</module>
     <module>net.sourceforge.pmd.eclipse.p2updatesite</module>
+    <module>kepler</module>
   </modules>
 
   <properties>
-    <tycho.version>1.4.0</tycho.version>
+    <target.platform>kepler</target.platform>
+    <orbit.version>R20140114142710</orbit.version>
+
+    <tycho.version>1.6.0</tycho.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <pmd.version>6.20.0</pmd.version>
     <maven-antrun-plugin.version>1.8</maven-antrun-plugin.version>
     <pmd.build-tools.version>3</pmd.build-tools.version>
     <checkstyle.version>3.0.0</checkstyle.version>
+
+    <updatesite.orbit>http://download.eclipse.org/tools/orbit/downloads/drops/${orbit.version}/repository/</updatesite.orbit>
   </properties>
 
   <repositories>
-   <repository>
-     <id>juno</id>
-     <layout>p2</layout>
-     <url>http://download.eclipse.org/releases/juno</url>
-   </repository>
    <repository>
      <id>sonatype-nexus-snapshots</id>
      <name>Sonatype Nexus Snapshots</name>
@@ -53,6 +54,13 @@
         <groupId>org.eclipse.tycho</groupId>
         <artifactId>target-platform-configuration</artifactId>
         <configuration>
+          <target>
+            <artifact>
+              <groupId>${project.groupId}</groupId>
+              <artifactId>${target.platform}</artifactId>
+              <version>${project.version}</version>
+            </artifact>
+          </target>
           <environments>
             <environment>
               <os>linux</os>
@@ -105,6 +113,11 @@
 
     <pluginManagement>
       <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-clean-plugin</artifactId>
+          <version>3.1.0</version>
+        </plugin>
         <plugin>
           <groupId>org.eclipse.tycho</groupId>
           <artifactId>target-platform-configuration</artifactId>

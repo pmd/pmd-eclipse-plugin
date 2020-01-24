@@ -6,7 +6,6 @@ package net.sourceforge.pmd.eclipse.ui.actions;
 
 import java.util.Iterator;
 
-import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -20,6 +19,8 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.IViewActionDelegate;
 import org.eclipse.ui.IViewPart;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.eclipse.runtime.builder.MarkerUtil;
 import net.sourceforge.pmd.eclipse.ui.model.AbstractPMDRecord;
@@ -36,7 +37,7 @@ public class PMDRemoveMarkersAction extends AbstractUIAction implements IViewAct
 
     private static final String VIEW_ACTION = "net.sourceforge.pmd.eclipse.ui.pmdRemoveAllMarkersAction";
     private static final String OBJECT_ACTION = "net.sourceforge.pmd.eclipse.ui.pmdRemoveMarkersAction";
-    private static final Logger LOG = Logger.getLogger(PMDRemoveMarkersAction.class);
+    private static final Logger LOG = LoggerFactory.getLogger(PMDRemoveMarkersAction.class);
 
     /**
      * @see org.eclipse.ui.IViewActionDelegate#init(IViewPart)

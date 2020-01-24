@@ -44,7 +44,7 @@ class PreferencesImpl implements IPreferences {
     private boolean reviewPmdStyleEnabled;
     private int minTileSize;
     private String logFileName;
-    private Level logLevel;
+    private String logLevel;
     private boolean globalRuleManagement;
     private Set<String> activeRuleNames = new HashSet<String>();
     private Set<String> activeRendererNames = new HashSet<String>();
@@ -209,7 +209,14 @@ class PreferencesImpl implements IPreferences {
     /**
      * @see net.sourceforge.pmd.eclipse.runtime.preferences.IPreferences#getLogLevel()
      */
+    @Deprecated
+    @Override
     public Level getLogLevel() {
+        return Level.toLevel(logLevel);
+    }
+
+    @Override
+    public String getLogLevelName() {
         return logLevel;
     }
 
@@ -223,7 +230,14 @@ class PreferencesImpl implements IPreferences {
     /**
      * @see net.sourceforge.pmd.eclipse.runtime.preferences.IPreferences#setLogLevel(org.apache.log4j.Level)
      */
+    @Deprecated
+    @Override
     public void setLogLevel(Level level) {
+        logLevel = level.toString();
+    }
+
+    @Override
+    public void setLogLevel(String level) {
         logLevel = level;
     }
 

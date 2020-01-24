@@ -34,7 +34,9 @@ public interface IPreferences {
     boolean REVIEW_PMD_STYLE_ENABLED_DEFAULT = true;
     int MIN_TILE_SIZE_DEFAULT = 25;
     String LOG_FILENAME_DEFAULT = System.getProperty("user.home") + "/pmd-eclipse.log";
+    @Deprecated // use LOG_LEVEL_DEFAULT instead
     Level LOG_LEVEL = Level.WARN;
+    String LOG_LEVEL_DEFAULT = "WARN";
 
     // default renderer
     String ACTIVE_RENDERERS = "text";
@@ -198,7 +200,7 @@ public interface IPreferences {
     int getMinTileSize();
 
     /**
-     * Set the CPD minimul tile size
+     * Set the CPD minimum tile size
      */
     void setMinTileSize(int minTileSize);
 
@@ -214,13 +216,21 @@ public interface IPreferences {
 
     /**
      * Return the log level
+     * @deprecated use {@link #getLogLevelName()}
      */
+    @Deprecated
     Level getLogLevel();
+
+    String getLogLevelName();
 
     /**
      * Set the log level
+     * @deprecated use {@link #setLogLevel(String)}
      */
+    @Deprecated
     void setLogLevel(Level level);
+
+    void setLogLevel(String level);
 
     // Globally configured rules
 

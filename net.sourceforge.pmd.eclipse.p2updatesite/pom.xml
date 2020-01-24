@@ -36,12 +36,18 @@
     </properties>
 
     <build>
+        <resources>
+            <resource>
+              <directory>src/main/resources</directory>
+              <filtering>true</filtering>
+              <targetPath>${project.basedir}</targetPath>
+            </resource>
+        </resources>
         <plugins>
             <!-- make sure that zipped p2 repositories have the fully qualified version -->
             <plugin>
                 <groupId>org.eclipse.tycho</groupId>
                 <artifactId>tycho-p2-repository-plugin</artifactId>
-                <version>${tycho.version}</version>
                 <configuration>
                     <finalName>${project.artifactId}-${qualifiedVersion}</finalName>
                 </configuration>

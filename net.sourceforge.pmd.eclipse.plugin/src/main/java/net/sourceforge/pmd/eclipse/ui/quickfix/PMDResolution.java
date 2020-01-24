@@ -13,7 +13,6 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
 
-import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResource;
@@ -23,6 +22,8 @@ import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.ui.IMarkerResolution;
 import org.eclipse.ui.PlatformUI;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
@@ -34,7 +35,7 @@ import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
  * 
  */
 public class PMDResolution implements IMarkerResolution, IRunnableWithProgress {
-    private static final Logger LOG = Logger.getLogger(PMDResolution.class);
+    private static final Logger LOG = LoggerFactory.getLogger(PMDResolution.class);
     private Fix fix;
     private IFile file;
     private int lineNumber;

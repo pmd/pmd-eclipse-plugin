@@ -10,7 +10,6 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Iterator;
 
-import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -28,6 +27,8 @@ import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.PlatformUI;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.runtime.writer.IAstWriter;
@@ -47,7 +48,7 @@ import net.sourceforge.pmd.lang.java.ast.ParseException;
  */
 public class PMDGenerateASTAction extends AbstractUIAction implements IRunnableWithProgress {
 
-    private static final Logger LOG = Logger.getLogger(PMDGenerateASTAction.class);
+    private static final Logger LOG = LoggerFactory.getLogger(PMDGenerateASTAction.class);
 
     private IStructuredSelection structuredSelection;
 

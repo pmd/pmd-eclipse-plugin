@@ -15,12 +15,6 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.log4j.ConsoleAppender;
-import org.apache.log4j.Layout;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
-import org.apache.log4j.PatternLayout;
-import org.apache.log4j.RollingFileAppender;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
@@ -56,6 +50,8 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.RuleSet;
@@ -64,6 +60,7 @@ import net.sourceforge.pmd.RuleSetNotFoundException;
 import net.sourceforge.pmd.eclipse.core.IRuleSetManager;
 import net.sourceforge.pmd.eclipse.core.ext.RuleSetsExtensionProcessor;
 import net.sourceforge.pmd.eclipse.core.impl.RuleSetManagerImpl;
+import net.sourceforge.pmd.eclipse.logging.internal.LogbackConfiguration;
 import net.sourceforge.pmd.eclipse.runtime.cmd.JavaProjectClassLoader;
 import net.sourceforge.pmd.eclipse.runtime.preferences.IPreferences;
 import net.sourceforge.pmd.eclipse.runtime.preferences.IPreferencesFactory;
@@ -92,6 +89,7 @@ import net.sourceforge.pmd.lang.java.JavaLanguageModule;
  * The activator class controls the plug-in life cycle
  */
 public class PMDPlugin extends AbstractUIPlugin {
+    private static final Logger LOG = LoggerFactory.getLogger(PMDPlugin.class);
 
     private static File pluginFolder;
 
@@ -113,16 +111,16 @@ public class PMDPlugin extends AbstractUIPlugin {
     private static final Integer[] PRIORITY_VALUES = new Integer[] { Integer.valueOf(1), Integer.valueOf(2),
         Integer.valueOf(3), Integer.valueOf(4), Integer.valueOf(5), };
 
-    private static final Logger LOG = Logger.getLogger(PMDPlugin.class);
-
     private StringTable stringTable; // NOPMD by Herlin on 11/10/06 00:22
 
-    public static final String ROOT_LOG_ID = "net.sourceforge.pmd";
-    private static final String PMD_ECLIPSE_APPENDER_NAME = "PMDEclipseAppender";
+    @Deprecated
+    public static final String ROOT_LOG_ID = LogbackConfiguration.ROOT_LOG_ID;
     private IPreferencesFactory preferencesFactory = new PreferencesFactoryImpl();
     private IPropertiesFactory propertiesFactory = new PropertiesFactoryImpl();
 
     private final IRuleSetManager ruleSetManager = new RuleSetManagerImpl(); // NOPMD:SingularField
+
+    private final LogbackConfiguration logbackConfiguration = new LogbackConfiguration();
 
     /**
      * The constructor
@@ -234,6 +232,7 @@ public class PMDPlugin extends AbstractUIPlugin {
      */
     public void start(BundleContext context) throws Exception {
         super.start(context);
+        logbackConfiguration.configureLogback();
 
         // this needs to be executed before the preferences are loaded, because
         // the standard
@@ -241,7 +240,7 @@ public class PMDPlugin extends AbstractUIPlugin {
         registerStandardRuleSets();
 
         IPreferences prefs = loadPreferences();
-        configureLogs(prefs);
+        logbackConfiguration.applyLogPreferences(prefs.getLogFileName(), prefs.getLogLevelName());
         registerAdditionalRuleSets();
         fileChangeListenerEnabled(prefs.isCheckAfterSaveEnabled());
 
@@ -259,6 +258,7 @@ public class PMDPlugin extends AbstractUIPlugin {
         PriorityFilter.getInstance().initialize();
 
         version = context.getBundle().getHeaders().get("Bundle-Version");
+        LOG.debug("PMD Plugin {} has started...", version);
     }
 
     /**
@@ -294,7 +294,7 @@ public class PMDPlugin extends AbstractUIPlugin {
                 try {
                     PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(viewId);
                 } catch (PartInitException e) {
-                    LOG.error(e);
+                    LOG.error("Error while showing {}", viewId, e);
                 }
             }
         });
@@ -360,7 +360,7 @@ public class PMDPlugin extends AbstractUIPlugin {
                     PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().hideView(view); 
                     PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(viewId); 
                 } catch (PartInitException e) { 
-                    LOG.error(e); 
+                    LOG.error("Error while refreshing view {}", viewId, e);
                 } 
             } 
         }); 
@@ -380,6 +380,7 @@ public class PMDPlugin extends AbstractUIPlugin {
         ShapePainter.disposeAll();
         ResourceManager.dispose();
         PriorityDescriptorCache.INSTANCE.dispose();
+        logbackConfiguration.unconfigureLogback();
         super.stop(context);
     }
 
@@ -549,45 +550,8 @@ public class PMDPlugin extends AbstractUIPlugin {
         return new WriterFactoryImpl().getRuleSetWriter();
     }
 
-    /**
-     * Apply the log preferences
-     */
     public void applyLogPreferences(IPreferences preferences) {
-        Logger log = Logger.getLogger(ROOT_LOG_ID);
-        log.setLevel(preferences.getLogLevel());
-        RollingFileAppender appender = (RollingFileAppender) log.getAppender(PMD_ECLIPSE_APPENDER_NAME);
-        if (appender == null) {
-            configureLogs(preferences);
-        } else if (!appender.getFile().equals(preferences.getLogFileName())) {
-            appender.setFile(preferences.getLogFileName());
-            appender.activateOptions();
-        }
-    }
-
-    /**
-     * Configure the logging
-     *
-     */
-    private void configureLogs(IPreferences preferences) {
-        try {
-            Layout layout = new PatternLayout("%d{yyyy/MM/dd HH:mm:ss,SSS} %-5p %-32c{1} %m%n");
-
-            RollingFileAppender appender = new RollingFileAppender(layout, preferences.getLogFileName());
-            appender.setName(PMD_ECLIPSE_APPENDER_NAME);
-            appender.setMaxBackupIndex(1);
-            appender.setMaxFileSize("10MB");
-
-            Logger.getRootLogger().addAppender(new ConsoleAppender(layout));
-            Logger.getRootLogger().setLevel(Level.WARN);
-            Logger.getRootLogger().setAdditivity(false);
-
-            Logger.getLogger(ROOT_LOG_ID).addAppender(appender);
-            Logger.getLogger(ROOT_LOG_ID).setLevel(preferences.getLogLevel());
-            Logger.getLogger(ROOT_LOG_ID).setAdditivity(false);
-
-        } catch (IOException e) {
-            logError("IO Exception when configuring logging.", e);
-        }
+        logbackConfiguration.applyLogPreferences(preferences.getLogFileName(), preferences.getLogLevelName());
     }
 
     /**

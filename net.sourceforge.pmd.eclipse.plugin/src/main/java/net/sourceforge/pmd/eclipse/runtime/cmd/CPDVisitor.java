@@ -7,13 +7,14 @@ package net.sourceforge.pmd.eclipse.runtime.cmd;
 import java.io.File;
 import java.util.List;
 
-import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceVisitor;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ui.IWorkingSet;
 import org.eclipse.ui.ResourceWorkingSetFilter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.cpd.Language;
 import net.sourceforge.pmd.eclipse.runtime.properties.PropertiesException;
@@ -28,7 +29,7 @@ import net.sourceforge.pmd.util.StringUtil;
  */
 public class CPDVisitor implements IResourceVisitor {
 
-    private static final Logger LOG = Logger.getLogger(CPDVisitor.class);
+    private static final Logger LOG = LoggerFactory.getLogger(CPDVisitor.class);
     private boolean includeDerivedFiles;
     private ResourceWorkingSetFilter workingSetFilter;
     private Language language;

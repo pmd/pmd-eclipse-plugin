@@ -4,7 +4,8 @@
 
 package net.sourceforge.pmd.eclipse.ui.preferences;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Implements a label provider for the item of the rule properties table of the
@@ -14,7 +15,7 @@ import org.apache.log4j.Logger;
  *
  */
 public class RulePropertyLabelProvider extends AbstractTableLabelProvider {
-    private static final Logger LOG = Logger.getLogger(RulePropertyLabelProvider.class);
+    private static final Logger LOG = LoggerFactory.getLogger(RulePropertyLabelProvider.class);
 
     /**
      * @see org.eclipse.jface.viewers.ITableLabelProvider#getColumnText(Object,

@@ -19,8 +19,6 @@ import java.util.Properties;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -28,6 +26,8 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferenceStore;
 import org.eclipse.swt.graphics.RGB;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RulePriority;
@@ -60,7 +60,7 @@ import net.sourceforge.pmd.eclipse.util.IOUtil;
 
 class PreferencesManagerImpl implements IPreferencesManager {
 
-    private static final Logger LOG = Logger.getLogger(PreferencesManagerImpl.class);
+    private static final Logger LOG = LoggerFactory.getLogger(PreferencesManagerImpl.class);
 
     private static final String PROJECT_BUILD_PATH_ENABLED = PMDPlugin.PLUGIN_ID + ".project_build_path_enabled";
     private static final String PMD_PERSPECTIVE_ENABLED = PMDPlugin.PLUGIN_ID + ".pmd_perspective_enabled";
@@ -335,8 +335,8 @@ class PreferencesManagerImpl implements IPreferencesManager {
     }
 
     private void loadLogLevel() {
-        loadPreferencesStore.setDefault(LOG_LEVEL, IPreferences.LOG_LEVEL.toString());
-        preferences.setLogLevel(Level.toLevel(loadPreferencesStore.getString(LOG_LEVEL)));
+        loadPreferencesStore.setDefault(LOG_LEVEL, IPreferences.LOG_LEVEL_DEFAULT);
+        preferences.setLogLevel(loadPreferencesStore.getString(LOG_LEVEL));
     }
 
     private void loadGlobalRuleManagement() {
@@ -520,7 +520,7 @@ class PreferencesManagerImpl implements IPreferencesManager {
     }
 
     private void storeLogLevel() {
-        storePreferencesStore.setValue(LOG_LEVEL, preferences.getLogLevel().toString());
+        storePreferencesStore.setValue(LOG_LEVEL, preferences.getLogLevelName());
     }
 
     private void storePriorityDescriptors() {

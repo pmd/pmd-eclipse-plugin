@@ -10,7 +10,6 @@ import java.net.URLClassLoader;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -18,12 +17,14 @@ import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This is a ClassLoader for the Build Path of an IJavaProject.
  */
 public class JavaProjectClassLoader extends URLClassLoader {
-    private static final Logger LOG = Logger.getLogger(JavaProjectClassLoader.class);
+    private static final Logger LOG = LoggerFactory.getLogger(JavaProjectClassLoader.class);
 
     private Set<IJavaProject> javaProjects = new HashSet<IJavaProject>();
 

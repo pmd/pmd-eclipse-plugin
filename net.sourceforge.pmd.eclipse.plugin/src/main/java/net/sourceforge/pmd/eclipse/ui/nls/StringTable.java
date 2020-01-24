@@ -9,9 +9,10 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.Properties;
 
-import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Path;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.util.IOUtil;
@@ -25,7 +26,7 @@ import net.sourceforge.pmd.eclipse.util.IOUtil;
  */
 
 public class StringTable {
-    private static final Logger LOG = Logger.getLogger(StringTable.class);
+    private static final Logger LOG = LoggerFactory.getLogger(StringTable.class);
     private Properties table = null;
 
     /**
