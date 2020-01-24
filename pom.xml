@@ -16,6 +16,7 @@
 
   <properties>
     <target.platform>kepler</target.platform>
+    <orbit.version>R20140114142710</orbit.version>
 
     <tycho.version>1.6.0</tycho.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -23,6 +24,8 @@
     <maven-antrun-plugin.version>1.8</maven-antrun-plugin.version>
     <pmd.build-tools.version>3</pmd.build-tools.version>
     <checkstyle.version>3.0.0</checkstyle.version>
+
+    <updatesite.orbit>http://download.eclipse.org/tools/orbit/downloads/drops/${orbit.version}/repository/</updatesite.orbit>
   </properties>
 
   <repositories>

@@ -36,6 +36,13 @@
     </properties>
 
     <build>
+        <resources>
+            <resource>
+              <directory>src/main/resources</directory>
+              <filtering>true</filtering>
+              <targetPath>${project.basedir}</targetPath>
+            </resource>
+        </resources>
         <plugins>
             <!-- make sure that zipped p2 repositories have the fully qualified version -->
             <plugin>
