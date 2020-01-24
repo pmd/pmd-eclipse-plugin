@@ -13,6 +13,7 @@ import org.slf4j.bridge.SLF4JBridgeHandler;
 
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 
+import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.encoder.PatternLayoutEncoder;
@@ -43,10 +44,16 @@ public class LogbackConfiguration {
         EclipseLogAppender logbackEclipseAppender = new EclipseLogAppender(PMDPlugin.PLUGIN_ID, getLog());
         logbackEclipseAppender.setContext(logbackContext);
         logbackEclipseAppender.setName(PMDPlugin.PLUGIN_ID);
+        ThresholdFilter filter = new ThresholdFilter();
+        filter.setContext(logbackContext);
+        filter.setLevel(Level.INFO.toString());
+        filter.start();
+        logbackEclipseAppender.addFilter(filter);
         logbackEclipseAppender.start();
 
         Logger l = logbackContext.getLogger(ROOT_LOG_ID);
         l.addAppender(logbackEclipseAppender);
+        l.setAdditive(false);
 
         if (!SLF4JBridgeHandler.isInstalled()) {
             SLF4JBridgeHandler.install();
@@ -92,7 +99,7 @@ public class LogbackConfiguration {
 
         PatternLayoutEncoder encoder = new PatternLayoutEncoder();
         encoder.setContext(logbackContext);
-        encoder.setPattern("%d{yyyy/MM/dd HH:mm:ss,SSS} %-5p %-32c{1} %m%n");
+        encoder.setPattern("%d{yyyy/MM/dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n");
         encoder.start();
         appender.setEncoder(encoder);
 
