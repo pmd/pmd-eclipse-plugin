@@ -51,6 +51,7 @@ public class ReviewCodeCmdNonJavaTest {
         is = EclipseUtils.getResourceStream(testProject, "/src/somefile.js");
         Assert.assertNotNull("Cannot find the test source file", is);
         is.close();
+        testProject.refreshLocal(IResource.DEPTH_INFINITE, null);
 
         // 3. Enable PMD for the test project
         IProjectProperties properties = PMDPlugin.getDefault().getPropertiesManager().loadProjectProperties(testProject);

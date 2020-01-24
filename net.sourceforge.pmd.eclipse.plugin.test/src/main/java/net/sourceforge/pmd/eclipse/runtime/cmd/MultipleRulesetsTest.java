@@ -32,6 +32,7 @@ import net.sourceforge.pmd.eclipse.runtime.properties.IProjectPropertiesManager;
  */
 public class MultipleRulesetsTest {
     private IProject testProject;
+    private static final String BASE_PATH = "/src/main/java/net/sourceforge/pmd/eclipse/runtime/cmd/multiplerulesets/";
 
     @Before
     public void setUp() throws Exception {
@@ -54,17 +55,17 @@ public class MultipleRulesetsTest {
                 null);
 
         // 3. Create test sources
-        folder.getFolder("first").create(true, true, null);
-        EclipseUtils.createTestSourceFile(testProject, "/src/main/java/first/First.java",
-                IOUtils.toString(MultipleRulesetsTest.class.getResourceAsStream("multiplerulesets/First.java"),
+        EclipseUtils.createFolders(testProject, BASE_PATH + "first");
+        EclipseUtils.createTestSourceFile(testProject, BASE_PATH + "first/First.java",
+                IOUtils.toString(MultipleRulesetsTest.class.getResourceAsStream("multiplerulesets/first/First.java"),
                         StandardCharsets.UTF_8.name()));
-        folder.getFolder("second").create(true, true, null);
-        EclipseUtils.createTestSourceFile(testProject, "/src/main/java/second/Second.java",
-                IOUtils.toString(MultipleRulesetsTest.class.getResourceAsStream("multiplerulesets/Second.java"),
+        EclipseUtils.createFolders(testProject, BASE_PATH + "second");
+        EclipseUtils.createTestSourceFile(testProject, BASE_PATH + "second/Second.java",
+                IOUtils.toString(MultipleRulesetsTest.class.getResourceAsStream("multiplerulesets/second/Second.java"),
                         StandardCharsets.UTF_8.name()));
-        folder.getFolder("third").create(true, true, null);
-        EclipseUtils.createTestSourceFile(testProject, "/src/main/java/third/Third.java",
-                IOUtils.toString(MultipleRulesetsTest.class.getResourceAsStream("multiplerulesets/Third.java"),
+        EclipseUtils.createFolders(testProject, BASE_PATH + "third");
+        EclipseUtils.createTestSourceFile(testProject, BASE_PATH + "third/Third.java",
+                IOUtils.toString(MultipleRulesetsTest.class.getResourceAsStream("multiplerulesets/third/Third.java"),
                         StandardCharsets.UTF_8.name()));
 
         // 4. Copy rulesets
@@ -110,18 +111,18 @@ public class MultipleRulesetsTest {
         cmd.performExecute();
         cmd.join();
 
-        IMarker[] markersFirst = this.testProject.getFile("src/main/java/first/First.java")
+        IMarker[] markersFirst = this.testProject.getFile(BASE_PATH + "first/First.java")
                 .findMarkers(PMDRuntimeConstants.PMD_MARKER_1, false, 1);
         Assert.assertEquals(2, markersFirst.length);
         assertHasRuleViolation(markersFirst, "ClassNamingConventions");
         assertHasRuleViolation(markersFirst, "UseUtilityClass");
 
-        IMarker[] markersSecond = this.testProject.getFile("src/main/java/second/Second.java")
+        IMarker[] markersSecond = this.testProject.getFile(BASE_PATH + "second/Second.java")
                 .findMarkers(PMDRuntimeConstants.PMD_MARKER_1, false, 1);
         Assert.assertEquals(1, markersSecond.length);
         assertHasRuleViolation(markersSecond, "ClassNamingConventions");
 
-        IMarker[] markersThird = this.testProject.getFile("src/main/java/third/Third.java")
+        IMarker[] markersThird = this.testProject.getFile(BASE_PATH + "third/Third.java")
                 .findMarkers(PMDRuntimeConstants.PMD_MARKER_1, false, 1);
         Assert.assertEquals(1, markersThird.length);
         assertHasRuleViolation(markersThird, "UseUtilityClass");

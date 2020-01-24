@@ -17,6 +17,7 @@ import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.regex.Pattern;
 
+import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
@@ -25,6 +26,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.IClasspathEntry;
@@ -352,4 +354,22 @@ public class EclipseUtils {
         return sourceFile;
     }
 
+    /**
+     * Creates a folder structure recursively.
+     *
+     * @param testProject
+     * @param fullpath
+     * @throws CoreException
+     */
+    public static void createFolders(IProject testProject, String fullpath) throws CoreException {
+        IPath path = new Path(fullpath);
+        IContainer current = testProject;
+        for (String segment : path.segments()) {
+            IFolder folder = current.getFolder(new Path(segment));
+            if (!folder.exists()) {
+                folder.create(true, false, null);
+            }
+            current = folder;
+        }
+    }
 }

@@ -8,7 +8,7 @@
 
     <description>Rules</description>
 
-    <exclude-pattern>.*/src/main/java/third/.*</exclude-pattern>
+    <exclude-pattern>.*/src/main/java/net/sourceforge/pmd/eclipse/runtime/cmd/multiplerulesets/third/.*</exclude-pattern>
 
     <rule ref="category/java/codestyle.xml/ClassNamingConventions">
         <priority>1</priority>

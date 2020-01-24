@@ -2,9 +2,9 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package second;
+package net.sourceforge.pmd.eclipse.runtime.cmd.multiplerulesets.third;
 
-public class Second {
+public class Third {
 
     public static boolean isBoolean() {
         return true;

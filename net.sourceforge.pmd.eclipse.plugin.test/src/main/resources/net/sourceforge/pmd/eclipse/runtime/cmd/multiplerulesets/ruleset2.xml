@@ -8,7 +8,7 @@
 
     <description>Custom rule</description>
     
-    <exclude-pattern>.*/src/main/java/second/.*</exclude-pattern>
+    <exclude-pattern>.*/src/main/java/net/sourceforge/pmd/eclipse/runtime/cmd/multiplerulesets/second/.*</exclude-pattern>
 
     <rule ref="category/java/design.xml/UseUtilityClass">
         <priority>1</priority>
