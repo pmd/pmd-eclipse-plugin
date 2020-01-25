@@ -17,7 +17,6 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
 
 import net.sourceforge.pmd.util.ClassUtil;
-import net.sourceforge.pmd.util.StringUtil;
 
 /**
  * A custom control intended to display and accept Type values. New values are validated when the widget loses focus, if
@@ -32,12 +31,9 @@ public class TypeText extends Composite {
 
     private Text text;
     private boolean acceptPrimitives;
-    private String promptText;
 
     public TypeText(Composite parent, int style, boolean primitivesOK, String thePromptText) {
         super(parent, SWT.None);
-
-        promptText = thePromptText;
 
         GridLayout layout = new GridLayout(1, false);
         layout.verticalSpacing = 0;
@@ -57,25 +53,6 @@ public class TypeText extends Composite {
         });
 
         acceptPrimitives = primitivesOK;
-    }
-
-    private boolean hasRealText() {
-        String textValue = text.getText();
-        if (StringUtils.isBlank(textValue)) {
-            return false;
-        }
-        if (textValue.equals(promptText)) {
-            return false;
-        }
-
-        return true;
-    }
-
-    private void adjustFieldContents() {
-
-        // text.setForeground(
-        // hasRealText() ? Color.
-        // );
     }
 
     public void addListener(int eventType, Listener listener) {
@@ -125,7 +102,7 @@ public class TypeText extends Composite {
     public Class<?> getType(boolean doCleanup) {
 
         String typeStr = text.getText().trim();
-        if (StringUtil.isEmpty(typeStr)) {
+        if (StringUtils.isBlank(typeStr)) {
             if (doCleanup) {
                 setType(null);
             }

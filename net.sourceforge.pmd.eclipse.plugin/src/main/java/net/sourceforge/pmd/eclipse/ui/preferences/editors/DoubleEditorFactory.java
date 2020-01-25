@@ -12,10 +12,10 @@ import org.eclipse.swt.widgets.Spinner;
 
 import net.sourceforge.pmd.eclipse.ui.preferences.br.SizeChangeListener;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.ValueChangeListener;
-import net.sourceforge.pmd.properties.DoubleProperty;
-import net.sourceforge.pmd.properties.NumericPropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.properties.PropertyFactory;
 import net.sourceforge.pmd.properties.PropertySource;
+import net.sourceforge.pmd.properties.constraints.NumericConstraints;
 
 /**
  * @author Brian Remedios
@@ -29,15 +29,10 @@ public class DoubleEditorFactory extends AbstractRealNumberEditor<Double> {
 
 
     public PropertyDescriptor<Double> createDescriptor(String name, String description, Control[] otherData) {
-
-        return new DoubleProperty(
-            name,
-            description,
-            defaultIn(otherData).doubleValue(),
-            minimumIn(otherData).doubleValue(),
-            maximumIn(otherData).doubleValue(),
-            0.0f
-        );
+        return PropertyFactory.doubleProperty(name).desc(description)
+            .defaultValue(defaultIn(otherData).doubleValue())
+            .require(NumericConstraints.inRange(minimumIn(otherData).doubleValue(), maximumIn(otherData).doubleValue()))
+            .build();
     }
 
 
@@ -50,7 +45,7 @@ public class DoubleEditorFactory extends AbstractRealNumberEditor<Double> {
     public Control newEditorOn(Composite parent, final PropertyDescriptor<Double> desc, final PropertySource source,
                                final ValueChangeListener listener, SizeChangeListener sizeListener) {
 
-        final Spinner spinner = newSpinnerFor(parent, source, (NumericPropertyDescriptor<Double>) desc);
+        final Spinner spinner = newSpinnerFor(parent, source, desc);
 
         spinner.addModifyListener(new ModifyListener() {
             public void modifyText(ModifyEvent event) {

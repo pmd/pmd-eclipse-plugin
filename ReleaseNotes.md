@@ -17,6 +17,8 @@ This is a minor release.
 
 ### Fixed Issues
 
+*   [#108](https://github.com/pmd/pmd-eclipse-plugin/issues/108): GenericPropertyDescriptor cannot be cast to NumericPropertyDescriptor
+
 ### API Changes
 
 *   The minimum eclipse version is now definitely Kepler (4.3) as
@@ -27,7 +29,14 @@ This is a minor release.
     *   `getLogLevel()`
     *   `setLogLevel(Level)`
     *   `LOG_LEVEL`
-*   `net.sourceforge.pmd.eclipse.plugin.PMDPlugin#ROOT_LOG_ID`
+    *   `net.sourceforge.pmd.eclipse.plugin.PMDPlugin#ROOT_LOG_ID`
+*   The following property editors are deprecated and not used anymore:
+    *   `net.sourceforge.pmd.eclipse.ui.preferences.editors.FileEditorFactory`
+    *   `net.sourceforge.pmd.eclipse.ui.preferences.editors.FloatEditorFactory`
+    *   `net.sourceforge.pmd.eclipse.ui.preferences.editors.MethodEditorFactory`
+    *   `net.sourceforge.pmd.eclipse.ui.preferences.editors.MultiMethodEditorFactory`
+    *   `net.sourceforge.pmd.eclipse.ui.preferences.editors.MultiTypeEditorFactory`
+    *   `net.sourceforge.pmd.eclipse.ui.preferences.editors.TypeEditorFactory`
 
 ### External Contributions
 

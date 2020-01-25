@@ -4,13 +4,12 @@
 
 package net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers;
 
-import java.io.File;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
@@ -26,17 +25,11 @@ import net.sourceforge.pmd.eclipse.ui.preferences.editors.BooleanEditorFactory;
 import net.sourceforge.pmd.eclipse.ui.preferences.editors.CharacterEditorFactory;
 import net.sourceforge.pmd.eclipse.ui.preferences.editors.DoubleEditorFactory;
 import net.sourceforge.pmd.eclipse.ui.preferences.editors.EnumerationEditorFactory;
-import net.sourceforge.pmd.eclipse.ui.preferences.editors.FileEditorFactory;
-import net.sourceforge.pmd.eclipse.ui.preferences.editors.FloatEditorFactory;
 import net.sourceforge.pmd.eclipse.ui.preferences.editors.IntegerEditorFactory;
-import net.sourceforge.pmd.eclipse.ui.preferences.editors.MethodEditorFactory;
-import net.sourceforge.pmd.eclipse.ui.preferences.editors.MultiEnumerationEditorFactory;
 import net.sourceforge.pmd.eclipse.ui.preferences.editors.MultiIntegerEditorFactory;
-import net.sourceforge.pmd.eclipse.ui.preferences.editors.MultiMethodEditorFactory;
 import net.sourceforge.pmd.eclipse.ui.preferences.editors.MultiStringEditorFactory;
-import net.sourceforge.pmd.eclipse.ui.preferences.editors.MultiTypeEditorFactory;
+import net.sourceforge.pmd.eclipse.ui.preferences.editors.RegexEditorFactory;
 import net.sourceforge.pmd.eclipse.ui.preferences.editors.StringEditorFactory;
-import net.sourceforge.pmd.eclipse.ui.preferences.editors.TypeEditorFactory;
 import net.sourceforge.pmd.lang.rule.XPathRule;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertySource;
@@ -62,24 +55,20 @@ public class PerRulePropertyPanelManager extends AbstractRulePanelManager implem
         Map<Class<?>, EditorFactory<?>> factoriesByPropertyType = new HashMap<Class<?>, EditorFactory<?>>();
 
         factoriesByPropertyType.put(Boolean.class, BooleanEditorFactory.INSTANCE);
-        factoriesByPropertyType.put(String.class, StringEditorFactory.INSTANCE);
-        factoriesByPropertyType.put(Integer.class, IntegerEditorFactory.INSTANCE);
-        factoriesByPropertyType.put(Float.class, FloatEditorFactory.INSTANCE);
-        factoriesByPropertyType.put(Double.class, DoubleEditorFactory.INSTANCE);
-        factoriesByPropertyType.put(Object.class, EnumerationEditorFactory.INSTANCE);
         factoriesByPropertyType.put(Character.class, CharacterEditorFactory.INSTANCE);
+        factoriesByPropertyType.put(Double.class, DoubleEditorFactory.INSTANCE);
+        factoriesByPropertyType.put(Integer.class, IntegerEditorFactory.INSTANCE);
+        //Long is missing
+        factoriesByPropertyType.put(Pattern.class, RegexEditorFactory.INSTANCE);
+        factoriesByPropertyType.put(String.class, StringEditorFactory.INSTANCE);
+        factoriesByPropertyType.put(Object.class, EnumerationEditorFactory.INSTANCE);
 
-        factoriesByPropertyType.put(Class.class, TypeEditorFactory.INSTANCE);
-        factoriesByPropertyType.put(Class[].class, MultiTypeEditorFactory.INSTANCE);
-        factoriesByPropertyType.put(Method.class, MethodEditorFactory.INSTANCE);
-        factoriesByPropertyType.put(Method[].class, MultiMethodEditorFactory.INSTANCE);
-        factoriesByPropertyType.put(String[].class, MultiStringEditorFactory.INSTANCE);
+        //CharList is missing
+        //DoubleList is missing
         factoriesByPropertyType.put(Integer[].class, MultiIntegerEditorFactory.INSTANCE);
-        factoriesByPropertyType.put(Object[].class, MultiEnumerationEditorFactory.INSTANCE);
-
-        factoriesByPropertyType.put(File.class, FileEditorFactory.INSTANCE);
-        // factoriesByPropertyType.put(Package.class,
-        // PackageEditorFactory.instance);
+        //LongList is missing
+        factoriesByPropertyType.put(String[].class, MultiStringEditorFactory.INSTANCE);
+        factoriesByPropertyType.put(Object[].class, MultiStringEditorFactory.INSTANCE); // enum list
 
         EDITOR_FACTORIES_BY_PROPERTY_TYPE = Collections.unmodifiableMap(factoriesByPropertyType);
     }

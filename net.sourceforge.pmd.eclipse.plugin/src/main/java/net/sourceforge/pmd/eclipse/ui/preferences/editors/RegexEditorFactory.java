@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.eclipse.ui.preferences.editors;
 
+import java.util.regex.Pattern;
+
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -19,30 +21,27 @@ import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
 import net.sourceforge.pmd.properties.PropertySource;
 
-/**
- * @author Brian Remedios
- */
-public class StringEditorFactory extends AbstractEditorFactory<String> {
+public class RegexEditorFactory extends AbstractEditorFactory<Pattern> {
 
-    public static final StringEditorFactory INSTANCE = new StringEditorFactory();
+    public static final RegexEditorFactory INSTANCE = new RegexEditorFactory();
 
 
-    protected StringEditorFactory() { }
+    protected RegexEditorFactory() { }
 
 
-    public PropertyDescriptor<String> createDescriptor(String name, String description, Control[] otherData) {
-        return PropertyFactory.stringProperty(name).desc(description)
-            .defaultValue(otherData == null ? "" : valueFrom(otherData[1]))
+    public PropertyDescriptor<Pattern> createDescriptor(String name, String description, Control[] otherData) {
+        return PropertyFactory.regexProperty(name).desc(description)
+            .defaultValue(valueFrom(otherData[1]))
             .build();
     }
 
 
-    protected String valueFrom(Control valueControl) {
-        return ((Text) valueControl).getText();
+    protected Pattern valueFrom(Control valueControl) {
+        return Pattern.compile(((Text) valueControl).getText());
     }
 
 
-    public Control newEditorOn(Composite parent, final PropertyDescriptor<String> desc, final PropertySource source,
+    public Control newEditorOn(Composite parent, final PropertyDescriptor<Pattern> desc, final PropertySource source,
                                final ValueChangeListener listener, SizeChangeListener sizeListener) {
 
         final Text text = new Text(parent, SWT.SINGLE | SWT.BORDER);
@@ -53,12 +52,12 @@ public class StringEditorFactory extends AbstractEditorFactory<String> {
         text.addListener(SWT.FocusOut, new Listener() {
             public void handleEvent(Event event) {
                 String newValue = text.getText().trim();
-                String existingValue = valueFor(source, desc);
+                String existingValue = valueFor(source, desc).pattern();
                 if (StringUtils.equals(StringUtils.trimToNull(existingValue), StringUtils.trimToNull(newValue))) {
                     return;
                 }
 
-                setValue(source, desc, newValue);
+                setValue(source, desc, Pattern.compile(newValue));
                 fillWidget(text, desc, source);     // redraw
                 listener.changed(source, desc, newValue);
             }
@@ -68,14 +67,14 @@ public class StringEditorFactory extends AbstractEditorFactory<String> {
     }
 
 
-    protected void fillWidget(Text textWidget, PropertyDescriptor<String> desc, PropertySource source) {
-        String val = valueFor(source, desc);
-        textWidget.setText(val == null ? "" : val);
+    protected void fillWidget(Text textWidget, PropertyDescriptor<Pattern> desc, PropertySource source) {
+        String val = valueFor(source, desc).pattern();
+        textWidget.setText(val);
         adjustRendering(source, desc, textWidget);
     }
 
 
-    private void setValue(PropertySource source, PropertyDescriptor<String> desc, String value) {
+    private void setValue(PropertySource source, PropertyDescriptor<Pattern> desc, Pattern value) {
 
         if (!source.hasDescriptor(desc)) {
             return;

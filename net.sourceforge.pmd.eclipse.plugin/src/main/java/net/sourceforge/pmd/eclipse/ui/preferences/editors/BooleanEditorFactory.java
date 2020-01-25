@@ -13,8 +13,8 @@ import org.eclipse.swt.widgets.Control;
 
 import net.sourceforge.pmd.eclipse.ui.preferences.br.SizeChangeListener;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.ValueChangeListener;
-import net.sourceforge.pmd.properties.BooleanProperty;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.properties.PropertyFactory;
 import net.sourceforge.pmd.properties.PropertySource;
 
 /**
@@ -29,13 +29,9 @@ public class BooleanEditorFactory extends AbstractEditorFactory<Boolean> {
 
 
     public PropertyDescriptor<Boolean> createDescriptor(String name, String description, Control[] otherData) {
-
-        return new BooleanProperty(
-            name,
-            description,
-            otherData == null ? false : valueFrom(otherData[1]),
-            0
-        );
+        return PropertyFactory.booleanProperty(name).desc(description)
+            .defaultValue(otherData == null ? false : valueFrom(otherData[1]))
+            .build();
     }
 
 

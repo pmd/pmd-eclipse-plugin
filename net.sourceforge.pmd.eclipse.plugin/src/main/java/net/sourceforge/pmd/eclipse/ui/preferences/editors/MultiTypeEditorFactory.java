@@ -28,7 +28,10 @@ import net.sourceforge.pmd.util.StringUtil;
  * TODO - use new TypeText widget
  *
  * @author Brian Remedios
+ * 
+ * @deprecated will be removed
  */
+@Deprecated
 public class MultiTypeEditorFactory extends AbstractMultiValueEditorFactory<Class> {
 
     public static final MultiTypeEditorFactory INSTANCE = new MultiTypeEditorFactory();

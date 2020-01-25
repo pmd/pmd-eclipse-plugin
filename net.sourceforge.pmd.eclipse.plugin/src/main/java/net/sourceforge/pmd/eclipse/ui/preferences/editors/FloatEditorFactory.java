@@ -19,7 +19,10 @@ import net.sourceforge.pmd.properties.PropertySource;
 
 /**
  * @author Brian Remedios
+ *
+ * @deprecated This type is unused and won't be supported in the future by PMD
  */
+@Deprecated
 public class FloatEditorFactory extends AbstractRealNumberEditor<Float> {
 
     public static final FloatEditorFactory INSTANCE = new FloatEditorFactory();
@@ -29,7 +32,6 @@ public class FloatEditorFactory extends AbstractRealNumberEditor<Float> {
 
 
     public PropertyDescriptor<Float> createDescriptor(String name, String description, Control[] otherData) {
-
         return new FloatProperty(
             name,
             description,

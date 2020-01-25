@@ -21,7 +21,10 @@ import net.sourceforge.pmd.properties.PropertySource;
 
 /**
  * @author Brian Remedios
+ *
+ * @deprecated will be removed
  */
+@Deprecated
 public class FileEditorFactory extends AbstractEditorFactory<File> {
 
 
@@ -32,7 +35,6 @@ public class FileEditorFactory extends AbstractEditorFactory<File> {
 
 
     public PropertyDescriptor<File> createDescriptor(String name, String description, Control[] otherData) {
-
         return new FileProperty(
             name,
             description,

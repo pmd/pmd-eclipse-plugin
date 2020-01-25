@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.eclipse.ui.preferences.editors;
 
-import java.util.Map.Entry;
+import java.util.HashMap;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -15,9 +15,8 @@ import org.eclipse.swt.widgets.Control;
 
 import net.sourceforge.pmd.eclipse.ui.preferences.br.SizeChangeListener;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.ValueChangeListener;
-import net.sourceforge.pmd.properties.EnumeratedProperty;
-import net.sourceforge.pmd.properties.EnumeratedPropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.properties.PropertyFactory;
 import net.sourceforge.pmd.properties.PropertySource;
 
 /**
@@ -39,7 +38,7 @@ public class EnumerationEditorFactory extends AbstractEditorFactory<Object> {
 
 
     public PropertyDescriptor<Object> createDescriptor(String name, String optionalDescription, Control[] otherData) {
-        return new EnumeratedProperty<Object>(name, "Value set " + name, null, null, 0, Object.class, 0.0f);
+        return PropertyFactory.enumProperty(name, new HashMap<String, Object>()).desc("Value set " + name).build();
     }
 
 
@@ -48,10 +47,21 @@ public class EnumerationEditorFactory extends AbstractEditorFactory<Object> {
 
         final Combo combo = new Combo(parent, SWT.READ_ONLY);
 
-        final EnumeratedPropertyDescriptor<Object, Object> ep = (EnumeratedPropertyDescriptor<Object, Object>) desc;
         Object value = valueFor(source, desc);
-        combo.setItems(SWTUtil.labelsIn(choices(ep), 0));
-        int selectionIdx = indexOf(value, choices(ep));
+        Object[][] choices = choices(desc);
+        int selectionIdx = indexOf(value, choices);
+        if (selectionIdx == -1) {
+            Object[][] newChoices = new Object[choices.length + 1][2];
+            newChoices[0] = new Object[]{ value.toString(), value };
+            for (int i = 0; i < choices.length; i++) {
+                newChoices[i + 1] = choices[i];
+            }
+            choices = newChoices;
+            selectionIdx = 0;
+        }
+
+        combo.setData(choices);
+        combo.setItems(SWTUtil.labelsIn(choices, 0));
         if (selectionIdx >= 0) {
             combo.select(selectionIdx);
         }
@@ -59,12 +69,13 @@ public class EnumerationEditorFactory extends AbstractEditorFactory<Object> {
         combo.addSelectionListener(new SelectionAdapter() {
             public void widgetSelected(SelectionEvent e) {
                 int selectionIdx = combo.getSelectionIndex();
-                Object newValue = choices(ep)[selectionIdx][1];
+                Object[][] choices = (Object[][]) combo.getData();
+                Object newValue = choices[selectionIdx][1];
                 if (newValue == valueFor(source, desc)) {
                     return;
                 }
 
-                source.setProperty(ep, newValue);
+                source.setProperty(desc, newValue);
                 listener.changed(source, desc, newValue);
                 adjustRendering(source, desc, combo);
             }
@@ -92,13 +103,9 @@ public class EnumerationEditorFactory extends AbstractEditorFactory<Object> {
         return -1;
     }
 
-    public static <E, T> Object[][] choices(EnumeratedPropertyDescriptor<E, T> prop) {
-        Object[][] res = new Object[prop.mappings().size()][2];
-        int i = 0;
-        for (Entry<String, E> e : prop.mappings().entrySet()) {
-            res[i][0] = e.getKey();
-            res[i++][1] = e.getValue();
-        }
+    public static <T> Object[][] choices(PropertyDescriptor<T> prop) {
+        Object[][] res = new Object[0][2];
+        // TODO: prop.mapping() would be needed to get the valid choices....
         return res;
     }
 }

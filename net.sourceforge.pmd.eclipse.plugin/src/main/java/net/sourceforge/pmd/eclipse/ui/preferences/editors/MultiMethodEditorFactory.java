@@ -26,7 +26,10 @@ import net.sourceforge.pmd.util.CollectionUtil;
 
 /**
  * @author Brian Remedios
+ *
+ * @deprecated Unsupported in PMD
  */
+@Deprecated
 public class MultiMethodEditorFactory extends AbstractMultiValueEditorFactory<Method> {
 
     public static final MultiMethodEditorFactory INSTANCE = new MultiMethodEditorFactory();

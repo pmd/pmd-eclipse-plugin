@@ -6,6 +6,7 @@ package net.sourceforge.pmd.eclipse.ui.preferences.editors;
 
 import java.io.File;
 
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -19,8 +20,6 @@ import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
-
-import net.sourceforge.pmd.util.StringUtil;
 
 /**
  * A general purpose selection widget that deals with files.
@@ -116,7 +115,7 @@ public class FilePicker extends Composite {
     public File getFile() {
 
         String name = fileField.getText();
-        return StringUtil.isEmpty(name) ? null : new File(name);
+        return StringUtils.isBlank(name) ? null : new File(name);
     }
 
 }

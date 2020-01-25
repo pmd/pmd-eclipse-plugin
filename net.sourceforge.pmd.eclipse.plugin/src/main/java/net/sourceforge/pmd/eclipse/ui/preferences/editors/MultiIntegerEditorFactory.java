@@ -17,12 +17,11 @@ import org.eclipse.swt.widgets.Spinner;
 import org.eclipse.swt.widgets.Text;
 
 import net.sourceforge.pmd.eclipse.ui.preferences.br.ValueChangeListener;
-import net.sourceforge.pmd.properties.IntegerMultiProperty;
-import net.sourceforge.pmd.properties.NumericPropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.properties.PropertyFactory;
 import net.sourceforge.pmd.properties.PropertySource;
+import net.sourceforge.pmd.properties.constraints.NumericConstraints;
 import net.sourceforge.pmd.util.CollectionUtil;
-import net.sourceforge.pmd.util.NumericConstants;
 
 /**
  * Behaviour: Provide a set of widgets that allows the user to pick a range of integer values. The selected values can
@@ -45,9 +44,9 @@ public class MultiIntegerEditorFactory extends AbstractMultiValueEditorFactory<I
 
     public PropertyDescriptor<List<Integer>> createDescriptor(String name, String optionalDescription,
                                                               Control[] otherData) {
-
-        return new IntegerMultiProperty(name, "Integer values "
-            + name, NumericConstants.ZERO, 10, new Integer[] {NumericConstants.ZERO}, 0.0f);
+        return PropertyFactory.intListProperty(name).desc(optionalDescription)
+            .requireEach(NumericConstraints.inRange(0, 10))
+            .defaultValues(0).build();
     }
 
 
@@ -79,7 +78,7 @@ public class MultiIntegerEditorFactory extends AbstractMultiValueEditorFactory<I
 
     protected Control addWidget(Composite parent, Integer value, PropertyDescriptor<List<Integer>> desc,
                                 PropertySource source) {
-        return IntegerEditorFactory.newSpinner(parent, (NumericPropertyDescriptor<List<Integer>>) desc, value);
+        return IntegerEditorFactory.newSpinner(parent, desc, value);
     }
 
 

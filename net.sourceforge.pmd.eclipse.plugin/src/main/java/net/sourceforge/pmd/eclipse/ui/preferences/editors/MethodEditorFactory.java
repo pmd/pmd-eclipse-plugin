@@ -22,7 +22,10 @@ import net.sourceforge.pmd.util.ClassUtil;
 
 /**
  * @author Brian Remedios
+ * 
+ * @deprecated unsupported in PMD
  */
+@Deprecated
 public class MethodEditorFactory extends AbstractEditorFactory<Method> {
 
     public static final MethodEditorFactory INSTANCE = new MethodEditorFactory();

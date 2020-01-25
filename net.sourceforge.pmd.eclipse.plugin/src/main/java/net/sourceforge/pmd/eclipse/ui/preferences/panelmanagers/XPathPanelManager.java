@@ -7,6 +7,7 @@ package net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.events.ModifyEvent;
@@ -62,7 +63,7 @@ public class XPathPanelManager extends AbstractRulePanelManager {
 
         List<String> errors = new ArrayList<String>(2);
 
-        if (StringUtil.isEmpty(xpathField.getText())) {
+        if (StringUtils.isBlank(xpathField.getText())) {
             errors.add("Missing XPATH code");
         }
 

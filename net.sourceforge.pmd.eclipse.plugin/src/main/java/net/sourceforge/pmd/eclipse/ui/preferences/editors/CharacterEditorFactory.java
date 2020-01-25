@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.eclipse.ui.preferences.editors;
 
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -13,10 +14,9 @@ import org.eclipse.swt.widgets.Text;
 
 import net.sourceforge.pmd.eclipse.ui.preferences.br.SizeChangeListener;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.ValueChangeListener;
-import net.sourceforge.pmd.properties.CharacterProperty;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.properties.PropertyFactory;
 import net.sourceforge.pmd.properties.PropertySource;
-import net.sourceforge.pmd.util.StringUtil;
 
 /**
  * @author Brian Remedios
@@ -30,12 +30,8 @@ public class CharacterEditorFactory extends AbstractEditorFactory<Character> {
 
 
     public PropertyDescriptor<Character> createDescriptor(String name, String description, Control[] otherData) {
-
-        return new CharacterProperty(
-            name,
-            description,
-            'a',
-            0);
+        return PropertyFactory.charProperty(name).desc(description)
+            .defaultValue('a').build();
     }
 
 
@@ -43,7 +39,7 @@ public class CharacterEditorFactory extends AbstractEditorFactory<Character> {
 
         String value = ((Text) valueControl).getText().trim();
 
-        return (StringUtil.isEmpty(value) || value.length() > 1) ? null
+        return (StringUtils.isBlank(value) || value.length() > 1) ? null
                                                                  : value.charAt(0);
     }
 

@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -24,7 +25,6 @@ import net.sourceforge.pmd.eclipse.ui.preferences.br.ValueChangeListener;
 import net.sourceforge.pmd.eclipse.util.Util;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertySource;
-import net.sourceforge.pmd.util.StringUtil;
 
 /**
  * As a stateless factory it is responsible for building editors that manipulating value collections
@@ -267,9 +267,8 @@ public abstract class AbstractMultiValueEditorFactory<T> extends AbstractEditorF
 
 
     protected void fillWidget(Text textWidget, PropertyDescriptor<List<T>> desc, PropertySource source) {
-
         List<T> values = valueFor(source, desc);
-        textWidget.setText(values == null ? "" : StringUtil.asString(values.toArray(), DELIMITER + ' '));
+        textWidget.setText(values == null ? "" : StringUtils.join(values, DELIMITER + ' '));
         adjustRendering(source, desc, textWidget);
     }
 
@@ -278,7 +277,7 @@ public abstract class AbstractMultiValueEditorFactory<T> extends AbstractEditorF
 
         String values = textWidget.getText().trim();
 
-        if (StringUtil.isEmpty(values)) {
+        if (StringUtils.isBlank(values)) {
             return Collections.emptyList();
         }
 

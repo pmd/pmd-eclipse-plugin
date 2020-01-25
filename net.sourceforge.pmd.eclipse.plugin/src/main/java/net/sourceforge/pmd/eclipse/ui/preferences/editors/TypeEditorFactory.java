@@ -21,7 +21,10 @@ import net.sourceforge.pmd.util.ClassUtil;
 
 /**
  * @author Brian Remedios
+ * 
+ * @deprecated will be removed
  */
+@Deprecated
 public class TypeEditorFactory extends AbstractEditorFactory<Class> {
 
     public static final TypeEditorFactory INSTANCE = new TypeEditorFactory();

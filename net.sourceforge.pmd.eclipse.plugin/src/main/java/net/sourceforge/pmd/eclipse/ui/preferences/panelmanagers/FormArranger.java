@@ -10,6 +10,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -21,6 +22,8 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.eclipse.ui.PMDUiConstants;
 import net.sourceforge.pmd.eclipse.ui.dialogs.NewPropertyDialog;
@@ -45,6 +48,7 @@ import net.sourceforge.pmd.properties.PropertySource;
  * @author Brian Remedios
  */
 public class FormArranger implements ValueChangeListener {
+    private static final Logger LOG = LoggerFactory.getLogger(FormArranger.class);
 
     private final Composite parent;
     private final Map<Class<?>, EditorFactory<?>> editorFactoriesByValueType;
@@ -169,7 +173,12 @@ public class FormArranger implements ValueChangeListener {
         for (PropertyDescriptor<?> desc : orderedDescs) {
             EditorFactory<?> factory = factoryFor(desc);
             if (factory == null) {
-                System.out.println("No editor defined for: " + desc.getClass().getSimpleName());
+                if (isPropertyDeprecated(desc)) {
+                    LOG.info("No property editor for deprecated property defined in rule {}: {}",
+                            theSource.getName(), desc);
+                } else {
+                    LOG.error("No property editor defined for rule {}: {}", theSource.getName(), desc);
+                }
                 continue;
             }
             rowCount++;
@@ -205,6 +214,16 @@ public class FormArranger implements ValueChangeListener {
         adjustEnabledStates();
 
         return rowsAdded;
+    }
+
+    private boolean isPropertyDeprecated(PropertyDescriptor<?> desc) {
+        String description = desc.description();
+        if (description != null) {
+            description = description.toLowerCase(Locale.ROOT).trim();
+        } else {
+            description = "";
+        }
+        return description.startsWith("deprecated");
     }
 
     private void addAddButton() {
