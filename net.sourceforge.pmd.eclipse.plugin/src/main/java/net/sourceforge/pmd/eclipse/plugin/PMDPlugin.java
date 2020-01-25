@@ -12,6 +12,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -54,6 +55,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.PMDConfiguration;
+import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetNotFoundException;
@@ -76,6 +78,7 @@ import net.sourceforge.pmd.eclipse.runtime.writer.IRuleSetWriter;
 import net.sourceforge.pmd.eclipse.runtime.writer.impl.WriterFactoryImpl;
 import net.sourceforge.pmd.eclipse.ui.RuleLabelDecorator;
 import net.sourceforge.pmd.eclipse.ui.ShapePainter;
+import net.sourceforge.pmd.eclipse.ui.actions.RuleSetUtil;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
 import net.sourceforge.pmd.eclipse.ui.nls.StringTable;
 import net.sourceforge.pmd.eclipse.ui.priority.PriorityDescriptorCache;
@@ -84,6 +87,7 @@ import net.sourceforge.pmd.eclipse.util.ResourceManager;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.java.JavaLanguageModule;
+import net.sourceforge.pmd.lang.rule.RuleReference;
 
 /**
  * The activator class controls the plug-in life cycle
@@ -594,12 +598,28 @@ public class PMDPlugin extends AbstractUIPlugin {
             RuleSet ruleSet;
             while (iterator.hasNext()) {
                 ruleSet = iterator.next();
+                ruleSet = removeDeprecatedRuleReferences(ruleSet);
                 manager.registerRuleSet(ruleSet);
                 manager.registerDefaultRuleSet(ruleSet);
             }
         } catch (RuleSetNotFoundException e) {
             log(IStatus.WARNING, "Problem getting all registered PMD RuleSets", e);
         }
+    }
+
+    private RuleSet removeDeprecatedRuleReferences(RuleSet ruleSet) {
+        List<Rule> rules = new ArrayList<>(ruleSet.getRules());
+        Iterator<Rule> it = rules.iterator();
+        while (it.hasNext()) {
+            Rule rule = it.next();
+            if (rule.isDeprecated() && rule instanceof RuleReference) {
+                LOG.debug("Removed deprecated rule reference {} from ruleset {}", rule.getName(), ruleSet.getName());
+                it.remove();
+            }
+        }
+        RuleSet result = RuleSetUtil.clearRules(ruleSet);
+        result = RuleSetUtil.addRules(result, rules);
+        return result;
     }
 
     /**
