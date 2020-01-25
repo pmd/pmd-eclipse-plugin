@@ -27,7 +27,7 @@ elif [ "${TRAVIS_REPO_SLUG}" = "pmd/pmd-eclipse-plugin" ] && [ "${TRAVIS_PULL_RE
         log_info "This is a release build for tag ${TRAVIS_TAG} (version: ${VERSION})"
 
         # create a draft github release
-        gh_releases_createDraftRelease "${TRAVIS_TAG}" "$(git show-ref --hash ${TRAVIS_TAG})"
+        gh_releases_createDraftRelease "${TRAVIS_TAG}" "$(git rev-list -n 1 ${TRAVIS_TAG})"
         GH_RELEASE="$RESULT"
 
         # Deploy the update site to bintray

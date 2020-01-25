@@ -31,7 +31,7 @@ EOF
     )
 
     log_debug "POST https://api.github.com/repos/pmd/pmd-eclipse-plugin/releases"
-    log_info "Creating gihtub draft release"
+    log_info "Creating github draft release"
     RESULT=$(curl --fail -s -H "Authorization: token ${GITHUB_OAUTH_TOKEN}" \
                 -H "Content-Type: application/json" \
                 -X POST \
