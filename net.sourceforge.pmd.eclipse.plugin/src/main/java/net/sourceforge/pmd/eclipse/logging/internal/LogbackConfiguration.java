@@ -9,7 +9,6 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.slf4j.ILoggerFactory;
 import org.slf4j.LoggerFactory;
-import org.slf4j.bridge.SLF4JBridgeHandler;
 
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 
@@ -55,9 +54,7 @@ public class LogbackConfiguration {
         l.addAppender(logbackEclipseAppender);
         l.setAdditive(false);
 
-        if (!SLF4JBridgeHandler.isInstalled()) {
-            SLF4JBridgeHandler.install();
-        }
+        JulLoggingHandler.install();
     }
 
     public void unconfigureLogback() {
@@ -69,7 +66,7 @@ public class LogbackConfiguration {
         Logger l = logbackContext.getLogger(ROOT_LOG_ID);
         l.detachAndStopAllAppenders();
 
-        SLF4JBridgeHandler.uninstall();
+        JulLoggingHandler.uninstall();
     }
 
     private void configureLogs(String logFileName, String logLevel) {

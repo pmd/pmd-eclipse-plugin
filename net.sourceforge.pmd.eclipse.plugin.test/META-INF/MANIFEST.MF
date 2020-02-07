@@ -13,7 +13,6 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.jdt.core,
  org.eclipse.jdt.launching,
  org.junit,
- org.apache.log4j,
  org.apache.commons.io
 Import-Package: ch.qos.logback.classic,
  org.slf4j

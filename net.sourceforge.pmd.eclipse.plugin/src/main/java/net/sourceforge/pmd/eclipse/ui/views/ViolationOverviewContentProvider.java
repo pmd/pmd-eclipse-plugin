@@ -9,8 +9,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.IWorkspaceRoot;
@@ -18,6 +16,8 @@ import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.eclipse.ui.model.AbstractPMDRecord;
 import net.sourceforge.pmd.eclipse.ui.model.FileRecord;
@@ -38,7 +38,7 @@ import net.sourceforge.pmd.eclipse.util.Util;
 public class ViolationOverviewContentProvider
         implements ITreeContentProvider, IStructuredContentProvider, IResourceChangeListener {
 
-    private static final Log LOG = LogFactory.getLog(ViolationOverviewContentProvider.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ViolationOverviewContentProvider.class);
     protected boolean filterPackages;
 
     private final ViolationOverview violationView;

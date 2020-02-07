@@ -5,11 +5,11 @@
 package net.sourceforge.pmd.eclipse.ui.preferences;
 
 import java.text.MessageFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.log4j.Level;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.preferences.InstanceScope;
@@ -553,7 +553,7 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
             }
         });
 
-        logLevelScale.setSelection(intLogLevel(this.preferences.getLogLevel()));
+        logLevelScale.setSelection(intLogLevel(this.preferences.getLogLevelName()));
         updateLogLevelValueLabel();
 
         return loggingGroup;
@@ -801,7 +801,7 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
         setText(logFileNameText, IPreferences.LOG_FILENAME_DEFAULT);
 
         if (logLevelScale != null) {
-            logLevelScale.setSelection(intLogLevel(IPreferences.LOG_LEVEL));
+            logLevelScale.setSelection(intLogLevel(IPreferences.LOG_LEVEL_DEFAULT));
             updateLogLevelValueLabel();
         }
     }
@@ -934,7 +934,7 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
         }
 
         if (logLevelScale != null) {
-            preferences.setLogLevel(Level.toLevel(LOG_LEVELS[logLevelScale.getSelection()]));
+            preferences.setLogLevel(LOG_LEVELS[logLevelScale.getSelection()]);
         }
 
         preferences.sync();
@@ -947,27 +947,12 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
     /**
      * Return the selection index corresponding to the log level
      */
-    private int intLogLevel(Level level) {
-        int result = 0;
-
-        if (level.equals(Level.OFF)) {
+    private int intLogLevel(String level) {
+        int result = Arrays.asList(LOG_LEVELS).indexOf(level);
+        if (result < 0 || result > 6) {
             result = 0;
-        } else if (level.equals(Level.FATAL)) {
-            result = 1;
-        } else if (level.equals(Level.ERROR)) {
-            result = 2;
-        } else if (level.equals(Level.WARN)) {
-            result = 3;
-        } else if (level.equals(Level.INFO)) {
-            result = 4;
-        } else if (level.equals(Level.DEBUG)) {
-            result = 5;
-        } else if (level.equals(Level.ALL)) {
-            result = 6;
         }
-
         return result;
-
     }
 
     /**
