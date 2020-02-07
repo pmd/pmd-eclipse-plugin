@@ -11,11 +11,11 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import javax.xml.bind.DataBindingException;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
@@ -56,7 +56,7 @@ public class ProjectPropertiesManagerImpl implements IProjectPropertiesManager {
 
     private static final String PROPERTIES_FILE = ".pmd";
 
-    private final Map<IProject, IProjectProperties> projectsProperties = new HashMap<IProject, IProjectProperties>();
+    private final ConcurrentMap<IProject, IProjectProperties> projectsProperties = new ConcurrentHashMap<IProject, IProjectProperties>();
 
     private static final JAXBContext JAXB_CONTEXT = initJaxbContext();
 
@@ -80,11 +80,16 @@ public class ProjectPropertiesManagerImpl implements IProjectPropertiesManager {
         try {
             IProjectProperties projectProperties = this.projectsProperties.get(project);
             if (projectProperties == null) {
-                LOG.debug("Creating new poject properties for " + project.getName());
-                projectProperties = new PropertiesFactoryImpl().newProjectProperties(project, this);
+                LOG.debug("Creating new poject properties for {}", project.getName());
+                IProjectProperties projectPropertiesNew = new PropertiesFactoryImpl().newProjectProperties(project, this);
                 final ProjectPropertiesTO to = readProjectProperties(project);
-                fillProjectProperties(projectProperties, to);
-                this.projectsProperties.put(project, projectProperties);
+                fillProjectProperties(projectPropertiesNew, to);
+                projectProperties = this.projectsProperties.putIfAbsent(project, projectPropertiesNew);
+                if (projectProperties == null) {
+                    projectProperties = projectPropertiesNew;
+                } else {
+                    LOG.debug("project properties already existed for {}", project.getName());
+                }
             }
 
             // if the ruleset is stored in the project always reload it
