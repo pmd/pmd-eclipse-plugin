@@ -175,6 +175,8 @@ public class ViolationOverview extends ViewPart implements ISelectionProvider, I
 
         memento.save();
 
+        menuManager.dispose();
+
         super.dispose();
     }
 
@@ -414,7 +416,7 @@ public class ViolationOverview extends ViewPart implements ISelectionProvider, I
 
     public void refreshMenu() {
         menuManager.createDropDownMenu(getViewSite().getActionBars().getMenuManager());
-        menuManager.createContextMenu();
+        // note: the context menu doesn't need to be refreshed
     }
 
     /**

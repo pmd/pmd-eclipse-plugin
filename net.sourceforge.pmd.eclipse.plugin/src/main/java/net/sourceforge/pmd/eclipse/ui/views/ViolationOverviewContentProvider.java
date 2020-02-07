@@ -303,8 +303,7 @@ public class ViolationOverviewContentProvider
         final ChangeRecord<AbstractPMDRecord> changes = changeEvaluator.changeRecordFor(event);
 
         // the additions, removals and changes are given to the viewer so that it can update itself
-        // updating the table MUST be in sync
-        treeViewer.getControl().getDisplay().syncExec(new Runnable() {
+        treeViewer.getControl().getDisplay().asyncExec(new Runnable() {
             public void run() {
                 updateViewer(changes);
             }

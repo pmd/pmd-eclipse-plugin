@@ -15,6 +15,7 @@ import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.IWorkbenchActionConstants;
+import org.eclipse.ui.services.IDisposable;
 
 import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
@@ -35,9 +36,10 @@ import net.sourceforge.pmd.eclipse.ui.views.actions.ViolationPresentationTypeAct
  *
  */
 
-public class ViolationOverviewMenuManager {
+public class ViolationOverviewMenuManager implements IDisposable {
     private final ViolationOverview overview;
     private PriorityFilterAction[] priorityActions;
+    private MenuManager contextMenuManager;
 
     public ViolationOverviewMenuManager(ViolationOverview overview) {
         this.overview = overview;
@@ -92,40 +94,42 @@ public class ViolationOverviewMenuManager {
      * Creates the Context Menu
      */
     public void createContextMenu() {
-        MenuManager manager = new MenuManager();
-        manager.setRemoveAllWhenShown(true);
-        manager.addMenuListener(new IMenuListener() {
-            public void menuAboutToShow(IMenuManager manager) {
-                MenuManager submenuManager;
+        if (contextMenuManager == null) {
+            contextMenuManager = new MenuManager();
+            contextMenuManager.setRemoveAllWhenShown(true);
+            contextMenuManager.addMenuListener(new IMenuListener() {
+                public void menuAboutToShow(IMenuManager manager) {
+                    MenuManager submenuManager;
 
-                // one SubMenu for filtering Projects
-                submenuManager = new MenuManager(getString(StringKeys.VIEW_MENU_RESOURCE_FILTER));
-                createProjectFilterMenu(submenuManager);
-                manager.add(submenuManager);
+                    // one SubMenu for filtering Projects
+                    submenuManager = new MenuManager(getString(StringKeys.VIEW_MENU_RESOURCE_FILTER));
+                    createProjectFilterMenu(submenuManager);
+                    manager.add(submenuManager);
 
-                // ... another one for filtering Priorities
-                submenuManager = new MenuManager(getString(StringKeys.VIEW_MENU_PRIORITY_FILTER));
-                for (PriorityFilterAction priorityAction : priorityActions) {
-                    submenuManager.add(priorityAction);
+                    // ... another one for filtering Priorities
+                    submenuManager = new MenuManager(getString(StringKeys.VIEW_MENU_PRIORITY_FILTER));
+                    for (PriorityFilterAction priorityAction : priorityActions) {
+                        submenuManager.add(priorityAction);
+                    }
+                    manager.add(submenuManager);
+
+                    // ... another one for showing the presentation types
+                    submenuManager = new MenuManager(getString(StringKeys.VIEW_MENU_PRESENTATION_TYPE));
+                    createShowTypeSubmenu(submenuManager);
+                    manager.add(submenuManager);
+
+                    // additions Action: Clear PMD Violations
+                    manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
+                    manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS + "-end"));
+
                 }
-                manager.add(submenuManager);
-
-                // ... another one for showing the presentation types
-                submenuManager = new MenuManager(getString(StringKeys.VIEW_MENU_PRESENTATION_TYPE));
-                createShowTypeSubmenu(submenuManager);
-                manager.add(submenuManager);
-
-                // additions Action: Clear PMD Violations
-                manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
-                manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS + "-end"));
-
-            }
-        });
+            });
+        }
 
         Tree tree = overview.getViewer().getTree();
-        tree.setMenu(manager.createContextMenu(tree));
+        tree.setMenu(contextMenuManager.createContextMenu(tree));
 
-        overview.getSite().registerContextMenu(manager, overview.getViewer());
+        overview.getSite().registerContextMenu(contextMenuManager, overview.getViewer());
     }
 
     /**
@@ -177,5 +181,13 @@ public class ViolationOverviewMenuManager {
      */
     private String getString(String key) {
         return PMDPlugin.getDefault().getStringTable().getString(key);
+    }
+
+    @Override
+    public void dispose() {
+        if (contextMenuManager != null) {
+            contextMenuManager.dispose();
+            contextMenuManager = null;
+        }
     }
 }

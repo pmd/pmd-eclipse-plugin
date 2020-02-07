@@ -73,7 +73,9 @@ public class RootRecord extends AbstractPMDRecord {
 
         // ... and create Records for them
         for (IProject project : projects) {
-            projectList.add(new ProjectRecord(project, this));
+            if (project.isOpen()) {
+                projectList.add(new ProjectRecord(project, this));
+            }
         }
 
         // return the Array of children

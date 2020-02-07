@@ -15,6 +15,7 @@ Eclipse Update Site:
 
 *   [#114](https://github.com/pmd/pmd-eclipse-plugin/issues/114): NPE in PriorityDescriptorCache
 *   [#115](https://github.com/pmd/pmd-eclipse-plugin/issues/115): Missing dependencies when installing
+*   [#116](https://github.com/pmd/pmd-eclipse-plugin/issues/116): SWTError: No more handles
 
 ### API Changes
 
