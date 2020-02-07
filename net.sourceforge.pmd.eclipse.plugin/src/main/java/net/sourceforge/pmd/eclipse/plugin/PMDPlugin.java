@@ -376,15 +376,17 @@ public class PMDPlugin extends AbstractUIPlugin {
      * @see org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework. BundleContext )
      */
     public void stop(BundleContext context) throws Exception {
-
         fileChangeListenerEnabled(false);
 
-        plugin = null;
         disposeResources();
         ShapePainter.disposeAll();
         ResourceManager.dispose();
         PriorityDescriptorCache.INSTANCE.dispose();
         logbackConfiguration.unconfigureLogback();
+
+        // only unset the plugin reference after all our own shutdown logic
+        // has been executed
+        plugin = null;
         super.stop(context);
     }
 

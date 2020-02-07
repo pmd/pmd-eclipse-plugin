@@ -13,6 +13,8 @@ Eclipse Update Site:
 
 ### Fixed Issues
 
+*   [#114](https://github.com/pmd/pmd-eclipse-plugin/issues/114): NPE in PriorityDescriptorCache
+
 ### API Changes
 
 ### External Contributions
