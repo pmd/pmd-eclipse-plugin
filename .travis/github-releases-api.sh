@@ -1,9 +1,10 @@
 #
 # The functions here require the following scripts:
-# .travis/logger.sh
+# logger.sh
 #
 # The functions here require the following environment variables:
 # GITHUB_OAUTH_TOKEN
+# GITHUB_BASE_URL
 #
 
 #
@@ -20,23 +21,23 @@ function gh_releases_createDraftRelease() {
 
     log_debug "$FUNCNAME: Creating new draft release for tag=$tagName and commit=$targetCommitish"
 
-    local request=$(cat <<EOF
-{
-    "tag_name": "${tagName}",
-    "target_commitish": "${targetCommitish}",
-    "name": "${tagName}",
-    "draft": true
-}
-EOF
+    local request=$(cat <<-EOF
+		{
+		    "tag_name": "${tagName}",
+		    "target_commitish": "${targetCommitish}",
+		    "name": "${tagName}",
+		    "draft": true
+		}
+		EOF
     )
 
-    log_debug "POST https://api.github.com/repos/pmd/pmd-eclipse-plugin/releases"
+    log_debug "POST $GITHUB_BASE_URL/releases"
     log_info "Creating github draft release"
     RESULT=$(curl --fail -s -H "Authorization: token ${GITHUB_OAUTH_TOKEN}" \
                 -H "Content-Type: application/json" \
                 -X POST \
                 --data "${request}" \
-                "https://api.github.com/repos/pmd/pmd-eclipse-plugin/releases")
+                "$GITHUB_BASE_URL/releases")
     log_debug " -> response: $RESULT"
 
     log_success "Created draft release with id $(echo $RESULT | jq --raw-output ".url")"
@@ -53,9 +54,9 @@ EOF
 #
 function gh_releases_getLatestDraftRelease() {
     log_debug "$FUNCNAME"
-    log_debug "GET https://api.github.com/repos/pmd/pmd-eclipse-plugin/releases?per_page=1"
+    log_debug "GET $GITHUB_BASE_URL/releases?per_page=1"
     RESULT=$(curl --fail -s -H "Authorization: token ${GITHUB_OAUTH_TOKEN}" \
-                "https://api.github.com/repos/pmd/pmd-eclipse-plugin/releases?per_page=1" | jq ".[0]")
+                "$GITHUB_BASE_URL/releases?per_page=1" | jq ".[0]")
     log_debug " -> response: $RESULT"
     local draft=$(echo $RESULT | jq ".draft")
     if [ "$draft" != "true" ]; then
@@ -77,12 +78,12 @@ function gh_release_deleteRelease() {
     gh_release_getIdFromData "$release"
     local releaseId="$RESULT"
     log_debug "$FUNCNAME id=$releaseId"
-    log_debug "DELETE https://api.github.com/repos/pmd/pmd-eclipse-plugin/releases/$releaseId"
+    log_debug "DELETE $GITHUB_BASE_URL/releases/$releaseId"
     log_info "Deleting github release $releaseId"
     local response
     response=$(curl --fail -s -H "Authorization: token ${GITHUB_OAUTH_TOKEN}" \
         -X DELETE \
-        "https://api.github.com/repos/pmd/pmd-eclipse-plugin/releases/$releaseId")
+        "$GITHUB_BASE_URL/releases/$releaseId")
     log_debug " -> response: $response"
     log_success "Deleted release with id $releaseId"
 }
@@ -96,6 +97,17 @@ function gh_release_getIdFromData() {
     local release="$1"
 
     RESULT=$(echo $release | jq --raw-output ".id")
+}
+
+#
+# Determines the tag_name from the given JSON release data.
+#
+# RESULT = "the tag name"
+#
+function gh_release_getTagNameFromData() {
+    local release="$1"
+
+    RESULT=$(echo $release | jq --raw-output ".tag_name")
 }
 
 #
@@ -141,22 +153,25 @@ function gh_release_updateRelease() {
 
     gh_release_getIdFromData "$release"
     local releaseId="$RESULT"
-    log_debug "$FUNCNAME releaseId=$releaseId name=$name"
+    gh_release_getTagNameFromData "$release"
+    local tagName="$RESULT"
+    log_debug "$FUNCNAME releaseId=$releaseId name=$name tag_name=$tagName"
 
     body="${body//'\'/\\\\}"
     body="${body//$'\r'/}"
     body="${body//$'\n'/\\r\\n}"
     body="${body//'"'/\\\"}"
 
-    local request=$(cat <<EOF
-{
-    "name": "${name}",
-    "body": "${body}"
-}
-EOF
+    local request=$(cat <<-EOF
+		{
+		    "tag_name": "${tagName}",
+		    "name": "${name}",
+		    "body": "${body}"
+		}
+		EOF
     )
 
-    log_debug "PATCH https://api.github.com/repos/pmd/pmd-eclipse-plugin/releases/${releaseId}"
+    log_debug "PATCH $GITHUB_BASE_URL/releases/${releaseId}"
     log_debug " -> request: $request"
     log_info "Updating github release $releaseId"
     local response
@@ -164,7 +179,7 @@ EOF
                          -H "Content-Type: application/json" \
                          --data "${request}" \
                          -X PATCH \
-                         "https://api.github.com/repos/pmd/pmd-eclipse-plugin/releases/${releaseId}")
+                         "$GITHUB_BASE_URL/releases/${releaseId}")
     log_debug " -> response: $response"
     log_success "Updated release with id=$releaseId"
 }
@@ -184,7 +199,7 @@ function gh_release_publishRelease() {
     log_debug "$FUNCNAME releaseId=$releaseId"
 
     local request='{"draft":false}'
-    log_debug "PATCH https://api.github.com/repos/pmd/pmd-eclipse-plugin/releases/${releaseId}"
+    log_debug "PATCH $GITHUB_BASE_URL/releases/${releaseId}"
     log_debug " -> request: $request"
     log_info "Publishing github release $releaseId"
     local response
@@ -192,9 +207,8 @@ function gh_release_publishRelease() {
                          -H "Content-Type: application/json" \
                          --data "${request}" \
                          -X PATCH \
-                         "https://api.github.com/repos/pmd/pmd-eclipse-plugin/releases/${releaseId}")
+                         "$GITHUB_BASE_URL/releases/${releaseId}")
     log_debug " -> response: $response"
     local htmlUrl=$(echo "$response" | jq --raw-output ".html_url")
     log_success "Published release with id=$releaseId at $htmlUrl"
 }
-
