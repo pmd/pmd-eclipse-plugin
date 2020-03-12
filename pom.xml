@@ -22,7 +22,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <pmd.version>6.22.0</pmd.version>
     <maven-antrun-plugin.version>1.8</maven-antrun-plugin.version>
-    <pmd.build-tools.version>6-SNAPSHOT</pmd.build-tools.version>
+    <pmd.build-tools.version>6</pmd.build-tools.version>
     <checkstyle.version>3.1.0</checkstyle.version>
 
     <updatesite.orbit>http://download.eclipse.org/tools/orbit/downloads/drops/${orbit.version}/repository/</updatesite.orbit>
