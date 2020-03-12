@@ -23,7 +23,8 @@
     <pmd.version>6.22.0</pmd.version>
     <maven-antrun-plugin.version>1.8</maven-antrun-plugin.version>
     <pmd.build-tools.version>6</pmd.build-tools.version>
-    <checkstyle.version>3.1.0</checkstyle.version>
+    <checkstyle.version>8.30</checkstyle.version>
+    <checkstyle.plugin.version>3.1.1</checkstyle.plugin.version>
 
     <updatesite.orbit>http://download.eclipse.org/tools/orbit/downloads/drops/${orbit.version}/repository/</updatesite.orbit>
   </properties>
@@ -205,7 +206,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-checkstyle-plugin</artifactId>
-          <version>${checkstyle.version}</version>
+          <version>${checkstyle.plugin.version}</version>
           <executions>
             <execution>
               <id>checkstyle-check</id>
@@ -219,7 +220,7 @@
             <dependency>
               <groupId>com.puppycrawl.tools</groupId>
               <artifactId>checkstyle</artifactId>
-              <version>8.29</version>
+              <version>${checkstyle.version}</version>
             </dependency>
             <dependency>
               <groupId>net.sourceforge.pmd</groupId>
