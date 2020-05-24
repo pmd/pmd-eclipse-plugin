@@ -13,11 +13,7 @@ This is a minor release.
 
 ### New and noteworthy
 
-### Fixed Issues
-
-### API Changes
-
-### External Contributions
+*   Updated to PMD 6.24.0
 
 ## 24-April-2020: 4.12.0.v20200424-1006
 
