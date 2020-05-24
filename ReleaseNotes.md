@@ -7,7 +7,7 @@ Eclipse Update Site:
 *   Releases: <https://dl.bintray.com/pmd/pmd-eclipse-plugin/updates/>
 *   Snapshots: <https://dl.bintray.com/pmd/pmd-eclipse-plugin/snapshots/updates/>
 
-## ????: 4.13.0.v????
+## 24-May-2020: 4.13.0.v20200524-1630
 
 This is a minor release.
 
