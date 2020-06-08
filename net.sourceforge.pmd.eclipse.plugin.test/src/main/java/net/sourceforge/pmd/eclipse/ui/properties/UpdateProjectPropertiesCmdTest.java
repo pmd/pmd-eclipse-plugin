@@ -12,7 +12,6 @@ import org.junit.Test;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSet;
-import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.eclipse.EclipseUtils;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties;
@@ -51,8 +50,6 @@ public class UpdateProjectPropertiesCmdTest {
      */
     @Test
     public void testBug() throws PropertiesException {
-        final RuleSetFactory factory = new RuleSetFactory();
-
         // First ensure that the plugin initial ruleset is equal to the project
         // ruleset
         final IProjectPropertiesManager mgr = PMDPlugin.getDefault().getPropertiesManager();
