@@ -82,6 +82,9 @@ public class ExternalRuleSetFileTest {
         RuleSet projectRuleSet = model.getProjectRuleSet();
         Assert.assertEquals(1, projectRuleSet.getRules().size());
 
+        // we need to wait a bit, so that the modified timestamp of the file becomes actually different
+        Thread.sleep(100);
+
         // now let's change the ruleSetFile without eclipse knowing about it ("externally")
         File ruleSetFileReal = ruleSetFile.getLocation().toFile();
         try (FileOutputStream out = new FileOutputStream(ruleSetFileReal);

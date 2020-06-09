@@ -92,7 +92,7 @@ public class ProjectPropertiesManagerImpl implements IProjectPropertiesManager {
                 }
             }
 
-            // if the ruleset is stored in the project always reload it
+            // if the ruleset is stored in the project reload it when it changed on disk (modification time stamp)
             if (projectProperties.isRuleSetStoredInProject()) {
                 loadRuleSetFromProject(projectProperties);
             } else {
