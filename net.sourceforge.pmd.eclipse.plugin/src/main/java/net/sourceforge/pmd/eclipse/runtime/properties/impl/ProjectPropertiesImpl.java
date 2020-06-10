@@ -15,6 +15,7 @@ import java.util.Set;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -338,15 +339,18 @@ public class ProjectPropertiesImpl implements IProjectProperties {
     }
 
     private File getExistingFileOrNull(IFile file) {
+        // try to refresh the resource first - if the file has been created or deleted or modified externally
+        // eclipse might not know about it yet
+        try {
+            file.refreshLocal(IResource.DEPTH_ZERO, null);
+        } catch (CoreException e) {
+            LOG.warn("Error refreshing {}", file, e);
+        }
+
         boolean exists = file.exists() && file.isAccessible();
         File result = null;
         if (exists) {
-            File f = new File(file.getLocation().toOSString());
-            // For some reason IFile says exists when it doesn't! So double
-            // check.
-            if (f.exists()) {
-                result = f;
-            }
+            result = file.getLocation().toFile();
         }
         return result;
     }

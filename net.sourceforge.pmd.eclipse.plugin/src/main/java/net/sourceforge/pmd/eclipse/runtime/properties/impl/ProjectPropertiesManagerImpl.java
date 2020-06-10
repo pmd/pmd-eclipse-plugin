@@ -27,6 +27,7 @@ import javax.xml.transform.stream.StreamSource;
 import org.apache.commons.io.IOUtils;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ui.IWorkingSetManager;
 import org.eclipse.ui.PlatformUI;
@@ -90,6 +91,11 @@ public class ProjectPropertiesManagerImpl implements IProjectPropertiesManager {
                 } else {
                     LOG.debug("project properties already existed for {}", project.getName());
                 }
+            } else if (isOutOfSync(projectProperties)) {
+                LOG.debug("Project properties for project " + project.getName() + " have been changed on disk - reloading");
+                final ProjectPropertiesTO to = readProjectProperties(project);
+                fillProjectProperties(projectProperties, to);
+                projectProperties.setNeedRebuild(true);
             }
 
             // if the ruleset is stored in the project reload it when it changed on disk (modification time stamp)
@@ -152,7 +158,6 @@ public class ProjectPropertiesManagerImpl implements IProjectPropertiesManager {
                     allRulesets.addRuleSet(ruleSet);
                 }
                 projectProperties.setProjectRuleSets(allRulesets);
-                projectProperties.setNeedRebuild(false);
             } catch (RuleSetNotFoundException e) {
                 PMDPlugin.getDefault()
                         .logError("Project RuleSet cannot be loaded for project "
@@ -302,7 +307,6 @@ public class ProjectPropertiesManagerImpl implements IProjectPropertiesManager {
      *            the project properties to save
      * @param monitor
      *            a progress monitor
-     * @throws DAOException
      */
     private void writeProjectProperties(final IProject project, final ProjectPropertiesTO projectProperties)
             throws PropertiesException {
@@ -368,7 +372,14 @@ public class ProjectPropertiesManagerImpl implements IProjectPropertiesManager {
         final RuleSets projectRuleSets = projectProperties.getProjectRuleSets();
         boolean flChanged = false;
 
-        if (!projectRuleSets.getAllRules().equals(pluginRuleSet.getRules())) {
+        // Note: projectRuleSets.getAllRules() doesn't preserve the order...
+        // that's why we need to collect the rules ourselves.
+        List<Rule> projectRules = new ArrayList<Rule>();
+        for (RuleSet ruleset : projectRuleSets.getAllRuleSets()) {
+            projectRules.addAll(ruleset.getRules());
+        }
+
+        if (!projectRules.equals(pluginRuleSet.getRules())) {
             LOG.debug("The project ruleset is different from the plugin ruleset; synchronizing.");
 
             // 1-If rules have been deleted from preferences, delete them also
@@ -396,7 +407,7 @@ public class ProjectPropertiesManagerImpl implements IProjectPropertiesManager {
             // build a new ruleset based on the collected rules
             newRuleSet = RuleSetUtil.addRules(newRuleSet, newRules);
 
-            if (!newRuleSet.getRules().equals(projectRuleSets.getAllRules())) {
+            if (!newRuleSet.getRules().equals(projectRules)) {
                 LOG.info("Set the project ruleset according to preferences.");
                 projectProperties.setProjectRuleSet(newRuleSet);
                 flChanged = true;
@@ -407,5 +418,14 @@ public class ProjectPropertiesManagerImpl implements IProjectPropertiesManager {
         }
 
         return flChanged;
+    }
+
+    private boolean isOutOfSync(IProjectProperties projectProperties) {
+        if (projectProperties != null) {
+            IProject project = projectProperties.getProject();
+            IFile propertiesFile = project.getFile(PROPERTIES_FILE);
+            return !propertiesFile.isSynchronized(IResource.DEPTH_ZERO);
+        }
+        return false;
     }
 }

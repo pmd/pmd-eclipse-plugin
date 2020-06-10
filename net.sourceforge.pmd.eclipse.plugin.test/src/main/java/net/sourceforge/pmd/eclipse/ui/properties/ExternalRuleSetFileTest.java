@@ -20,6 +20,7 @@ import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.eclipse.EclipseUtils;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
+import net.sourceforge.pmd.eclipse.runtime.cmd.BuildProjectCommand;
 import net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties;
 import net.sourceforge.pmd.eclipse.runtime.properties.IProjectPropertiesManager;
 import net.sourceforge.pmd.eclipse.ui.actions.RuleSetUtil;
@@ -111,8 +112,16 @@ public class ExternalRuleSetFileTest {
         cmd.setProjectWorkingSet(null);
         RuleSets rulesets = new RuleSets(PMDPlugin.getDefault().getPreferencesManager().getRuleSet());
         cmd.setProjectRuleSets(rulesets);
-        cmd.setRuleSetStoredInProject(true);
+        cmd.setRuleSetStoredInProject(false);
         cmd.execute();
+
+        if (cmd.isNeedRebuild()) {
+            final BuildProjectCommand rebuildCmd = new BuildProjectCommand();
+            rebuildCmd.setProject(this.testProject);
+            rebuildCmd.setUserInitiated(true);
+            rebuildCmd.execute();
+        }
+
 
         // load the project settings - it should have this ruleset now active (many rules)
         final IProjectPropertiesManager mgr = PMDPlugin.getDefault().getPropertiesManager();
@@ -120,6 +129,8 @@ public class ExternalRuleSetFileTest {
         RuleSet projectRuleSet = model.getProjectRuleSet();
         int numberOfRules = rulesets.getAllRules().size();
         Assert.assertEquals(numberOfRules, projectRuleSet.getRules().size());
+        // after the rebuild above, the project should be in a consistent state
+        Assert.assertFalse(model.isNeedRebuild());
 
         // now create a .pmd-ruleset.xml file without eclipse knowing about it ("externally")
         IFile ruleSetFile = this.testProject.getFile(PROJECT_RULESET_FILENAME);
@@ -129,6 +140,9 @@ public class ExternalRuleSetFileTest {
         File ruleSetFileReal = ruleSetFile.getLocation().toFile();
         copyResource("ruleset1.xml", ruleSetFileReal);
 
+        // we need to wait a bit, so that the modified timestamp of the file becomes actually different
+        Thread.sleep(100);
+
         // now overwrite and change the .pmd project properties without eclipse knowing about it ("externally")
         IFile projectPropertiesFile = this.testProject.getFile(".pmd");
         if (!projectPropertiesFile.exists()) {
@@ -137,15 +151,24 @@ public class ExternalRuleSetFileTest {
         File projectPropertiesFileReal = projectPropertiesFile.getLocation().toFile();
         copyResource("pmd-properties", projectPropertiesFileReal);
 
-        // the file has changed, this should be detected
-        Assert.assertTrue(model.isNeedRebuild());
         // the model is not updated yet...
         Assert.assertEquals(numberOfRules, model.getProjectRuleSet().getRules().size());
         // but it will be when requesting the project properties again
         final IProjectProperties model2 = mgr.loadProjectProperties(testProject);
+        // the file and the ruleset have changed, this should be detected
+        Assert.assertTrue(model.isNeedRebuild());
+        // the new rule set should be active now
         Assert.assertEquals(1, model2.getProjectRuleSet().getRules().size());
         // the model is still cached, but the rules are updated
         Assert.assertSame(model, model2);
+
+        // rebuild again
+        final BuildProjectCommand rebuildCmd = new BuildProjectCommand();
+        rebuildCmd.setProject(this.testProject);
+        rebuildCmd.setUserInitiated(true);
+        rebuildCmd.execute();
+        // need rebuild flag should be reset now
+        Assert.assertFalse(model.isNeedRebuild());
     }
 
     private static void copyResource(String resource, File target) throws IOException {
