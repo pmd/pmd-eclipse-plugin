@@ -173,11 +173,9 @@ public class ProjectPropertiesImpl implements IProjectProperties {
         this.projectRuleSets = newProjectRuleSets;
         if (this.ruleSetStoredInProject) {
             for (File f : getResolvedRuleSetFiles()) {
-                if (f != null) {
-                    long mod = FileModificationUtil.getFileModificationTimestamp(f);
-                    if (projectRuleFileLastModified < mod) {
-                        projectRuleFileLastModified = mod;
-                    }
+                long mod = FileModificationUtil.getFileModificationTimestamp(f);
+                if (projectRuleFileLastModified < mod) {
+                    projectRuleFileLastModified = mod;
                 }
             }
         }
@@ -204,11 +202,9 @@ public class ProjectPropertiesImpl implements IProjectProperties {
                         + " cannot be found for project " + this.project.getName());
             }
             for (File f : getResolvedRuleSetFiles()) {
-                if (f != null) {
-                    long mod = FileModificationUtil.getFileModificationTimestamp(f);
-                    if (projectRuleFileLastModified < mod) {
-                        projectRuleFileLastModified = mod;
-                    }
+                long mod = FileModificationUtil.getFileModificationTimestamp(f);
+                if (projectRuleFileLastModified < mod) {
+                    projectRuleFileLastModified = mod;
                 }
             }
         }
@@ -235,11 +231,9 @@ public class ProjectPropertiesImpl implements IProjectProperties {
                         "The project ruleset file cannot be found for project " + project.getName());
             }
             for (File f : getResolvedRuleSetFiles()) {
-                if (f != null) {
-                    long mod = FileModificationUtil.getFileModificationTimestamp(f);
-                    if (projectRuleFileLastModified < mod) {
-                        projectRuleFileLastModified = mod;
-                    }
+                long mod = FileModificationUtil.getFileModificationTimestamp(f);
+                if (projectRuleFileLastModified < mod) {
+                    projectRuleFileLastModified = mod;
                 }
             }
         }
@@ -275,10 +269,8 @@ public class ProjectPropertiesImpl implements IProjectProperties {
         if (ruleSetStoredInProject) {
             boolean rulesetFilesChanged = false;
             for (File f : getResolvedRuleSetFiles()) {
-                if (f != null) {
-                    long mod = FileModificationUtil.getFileModificationTimestamp(f);
-                    rulesetFilesChanged |= mod > projectRuleFileLastModified;
-                }
+                long mod = FileModificationUtil.getFileModificationTimestamp(f);
+                rulesetFilesChanged |= mod > projectRuleFileLastModified;
             }
             LOG.debug("   ruleset files have changed = {}", rulesetFilesChanged);
             this.setNeedRebuild(needRebuild | rulesetFilesChanged);
@@ -298,13 +290,16 @@ public class ProjectPropertiesImpl implements IProjectProperties {
      * @see net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties#isRuleSetFileExist()
      */
     public final boolean isRuleSetFileExist() {
-        boolean ret = true;
+        boolean allFilesCanBeRead = false;
         for (File f : getResolvedRuleSetFiles()) {
-            if (!f.exists()) {
-                ret = false;
+            if (f.canRead()) {
+                allFilesCanBeRead = true;
+            } else {
+                allFilesCanBeRead = false;
+                break;
             }
         }
-        return ret;
+        return allFilesCanBeRead;
     }
 
     @Deprecated
@@ -343,7 +338,9 @@ public class ProjectPropertiesImpl implements IProjectProperties {
                     }
                 }
             }
-            files.add(f);
+            if (f != null) {
+                files.add(f);
+            }
         }
         return files;
     }
