@@ -23,9 +23,12 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences;
+import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferenceStore;
 import org.eclipse.swt.graphics.RGB;
+import org.osgi.service.prefs.BackingStoreException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -125,6 +128,7 @@ class PreferencesManagerImpl implements IPreferencesManager {
     }
 
     private IPreferences preferences;
+    private long preferencesTimestamp;
     private IPreferenceStore storePreferencesStore = PMDPlugin.getDefault().getPreferenceStore();
     private IPreferenceStore loadPreferencesStore;
 
@@ -141,9 +145,29 @@ class PreferencesManagerImpl implements IPreferencesManager {
     public IPreferences loadPreferences() {
         if (preferences == null) {
             reloadPreferences();
+        } else if (preferencesTimestamp != getPreferencesTimestamp()) {
+            LOG.info("Workspace Preferences for PMD Plugin changed on disk - reloading");
+            if (loadPreferencesStore.needsSaving()) {
+                LOG.warn("Any preference changes done in this eclipse instance are lost!");
+            }
+
+            IEclipsePreferences prefs = InstanceScope.INSTANCE.getNode(PMDPlugin.getDefault().getBundle().getSymbolicName());
+            try {
+                prefs.sync();
+            } catch (BackingStoreException e) {
+                LOG.error("Error while reloading preferences for PMD", e);
+            }
+            reloadPreferences();
         }
 
         return preferences;
+    }
+
+    private long getPreferencesTimestamp() {
+        IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
+        IPath path = root.getLocation().append(NEW_PREFERENCE_LOCATION);
+        File newPrefs = path.toFile();
+        return FileModificationUtil.getFileModificationTimestamp(newPrefs);
     }
 
     /**
@@ -180,6 +204,8 @@ class PreferencesManagerImpl implements IPreferencesManager {
         loadGroupingColumn();
         loadSelectedRuleNames();
         loadSelectedPropertyTab();
+
+        preferencesTimestamp = getPreferencesTimestamp();
 
         return preferences;
     }

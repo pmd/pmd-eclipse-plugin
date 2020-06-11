@@ -1,0 +1,2 @@
+eclipse.preferences.version=1
+net.sourceforge.pmd.eclipse.plugin.active_rules=DoNotCallSystemExit
