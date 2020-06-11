@@ -134,10 +134,10 @@ public class ProjectPropertiesImpl implements IProjectProperties {
      * @see net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties#setPmdEnabled(boolean)
      */
     public void setPmdEnabled(final boolean pmdEnabled) {
-        LOG.debug("Enable PMD for project " + this.project.getName() + ": " + this.pmdEnabled);
+        LOG.debug("Enable PMD for project {}: {}", this.project.getName(), this.pmdEnabled);
         if (this.pmdEnabled != pmdEnabled) {
             this.pmdEnabled = pmdEnabled;
-            this.needRebuild |= pmdEnabled;
+            this.setNeedRebuild(this.needRebuild | pmdEnabled);
         }
     }
 
@@ -162,13 +162,13 @@ public class ProjectPropertiesImpl implements IProjectProperties {
 
     @Override
     public void setProjectRuleSets(final RuleSets newProjectRuleSets) throws PropertiesException {
-        LOG.debug("Set a rule set for project " + this.project.getName());
+        LOG.debug("Set a rule set for project {}", this.project.getName());
         if (newProjectRuleSets == null) {
             // TODO: NLS
             throw new PropertiesException("Setting a project rule set to null");
         }
 
-        this.needRebuild = !this.projectRuleSets.getAllRules().equals(newProjectRuleSets.getAllRules());
+        this.setNeedRebuild(!this.projectRuleSets.getAllRules().equals(newProjectRuleSets.getAllRules()));
         this.projectRuleSets = newProjectRuleSets;
         if (this.ruleSetStoredInProject) {
             for (File f : getResolvedRuleSetFiles()) {
@@ -192,9 +192,8 @@ public class ProjectPropertiesImpl implements IProjectProperties {
      * @see net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties#setRuleSetStoredInProject(boolean)
      */
     public void setRuleSetStoredInProject(final boolean ruleSetStoredInProject) throws PropertiesException {
-        LOG.debug(
-                "Set rule set stored in project for project " + this.project.getName() + ": " + ruleSetStoredInProject);
-        this.needRebuild |= this.ruleSetStoredInProject != ruleSetStoredInProject;
+        LOG.debug("Set rule set stored in project for project {}: {}", this.project.getName(), ruleSetStoredInProject);
+        this.setNeedRebuild(needRebuild | this.ruleSetStoredInProject != ruleSetStoredInProject);
         this.ruleSetStoredInProject = ruleSetStoredInProject;
         if (this.ruleSetStoredInProject) {
             if (!isRuleSetFileExist()) {
@@ -223,8 +222,8 @@ public class ProjectPropertiesImpl implements IProjectProperties {
      * @see net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties#setRuleSetFile(String)
      */
     public void setRuleSetFile(String ruleSetFile) throws PropertiesException {
-        LOG.debug("Set rule set file for project " + project.getName() + ": " + ruleSetFile);
-        needRebuild |= this.ruleSetFile == null || !this.ruleSetFile.equals(ruleSetFile);
+        LOG.debug("Set rule set file for project {}: {}", project.getName(), ruleSetFile);
+        this.setNeedRebuild(needRebuild | this.ruleSetFile == null || !this.ruleSetFile.equals(ruleSetFile));
         this.ruleSetFile = ruleSetFile;
         if (ruleSetStoredInProject) {
             if (!isRuleSetFileExist()) {
@@ -253,11 +252,11 @@ public class ProjectPropertiesImpl implements IProjectProperties {
      * @see net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties#setProjectWorkingSet(org.eclipse.ui.IWorkingSet)
      */
     public void setProjectWorkingSet(final IWorkingSet projectWorkingSet) {
-        LOG.debug("Set working set for project " + project.getName() + ": "
-                + (projectWorkingSet == null ? "none" : projectWorkingSet.getName()));
+        LOG.debug("Set working set for project {}: {}", project.getName(),
+                projectWorkingSet == null ? "none" : projectWorkingSet.getName());
 
-        needRebuild |= projectWorkingSet == null ? this.projectWorkingSet != null
-                : !projectWorkingSet.equals(this.projectWorkingSet);
+        this.setNeedRebuild(needRebuild | projectWorkingSet == null ? this.projectWorkingSet != null
+                : !projectWorkingSet.equals(this.projectWorkingSet));
         this.projectWorkingSet = projectWorkingSet;
     }
 
@@ -266,15 +265,18 @@ public class ProjectPropertiesImpl implements IProjectProperties {
      */
     @Override
     public boolean isNeedRebuild() {
-        LOG.debug("Query if project " + project.getName() + " need rebuild : " + (pmdEnabled && needRebuild));
-        LOG.debug("   PMD Enabled = " + pmdEnabled);
-        LOG.debug("   Project need rebuild = " + needRebuild);
+        LOG.debug("Query if project {} need rebuild : {}", project.getName(), pmdEnabled && needRebuild);
+        LOG.debug("   PMD Enabled = {}", pmdEnabled);
+        LOG.debug("   Project need rebuild =  {}", needRebuild);
         if (ruleSetStoredInProject) {
+            boolean rulesetFilesChanged = false;
             for (File f : getResolvedRuleSetFiles()) {
                 if (f != null) {
-                    needRebuild |= f.lastModified() > projectRuleFileLastModified;
+                    rulesetFilesChanged |= f.lastModified() > projectRuleFileLastModified;
                 }
             }
+            LOG.debug("   ruleset files have changed = {}", rulesetFilesChanged);
+            this.setNeedRebuild(needRebuild | rulesetFilesChanged);
         }
         return pmdEnabled && needRebuild;
     }
@@ -283,7 +285,7 @@ public class ProjectPropertiesImpl implements IProjectProperties {
      * @see net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties#setNeedRebuild()
      */
     public void setNeedRebuild(final boolean needRebuild) {
-        LOG.debug("Set if rebuild is needed for project " + project.getName() + ": " + needRebuild);
+        LOG.debug("Set needRebuild for project " + project.getName() + ": " + needRebuild);
         this.needRebuild = needRebuild;
     }
 
@@ -386,9 +388,9 @@ public class ProjectPropertiesImpl implements IProjectProperties {
                 file.create(bais, true, null);
             }
         } catch (WriterException e) {
-            throw new PropertiesException(e);
+            throw new PropertiesException("Error while creating default ruleset file for project " + this.project.getName(), e);
         } catch (CoreException e) {
-            throw new PropertiesException(e);
+            throw new PropertiesException("Error while creating default ruleset file for project " + this.project.getName(), e);
         } finally {
             IOUtil.closeQuietly(baos);
             IOUtil.closeQuietly(bais);
@@ -407,7 +409,7 @@ public class ProjectPropertiesImpl implements IProjectProperties {
      */
     public void setIncludeDerivedFiles(boolean includeDerivedFiles) {
         LOG.debug("Set if derived files should be included: " + includeDerivedFiles);
-        this.needRebuild |= this.includeDerivedFiles != includeDerivedFiles;
+        this.setNeedRebuild(this.needRebuild | this.includeDerivedFiles != includeDerivedFiles);
         this.includeDerivedFiles = includeDerivedFiles;
     }
 
@@ -427,8 +429,8 @@ public class ProjectPropertiesImpl implements IProjectProperties {
     }
 
     public void setViolationsAsErrors(boolean violationsAsErrors) throws PropertiesException {
-        LOG.debug("Set to handle violations as errors: " + violationsAsErrors);
-        needRebuild |= this.violationsAsErrors != violationsAsErrors;
+        LOG.debug("Set to handle violations as errors: {}", violationsAsErrors);
+        this.setNeedRebuild(needRebuild | this.violationsAsErrors != violationsAsErrors);
         this.violationsAsErrors = violationsAsErrors;
     }
 
@@ -443,14 +445,13 @@ public class ProjectPropertiesImpl implements IProjectProperties {
      * @see net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties#setFullBuildEnabled(boolean)
      */
     public void setFullBuildEnabled(boolean fullBuildEnabled) throws PropertiesException {
-        LOG.debug("Set if run at full build for project " + project.getName() + ": " + fullBuildEnabled);
+        LOG.debug("Set if run at full build for project {}: {}", project.getName(), fullBuildEnabled);
         if (this.fullBuildEnabled != fullBuildEnabled) {
             this.fullBuildEnabled = fullBuildEnabled;
             if (this.fullBuildEnabled) {
-                needRebuild = true;
+                this.setNeedRebuild(true);
             }
         }
-
     }
 
     /**

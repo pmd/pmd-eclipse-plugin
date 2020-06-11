@@ -27,7 +27,6 @@ import javax.xml.transform.stream.StreamSource;
 import org.apache.commons.io.IOUtils;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ui.IWorkingSetManager;
 import org.eclipse.ui.PlatformUI;
@@ -55,9 +54,7 @@ import net.sourceforge.pmd.eclipse.ui.actions.RuleSetUtil;
 public class ProjectPropertiesManagerImpl implements IProjectPropertiesManager {
     private static final Logger LOG = LoggerFactory.getLogger(ProjectPropertiesManagerImpl.class);
 
-    private static final String PROPERTIES_FILE = ".pmd";
-
-    private final ConcurrentMap<IProject, IProjectProperties> projectsProperties = new ConcurrentHashMap<IProject, IProjectProperties>();
+    private final ConcurrentMap<IProject, ProjectPropertiesTimestampTupel> projectsProperties = new ConcurrentHashMap<>();
 
     private static final JAXBContext JAXB_CONTEXT = initJaxbContext();
 
@@ -77,25 +74,31 @@ public class ProjectPropertiesManagerImpl implements IProjectPropertiesManager {
      */
     @Override
     public IProjectProperties loadProjectProperties(final IProject project) throws PropertiesException {
-        LOG.debug("Loading project properties for project " + project.getName());
+        LOG.debug("Loading project properties for project {}", project.getName());
         try {
-            IProjectProperties projectProperties = this.projectsProperties.get(project);
-            if (projectProperties == null) {
+            ProjectPropertiesTimestampTupel projectPropertiesTupel = this.projectsProperties.get(project);
+            final IProjectProperties projectProperties;
+            if (projectPropertiesTupel == null) {
                 LOG.debug("Creating new poject properties for {}", project.getName());
                 IProjectProperties projectPropertiesNew = new PropertiesFactoryImpl().newProjectProperties(project, this);
                 final ProjectPropertiesTO to = readProjectProperties(project);
                 fillProjectProperties(projectPropertiesNew, to);
-                projectProperties = this.projectsProperties.putIfAbsent(project, projectPropertiesNew);
-                if (projectProperties == null) {
-                    projectProperties = projectPropertiesNew;
+                projectPropertiesTupel = this.projectsProperties.putIfAbsent(project, new ProjectPropertiesTimestampTupel(projectPropertiesNew));
+                if (projectPropertiesTupel == null) {
+                    projectPropertiesTupel = this.projectsProperties.get(project);
                 } else {
                     LOG.debug("project properties already existed for {}", project.getName());
                 }
-            } else if (isOutOfSync(projectProperties)) {
-                LOG.debug("Project properties for project " + project.getName() + " have been changed on disk - reloading");
+                projectProperties = projectPropertiesTupel.getProjectProperties();
+            } else if (projectPropertiesTupel.isOutOfSync()) {
+                LOG.info("Project properties for project {} have been changed on disk - reloading", project.getName());
+                projectProperties = projectPropertiesTupel.getProjectProperties();
                 final ProjectPropertiesTO to = readProjectProperties(project);
                 fillProjectProperties(projectProperties, to);
                 projectProperties.setNeedRebuild(true);
+            } else {
+                LOG.debug("Project properties found and are up to date for project {}", project.getName());
+                projectProperties = projectPropertiesTupel.getProjectProperties();
             }
 
             // if the ruleset is stored in the project reload it when it changed on disk (modification time stamp)
@@ -120,7 +123,7 @@ public class ProjectPropertiesManagerImpl implements IProjectPropertiesManager {
      */
     @Override
     public void storeProjectProperties(IProjectProperties projectProperties) throws PropertiesException {
-        LOG.debug("Storing project properties for project " + projectProperties.getProject().getName());
+        LOG.debug("Storing project properties for project {}", projectProperties.getProject().getName());
         try {
             if (projectProperties.isPmdEnabled()) {
                 PMDNature.addPMDNature(projectProperties.getProject(), null);
@@ -129,7 +132,7 @@ public class ProjectPropertiesManagerImpl implements IProjectPropertiesManager {
             }
 
             writeProjectProperties(projectProperties.getProject(), fillTransferObject(projectProperties));
-            projectsProperties.put(projectProperties.getProject(), projectProperties);
+            projectsProperties.put(projectProperties.getProject(), new ProjectPropertiesTimestampTupel(projectProperties));
 
         } catch (CoreException e) {
             throw new PropertiesException("Core Exception when storing project properties for project "
@@ -188,7 +191,7 @@ public class ProjectPropertiesManagerImpl implements IProjectPropertiesManager {
         ProjectPropertiesTO projectProperties = null;
         try {
 
-            final IFile propertiesFile = project.getFile(PROPERTIES_FILE);
+            final IFile propertiesFile = project.getFile(ProjectPropertiesTimestampTupel.PROPERTIES_FILE);
             if (propertiesFile.exists() && propertiesFile.isAccessible()) {
                 String properties = IOUtils.toString(propertiesFile.getContents(), StandardCharsets.UTF_8);
                 projectProperties = convertProjectPropertiesFromString(properties);
@@ -197,11 +200,11 @@ public class ProjectPropertiesManagerImpl implements IProjectPropertiesManager {
             return projectProperties;
 
         } catch (IOException e) {
-            throw new PropertiesException(e);
+            throw new PropertiesException("Error while reading project properties file for project " + project.getName(), e);
         } catch (CoreException e) {
-            throw new PropertiesException(e);
+            throw new PropertiesException("Error while reading project properties file for project " + project.getName(), e);
         } catch (DataBindingException e) {
-            throw new PropertiesException(e);
+            throw new PropertiesException("Error while reading project properties file for project " + project.getName(), e);
         }
     }
 
@@ -215,8 +218,10 @@ public class ProjectPropertiesManagerImpl implements IProjectPropertiesManager {
      */
     private void fillProjectProperties(IProjectProperties projectProperties, ProjectPropertiesTO to)
             throws PropertiesException, CoreException {
+        String projectName = projectProperties.getProject().getName();
+
         if (to == null) {
-            LOG.info("Project properties not found. Use default.");
+            LOG.info("Project properties for project {} not found. Use default.", projectName);
         } else {
             final IWorkingSetManager workingSetManager = PlatformUI.getWorkbench().getWorkingSetManager();
             projectProperties.setProjectWorkingSet(workingSetManager.getWorkingSet(to.getWorkingSetName()));
@@ -234,7 +239,7 @@ public class ProjectPropertiesManagerImpl implements IProjectPropertiesManager {
                 setRuleSetFromProperties(projectProperties, to.getRules());
             }
 
-            LOG.debug("Project properties loaded");
+            LOG.debug("Project properties for project {} loaded", projectName);
         }
     }
 
@@ -313,14 +318,14 @@ public class ProjectPropertiesManagerImpl implements IProjectPropertiesManager {
         try {
             String writer = convertProjectPropertiesToString(projectProperties);
 
-            final IFile propertiesFile = project.getFile(PROPERTIES_FILE);
+            final IFile propertiesFile = project.getFile(ProjectPropertiesTimestampTupel.PROPERTIES_FILE);
             if (propertiesFile.exists() && propertiesFile.isAccessible()) {
                 propertiesFile.setContents(new ByteArrayInputStream(writer.getBytes()), false, false, null);
             } else {
                 propertiesFile.create(new ByteArrayInputStream(writer.getBytes()), false, null);
             }
         } catch (CoreException e) {
-            throw new PropertiesException(e);
+            throw new PropertiesException("Error while writing project properties file for project " + project.getName(), e);
         }
     }
 
@@ -418,14 +423,5 @@ public class ProjectPropertiesManagerImpl implements IProjectPropertiesManager {
         }
 
         return flChanged;
-    }
-
-    private boolean isOutOfSync(IProjectProperties projectProperties) {
-        if (projectProperties != null) {
-            IProject project = projectProperties.getProject();
-            IFile propertiesFile = project.getFile(PROPERTIES_FILE);
-            return !propertiesFile.isSynchronized(IResource.DEPTH_ZERO);
-        }
-        return false;
     }
 }

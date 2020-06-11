@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.eclipse.runtime.cmd;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -98,8 +100,24 @@ public class JobCommandProcessor {
             try {
                 job.join();
             } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
                 throw new RuntimeException(e);
             }
+        } else {
+            // no specific command given - wait for all jobs to finish
+            clearTerminatedJobs();
+            Collection<Job> runningJobs = new ArrayList<>(this.jobs.values());
+            LOG.debug("Waiting for {} jobs to finish...", runningJobs.size());
+            for (Job runningJob : runningJobs) {
+                try {
+                    runningJob.join();
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    throw new RuntimeException(e);
+                }
+            }
+            clearTerminatedJobs();
+            LOG.debug("All jobs have finished.");
         }
 
     }
@@ -114,8 +132,10 @@ public class JobCommandProcessor {
      */
     private void addJob(final AbstractDefaultCommand command, final Job job) {
         this.jobs.put(command, job);
+        clearTerminatedJobs();
+    }
 
-        // clear terminated command
+    private void clearTerminatedJobs() {
         Set<AbstractDefaultCommand> keySet = this.jobs.keySet();
         synchronized (this.jobs) {
             final Iterator<AbstractDefaultCommand> i = keySet.iterator();

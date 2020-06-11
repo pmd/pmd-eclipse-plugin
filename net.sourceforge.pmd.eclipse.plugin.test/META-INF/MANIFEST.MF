@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Version: 4.14.0.qualifier
 Bundle-Name: PMD Test Plugin
-Bundle-SymbolicName: net.sourceforge.pmd.eclipse.plugin.test;singleton=true
+Bundle-SymbolicName: net.sourceforge.pmd.eclipse.plugin.test;singleton:=true
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-Vendor: PMD Development Team
 Require-Bundle: org.eclipse.ui,
@@ -17,3 +17,4 @@ Require-Bundle: org.eclipse.ui,
 Import-Package: ch.qos.logback.classic,
  org.slf4j
 Bundle-Activator: net.sourceforge.pmd.eclipse.internal.TestActivator
+Bundle-ActivationPolicy: lazy
