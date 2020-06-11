@@ -173,8 +173,9 @@ public class ProjectPropertiesImpl implements IProjectProperties {
         if (this.ruleSetStoredInProject) {
             for (File f : getResolvedRuleSetFiles()) {
                 if (f != null) {
-                    if (projectRuleFileLastModified < f.lastModified()) {
-                        projectRuleFileLastModified = f.lastModified();
+                    long mod = FileModificationUtil.getFileModificationTimestamp(f);
+                    if (projectRuleFileLastModified < mod) {
+                        projectRuleFileLastModified = mod;
                     }
                 }
             }
@@ -203,8 +204,9 @@ public class ProjectPropertiesImpl implements IProjectProperties {
             }
             for (File f : getResolvedRuleSetFiles()) {
                 if (f != null) {
-                    if (projectRuleFileLastModified < f.lastModified()) {
-                        projectRuleFileLastModified = f.lastModified();
+                    long mod = FileModificationUtil.getFileModificationTimestamp(f);
+                    if (projectRuleFileLastModified < mod) {
+                        projectRuleFileLastModified = mod;
                     }
                 }
             }
@@ -233,8 +235,9 @@ public class ProjectPropertiesImpl implements IProjectProperties {
             }
             for (File f : getResolvedRuleSetFiles()) {
                 if (f != null) {
-                    if (projectRuleFileLastModified < f.lastModified()) {
-                        projectRuleFileLastModified = f.lastModified();
+                    long mod = FileModificationUtil.getFileModificationTimestamp(f);
+                    if (projectRuleFileLastModified < mod) {
+                        projectRuleFileLastModified = mod;
                     }
                 }
             }
@@ -272,7 +275,8 @@ public class ProjectPropertiesImpl implements IProjectProperties {
             boolean rulesetFilesChanged = false;
             for (File f : getResolvedRuleSetFiles()) {
                 if (f != null) {
-                    rulesetFilesChanged |= f.lastModified() > projectRuleFileLastModified;
+                    long mod = FileModificationUtil.getFileModificationTimestamp(f);
+                    rulesetFilesChanged |= mod > projectRuleFileLastModified;
                 }
             }
             LOG.debug("   ruleset files have changed = {}", rulesetFilesChanged);
@@ -333,6 +337,9 @@ public class ProjectPropertiesImpl implements IProjectProperties {
                 if (f == null) {
                     // Fall back to file system path
                     f = new File(ruleSetFile);
+                    if (!f.canRead()) {
+                        f = null;
+                    }
                 }
             }
             files.add(f);

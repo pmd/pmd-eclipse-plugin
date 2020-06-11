@@ -5,9 +5,6 @@
 package net.sourceforge.pmd.eclipse.runtime.properties.impl;
 
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.attribute.FileTime;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -62,19 +59,7 @@ class ProjectPropertiesTimestampTupel {
         IProject project = projectProperties.getProject();
         IFile propertiesFile = project.getFile(PROPERTIES_FILE);
 
-        long result = 0L;
-        try {
-            File propertiesFileReal = propertiesFile.getLocation().toFile();
-            if (propertiesFileReal.exists()) {
-                // Note: File::lastModified() might be not accurate enough, there's this bug:
-                // https://bugs.openjdk.java.net/browse/JDK-8177809
-                FileTime filesLastMod = Files.getLastModifiedTime(propertiesFileReal.toPath());
-                result = filesLastMod.toMillis();
-                LOG.debug("File {} last mod: {}", propertiesFile, result);
-            }
-        } catch (IOException e) {
-            LOG.debug("Error while reading file modification time: {}", e.toString());
-        }
-        return result;
+        File propertiesFileReal = propertiesFile.getLocation().toFile();
+        return FileModificationUtil.getFileModificationTimestamp(propertiesFileReal);
     }
 }
