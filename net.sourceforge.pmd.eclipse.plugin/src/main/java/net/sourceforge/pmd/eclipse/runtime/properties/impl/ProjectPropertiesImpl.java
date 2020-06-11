@@ -134,7 +134,7 @@ public class ProjectPropertiesImpl implements IProjectProperties {
      * @see net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties#setPmdEnabled(boolean)
      */
     public void setPmdEnabled(final boolean pmdEnabled) {
-        LOG.debug("Enable PMD for project {}: {}", this.project.getName(), this.pmdEnabled);
+        LOG.debug("Enable PMD for project {}: before={} now={}", this.project.getName(), this.pmdEnabled, pmdEnabled);
         if (this.pmdEnabled != pmdEnabled) {
             this.pmdEnabled = pmdEnabled;
             this.setNeedRebuild(this.needRebuild | pmdEnabled);
@@ -198,8 +198,8 @@ public class ProjectPropertiesImpl implements IProjectProperties {
         if (this.ruleSetStoredInProject) {
             if (!isRuleSetFileExist()) {
                 // TODO: NLS
-                throw new PropertiesException(
-                        "The project ruleset file cannot be found for project " + this.project.getName());
+                throw new PropertiesException("The project ruleset file(s) " + getRuleSetFile()
+                        + " cannot be found for project " + this.project.getName());
             }
             for (File f : getResolvedRuleSetFiles()) {
                 if (f != null) {
