@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.eclipse.runtime.properties.impl;
+package net.sourceforge.pmd.eclipse.core.internal;
 
 import java.io.File;
 import java.io.IOException;
@@ -12,14 +12,14 @@ import java.nio.file.attribute.FileTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-class FileModificationUtil {
+public class FileModificationUtil {
     private static final Logger LOG = LoggerFactory.getLogger(FileModificationUtil.class);
 
     private FileModificationUtil() {
         // utility
     }
 
-    static long getFileModificationTimestamp(File f) {
+    public static long getFileModificationTimestamp(File f) {
         long result = 0L;
         if (f.exists()) {
             // Note: File::lastModified() might be not accurate enough, there's this bug:

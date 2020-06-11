@@ -5,8 +5,6 @@
 package net.sourceforge.pmd.eclipse.ui.properties;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 
 import org.eclipse.core.resources.IFile;
@@ -21,6 +19,7 @@ import org.slf4j.LoggerFactory;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.eclipse.EclipseUtils;
+import net.sourceforge.pmd.eclipse.internal.ResourceUtil;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.runtime.cmd.BuildProjectCommand;
 import net.sourceforge.pmd.eclipse.runtime.cmd.JobCommandProcessor;
@@ -94,7 +93,7 @@ public class ExternalRuleSetFileTest {
 
         // now let's change the ruleSetFile without eclipse knowing about it ("externally")
         File ruleSetFileReal = ruleSetFile.getLocation().toFile();
-        copyResource("ruleset2.xml", ruleSetFileReal);
+        ResourceUtil.copyResource(this, "ruleset2.xml", ruleSetFileReal);
 
         // the file has changed, this should be detected
         Assert.assertTrue(model.isNeedRebuild());
@@ -144,7 +143,7 @@ public class ExternalRuleSetFileTest {
             Assert.fail("File " + PROJECT_RULESET_FILENAME + " already exists!");
         }
         File ruleSetFileReal = ruleSetFile.getLocation().toFile();
-        copyResource("ruleset1.xml", ruleSetFileReal);
+        ResourceUtil.copyResource(this, "ruleset1.xml", ruleSetFileReal);
 
         // now overwrite and change the .pmd project properties without eclipse knowing about it ("externally")
         IFile projectPropertiesFile = this.testProject.getFile(".pmd");
@@ -152,7 +151,7 @@ public class ExternalRuleSetFileTest {
             Assert.fail("File .pmd does not exist!");
         }
         File projectPropertiesFileReal = projectPropertiesFile.getLocation().toFile();
-        copyResource("pmd-properties", projectPropertiesFileReal);
+        ResourceUtil.copyResource(this, "pmd-properties", projectPropertiesFileReal);
         LOG.debug("Overwritten {}", projectPropertiesFile);
 
         // the model is not updated yet...
@@ -174,18 +173,5 @@ public class ExternalRuleSetFileTest {
         JobCommandProcessor.getInstance().waitCommandToFinish(null);
         // need rebuild flag should be reset now
         Assert.assertFalse(model.isNeedRebuild());
-    }
-
-    private static void copyResource(String resource, File target) throws IOException {
-        try (FileOutputStream out = new FileOutputStream(target);
-                InputStream ruleset2 = ExternalRuleSetFileTest.class.getResourceAsStream(resource)) {
-            int count;
-            byte[] buffer = new byte[8192];
-            count = ruleset2.read(buffer);
-            while (count > -1) {
-                out.write(buffer, 0, count);
-                count = ruleset2.read(buffer);
-            }
-        }
     }
 }

@@ -29,6 +29,7 @@ import org.slf4j.LoggerFactory;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSets;
+import net.sourceforge.pmd.eclipse.core.internal.FileModificationUtil;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.runtime.cmd.JavaProjectClassLoader;
 import net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties;

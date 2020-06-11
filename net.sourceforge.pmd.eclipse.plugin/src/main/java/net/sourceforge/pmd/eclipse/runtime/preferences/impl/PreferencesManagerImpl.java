@@ -36,6 +36,7 @@ import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetNotFoundException;
 import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.eclipse.core.IRuleSetManager;
+import net.sourceforge.pmd.eclipse.core.internal.FileModificationUtil;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.runtime.preferences.IPreferences;
 import net.sourceforge.pmd.eclipse.runtime.preferences.IPreferencesFactory;
@@ -128,6 +129,7 @@ class PreferencesManagerImpl implements IPreferencesManager {
     private IPreferenceStore loadPreferencesStore;
 
     private RuleSet ruleSet;
+    private long ruleSetModificationTimestamp;
 
     public PriorityDescriptor defaultDescriptorFor(RulePriority priority) {
         return DEFAULT_DESCRIPTORS_BY_PRIORITY.get(priority);
@@ -257,9 +259,14 @@ class PreferencesManagerImpl implements IPreferencesManager {
      * @see net.sourceforge.pmd.eclipse.runtime.preferences.IPreferencesManager#getRuleSet()
      */
     public RuleSet getRuleSet() {
-
         if (ruleSet == null) {
+            LOG.debug("First time loading ruleset from state store");
             ruleSet = getRuleSetFromStateLocation();
+        } else if (ruleSetModificationTimestamp != getRuleSetModificationTimestamp()) {
+            LOG.info("RuleSet in state store changed on disk - reloading");
+            RuleSet newRuleSet = getRuleSetFromStateLocation();
+            updateConfiguredProjects(newRuleSet);
+            ruleSet = newRuleSet;
         }
         return ruleSet;
     }
@@ -566,10 +573,11 @@ class PreferencesManagerImpl implements IPreferencesManager {
 
         // First find the ruleset file in the state location
         IPath ruleSetLocation = PMDPlugin.getDefault().getStateLocation().append(PREFERENCE_RULESET_FILE);
-        File ruleSetFile = new File(ruleSetLocation.toOSString());
+        File ruleSetFile = ruleSetLocation.toFile();
         if (ruleSetFile.exists()) {
             try {
                 preferredRuleSet = factory.createRuleSet(ruleSetLocation.toOSString());
+                ruleSetModificationTimestamp = getRuleSetModificationTimestamp();
             } catch (RuntimeException e) {
                 PMDPlugin.getDefault().showError(
                         "Runtime Exception when loading stored ruleset file. Falling back to default ruleset.", e);
@@ -586,7 +594,12 @@ class PreferencesManagerImpl implements IPreferencesManager {
         }
 
         return preferredRuleSet;
+    }
 
+    private long getRuleSetModificationTimestamp() {
+        IPath ruleSetLocation = PMDPlugin.getDefault().getStateLocation().append(PREFERENCE_RULESET_FILE);
+        File ruleSetFile = ruleSetLocation.toFile();
+        return FileModificationUtil.getFileModificationTimestamp(ruleSetFile);
     }
 
     @Override
@@ -668,7 +681,7 @@ class PreferencesManagerImpl implements IPreferencesManager {
             IRuleSetWriter writer = plugin.getRuleSetWriter();
             writer.write(out, ruleSet);
             out.flush();
-
+            ruleSetModificationTimestamp = getRuleSetModificationTimestamp();
         } catch (IOException e) {
             plugin.logError("IO Exception when storing ruleset in state location", e);
         } catch (WriterException e) {

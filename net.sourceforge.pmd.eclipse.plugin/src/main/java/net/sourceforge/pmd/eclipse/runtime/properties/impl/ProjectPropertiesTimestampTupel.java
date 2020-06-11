@@ -13,6 +13,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.sourceforge.pmd.eclipse.core.internal.FileModificationUtil;
 import net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties;
 
 class ProjectPropertiesTimestampTupel {
