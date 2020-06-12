@@ -611,13 +611,10 @@ class PreferencesManagerImpl implements IPreferencesManager {
             try {
                 preferredRuleSet = factory.createRuleSet(ruleSetLocation.toOSString());
                 ruleSetModificationTimestamp = getRuleSetModificationTimestamp();
-            } catch (RuntimeException e) {
-                PMDPlugin.getDefault().showError(
-                        "Runtime Exception when loading stored ruleset file. Falling back to default ruleset.", e);
-            } catch (RuleSetNotFoundException e) {
-                PMDPlugin.getDefault().showError(
-                        "RuleSet Not Found Exception when loading stored ruleset file. Falling back to default ruleset.",
-                        e);
+            } catch (RuntimeException | RuleSetNotFoundException e) {
+                LOG.error("Error when loading stored ruleset file. Falling back to default ruleset: {}", e.toString(), e);
+                // also update the timestamp here to avoid running into the same error over and over again
+                ruleSetModificationTimestamp = getRuleSetModificationTimestamp();
             }
         }
 
