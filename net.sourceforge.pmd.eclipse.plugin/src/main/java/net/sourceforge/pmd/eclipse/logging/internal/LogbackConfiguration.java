@@ -110,6 +110,7 @@ public class LogbackConfiguration {
 
         Logger rootLogger = logbackContext.getLogger(ROOT_LOG_ID);
         rootLogger.addAppender(appender);
+        rootLogger.setLevel(Level.toLevel(logLevel, Level.INFO));
     }
 
     public void applyLogPreferences(String logFileName, String logLevel) {
