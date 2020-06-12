@@ -15,8 +15,9 @@ import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.IWorkspaceDescription;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.eclipse.runtime.cmd.ReviewCodeCmd;
 
@@ -27,9 +28,9 @@ import net.sourceforge.pmd.eclipse.runtime.cmd.ReviewCodeCmd;
  * @author Brian Remedios
  */
 public class FileChangeReviewer implements IResourceChangeListener {
+    private static final Logger LOG = LoggerFactory.getLogger(FileChangeReviewer.class);
 
-    public FileChangeReviewer() {
-    }
+    private static boolean autoBuildingHintLogged;
 
     private enum ChangeType {
         ADDED, REMOVED, CHANGED
@@ -65,16 +66,18 @@ public class FileChangeReviewer implements IResourceChangeListener {
         }
     }
 
-    /**
-     * @param event
-     */
     public void resourceChanged(IResourceChangeEvent event) {
         IWorkspaceDescription workspaceSettings = ResourcesPlugin.getWorkspace().getDescription();
         if (workspaceSettings.isAutoBuilding()) {
-            PMDPlugin.getDefault().logInformation(
-                    "Not running PMD via FileChangeReviewer, as autoBuilding is enabled for this workspace");
+            if (!autoBuildingHintLogged) {
+                autoBuildingHintLogged = true;
+                LOG.info("Not running PMD via FileChangeReviewer, as autoBuilding is enabled for this workspace.");
+            }
             return;
         }
+
+        // reset this flag, so the next time, the log shows again.
+        autoBuildingHintLogged = false;
 
         Set<ResourceChange> itemsChanged = new HashSet<ResourceChange>();
 
@@ -106,7 +109,7 @@ public class FileChangeReviewer implements IResourceChangeListener {
         try {
             cmd.performExecute();
         } catch (RuntimeException e) {
-            PMDPlugin.getDefault().log(IStatus.ERROR, "Error processing code review upon file changes", e);
+            LOG.error("Error processing code review upon file changes: {}", e.toString(), e);
         }
     }
 

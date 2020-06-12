@@ -21,8 +21,6 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
-
 /**
  * This is a particular processor for Eclipse in order to handle long running
  * commands.
@@ -45,7 +43,7 @@ public class JobCommandProcessor {
     }
 
     public void processCommand(final AbstractDefaultCommand aCommand) {
-        LOG.debug("Begining job command " + aCommand.getName());
+        LOG.debug("Beginning job command {}", aCommand.getName());
 
         if (!aCommand.isReadyToExecute()) {
             throw new IllegalStateException();
@@ -61,10 +59,9 @@ public class JobCommandProcessor {
                     long start = System.currentTimeMillis();
                     aCommand.execute();
                     long duration = System.currentTimeMillis() - start;
-                    PMDPlugin.getDefault().logInformation(
-                            "Command " + aCommand.getName() + " excecuted in " + duration + "ms");
+                    LOG.debug("Command {} executed in {} ms", aCommand.getName(), duration);
                 } catch (RuntimeException e) {
-                    PMDPlugin.getDefault().logError("Error executing command " + aCommand.getName(), e);
+                    LOG.error("Error executing command {}: {}", aCommand.getName(), e.toString(), e);
                 }
 
                 synchronized (outstanding) {
@@ -91,7 +88,7 @@ public class JobCommandProcessor {
             }
         }
         this.addJob(aCommand, job);
-        LOG.debug("Ending job command " + aCommand.getName());
+        LOG.debug("Ending job command {}", aCommand.getName());
     }
 
     public void waitCommandToFinish(final AbstractDefaultCommand aCommand) {
