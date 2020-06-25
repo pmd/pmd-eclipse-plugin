@@ -263,9 +263,7 @@ public class ProjectPropertiesImpl implements IProjectProperties {
      */
     @Override
     public boolean isNeedRebuild() {
-        LOG.debug("Query if project {} need rebuild : {}", project.getName(), pmdEnabled && needRebuild);
-        LOG.debug("   PMD Enabled = {}", pmdEnabled);
-        LOG.debug("   Project need rebuild =  {}", needRebuild);
+        LOG.debug("Query if project {} need rebuild : {}", project.getName(), needRebuild);
         if (ruleSetStoredInProject) {
             boolean rulesetFilesChanged = false;
             for (File f : getResolvedRuleSetFiles()) {
@@ -275,7 +273,7 @@ public class ProjectPropertiesImpl implements IProjectProperties {
             LOG.debug("   ruleset files have changed = {}", rulesetFilesChanged);
             this.setNeedRebuild(needRebuild | rulesetFilesChanged);
         }
-        return pmdEnabled && needRebuild;
+        return needRebuild;
     }
 
     /**

@@ -30,6 +30,8 @@ import net.sourceforge.pmd.eclipse.ui.actions.RuleSetUtil;
 public class ExternalRuleSetFileTest {
     private static final Logger LOG = LoggerFactory.getLogger(ExternalRuleSetFileTest.class);
 
+    private static final String PMD_PROPERTIES_FILENAME = ".pmd";
+
     private static final String PROJECT_RULESET_FILENAME = ".pmd-ruleset.xml";
 
     private IProject testProject;
@@ -107,6 +109,48 @@ public class ExternalRuleSetFileTest {
     }
 
     @Test
+    public void changedExternalRulesetShouldBeReloadedForPmdDisabledProjects() throws Exception {
+        setUpProject("ExternalRulesetTestPmdDisabled");
+
+        // load the project properties - pmd is not enabled, it uses the default ruleset (more than 1 active rule)
+        final IProjectPropertiesManager mgr = PMDPlugin.getDefault().getPropertiesManager();
+        final IProjectProperties model = mgr.loadProjectProperties(this.testProject);
+        RuleSet projectRuleSet = model.getProjectRuleSet();
+        Assert.assertNotEquals(1, projectRuleSet.getRules().size());
+
+        // now let's change the ruleSetFile without eclipse knowing about it ("externally")
+        IFile ruleSetFile = this.testProject.getFile(PROJECT_RULESET_FILENAME);
+        if (ruleSetFile.exists()) {
+            Assert.fail("File " + PROJECT_RULESET_FILENAME + " already exists!");
+        }
+        File ruleSetFileReal = ruleSetFile.getLocation().toFile();
+        ResourceUtil.copyResource(this, "ruleset1.xml", ruleSetFileReal);
+
+        // now create the .pmd project properties without eclipse knowing about it ("externally")
+        IFile projectPropertiesFile = this.testProject.getFile(PMD_PROPERTIES_FILENAME);
+        if (projectPropertiesFile.exists()) {
+            Assert.fail("File .pmd does already exist!");
+        }
+        File projectPropertiesFileReal = projectPropertiesFile.getLocation().toFile();
+        ResourceUtil.copyResource(this, "pmd-properties", projectPropertiesFileReal);
+
+        // the files have been created, but the .pmd file is not reloaded yet, so:
+        Assert.assertFalse(model.isNeedRebuild());
+        // the model is not updated yet...
+        Assert.assertNotEquals(1, model.getProjectRuleSet().getRules().size());
+        // but it will be when requesting the project properties again
+        final IProjectProperties model2 = mgr.loadProjectProperties(testProject);
+        // PMD is still not enabled
+        Assert.assertFalse(model.isPmdEnabled());
+        // but rebuild is needed (because ruleset changed)
+        Assert.assertTrue(model.isNeedRebuild());
+        // and the ruleset is loaded
+        Assert.assertEquals(1, model2.getProjectRuleSet().getRules().size());
+        // the model is still cached, but the rules are updated
+        Assert.assertSame(model, model2);
+    }
+
+    @Test
     public void externallyChangedProjectPropertiesShouldBeReloaded() throws Exception {
         setUpProject("ProjectPropertiesChanged");
         // configure the project to use PMD
@@ -146,7 +190,7 @@ public class ExternalRuleSetFileTest {
         ResourceUtil.copyResource(this, "ruleset1.xml", ruleSetFileReal);
 
         // now overwrite and change the .pmd project properties without eclipse knowing about it ("externally")
-        IFile projectPropertiesFile = this.testProject.getFile(".pmd");
+        IFile projectPropertiesFile = this.testProject.getFile(PMD_PROPERTIES_FILENAME);
         if (!projectPropertiesFile.exists()) {
             Assert.fail("File .pmd does not exist!");
         }
