@@ -9,8 +9,6 @@
         </location>
         <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
             <repository location="https://archive.eclipse.org/tools/orbit/downloads/drops/R20140114142710/repository/"/>
-            <unit id="org.apache.log4j" version="1.2.15.v201012070815"/>
-            <unit id="org.apache.log4j.source" version="1.2.15.v201012070815"/>
             <unit id="org.apache.commons.io" version="2.0.1.v201105210651"/>
             <unit id="org.apache.commons.io.source" version="2.0.1.v201105210651"/>
             <unit id="org.apache.commons.lang" version="2.6.0.v201205030909"/>
@@ -23,6 +21,8 @@
             <unit id="ch.qos.logback.slf4j.source" version="1.0.7.v20121108-1250"/>
             <unit id="org.slf4j.jul" version="1.7.2.v20121108-1250"/>
             <unit id="org.slf4j.jul.source" version="1.7.2.v20121108-1250"/>
+            <unit id="org.slf4j.log4j" version="1.7.2.v20130115-1340"/>
+            <unit id="org.slf4j.log4j.source" version="1.7.2.v20130115-1340"/>
         </location>
     </locations>
     <targetJRE path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7"/>
