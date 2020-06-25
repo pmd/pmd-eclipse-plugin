@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.eclipse.logging.internal;
 
+import java.lang.reflect.Method;
+
 import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -22,10 +24,13 @@ import ch.qos.logback.core.Appender;
 import ch.qos.logback.core.rolling.FixedWindowRollingPolicy;
 import ch.qos.logback.core.rolling.RollingFileAppender;
 import ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy;
+import ch.qos.logback.core.util.FileSize;
 
 public class LogbackConfiguration {
     public static final String ROOT_LOG_ID = "net.sourceforge.pmd";
     private static final String PMD_ECLIPSE_APPENDER_NAME = "PMDEclipseAppender";
+
+    private static final String DEFAULT_PMD_LOG_MAX_FILE_SIZE = "10MB";
 
     private ILog getLog() {
         return PMDPlugin.getDefault().getLog();
@@ -81,7 +86,34 @@ public class LogbackConfiguration {
         appender.setName(PMD_ECLIPSE_APPENDER_NAME);
         SizeBasedTriggeringPolicy<ILoggingEvent> triggeringPolicy = new SizeBasedTriggeringPolicy<>();
         triggeringPolicy.setContext(logbackContext);
-        triggeringPolicy.setMaxFileSize("10MB");
+
+        /*
+         * SizeBaseTriggeringPolicy#setMaxFileSize changed between logback-core 1.1.7 and 1.1.7:
+         *
+         * https://github.com/qos-ch/logback/blob/v_1.1.7/logback-core/src/main/java/ch/qos/logback/core/rolling/SizeBasedTriggeringPolicy.java
+         *
+         *      public void setMaxFileSize(String maxFileSize)
+         *
+         * https://github.com/qos-ch/logback/blob/v_1.1.8/logback-core/src/main/java/ch/qos/logback/core/rolling/SizeBasedTriggeringPolicy.java
+         *
+         *      public void setMaxFileSize(FileSize aMaxFileSize)
+         */
+        try {
+            triggeringPolicy.setMaxFileSize(DEFAULT_PMD_LOG_MAX_FILE_SIZE);
+        } catch (NoSuchMethodError e) {
+            try {
+                Method m = triggeringPolicy.getClass().getMethod("setMaxFileSize", FileSize.class);
+                assert m != null;
+                m.invoke(triggeringPolicy, FileSize.valueOf(DEFAULT_PMD_LOG_MAX_FILE_SIZE));
+            } catch (IllegalArgumentException | ReflectiveOperationException | SecurityException e2) {
+                // relying on the default max file size
+                System.err.println("WARNING: Unable to configure max file size for SizeBasedTriggeringPolicy.");
+                System.err.println("Falling back to default of " + SizeBasedTriggeringPolicy.DEFAULT_MAX_FILE_SIZE + " bytes");
+                System.err.println("Reported exception:");
+                e2.printStackTrace();
+            }
+        }
+
         triggeringPolicy.start();
         appender.setTriggeringPolicy(triggeringPolicy);
 

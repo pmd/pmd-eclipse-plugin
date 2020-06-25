@@ -15,6 +15,8 @@ This is a minor release.
 
 ### Fixed Issues
 
+*   [#125](https://github.com/pmd/pmd-eclipse-plugin/issues/125): NoSuchMethodError SizeBasedTriggeringPolicy.setMaxFileSize(Ljava/lang/String;)V
+
 ### API Changes
 
 ### External Contributions
