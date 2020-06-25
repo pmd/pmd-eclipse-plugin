@@ -15,6 +15,8 @@ This is a minor release.
 
 ### Fixed Issues
 
+*   [#124](https://github.com/pmd/pmd-eclipse-plugin/issues/124): No repository found containing: osgi.bundle,org.slf4j.log4j,1.7.2.v20130115-1340
+
 ### API Changes
 
 ### External Contributions
