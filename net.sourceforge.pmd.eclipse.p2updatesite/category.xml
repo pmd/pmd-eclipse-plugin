@@ -8,5 +8,5 @@
          PMD Plugin for Eclipse
       </description>
    </category-def>
-   <repository-reference location="http://download.eclipse.org/tools/orbit/downloads/drops/R20140114142710/repository/" enabled="true" />
+   <repository-reference location="https://archive.eclipse.org/tools/orbit/downloads/drops/R20140114142710/repository/" enabled="true" />
 </site>
