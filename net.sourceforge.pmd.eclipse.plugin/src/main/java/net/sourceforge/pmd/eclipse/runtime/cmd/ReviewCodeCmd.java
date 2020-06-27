@@ -6,6 +6,7 @@ package net.sourceforge.pmd.eclipse.runtime.cmd;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -176,7 +177,14 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
             ruleCount = 0;
             pmdDuration = 0;
 
-            beginTask("PMD checking...", getStepCount());
+            String projectList = determineProjectList();
+            int totalWork = determineTotalWork();
+            LOG.info("Found {} resources in projects {}", totalWork, projectList);
+            setStepCount(totalWork); // mostly for unit tests
+
+            StringBuilder mainTaskName = new StringBuilder(projectList.length() + 20);
+            mainTaskName.append("Executing PMD for ").append(projectList).append(" ...");
+            beginTask(mainTaskName.toString(), totalWork);
 
             // Lancer PMD
             // PMDPlugin fills resources if it's a full build and
@@ -255,6 +263,114 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
         }
 
         PMDPlugin.getDefault().changedFiles(markedFiles());
+    }
+
+    private int determineTotalWork() {
+        boolean useFileExtensions = PMDPlugin.getDefault().loadPreferences().isDetermineFiletypesAutomatically();
+        Map<IProject, Set<String>> fileExtensionsPerProject = new HashMap<>();
+        CountVisitor2 visitor = new CountVisitor2(useFileExtensions, fileExtensionsPerProject);
+
+        for (IResource resource : resources) {
+            determineFileExtensions(fileExtensionsPerProject, resource);
+
+            try {
+                if (resource instanceof IProject && ((IProject) resource).hasNature(JavaCore.NATURE_ID)) {
+                    for (IResource sourceFolder : getJavaProjectSourceFolders((IProject) resource)) {
+                        sourceFolder.accept(visitor);
+                    }
+                } else {
+                    resource.accept(visitor);
+                }
+            } catch (CoreException e) {
+                LOG.warn("Error while counting resources for {}", resource, e);
+            }
+        }
+        if (resourceDelta != null) {
+            IResource resource = resourceDelta.getResource();
+            determineFileExtensions(fileExtensionsPerProject, resource);
+            try {
+                resource.accept(visitor);
+            } catch (CoreException e) {
+                LOG.warn("Error while counting resources for {} (delta)", resource, e);
+            }
+        }
+        return visitor.getCount();
+    }
+
+    private void determineFileExtensions(Map<IProject, Set<String>> fileExtensionsPerProject, IResource resource) {
+        IProject project = resource.getProject();
+        if (project != null && !fileExtensionsPerProject.containsKey(project)) {
+            try {
+                RuleSets rulesets = rulesetsFrom(resource);
+                Set<String> fileExtensions = determineFileExtensions(rulesets);
+                fileExtensionsPerProject.put(project, fileExtensions);
+            } catch (PropertiesException e) {
+                LOG.warn("Error while determining file extensions for project {}", project, e);
+                fileExtensionsPerProject.put(project, Collections.<String>emptySet());
+            }
+        }
+    }
+
+    private static class CountVisitor2 implements IResourceVisitor {
+        private final boolean useFileExtensions;
+        private final Map<IProject, Set<String>> fileExtensionsPerProject;
+        private int count;
+
+        CountVisitor2(boolean useFileExtensions, Map<IProject, Set<String>> fileExtensionsPerProject) {
+            this.useFileExtensions = useFileExtensions;
+            this.fileExtensionsPerProject = fileExtensionsPerProject;
+        }
+
+        CountVisitor2(boolean useFileExtensions, IProject project, Set<String> fileExtensions) {
+            this.useFileExtensions = useFileExtensions;
+            this.fileExtensionsPerProject = new HashMap<>();
+            this.fileExtensionsPerProject.put(project, fileExtensions);
+        }
+
+        @Override
+        public boolean visit(IResource resource) throws CoreException {
+            if (resource instanceof IFile) {
+                if (useFileExtensions) {
+                    Set<String> extensions = fileExtensionsPerProject.get(resource.getProject());
+                    if (extensions != null && extensions.contains(resource.getFileExtension().toLowerCase(Locale.ROOT))) {
+                        count++;
+                    }
+                } else {
+                    // count all files
+                    count++;
+                }
+            }
+            return true;
+        }
+
+        public int getCount() {
+            return count;
+        }
+    }
+
+    private String determineProjectList() {
+        Set<IProject> projects = new HashSet<>();
+        for (IResource resource : resources) {
+            IProject project = resource.getProject();
+            if (project != null) {
+                projects.add(project);
+            }
+        }
+        if (resourceDelta != null) {
+            IProject project = resourceDelta.getResource().getProject();
+            if (project != null) {
+                projects.add(project);
+            }
+        }
+        StringBuilder projectList = new StringBuilder(projects.size() * 20);
+        projectList.append('[');
+        for (IProject project : projects) {
+            projectList.append(project.getName());
+            projectList.append(", ");
+        }
+        projectList.delete(projectList.length() - 2, projectList.length());
+        projectList.append(']');
+        return projectList.toString();
     }
 
     public Map<IFile, Set<MarkerInfo2>> getMarkers() {
@@ -365,18 +481,14 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
      * Process the list of workbench resources
      */
     private void processResources() {
-        Set<String> projects = new HashSet<String>();
         for (IResource resource : resources) {
-            projects.add(resource.getProject().getName());
-        }
-        LOG.info("ReviewCodeCmd started with {} selected resources on project {}", resources.size(), projects);
-
-        for (IResource resource : resources) {
-            // if resource is a project, visit only its source folders
-            if (resource instanceof IProject) {
-                processProject((IProject) resource);
-            } else {
-                processResource(resource);
+            if (!isCanceled()) {
+                // if resource is a project, visit only its source folders
+                if (resource instanceof IProject) {
+                    processProject((IProject) resource);
+                } else {
+                    processResource(resource);
+                }
             }
         }
     }
@@ -396,7 +508,7 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
     }
 
     /**
-     * Review a single resource.
+     * Review a single resource. The given resource might be a directory, though.
      */
     private void processResource(IResource resource) {
         try {
@@ -412,7 +524,7 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
             // final PMDEngine pmdEngine = getPmdEngineForProject(project);
             int targetCount = 0;
             if (resource.exists()) {
-                targetCount = countResourceElement(resource);
+                targetCount = countResourceElement(resource, fileExtensions);
             }
             // Could add a property that lets us set the max number to analyze
             if (properties.isFullBuildEnabled() || isUserInitiated() || targetCount <= MAXIMUM_RESOURCE_COUNT) {
@@ -441,7 +553,6 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
                         + "If you want to execute PMD, please check \"Full build enabled\" in the project settings.",
                         resource.getName(), targetCount, MAXIMUM_RESOURCE_COUNT);
             }
-            worked(1); // TODO - temp fix? BR
 
         } catch (PropertiesException e) {
             throw new RuntimeException(e);
@@ -461,7 +572,7 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
                 fileExtensions.add(extension.toLowerCase(Locale.ROOT));
             }
         }
-        LOG.info("Determined applicable file extensions: {}", fileExtensions);
+        LOG.debug("Determined applicable file extensions: {}", fileExtensions);
         return fileExtensions;
     }
 
@@ -470,8 +581,7 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
      */
     private void processProject(IProject project) {
         try {
-            setStepCount(countResourceElement(project));
-            LOG.info("ReviewCodeCmd: visiting {}: {} resources found.", project, getStepCount());
+            subTask("Review " + project);
 
             if (project.hasNature(JavaCore.NATURE_ID)) {
                 processJavaProject(project);
@@ -485,6 +595,13 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
     }
 
     private void processJavaProject(IProject project) throws CoreException {
+        for (IResource sourceFolder : getJavaProjectSourceFolders(project)) {
+            processResource(sourceFolder);
+        }
+    }
+
+    private List<IResource> getJavaProjectSourceFolders(IProject project) throws CoreException {
+        List<IResource> sourceFolders = new ArrayList<>();
         final IJavaProject javaProject = JavaCore.create(project);
         final IClasspathEntry[] entries = javaProject.getRawClasspath();
         final IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
@@ -507,10 +624,11 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
                 if (sourceContainer == null) {
                     LOG.warn("Source container {} for project {} is not valid", entrie.getPath(), project);
                 } else {
-                    processResource(sourceContainer);
+                    sourceFolders.add(sourceContainer);
                 }
             }
         }
+        return sourceFolders;
     }
 
     private void taskScope(int activeRuleCount, int totalRuleCount) {
@@ -650,17 +768,25 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
     /**
      * Count the number of sub-resources of a resource.
      *
-     * @param resource
-     *            a project
+     * @param resource a project
+     * @param fileExtensions the file extensions that should match
      * @return the element count
      */
-    private int countResourceElement(IResource resource) {
+    private int countResourceElement(IResource resource, Set<String> fileExtensions) {
+        boolean checkFileExtensions = PMDPlugin.getDefault().loadPreferences().isDetermineFiletypesAutomatically();
 
         if (resource instanceof IFile) {
+            if (checkFileExtensions && fileExtensions != null) {
+                if (fileExtensions.contains(resource.getFileExtension().toLowerCase(Locale.ROOT))) {
+                    return 1;
+                } else {
+                    return 0;
+                }
+            }
             return 1;
         }
 
-        final CountVisitor visitor = new CountVisitor();
+        final CountVisitor2 visitor = new CountVisitor2(checkFileExtensions, resource.getProject(), fileExtensions);
 
         try {
             resource.accept(visitor);
@@ -668,7 +794,7 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
             LOG.error("Exception when counting elements of a project: {}", e.toString(), e);
         }
 
-        return visitor.count;
+        return visitor.getCount();
     }
 
     /**
