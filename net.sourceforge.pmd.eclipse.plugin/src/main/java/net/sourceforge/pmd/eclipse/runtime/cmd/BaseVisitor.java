@@ -264,6 +264,9 @@ public class BaseVisitor {
      *            the resource to process
      */
     protected final void reviewResource(IResource resource) {
+        if (isCanceled()) {
+            return;
+        }
 
         IFile file = (IFile) resource.getAdapter(IFile.class);
         if (file == null || file.getFileExtension() == null) {
@@ -309,7 +312,7 @@ public class BaseVisitor {
             final File sourceCodeFile = file.getRawLocation().toFile();
             if (included && getRuleSets().applies(sourceCodeFile) && isFileInWorkingSet(file)
                     && languageVersion != null) {
-                subTask("PMD checking: " + file.getName());
+                subTask("PMD checking: " + file.getProject() + ": " + file.getName());
 
                 long start = System.currentTimeMillis();
 

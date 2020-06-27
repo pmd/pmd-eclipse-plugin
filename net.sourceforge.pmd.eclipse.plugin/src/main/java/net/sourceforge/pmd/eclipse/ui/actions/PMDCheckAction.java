@@ -6,10 +6,7 @@ package net.sourceforge.pmd.eclipse.ui.actions;
 
 import java.util.Iterator;
 
-import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IResourceVisitor;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
@@ -22,7 +19,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
-import net.sourceforge.pmd.eclipse.runtime.cmd.AbstractDefaultCommand;
 import net.sourceforge.pmd.eclipse.runtime.cmd.ReviewCodeCmd;
 import net.sourceforge.pmd.eclipse.ui.model.AbstractPMDRecord;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
@@ -80,6 +76,7 @@ public class PMDCheckAction extends AbstractUIAction {
     /**
      * @see org.eclipse.ui.IActionDelegate#selectionChanged(IAction, ISelection)
      */
+    @Override
     public void selectionChanged(IAction action, ISelection selection) {
     }
 
@@ -92,11 +89,10 @@ public class PMDCheckAction extends AbstractUIAction {
         ReviewCodeCmd cmd = new ReviewCodeCmd();
         cmd.addResource(resource);
 
-        setupAndExecute(cmd, 1);
+        setupAndExecute(cmd);
     }
 
-    private void setupAndExecute(ReviewCodeCmd cmd, int count) {
-        cmd.setStepCount(count);
+    private void setupAndExecute(ReviewCodeCmd cmd) {
         cmd.setTaskMarker(true);
         cmd.setOpenPmdPerspective(PMDPlugin.getDefault().loadPreferences().isPmdPerspectiveEnabled());
         cmd.setOpenPmdViolationsOverviewView(PMDPlugin.getDefault().loadPreferences().isPmdViolationsOverviewEnabled());
@@ -141,7 +137,7 @@ public class PMDCheckAction extends AbstractUIAction {
         }
 
         // Run the command
-        setupAndExecute(cmd, countElements(selection));
+        setupAndExecute(cmd);
     }
 
     private void addAdaptable(ReviewCodeCmd cmd, IAdaptable adaptable) {
@@ -151,59 +147,6 @@ public class PMDCheckAction extends AbstractUIAction {
         } else {
             LOG.warn("The selected object cannot adapt to a resource");
             LOG.debug("   -> selected object : " + adaptable);
-        }
-    }
-
-    /**
-     * Count the number of resources of a selection
-     *
-     * @param selection
-     *            a selection
-     * @return the element count
-     */
-    private int countElements(IStructuredSelection selection) {
-        CountVisitor visitor = new CountVisitor();
-
-        for (Iterator<?> i = selection.iterator(); i.hasNext();) {
-            Object element = i.next();
-
-            try {
-                if (element instanceof IAdaptable) {
-                    IAdaptable adaptable = (IAdaptable) element;
-                    IResource resource = (IResource) adaptable.getAdapter(IResource.class);
-                    if (resource != null) {
-                        resource.accept(visitor);
-                    } else {
-                        LOG.warn("The selected object cannot adapt to a resource");
-                        LOG.debug("   -> selected object : " + element);
-                    }
-                } else {
-                    LOG.warn("The selected object is not adaptable");
-                    LOG.debug("   -> selected object : " + element);
-                }
-            } catch (CoreException e) {
-                // Ignore any exception
-                logError("Exception when counting the number of impacted elements when running PMD from menu", e);
-            }
-        }
-
-        return visitor.count;
-    }
-
-    // Inner visitor to count number of children of a resource
-    private class CountVisitor implements IResourceVisitor {
-        public int count = 0;
-
-        public boolean visit(IResource resource) {
-            boolean fVisitChildren = true;
-            count++;
-
-            if (resource instanceof IFile && AbstractDefaultCommand.isJavaFile((IFile) resource)) {
-
-                fVisitChildren = false;
-            }
-
-            return fVisitChildren;
         }
     }
 }

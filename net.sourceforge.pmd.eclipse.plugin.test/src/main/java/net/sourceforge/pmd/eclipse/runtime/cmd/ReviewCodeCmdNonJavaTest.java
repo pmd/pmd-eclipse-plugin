@@ -62,8 +62,9 @@ public class ReviewCodeCmdNonJavaTest {
         cmd.performExecute();
         cmd.join();
 
-        // 2 files are there: .project and src/somefile.ext
-        Assert.assertEquals(2, cmd.getStepCount());
+        // 2 files are there: .project and src/somefile.js, but only the javascript file is considered
+        // due to file extensions -> step count = 1
+        Assert.assertEquals(1, cmd.getStepCount());
         // only one file has an extension, that could be mapped to a language, and therefore pmd was executed
         Assert.assertEquals(1, cmd.getFileCount());
 
