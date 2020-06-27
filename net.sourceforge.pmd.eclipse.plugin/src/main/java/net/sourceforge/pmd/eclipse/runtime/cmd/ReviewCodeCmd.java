@@ -13,6 +13,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -52,17 +53,23 @@ import net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties;
 import net.sourceforge.pmd.eclipse.runtime.properties.PropertiesException;
 import net.sourceforge.pmd.eclipse.ui.actions.RuleSetUtil;
 import net.sourceforge.pmd.lang.Language;
-import net.sourceforge.pmd.util.StringUtil;
 
 /**
- * This command executes the PMD engine on a specified resource
+ * This command executes the PMD engine on a specified resource.
+ * As resource might be a single selected file, multiple selected files
+ * or one or more complete projects.
  *
  * @author Philippe Herlin
  *
  */
 public class ReviewCodeCmd extends AbstractDefaultCommand {
-
     private static final Logger LOG = LoggerFactory.getLogger(ReviewCodeCmd.class);
+
+    /**
+     * Maximum count of changed resources, that are considered to be not a full build. If more than these resources are
+     * changed, PMD will only be executed, if full build option is enabled.
+     */
+    private static final int MAXIMUM_RESOURCE_COUNT = 5;
 
     private final List<IResource> resources = new ArrayList<IResource>();
     private IResourceDelta resourceDelta;
@@ -74,24 +81,15 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
     private int ruleCount;
     private int fileCount;
     private long pmdDuration;
-    private String onErrorIssue = null;
+
     /**
      * Whether to run the review command, even if PMD is disabled in the project settings.
+     * This allows to run PMD via the context menu "PMD --&gt; Check Code" manually.
      */
     private boolean runAlways = false;
-    /**
-     * Maximum count of changed resources, that are considered to be not a full build. If more than these resources are
-     * changed, PMD will only be executed, if full build option is enabled.
-     */
-    private static final int MAXIMUM_RESOURCE_COUNT = 5;
 
     private IProjectProperties propertyCache = null;
 
-    private static final long serialVersionUID = 1L;
-
-    /**
-     * Default constructor
-     */
     public ReviewCodeCmd() {
         super("ReviewCode", "Run PMD on a list of workbench resources");
 
@@ -107,7 +105,7 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
     /**
      * Easy way to refresh a set of files.
      *
-     * @param files
+     * @param files the selected files to run PMD on.
      */
     public static void runCodeReviewOnFiles(Set<IFile> files) {
         ReviewCodeCmd cmd = new ReviewCodeCmd();
@@ -125,18 +123,18 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
     }
 
     private RuleSet currentRules() {
-        // FIXME
+        // FIXME - this always returns a empty rule set
         return RuleSetUtil.newEmpty(RuleSetUtil.DEFAULT_RULESET_NAME, RuleSetUtil.DEFAULT_RULESET_DESCRIPTION);
     }
 
-    private Map<Rule, String> misconfiguredRulesIn(RuleSet ruleset) {
+    private Map<Rule, String> misconfiguredRulesIn() {
 
         RuleSet ruleSet = currentRules();
 
         Map<Rule, String> faultsByRule = new HashMap<Rule, String>();
         for (Rule rule : ruleSet.getRules()) {
             String fault = rule.dysfunctionReason();
-            if (StringUtil.isNotEmpty(fault)) {
+            if (StringUtils.isNotEmpty(fault)) {
                 faultsByRule.put(rule, fault);
             }
         }
@@ -144,31 +142,35 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
         return faultsByRule;
     }
 
+    /**
+     * Checks whether there are any misconfigured rules. If there are, a confirmation
+     * dialog will ask the user, whether to continue or abort the PMD run.
+     *
+     * @return <code>true</code> if PMD should be executed, <code>false</code> if it should be aborted.
+     */
     private boolean checkForMisconfiguredRules() {
-
         RuleSet ruleSet = currentRules();
-        if (ruleSet.getRules().isEmpty()) {
-            return true;
-        }
 
-        Map<Rule, String> faultsByRule = misconfiguredRulesIn(ruleSet);
-        if (faultsByRule.isEmpty()) {
-            return true;
-        }
+        boolean runPMD = true;
 
-        return MessageDialog.openConfirm(Display.getDefault().getActiveShell(), "Rule configuration problem",
-                "Continue anyways?");
+        if (!ruleSet.getRules().isEmpty()) {
+            Map<Rule, String> faultsByRule = misconfiguredRulesIn();
+            if (!faultsByRule.isEmpty()) {
+                runPMD = MessageDialog.openConfirm(Display.getDefault().getActiveShell(), "Rule configuration problem",
+                        "Continue anyways?");
+            }
+        }
+        return runPMD;
     }
 
     @Override
     public void execute() {
-
         boolean doReview = checkForMisconfiguredRules();
         if (!doReview) {
             return;
         }
 
-        LOG.info("ReviewCode command starting.");
+        LOG.debug("ReviewCode command starting.");
         try {
             fileCount = 0;
             ruleCount = 0;
@@ -236,28 +238,25 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
         } catch (CoreException e) {
             throw new RuntimeException("Core exception when reviewing code", e);
         } finally {
-            LOG.info("ReviewCode command has ended.");
+            LOG.debug("ReviewCode command has ended.");
             setTerminated(true);
             done();
 
             // Log performance information
             if (fileCount > 0 && ruleCount > 0) {
-                logInfo("Review code command finished. " + ruleCount + " rules were executed against " + fileCount
-                        + " files. Actual PMD duration is about " + pmdDuration + "ms, that is about "
-                        + (float) pmdDuration / fileCount + " ms/file, " + (float) pmdDuration / ruleCount
-                        + " ms/rule, " + (float) pmdDuration / ((long) fileCount * (long) ruleCount) + " ms/filerule");
+                LOG.info("Review code command finished. {} rules were executed against {} files.\n"
+                        + "Actual PMD duration is about {}ms, that is about {}ms/file, {}ms/rule, {}ms/filerule",
+                        ruleCount, fileCount, pmdDuration, (float) pmdDuration / fileCount,
+                        (float) pmdDuration / ruleCount, (float) pmdDuration / ((long) fileCount * (long) ruleCount));
             } else {
-                logInfo("Review code command finished. " + ruleCount + " rules were executed against " + fileCount
-                        + " files. PMD was not executed.");
+                LOG.info("Review code command finished. {} rules were executed against {} files. "
+                        + "PMD has not been executed.", ruleCount, fileCount);
             }
         }
 
         PMDPlugin.getDefault().changedFiles(markedFiles());
     }
 
-    /**
-     * @return Returns the file markers
-     */
     public Map<IFile, Set<MarkerInfo2>> getMarkers() {
         return markersByFile;
     }
@@ -266,10 +265,6 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
         return fileCount;
     }
 
-    /**
-     * @param resource
-     *            The resource to set.
-     */
     public void setResources(Collection<ISchedulingRule> resources) {
         resources.clear();
         resources.addAll(resources);
@@ -289,18 +284,10 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
         resources.add(resource);
     }
 
-    /**
-     * @param resourceDelta
-     *            The resourceDelta to set.
-     */
     public void setResourceDelta(IResourceDelta resourceDelta) {
         this.resourceDelta = resourceDelta;
     }
 
-    /**
-     * @param taskMarker
-     *            The taskMarker to set.
-     */
     public void setTaskMarker(boolean taskMarker) {
         this.taskMarker = taskMarker;
     }
@@ -345,13 +332,12 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
         openPmdPerspective = false;
         openPmdViolationsOverviewView = false;
         openPmdViolationsOutlineView = false;
-        onErrorIssue = null;
         runAlways = false;
     }
 
     @Override
     public boolean isReadyToExecute() {
-        return resources.size() != 0 || resourceDelta != null;
+        return !resources.isEmpty() || resourceDelta != null;
     }
 
     /**
@@ -383,7 +369,7 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
         for (IResource resource : resources) {
             projects.add(resource.getProject().getName());
         }
-        logInfo("ReviewCodeCmd started with " + resources.size() + " selected resources on projects " + projects);
+        LOG.info("ReviewCodeCmd started with {} selected resources on project {}", resources.size(), projects);
 
         for (IResource resource : resources) {
             // if resource is a project, visit only its source folders
@@ -410,7 +396,7 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
     }
 
     /**
-     * Review a single resource
+     * Review a single resource.
      */
     private void processResource(IResource resource) {
         try {
@@ -431,7 +417,7 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
             // Could add a property that lets us set the max number to analyze
             if (properties.isFullBuildEnabled() || isUserInitiated() || targetCount <= MAXIMUM_RESOURCE_COUNT) {
                 setStepCount(targetCount);
-                LOG.debug("Visiting resource " + resource.getName() + " : " + getStepCount());
+                LOG.debug("Visiting resource {}: {}", resource.getName(), getStepCount());
                 if (resource.exists()) {
                     final ResourceVisitor visitor = new ResourceVisitor();
                     visitor.setMonitor(getMonitor());
@@ -447,13 +433,13 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
                     fileCount += visitor.getProcessedFilesCount();
                     pmdDuration += visitor.getActualPmdDuration();
                 } else {
-                    LOG.debug("Skipping resource " + resource.getName() + " because it doesn't exist.");
+                    LOG.debug("Skipping resource {} because it doesn't exist.", resource.getName());
                 }
             } else {
-                String message = "Skipping resource " + resource.getName() + " because of fullBuildEnabled flag and "
-                        + "targetCount is " + targetCount + ". This is more than " + MAXIMUM_RESOURCE_COUNT + "."
-                        + " If you want to execute PMD, please check \"Full build enabled\" in the project settings";
-                PMDPlugin.getDefault().logInformation(message);
+                LOG.info("Skipping resource {} because of fullBuildEnabled flag and "
+                        + "targetCount is {}. This is more than {}. "
+                        + "If you want to execute PMD, please check \"Full build enabled\" in the project settings.",
+                        resource.getName(), targetCount, MAXIMUM_RESOURCE_COUNT);
             }
             worked(1); // TODO - temp fix? BR
 
@@ -475,8 +461,7 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
                 fileExtensions.add(extension.toLowerCase(Locale.ROOT));
             }
         }
-        logInfo("Determined applicable file extensions: " + fileExtensions);
-        LOG.debug("Determined applicable file extensions: " + fileExtensions);
+        LOG.info("Determined applicable file extensions: {}", fileExtensions);
         return fileExtensions;
     }
 
@@ -486,9 +471,7 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
     private void processProject(IProject project) {
         try {
             setStepCount(countResourceElement(project));
-            logInfo("ReviewCodeCmd: visiting project " + project.getName() + ": " + getStepCount()
-                    + " resources found.");
-            LOG.debug("Visiting project " + project.getName() + " : " + getStepCount() + " resources found.");
+            LOG.info("ReviewCodeCmd: visiting {}: {} resources found.", project, getStepCount());
 
             if (project.hasNature(JavaCore.NATURE_ID)) {
                 processJavaProject(project);
@@ -522,8 +505,7 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
                     sourceContainer = root.getProject(entrie.getPath().toString());
                 }
                 if (sourceContainer == null) {
-                    LOG.warn("Source container " + entrie.getPath() + " for project " + project.getName()
-                            + " is not valid");
+                    LOG.warn("Source container {} for project {} is not valid", entrie.getPath(), project);
                 } else {
                     processResource(sourceContainer);
                 }
@@ -547,8 +529,7 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
             int rulesBefore = ruleSet.size();
             RuleSet filteredRuleSet = RuleSetUtil.newCopyOf(ruleSet);
             if (preferences.getGlobalRuleManagement()) {
-                // TODO: active rules are not language aware... filter by rule
-                // name...
+                // TODO: active rules are not language aware... filter by rule name...
                 List<Rule> rulesToKeep = new ArrayList<Rule>();
                 for (Rule rule : filteredRuleSet.getRules()) {
                     if (onlyActiveRuleNames.contains(rule.getName())) {
@@ -559,10 +540,9 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
                 int rulesAfter = filteredRuleSet.size();
 
                 if (rulesAfter < rulesBefore) {
-                    PMDPlugin.getDefault()
-                            .logWarn("Ruleset has been filtered as Global Rule Management is active. " + rulesAfter
-                                    + " of " + rulesBefore + " rules are active and are used. "
-                                    + (rulesBefore - rulesAfter) + " rules will be ignored.");
+                    LOG.warn("Ruleset has been filtered as Global Rule Management is active. "
+                            + "{} of {} rules are active and are used. {} rules will be ignored.",
+                            rulesAfter, rulesBefore, rulesBefore - rulesAfter);
                 }
             }
             filteredRuleSet = RuleSetUtil.addExcludePatterns(filteredRuleSet, preferences.activeExclusionPatterns(),
@@ -586,15 +566,14 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
     }
 
     /**
-     * Review a resource delta
+     * Review a resource delta.
      */
     private void processResourceDelta() {
         try {
             IResource resource = resourceDelta.getResource();
             final IProject project = resource.getProject();
             final IProjectProperties properties = getProjectProperties(project);
-            logInfo("ReviewCodeCmd started on resource delta " + resource.getName() + " in project "
-                    + project.getName());
+            LOG.info("ReviewCodeCmd started on resource delta {} in {}", resource.getName(), project);
 
             final RuleSets ruleSets = rulesetsFromResourceDelta();
             Set<String> fileExtensions = determineFileExtensions(ruleSets);
@@ -604,7 +583,7 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
             // Could add a property that lets us set the max number to analyze
             if (properties.isFullBuildEnabled() || isUserInitiated() || targetCount <= MAXIMUM_RESOURCE_COUNT) {
                 setStepCount(targetCount);
-                LOG.debug("Visiting delta of resource " + resource.getName() + " : " + getStepCount());
+                LOG.debug("Visiting delta of resource {}: {}", resource.getName(), getStepCount());
 
                 DeltaVisitor visitor = new DeltaVisitor();
                 visitor.setMonitor(getMonitor());
@@ -620,12 +599,9 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
                 fileCount += visitor.getProcessedFilesCount();
                 pmdDuration += visitor.getActualPmdDuration();
             } else {
-                String message = "Skipping resourceDelta " + resource.getName()
-                        + " because of fullBuildEnabled flag and " + "targetCount is " + targetCount
-                        + ". This is more than " + MAXIMUM_RESOURCE_COUNT + "."
-                        + " If you want to execute PMD, please check \"Full build enabled\" in the project settings";
-                PMDPlugin.getDefault().logInformation(message);
-                LOG.debug(message);
+                LOG.info("Skipping resourceDelta {} because of fullBuildEnabled flag and targetCount is {}. "
+                        + "This is more than {}. If you want to execute PMD, please check \"Full build enabled\" "
+                        + "in the project settings.", resource.getName(), targetCount, MAXIMUM_RESOURCE_COUNT);
             }
         } catch (PropertiesException e) {
             throw new RuntimeException(e);
@@ -635,11 +611,10 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
     }
 
     /**
-     * Apply PMD markers after the review
-     *
+     * Apply PMD markers after the review.
      */
     private void applyMarkers() {
-        LOG.info("Processing marker directives");
+        LOG.debug("Processing marker directives");
         int violationCount = 0;
         long start = System.currentTimeMillis();
 
@@ -663,17 +638,17 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
             }
         } catch (CoreException e) {
             // TODO: NLS
-            LOG.warn("CoreException when setting marker for file " + currentFile + " : " + e.getMessage());
+            LOG.warn("CoreException when setting marker for file {}: {}", currentFile, e.toString(), e);
         } finally {
             long duration = System.currentTimeMillis() - start;
             int count = markersByFile.size();
-            LOG.info("" + violationCount + " markers applied on " + count + " files in " + duration + "ms.");
+            LOG.debug("applyMarkers: {} markers applied on {} files in {} ms.", violationCount, count, duration);
             LOG.info("End of processing marker directives. " + violationCount + " violations for " + count + " files.");
         }
     }
 
     /**
-     * Count the number of sub-resources of a resource
+     * Count the number of sub-resources of a resource.
      *
      * @param resource
      *            a project
@@ -690,14 +665,14 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
         try {
             resource.accept(visitor);
         } catch (CoreException e) {
-            logError("Exception when counting elements of a project", e);
+            LOG.error("Exception when counting elements of a project: {}", e.toString(), e);
         }
 
         return visitor.count;
     }
 
     /**
-     * Count the number of sub-resources of a delta
+     * Count the number of sub-resources of a delta.
      *
      * @param delta
      *            a resource delta
@@ -709,14 +684,14 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
         try {
             delta.accept(visitor);
         } catch (CoreException e) {
-            logError("Exception counting elements in a delta selection", e);
+            LOG.error("Exception counting elements in a delta selection: {}", e.toString(), e);
         }
 
         return visitor.count;
     }
 
     /**
-     * opens the PMD perspective
+     * opens the PMD perspective.
      *
      * @author SebastianRaffel ( 07.05.2005 )
      */

@@ -19,8 +19,6 @@ import net.sourceforge.pmd.lang.Language;
  */
 public abstract class AbstractDefaultCommand {
 
-    private static final long serialVersionUID = 1L;
-
     private boolean readOnly;
     private boolean outputProperties;
     private boolean readyToExecute;
@@ -213,7 +211,7 @@ public abstract class AbstractDefaultCommand {
      * @see org.eclipse.core.runtime.IProgressMonitor#isCanceled
      */
     protected boolean isCanceled() {
-        return monitor == null ? false : monitor.isCanceled();
+        return monitor != null && monitor.isCanceled();
     }
 
     /**

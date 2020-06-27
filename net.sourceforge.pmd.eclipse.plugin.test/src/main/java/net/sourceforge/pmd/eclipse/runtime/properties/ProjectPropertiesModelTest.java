@@ -44,9 +44,6 @@ public class ProjectPropertiesModelTest {
     private IProject testProject;
     private RuleSet initialPluginRuleSet;
 
-    /**
-     * @see junit.framework.TestCase#setUp()
-     */
     @Before
     public void setUp() throws Exception {
 

@@ -12,20 +12,17 @@ import org.slf4j.LoggerFactory;
 /**
  * This class visits all of the resources in the Eclipse Workspace, and runs PMD
  * on them if they happen to be Java files.
- * 
- * Any violations get tagged onto the file as problems in the tasks list.
- * 
+ *
+ * <p>Any violations get tagged onto the file as problems in the tasks list.
+ *
  * @author Philippe Herlin
  *
  */
 public class ResourceVisitor extends BaseVisitor implements IResourceVisitor {
     private static final Logger LOG = LoggerFactory.getLogger(ResourceVisitor.class);
 
-    /**
-     * @see org.eclipse.core.resources.IResourceVisitor#visit(IResource)
-     */
     public boolean visit(final IResource resource) {
-        LOG.debug("Visiting resource " + resource.getName());
+        LOG.debug("Visiting resource {}", resource.getName());
         boolean fVisitChildren = true;
 
         if (this.isCanceled()) {

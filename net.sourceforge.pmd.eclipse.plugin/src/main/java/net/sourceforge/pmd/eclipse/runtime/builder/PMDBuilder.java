@@ -38,27 +38,27 @@ public class PMDBuilder extends IncrementalProjectBuilder {
      *      java.util.Map, org.eclipse.core.runtime.IProgressMonitor)
      */
     protected IProject[] build(int kind, Map args, IProgressMonitor monitor) throws CoreException {
-        LOG.info("Incremental builder activated");
+        IProject currentProject = this.getProject();
+        LOG.debug("Incremental builder activated for {}", currentProject);
 
         try {
             if (kind == AUTO_BUILD) {
                 LOG.debug("Auto build requested.");
-                buildAuto(monitor);
+                buildIncremental(currentProject, monitor);
             } else if (kind == FULL_BUILD) {
                 LOG.debug("Full build requested.");
-                buildFull(monitor);
+                buildFull(currentProject, monitor);
             } else if (kind == INCREMENTAL_BUILD) {
                 LOG.debug("Incremental build requested.");
-                buildIncremental(monitor);
+                buildIncremental(currentProject, monitor);
             } else {
-                LOG.warn("This kind of build is not supported : " + kind);
+                LOG.warn("Ignoring IncrementalBuilder request of kind {} for {} - not supported", kind, currentProject);
             }
         } catch (RuntimeException e) {
             throw new CoreException(new Status(IStatus.ERROR, PMDPlugin.getDefault().getBundle().getSymbolicName(), 0,
                     e.getMessage(), e));
         }
 
-        LOG.info("Build done.");
         return EMPTY_PROJECT_ARRAY;
     }
 
@@ -68,28 +68,14 @@ public class PMDBuilder extends IncrementalProjectBuilder {
     }
 
     /**
-     * Automatic build
-     * 
-     * @param monitor
-     *            a progress monitor
-     * @throws CommandException
-     */
-    private void buildAuto(IProgressMonitor monitor) {
-        this.buildIncremental(monitor);
-    }
-
-    /**
      * Full build
      * 
      * @param monitor
      *            A progress monitor.
      * @throws CommandException
      */
-    private void buildFull(IProgressMonitor monitor) {
-        IProject currentProject = this.getProject();
-        if (currentProject != null) {
-            this.processProjectFiles(currentProject, monitor);
-        }
+    private void buildFull(IProject project, IProgressMonitor monitor) {
+        this.processProjectFiles(project, monitor);
     }
 
     /**
@@ -98,38 +84,35 @@ public class PMDBuilder extends IncrementalProjectBuilder {
      * @param monitor
      *            a progress monitor.
      */
-    private void buildIncremental(IProgressMonitor monitor) {
-        /*
-        * Check the user preference to see if the user wants to run PMD on a save
-        * */
+    private void buildIncremental(IProject project, IProgressMonitor monitor) {
+        // Check the user preference to see if the user wants to run PMD on a save
+        // If the preference "Check code after saving" is NOT enabled, then we don't
+        // execute this incremental build request.
+        // Note: Full Build Requests are done regardless of the "Check code after saving" preference.
         if (!PMDPlugin.getDefault().loadPreferences().isCheckAfterSaveEnabled()) {
             return;
         }
-        IProject currentProject = getProject();
-        if (currentProject != null) {
-            IResourceDelta resourceDelta = this.getDelta(currentProject);
-            if (resourceDelta != null && resourceDelta.getAffectedChildren().length != 0) {
-                ReviewCodeCmd cmd = new ReviewCodeCmd();
-                cmd.setResourceDelta(resourceDelta);
-                cmd.setTaskMarker(false);
-                cmd.setMonitor(monitor);
-                // a builder is always asynchronous;
-                // execute a command synchronously
-                // whatever its processor
-                cmd.performExecute();
-            } else {
-                LOG.info("No change reported. Performing no build");
-            }
+
+        IResourceDelta resourceDelta = this.getDelta(project);
+        if (resourceDelta != null && resourceDelta.getAffectedChildren().length != 0) {
+            ReviewCodeCmd cmd = new ReviewCodeCmd();
+            cmd.setResourceDelta(resourceDelta);
+            cmd.setTaskMarker(false);
+            cmd.setMonitor(monitor);
+            // a builder is always asynchronous;
+            // execute a command synchronously
+            // whatever its processor
+            cmd.performExecute();
+        } else {
+            LOG.debug("No change reported. Performing no build");
         }
     }
 
     /**
-     * Process all files in the project
+     * Process all files in the project.
      * 
-     * @param project
-     *            the project
-     * @param monitor
-     *            a progress monitor
+     * @param project the project
+     * @param monitor a progress monitor
      */
     private void processProjectFiles(IProject project, IProgressMonitor monitor) {
         ReviewCodeCmd cmd = new ReviewCodeCmd();

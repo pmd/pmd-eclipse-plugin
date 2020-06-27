@@ -51,8 +51,9 @@ public class UpdateProjectPropertiesCmd extends AbstractProjectCommand {
             properties.setPmdEnabled(pmdEnabled);
             properties.setProjectRuleSets(projectRuleSets);
             properties.setProjectWorkingSet(projectWorkingSet);
-            properties.setRuleSetStoredInProject(ruleSetStoredInProject);
+            // ruleSetFile has to be set before ruleSetStoredInProject!
             properties.setRuleSetFile(ruleSetFile);
+            properties.setRuleSetStoredInProject(ruleSetStoredInProject);
             properties.setIncludeDerivedFiles(includeDerivedFiles);
             properties.setFullBuildEnabled(fullBuildEnabled);
             properties.setViolationsAsErrors(violationsAsErrors);

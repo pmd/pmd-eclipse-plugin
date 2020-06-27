@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.eclipse.runtime.cmd;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -18,8 +20,6 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 
 /**
  * This is a particular processor for Eclipse in order to handle long running
@@ -43,7 +43,7 @@ public class JobCommandProcessor {
     }
 
     public void processCommand(final AbstractDefaultCommand aCommand) {
-        LOG.debug("Begining job command " + aCommand.getName());
+        LOG.debug("Beginning job command {}", aCommand.getName());
 
         if (!aCommand.isReadyToExecute()) {
             throw new IllegalStateException();
@@ -59,10 +59,9 @@ public class JobCommandProcessor {
                     long start = System.currentTimeMillis();
                     aCommand.execute();
                     long duration = System.currentTimeMillis() - start;
-                    PMDPlugin.getDefault().logInformation(
-                            "Command " + aCommand.getName() + " excecuted in " + duration + "ms");
+                    LOG.debug("Command {} executed in {} ms", aCommand.getName(), duration);
                 } catch (RuntimeException e) {
-                    PMDPlugin.getDefault().logError("Error executing command " + aCommand.getName(), e);
+                    LOG.error("Error executing command {}: {}", aCommand.getName(), e.toString(), e);
                 }
 
                 synchronized (outstanding) {
@@ -89,7 +88,7 @@ public class JobCommandProcessor {
             }
         }
         this.addJob(aCommand, job);
-        LOG.debug("Ending job command " + aCommand.getName());
+        LOG.debug("Ending job command {}", aCommand.getName());
     }
 
     public void waitCommandToFinish(final AbstractDefaultCommand aCommand) {
@@ -98,8 +97,24 @@ public class JobCommandProcessor {
             try {
                 job.join();
             } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
                 throw new RuntimeException(e);
             }
+        } else {
+            // no specific command given - wait for all jobs to finish
+            clearTerminatedJobs();
+            Collection<Job> runningJobs = new ArrayList<>(this.jobs.values());
+            LOG.debug("Waiting for {} jobs to finish...", runningJobs.size());
+            for (Job runningJob : runningJobs) {
+                try {
+                    runningJob.join();
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    throw new RuntimeException(e);
+                }
+            }
+            clearTerminatedJobs();
+            LOG.debug("All jobs have finished.");
         }
 
     }
@@ -114,8 +129,10 @@ public class JobCommandProcessor {
      */
     private void addJob(final AbstractDefaultCommand command, final Job job) {
         this.jobs.put(command, job);
+        clearTerminatedJobs();
+    }
 
-        // clear terminated command
+    private void clearTerminatedJobs() {
         Set<AbstractDefaultCommand> keySet = this.jobs.keySet();
         synchronized (this.jobs) {
             final Iterator<AbstractDefaultCommand> i = keySet.iterator();

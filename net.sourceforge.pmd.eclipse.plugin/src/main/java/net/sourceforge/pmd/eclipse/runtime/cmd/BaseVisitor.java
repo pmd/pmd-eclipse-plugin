@@ -273,8 +273,7 @@ public class BaseVisitor {
         if (PMDPlugin.getDefault().loadPreferences().isDetermineFiletypesAutomatically()) {
             if (fileExtensions != null) {
                 if (!fileExtensions.contains(file.getFileExtension().toLowerCase(Locale.ROOT))) {
-                    PMDPlugin.getDefault().logInformation("Skipping file " + file.getName() + " based on file extension");
-                    LOG.debug("Skipping file " + file.getName() + " based on file extension");
+                    LOG.debug("Skipping file {} based on file extension", file);
                     return;
                 }
             } else {
@@ -301,7 +300,7 @@ public class BaseVisitor {
             if (languageVersion != null) {
                 configuration().setDefaultLanguageVersion(languageVersion);
             }
-            LOG.debug("discovered language: " + languageVersion);
+            LOG.debug("discovered language: {}", languageVersion);
 
             if (PMDPlugin.getDefault().loadPreferences().isProjectBuildPathEnabled()) {
                 configuration().setClassLoader(projectProperties.getAuxClasspath());
@@ -335,7 +334,7 @@ public class BaseVisitor {
                 // but as we anyway have only one file to process, it won't hurt
                 // here.
                 configuration().setThreads(0);
-                LOG.debug("PMD running on file " + file.getName());
+                LOG.debug("PMD running on file {}", file.getName());
                 final Report collectingReport = new Report();
                 Renderer collectingRenderer = new AbstractRenderer("collectingRenderer",
                         "Renderer that collect violations") {
@@ -386,7 +385,7 @@ public class BaseVisitor {
 
                 pmdDuration += System.currentTimeMillis() - start;
 
-                LOG.debug("PMD found " + collectingReport.size() + " violations for file " + file.getName());
+                LOG.debug("PMD found {} violations for file {}", collectingReport.size(), file);
 
                 if (collectingReport.hasConfigErrors()) {
                     StringBuilder message = new StringBuilder("There were configuration errors!\n");
@@ -431,7 +430,7 @@ public class BaseVisitor {
             // TODO: complete message
             LOG.error("Properties exception visiting " + file.getName(), e);
         } catch (IllegalArgumentException e) {
-            LOG.error("Illegal argument", e);
+            LOG.error("Illegal argument: {}", e.toString(), e);
         } finally {
             IOUtil.closeQuietly(input);
         }
