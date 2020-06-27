@@ -15,6 +15,8 @@ This is a minor release.
 
 ### Fixed Issues
 
+*   [#128](https://github.com/pmd/pmd-eclipse-plugin/pull/128): Improve progress report of ReviewCodeCmd
+
 ### API Changes
 
 ### External Contributions
