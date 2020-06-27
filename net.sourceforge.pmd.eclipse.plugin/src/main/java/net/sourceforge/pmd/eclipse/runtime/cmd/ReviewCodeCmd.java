@@ -332,7 +332,9 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
             if (resource instanceof IFile) {
                 if (useFileExtensions) {
                     Set<String> extensions = fileExtensionsPerProject.get(resource.getProject());
-                    if (extensions != null && extensions.contains(resource.getFileExtension().toLowerCase(Locale.ROOT))) {
+                    String extension = resource.getFileExtension();
+                    if (extensions != null && extension != null
+                            && extensions.contains(extension.toLowerCase(Locale.ROOT))) {
                         count++;
                     }
                 } else {
@@ -777,7 +779,8 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
 
         if (resource instanceof IFile) {
             if (checkFileExtensions && fileExtensions != null) {
-                if (fileExtensions.contains(resource.getFileExtension().toLowerCase(Locale.ROOT))) {
+                String extension = resource.getFileExtension();
+                if (extension != null && fileExtensions.contains(extension.toLowerCase(Locale.ROOT))) {
                     return 1;
                 } else {
                     return 0;
