@@ -15,6 +15,8 @@ This is a minor release.
 
 ### Fixed Issues
 
+*   [#123](https://github.com/pmd/pmd-eclipse-plugin/pull/123): Support external configuration changes
+
 ### API Changes
 
 ### External Contributions
