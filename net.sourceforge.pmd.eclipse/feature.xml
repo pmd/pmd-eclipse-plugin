@@ -2,7 +2,7 @@
 <feature
       id="net.sourceforge.pmd.eclipse"
       label="%feature.label"
-      version="4.15.0.qualifier"
+      version="4.15.0.v20200725-1231"
       provider-name="%feature.provider_name"
       plugin="net.sourceforge.pmd.eclipse.plugin"
       image="pmd_logo_small.jpg">
@@ -36,7 +36,7 @@
          id="net.sourceforge.pmd.eclipse.plugin"
          download-size="0"
          install-size="0"
-         version="4.15.0.qualifier"/>
+         version="4.15.0.v20200725-1231"/>
 
    <!--
      org.slf4j.log4j is included for convenience, so that it doesn't need to be fetched from orbit.
