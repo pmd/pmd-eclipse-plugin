@@ -9,8 +9,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.log4j.Level;
-
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.RuleSet;
@@ -206,15 +204,6 @@ class PreferencesImpl implements IPreferences {
         return logFileName;
     }
 
-    /**
-     * @see net.sourceforge.pmd.eclipse.runtime.preferences.IPreferences#getLogLevel()
-     */
-    @Deprecated
-    @Override
-    public Level getLogLevel() {
-        return Level.toLevel(logLevel);
-    }
-
     @Override
     public String getLogLevelName() {
         return logLevel;
@@ -225,15 +214,6 @@ class PreferencesImpl implements IPreferences {
      */
     public void setLogFileName(String logFileName) {
         this.logFileName = logFileName;
-    }
-
-    /**
-     * @see net.sourceforge.pmd.eclipse.runtime.preferences.IPreferences#setLogLevel(org.apache.log4j.Level)
-     */
-    @Deprecated
-    @Override
-    public void setLogLevel(Level level) {
-        logLevel = level.toString();
     }
 
     @Override
