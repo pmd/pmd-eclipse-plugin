@@ -38,20 +38,4 @@
          install-size="0"
          version="4.18.0.qualifier"/>
 
-   <!--
-     org.slf4j.log4j is included for convenience, so that it doesn't need to be fetched from orbit.
-     Adding it here will add it to the update site of pmd-eclipse-plugin.
-     
-     In newer eclipse installations, slf4j and logback itself is already installed, only this old log4j
-     dependency is needed.
-     
-     Note: log4j is only needed to provide compatibility, see https://github.com/pmd/pmd-eclipse-plugin/pull/112
-   -->
-   <plugin
-         id="org.slf4j.log4j"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
 </feature>

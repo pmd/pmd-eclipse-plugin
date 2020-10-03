@@ -6,8 +6,6 @@ package net.sourceforge.pmd.eclipse.runtime.preferences;
 
 import java.util.Set;
 
-import org.apache.log4j.Level;
-
 import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.eclipse.ui.priority.PriorityDescriptor;
 
@@ -34,8 +32,6 @@ public interface IPreferences {
     boolean REVIEW_PMD_STYLE_ENABLED_DEFAULT = true;
     int MIN_TILE_SIZE_DEFAULT = 25;
     String LOG_FILENAME_DEFAULT = System.getProperty("user.home") + "/pmd-eclipse.log";
-    @Deprecated // use LOG_LEVEL_DEFAULT instead
-    Level LOG_LEVEL = Level.WARN;
     String LOG_LEVEL_DEFAULT = "WARN";
 
     // default renderer
@@ -214,21 +210,7 @@ public interface IPreferences {
      */
     void setLogFileName(String logFileName);
 
-    /**
-     * Return the log level
-     * @deprecated use {@link #getLogLevelName()}
-     */
-    @Deprecated
-    Level getLogLevel();
-
     String getLogLevelName();
-
-    /**
-     * Set the log level
-     * @deprecated use {@link #setLogLevel(String)}
-     */
-    @Deprecated
-    void setLogLevel(Level level);
 
     void setLogLevel(String level);
 
