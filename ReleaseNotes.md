@@ -15,9 +15,25 @@ This is a minor release.
 
 ### Fixed Issues
 
+*   [#131](https://github.com/pmd/pmd-eclipse-plugin/issues/131): Conflict with Jaspersoft Studio plugin (log4j)
+
 ### API Changes
 
+#### Breaking Changes
+
+*   With 4.10.0 usage of log4j has been deprecated. In order to fix [#131](https://github.com/pmd/pmd-eclipse-plugin/issues/131)
+    these deprecated references have been removed now.
+    
+    The following methods/fields in `net.sourceforge.pmd.eclipse.runtime.preferences.IPreferences`
+    have been removed:
+    *   `getLogLevel()`
+    *   `setLogLevel(Level)`
+    *   `LOG_LEVEL`
+
+
 ### External Contributions
+
+*   [#132](https://github.com/pmd/pmd-eclipse-plugin/pull/132): Remove log4j - [Rich DiCroce](https://github.com/rdicroce)
 
 ## 26-September-2020: 4.17.0.v20200926-0854
 
