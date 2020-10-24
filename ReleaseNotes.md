@@ -13,6 +13,8 @@ This is a minor release.
 
 ### New and noteworthy
 
+*   Updated to PMD 6.29.0
+
 ### Fixed Issues
 
 *   [#131](https://github.com/pmd/pmd-eclipse-plugin/issues/131): Conflict with Jaspersoft Studio plugin (log4j)
