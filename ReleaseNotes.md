@@ -7,7 +7,7 @@ Eclipse Update Site:
 *   Releases: <https://dl.bintray.com/pmd/pmd-eclipse-plugin/updates/>
 *   Snapshots: <https://dl.bintray.com/pmd/pmd-eclipse-plugin/snapshots/updates/>
 
-## ????: 4.18.0.v????
+## 24-October-2020: 4.18.0.v20201024-1129
 
 This is a minor release.
 
@@ -19,8 +19,6 @@ This is a minor release.
 
 *   [#131](https://github.com/pmd/pmd-eclipse-plugin/issues/131): Conflict with Jaspersoft Studio plugin (log4j)
 
-### API Changes
-
 #### Breaking Changes
 
 *   With 4.10.0 usage of log4j has been deprecated. In order to fix [#131](https://github.com/pmd/pmd-eclipse-plugin/issues/131)
@@ -31,7 +29,6 @@ This is a minor release.
     *   `getLogLevel()`
     *   `setLogLevel(Level)`
     *   `LOG_LEVEL`
-
 
 ### External Contributions
 
