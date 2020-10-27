@@ -1,6 +1,6 @@
 # PMD Eclipse Plugin
 
-[![Build Status](https://travis-ci.org/pmd/pmd-eclipse-plugin.svg?branch=master)](https://travis-ci.org/pmd/pmd-eclipse-plugin)
+[![Build Status](https://travis-ci.com/pmd/pmd-eclipse-plugin.svg?branch=master)](https://travis-ci.com/pmd/pmd-eclipse-plugin)
 [![Eclipse Marketplace](https://img.shields.io/eclipse-marketplace/v/pmd-eclipse-plugin.svg)](https://marketplace.eclipse.org/content/pmd-eclipse-plugin)
 
 Release Notes: <https://github.com/pmd/pmd-eclipse-plugin/blob/master/ReleaseNotes.md>
@@ -88,7 +88,7 @@ The release happens in two phases:
     *   Create a tag
     *   Update the changelog for the next version
     *   Update the versions
-2.  Push the changes and the tag. The [travis build](https://travis-ci.org/pmd/pmd-eclipse-plugin) will
+2.  Push the changes and the tag. The [travis build](https://travis-ci.com/pmd/pmd-eclipse-plugin) will
     then publish the new version on [bintray](https://dl.bintray.com/pmd/pmd-eclipse-plugin/) and
     [github releases](https://github.com/pmd/pmd-eclipse-plugin/releases)
 
