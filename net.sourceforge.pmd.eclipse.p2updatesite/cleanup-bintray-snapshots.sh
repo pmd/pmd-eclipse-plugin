@@ -5,7 +5,7 @@ set -e
 API=https://api.bintray.com
 
 if [ -z $BINTRAY_APIKEY -o -z $BINTRAY_USER ]; then
-    # only take arguments, if there are now env variable set already
+    # only take arguments, if there are no env variable set already
     BINTRAY_APIKEY=$1
     BINTRAY_USER=$2
 fi
