@@ -15,6 +15,8 @@ This is a minor release.
 
 ### Fixed Issues
 
+*   [#135](https://github.com/pmd/pmd-eclipse-plugin/pull/135): Fix JavaProjectClassLoader (auxclasspath support) for workspace relative libraries
+
 ### API Changes
 
 ### External Contributions
