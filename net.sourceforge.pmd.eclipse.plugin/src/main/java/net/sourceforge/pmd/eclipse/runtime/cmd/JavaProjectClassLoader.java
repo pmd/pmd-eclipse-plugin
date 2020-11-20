@@ -132,19 +132,25 @@ public class JavaProjectClassLoader extends URLClassLoader {
 
     private void addURL(IPath path) {
         try {
-            File absoluteFile = path.toFile().getAbsoluteFile();
-            // if the file exists, it is already an absolute path
+            File absoluteFile = null;
+            IPath location = workspace.getRoot().getFile(path).getLocation();
+            if (location != null) {
+                // location is only present, if a project exists in the workspace
+                // in other words: only if path referenced something inside an existing project
+                absoluteFile = location.toFile().getAbsoluteFile();
+            }
+
+            if (absoluteFile == null) {
+                // if location couldn't be resolved, then it is already an absolute path
+                absoluteFile = path.toFile().getAbsoluteFile();
+            }
+
             if (!absoluteFile.exists()) {
-                // if not, it might have been a workspace relative file reference
-                absoluteFile = workspace.getRoot().getFile(path).getLocation().toFile().getAbsoluteFile();
+                LOG.warn("auxclasspath: Resolved file {} does not exist", absoluteFile);
             }
-            if (absoluteFile.exists()) {
-                URL url = absoluteFile.toURI().toURL();
-                LOG.debug("auxclasspath: Adding url {}", url);
-                addURL(url);
-            } else {
-                LOG.warn("auxclasspath: Resolved file {} does not exist and is ignored", absoluteFile);
-            }
+            URL url = absoluteFile.toURI().toURL();
+            LOG.debug("auxclasspath: Adding url {}", url);
+            addURL(url);
         } catch (MalformedURLException e) {
             LOG.warn("MalformedURLException occurred: {}", e.getMessage(), e);
         }
