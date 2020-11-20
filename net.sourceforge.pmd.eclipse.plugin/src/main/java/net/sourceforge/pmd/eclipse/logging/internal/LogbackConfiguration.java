@@ -88,7 +88,7 @@ public class LogbackConfiguration {
         triggeringPolicy.setContext(logbackContext);
 
         /*
-         * SizeBaseTriggeringPolicy#setMaxFileSize changed between logback-core 1.1.7 and 1.1.7:
+         * SizeBaseTriggeringPolicy#setMaxFileSize changed between logback-core 1.1.7 and 1.1.8:
          *
          * https://github.com/qos-ch/logback/blob/v_1.1.7/logback-core/src/main/java/ch/qos/logback/core/rolling/SizeBasedTriggeringPolicy.java
          *
@@ -98,19 +98,26 @@ public class LogbackConfiguration {
          *
          *      public void setMaxFileSize(FileSize aMaxFileSize)
          */
+        Exception firstTry = null;
         try {
-            triggeringPolicy.setMaxFileSize(DEFAULT_PMD_LOG_MAX_FILE_SIZE);
-        } catch (NoSuchMethodError e) {
+            Method m = triggeringPolicy.getClass().getMethod("setMaxFileSize", String.class);
+            m.invoke(triggeringPolicy, DEFAULT_PMD_LOG_MAX_FILE_SIZE);
+        } catch (IllegalArgumentException | ReflectiveOperationException | SecurityException e) {
+            firstTry = e;
+        }
+
+        if (firstTry != null) {
             try {
                 Method m = triggeringPolicy.getClass().getMethod("setMaxFileSize", FileSize.class);
-                assert m != null;
                 m.invoke(triggeringPolicy, FileSize.valueOf(DEFAULT_PMD_LOG_MAX_FILE_SIZE));
-            } catch (IllegalArgumentException | ReflectiveOperationException | SecurityException e2) {
+            } catch (IllegalArgumentException | ReflectiveOperationException | SecurityException e) {
                 // relying on the default max file size
                 System.err.println("WARNING: Unable to configure max file size for SizeBasedTriggeringPolicy.");
                 System.err.println("Falling back to default of " + SizeBasedTriggeringPolicy.DEFAULT_MAX_FILE_SIZE + " bytes");
-                System.err.println("Reported exception:");
-                e2.printStackTrace();
+                System.err.println("Reported exception on first try:");
+                firstTry.printStackTrace();
+                System.err.println("Reported exception on second try:");
+                e.printStackTrace();
             }
         }
 
