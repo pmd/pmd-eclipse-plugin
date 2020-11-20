@@ -54,7 +54,7 @@ function build() {
         log_info "This is a snapshot build on branch ${PMD_CI_BRANCH} (version: ${version})"
 
         # Uploading the update site to Bintray
-        xvfb-run --auto-servernum ./mvnw verify -DskipTests -Psnapshot-properties -Prelease-composite
+        xvfb-run --auto-servernum ./mvnw clean verify -B -V -e -Psnapshot-properties -Prelease-composite
 
         # Cleanup old snapshots
         (
@@ -72,7 +72,7 @@ function build() {
         GH_RELEASE="$RESULT"
 
         # Deploy the update site to bintray
-        xvfb-run --auto-servernum ./mvnw clean verify -Prelease-composite
+        xvfb-run --auto-servernum ./mvnw clean verify -B -V -e -Prelease-composite
 
         # Deploy to github releases
         gh_release_uploadAsset "$GH_RELEASE" "net.sourceforge.pmd.eclipse.p2updatesite/target/net.sourceforge.pmd.eclipse.p2updatesite-${version}.zip"

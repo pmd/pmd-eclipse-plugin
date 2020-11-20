@@ -15,6 +15,10 @@ public class ResourceUtil {
     }
 
     public static void copyResource(Object context, String resource, File target) throws IOException {
+        File parent = target.getParentFile();
+        if (parent != null && !parent.exists()) {
+            parent.mkdirs();
+        }
         try (FileOutputStream out = new FileOutputStream(target);
              InputStream in = context.getClass().getResourceAsStream(resource)) {
             int count;
