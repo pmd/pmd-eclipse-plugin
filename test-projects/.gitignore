@@ -1,5 +1,6 @@
 eclipse*/
 ws/
-!project*/.project
-!project*/.pmd
-!project*/.classpath
+!project**/.project
+!project**/.pmd
+!project**/.classpath
+!project**/.ruleset

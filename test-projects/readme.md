@@ -33,3 +33,15 @@
 
 *   project5: a general project called `project5`. It contains
     one sample apex file which triggers a rule violation.
+
+*   project-with-libs: A couple of eclipse-only projects (no maven), which depend on each other
+    or on jar files - import as "Existing Projects into Workspace". There are 4 projects:
+    *   project6 - the main project
+    *   sample-lib1 - lib project, that produces a jar. Use "create-jar.jardesc" to create
+        the jar "sample-lib1-v1.jar" in the same project folder.
+    *   sample-lib2 - lib project, that is directly part of project6's classpath. There is nothing
+        special to do after import.
+    *   sample-lib3 - lib project, that produces a jar at the absolute location `/tmp/sample-lib3-v1.jar`.
+        Use "create-jar.jardesc" to create the jar in "/tmp/sample-lib3-v1.jar"
+    *   then execute PMD on project6. It should create a "MissingOverride" violation in
+        each of the classes "Sample1", "Sample2", and "Sample3".
