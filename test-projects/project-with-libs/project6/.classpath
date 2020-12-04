@@ -9,5 +9,6 @@
 	</classpathentry>
 	<classpathentry kind="lib" path="/sample-lib1/sample-lib1-v1.jar"/>
 	<classpathentry kind="lib" path="/tmp/sample-lib3-v1.jar"/>
+	<classpathentry kind="lib" path="lib/sample-lib4.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

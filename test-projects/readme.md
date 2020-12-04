@@ -43,5 +43,7 @@
         special to do after import.
     *   sample-lib3 - lib project, that produces a jar at the absolute location `/tmp/sample-lib3-v1.jar`.
         Use "create-jar.jardesc" to create the jar in "/tmp/sample-lib3-v1.jar"
+    *   sample-lib4 - lib project, that produces a jar, that is stored in folder "lib" in project6.
+        This lib is on the classpath of project6. Use "create-jar.jardesc" to create the jar.
     *   then execute PMD on project6. It should create a "MissingOverride" violation in
-        each of the classes "Sample1", "Sample2", and "Sample3".
+        each of the classes "Sample1", "Sample2", "Sample3", and "Sample4".
