@@ -11,6 +11,7 @@ import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -26,7 +27,6 @@ import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetNotFoundException;
-import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.RulesetsFactoryUtils;
 import net.sourceforge.pmd.eclipse.EclipseUtils;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
@@ -121,8 +121,8 @@ public class ProjectPropertiesModelTest {
         final IProjectPropertiesManager mgr = PMDPlugin.getDefault().getPropertiesManager();
         final IProjectProperties model = mgr.loadProjectProperties(this.testProject);
 
-        RuleSets projectRuleSets = model.getProjectRuleSets();
-        if (projectRuleSets.getAllRuleSets().length != 1) {
+        List<RuleSet> projectRuleSets = model.getProjectRuleSetList();
+        if (projectRuleSets.size() != 1) {
             Assert.fail("More than one ruleset configured - wrong test case setup");
         }
 
@@ -309,7 +309,7 @@ public class ProjectPropertiesModelTest {
         final IProjectProperties model = mgr.loadProjectProperties(this.testProject);
 
         try {
-            model.setProjectRuleSets(null);
+            model.setProjectRuleSetList(null);
             Assert.fail("A ModelException must be raised when setting a project ruleset to null");
         } catch (final PropertiesException e) {
             // OK that's correct
@@ -466,10 +466,10 @@ public class ProjectPropertiesModelTest {
         // reload the project properties
         model = mgr.loadProjectProperties(this.testProject);
         Assert.assertFalse(model.isRuleSetStoredInProject());
-        RuleSets projectRuleSets = model.getProjectRuleSets();
+        List<RuleSet> projectRuleSets = model.getProjectRuleSetList();
         Assert.assertNotNull(projectRuleSets);
-        Assert.assertEquals(1, projectRuleSets.getAllRuleSets().length);
-        Assert.assertEquals(0, projectRuleSets.getAllRules().size());
+        Assert.assertEquals(1, projectRuleSets.size());
+        Assert.assertEquals(0, projectRuleSets.get(0).size());
     }
 
     /**

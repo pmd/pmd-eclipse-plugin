@@ -5,13 +5,19 @@
 
 package net.sourceforge.pmd.eclipse.ui.actions.internal;
 
+import java.io.File;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
 
+import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;
+import net.sourceforge.pmd.RuleSetNotFoundException;
+import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.RulesetsFactoryUtils;
 
 public class InternalRuleSetUtil {
@@ -74,4 +80,53 @@ public class InternalRuleSetUtil {
         return result;
     }
 
+    public static Collection<Pattern> convertStringPatterns(Collection<String> patterns) {
+        Collection<Pattern> result = new HashSet<Pattern>();
+        for (String p : patterns) {
+            result.add(Pattern.compile(p));
+        }
+        return result;
+    }
+
+    public static boolean ruleSetsApplies(List<RuleSet> rulesets, File file) {
+        for (RuleSet ruleSet : rulesets) {
+            if (ruleSet.applies(file)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static int countRules(List<RuleSet> rulesets) {
+        int rules = 0;
+        for (RuleSet ruleset : rulesets) {
+            rules += ruleset.size();
+        }
+        return rules;
+    }
+
+    public static Collection<Rule> allRules(List<RuleSet> rulesets) {
+        Collection<Rule> result = new ArrayList<>();
+        for (RuleSet ruleset : rulesets) {
+            result.addAll(ruleset.getRules());
+        }
+        return result;
+    }
+
+    public static RuleSets toRuleSets(List<RuleSet> rulesets) {
+        RuleSets result = new RuleSets();
+        for (RuleSet ruleSet : rulesets) {
+            result.addRuleSet(ruleSet);
+        }
+        return result;
+    }
+
+    public static RuleSetFactory createFactoryFromRuleSets(final List<RuleSet> rulesets) {
+        return new RuleSetFactory() {
+            @Override
+            public RuleSets createRuleSets(String referenceString) throws RuleSetNotFoundException {
+                return toRuleSets(rulesets);
+            }
+        };
+    }
 }

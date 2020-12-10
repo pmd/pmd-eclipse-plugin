@@ -40,14 +40,14 @@ public interface IProjectProperties {
 
     /**
      * Only returns the first ruleset. To access all rulesets,
-     * use {@link #getProjectRuleSets()}.
+     * use {@link #getProjectRuleSetList()}.
      * @return Returns the first rule set in the project rulesets
      */
     RuleSet getProjectRuleSet() throws PropertiesException;
 
     /**
      * Sets a single project ruleset.
-     * To use multiple rulesets, see {@link #setProjectRuleSets(RuleSets)}.
+     * To use multiple rulesets, see {@link #setProjectRuleSetList(List)}.
      * @param projectRuleSet
      *            The project Rule Set to set.
      */
@@ -56,13 +56,21 @@ public interface IProjectProperties {
     /**
      * @param projectRuleSets
      *            The project Rule Sets to set.
+     * @deprecated Use {@link #setProjectRuleSetList(List)}
      */
+    @Deprecated
     void setProjectRuleSets(RuleSets projectRuleSets) throws PropertiesException;
+    
+    void setProjectRuleSetList(List<RuleSet> rulesets) throws PropertiesException;
 
     /**
      * @return Returns the project Rule Sets.
+     * @deprecated Use {@link #getProjectRuleSetList()}
      */
+    @Deprecated
     RuleSets getProjectRuleSets() throws PropertiesException;
+
+    List<RuleSet> getProjectRuleSetList() throws PropertiesException;
 
     /**
      * @return Returns the whether the project rule set is stored as a file

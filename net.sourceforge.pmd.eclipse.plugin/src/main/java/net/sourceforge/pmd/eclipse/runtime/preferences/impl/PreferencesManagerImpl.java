@@ -37,7 +37,6 @@ import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetNotFoundException;
-import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.RulesetsFactoryUtils;
 import net.sourceforge.pmd.eclipse.core.IRuleSetManager;
 import net.sourceforge.pmd.eclipse.core.internal.FileModificationUtil;
@@ -662,9 +661,9 @@ class PreferencesManagerImpl implements IPreferencesManager {
             if (project.isAccessible()) {
                 try {
                     IProjectProperties properties = PMDPlugin.getDefault().loadProjectProperties(project);
-                    RuleSets projectRuleSets = properties.getProjectRuleSets();
-                    RuleSets newProjectRuleSet = new RuleSets();
-                    if (projectRuleSets != null && projectRuleSets.getAllRuleSets().length > 0) {
+                    List<RuleSet> projectRuleSets = properties.getProjectRuleSetList();
+                    List<RuleSet> newProjectRuleSet = new ArrayList<>();
+                    if (projectRuleSets != null && !projectRuleSets.isEmpty()) {
                         // add the new rules to the first ruleset
                         RuleSet firstProjectRuleset = properties.getProjectRuleSet();
                         firstProjectRuleset = RuleSetUtil.addRules(firstProjectRuleset, getNewRules(updatedRuleSet));
@@ -672,15 +671,15 @@ class PreferencesManagerImpl implements IPreferencesManager {
                                 .setFileExclusions(firstProjectRuleset, updatedRuleSet.getFileExclusions());
                         firstProjectRuleset = InternalRuleSetUtil
                                 .setFileInclusions(firstProjectRuleset, updatedRuleSet.getFileInclusions());
-                        newProjectRuleSet.addRuleSet(firstProjectRuleset);
+                        newProjectRuleSet.add(firstProjectRuleset);
 
                         // take the remaining rulesets as-is
-                        for (int i = 1; i < projectRuleSets.getAllRuleSets().length; i++) {
-                            newProjectRuleSet.addRuleSet(projectRuleSets.getAllRuleSets()[i]);
+                        for (int i = 1; i < projectRuleSets.size(); i++) {
+                            newProjectRuleSet.add(projectRuleSets.get(i));
                         }
 
                         // save the new rulesets
-                        properties.setProjectRuleSets(newProjectRuleSet);
+                        properties.setProjectRuleSetList(newProjectRuleSet);
                         properties.sync();
                     }
                 } catch (PropertiesException e) {

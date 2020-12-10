@@ -33,7 +33,17 @@ This is a minor release.
     *   `net.sourceforge.pmd.eclipse.runtime.preferences.IPreferences.setMaxViolationsPerFilePerRule(int)`
     *   `net.sourceforge.pmd.eclipse.runtime.preferences.IPreferences.MAX_VIOLATIONS_PFPR_DEFAULT`
 *   `net.sourceforge.pmd.eclipse.runtime.cmd.DetectCutAndPasteCmd.setRenderer(Renderer)` is deprecated.
-
+*   Removed usages of deprecated class `net.sourceforge.pmd.RuleSets`. Therefore the following methods are
+    deprecated now:
+    *   `net.sourceforge.pmd.eclipse.runtime.cmd.BaseVisitor.getRuleSets()`
+    *   `net.sourceforge.pmd.eclipse.runtime.cmd.BaseVisitor.setRuleSets(RuleSets)`
+    *   `net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties.getProjectRuleSets()`
+    *   `net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties.setProjectRuleSets(RuleSets)`
+    *   `net.sourceforge.pmd.eclipse.runtime.properties.impl.ProjectPropertiesImpl.getProjectRuleSets()`
+    *   `net.sourceforge.pmd.eclipse.runtime.properties.impl.ProjectPropertiesImpl.setProjectRuleSets(RuleSets)`
+    *   `net.sourceforge.pmd.eclipse.ui.properties.PMDPropertyPageBean.getProjectRuleSets()`
+    *   `net.sourceforge.pmd.eclipse.ui.properties.PMDPropertyPageBean.setProjectRuleSets(RuleSets)`
+    *   `net.sourceforge.pmd.eclipse.ui.properties.UpdateProjectPropertiesCmd.setProjectRuleSets(RuleSets)`
 
 ### External Contributions
 

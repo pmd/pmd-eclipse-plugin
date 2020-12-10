@@ -4,10 +4,15 @@
 
 package net.sourceforge.pmd.eclipse.ui.properties;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 import org.eclipse.ui.IWorkingSet;
 
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSets;
+import net.sourceforge.pmd.eclipse.ui.actions.internal.InternalRuleSetUtil;
 
 /**
  * This class is a bean that hold the property page data. It acts as the model in the MVC paradigm.
@@ -18,7 +23,7 @@ import net.sourceforge.pmd.RuleSets;
 public class PMDPropertyPageBean {
     private boolean pmdEnabled;
     private IWorkingSet projectWorkingSet;
-    private RuleSets projectRuleSets;
+    private List<RuleSet> projectRuleSets;
     private boolean ruleSetStoredInProject;
     private String ruleSetFile;
     private boolean includeDerivedFiles;
@@ -45,25 +50,37 @@ public class PMDPropertyPageBean {
      * @return
      */
     public RuleSet getProjectRuleSet() {
-        return projectRuleSets.getAllRuleSets()[0];
+        return projectRuleSets.get(0);
     }
 
     /**
      * @return Returns the projectRuleSet.
+     * @deprecated Use {@link #getProjectRuleSetList()}
      */
+    @Deprecated
     public RuleSets getProjectRuleSets() {
+        return InternalRuleSetUtil.toRuleSets(projectRuleSets);
+    }
+
+    public List<RuleSet> getProjectRuleSetList() {
         return projectRuleSets;
     }
 
     public void setProjectRuleSet(final RuleSet projectRuleSet) {
-        this.projectRuleSets = new RuleSets(projectRuleSet);
+        this.projectRuleSets = Collections.singletonList(projectRuleSet);
     }
 
     /**
      * @param projectRuleSet
      *            The projectRuleSet to set.
+     * @deprecated Use {@link #setProjectRuleSetList(List)}
      */
+    @Deprecated
     public void setProjectRuleSets(final RuleSets projectRuleSets) {
+        this.projectRuleSets = Arrays.asList(projectRuleSets.getAllRuleSets());
+    }
+
+    public void setProjectRuleSetList(List<RuleSet> projectRuleSets) {
         this.projectRuleSets = projectRuleSets;
     }
 

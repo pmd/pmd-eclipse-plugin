@@ -10,7 +10,6 @@ import java.util.List;
 
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSet;
-import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.eclipse.ui.actions.RuleSetUtil;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
@@ -81,15 +80,13 @@ public class XPathEvaluator {
 
         RuleSet ruleSet = RuleSetUtil.newSingle(xpathRule);
 
-        RuleSets ruleSets = new RuleSets(ruleSet);
-
         RuleContext ruleContext = new RuleContext();
         ruleContext.setLanguageVersion(getLanguageVersion());
 
         List<Node> nodes = new ArrayList<Node>(1);
         nodes.add(c);
 
-        ruleSets.apply(nodes, ruleContext, xpathRule.getLanguage());
+        ruleSet.apply(nodes, ruleContext);
 
         return results;
     }

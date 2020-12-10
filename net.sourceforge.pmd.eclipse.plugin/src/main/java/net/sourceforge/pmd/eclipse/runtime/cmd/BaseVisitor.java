@@ -39,13 +39,13 @@ import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;
-import net.sourceforge.pmd.RuleSetNotFoundException;
 import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.runtime.PMDRuntimeConstants;
 import net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties;
 import net.sourceforge.pmd.eclipse.runtime.properties.PropertiesException;
+import net.sourceforge.pmd.eclipse.ui.actions.internal.InternalRuleSetUtil;
 import net.sourceforge.pmd.eclipse.util.IOUtil;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
@@ -69,7 +69,7 @@ public class BaseVisitor {
     private boolean useTaskMarker = false;
     private Map<IFile, Set<MarkerInfo2>> accumulator;
     // private PMDEngine pmdEngine;
-    private RuleSets ruleSets;
+    private List<RuleSet> ruleSets;
     private Set<String> fileExtensions;
     private int fileCount;
     private long pmdDuration;
@@ -193,8 +193,14 @@ public class BaseVisitor {
 
     /**
      * @return Returns all the ruleSets.
+     * @deprecated Use {@link #getRuleSetList()}
      */
+    @Deprecated
     public RuleSets getRuleSets() {
+        return InternalRuleSetUtil.toRuleSets(this.ruleSets);
+    }
+
+    public List<RuleSet> getRuleSetList() {
         return this.ruleSets;
     }
 
@@ -203,7 +209,7 @@ public class BaseVisitor {
      * @return
      */
     public RuleSet getRuleSet() {
-        return this.ruleSets.getAllRuleSets()[0];
+        return this.ruleSets.get(0);
     }
     
     /**
@@ -213,14 +219,21 @@ public class BaseVisitor {
      * @param ruleSet
      */
     public void setRuleSet(RuleSet ruleSet) {
-        this.ruleSets = new RuleSets(ruleSet);
+        this.ruleSets = new ArrayList<>();
+        this.ruleSets.add(ruleSet);
     }
     
     /**
      * @param ruleSet
      *            The ruleSet to set.
+     * @deprecated Use {@link #setRuleSetList(List)}
      */
+    @Deprecated
     public void setRuleSets(final RuleSets ruleSets) {
+        setRuleSetList(Arrays.asList(ruleSets.getAllRuleSets()));
+    }
+
+    public void setRuleSetList(List<RuleSet> ruleSets) {
         this.ruleSets = ruleSets;
     }
 
@@ -307,7 +320,7 @@ public class BaseVisitor {
             }
 
             final File sourceCodeFile = file.getRawLocation().toFile();
-            if (included && getRuleSets().applies(sourceCodeFile) && isFileInWorkingSet(file)
+            if (included && InternalRuleSetUtil.ruleSetsApplies(ruleSets, sourceCodeFile) && isFileInWorkingSet(file)
                     && languageVersion != null) {
                 subTask("PMD checking: " + file.getProject() + ": " + file.getName());
 
@@ -322,13 +335,7 @@ public class BaseVisitor {
                 // context);
 
                 DataSource dataSource = new ReaderDataSource(input, file.getRawLocation().toFile().getPath());
-                RuleSetFactory ruleSetFactory = new RuleSetFactory() {
-                    @Override
-                    public synchronized RuleSets createRuleSets(String referenceString)
-                            throws RuleSetNotFoundException {
-                        return new RuleSets(getRuleSets());
-                    }
-                };
+                RuleSetFactory ruleSetFactory = InternalRuleSetUtil.createFactoryFromRuleSets(ruleSets);
                 // need to disable multi threading, as the ruleset is
                 // not recreated and shared between threads...
                 // but as we anyway have only one file to process, it won't hurt
