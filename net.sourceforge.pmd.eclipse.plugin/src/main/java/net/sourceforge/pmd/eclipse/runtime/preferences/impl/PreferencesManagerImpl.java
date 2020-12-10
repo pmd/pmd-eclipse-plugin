@@ -72,7 +72,6 @@ class PreferencesManagerImpl implements IPreferencesManager {
     private static final String PMD_VIOLATIONS_OVERVIEW_ENABLED = PMDPlugin.PLUGIN_ID + ".pmd_overview_enabled";
     private static final String PMD_VIOLATIONS_OUTLINE_ENABLED = PMDPlugin.PLUGIN_ID + ".pmd_outline_enabled";
     private static final String PMD_CHECK_AFTER_SAVE_ENABLED = PMDPlugin.PLUGIN_ID + ".pmd_check_after_save_enabled";
-    private static final String MAX_VIOLATIONS_PFPR = PMDPlugin.PLUGIN_ID + ".max_violations_pfpr";
     private static final String DETERMINE_FILETYPES_AUTOMATICALLY = PMDPlugin.PLUGIN_ID + ".determine_filetypes_automatically";
     private static final String REVIEW_ADDITIONAL_COMMENT = PMDPlugin.PLUGIN_ID + ".review_additional_comment";
     private static final String REVIEW_PMD_STYLE_ENABLED = PMDPlugin.PLUGIN_ID + ".review_pmd_style_enabled";
@@ -186,7 +185,6 @@ class PreferencesManagerImpl implements IPreferencesManager {
         loadPmdViolationsOutlineEnabled();
         loadCheckAfterSaveEnabled();
         loadUseCustomPriorityNames();
-        loadMaxViolationsPerFilePerRule();
         loadDetermineFiletypesAutomatically();
         loadReviewAdditionalComment();
         loadReviewPmdStyleEnabled();
@@ -345,11 +343,6 @@ class PreferencesManagerImpl implements IPreferencesManager {
         preferences.useCustomPriorityNames(loadPreferencesStore.getBoolean(PMD_USE_CUSTOM_PRIORITY_NAMES));
     }
 
-    private void loadMaxViolationsPerFilePerRule() {
-        loadPreferencesStore.setDefault(MAX_VIOLATIONS_PFPR, IPreferences.MAX_VIOLATIONS_PFPR_DEFAULT);
-        preferences.setMaxViolationsPerFilePerRule(loadPreferencesStore.getInt(MAX_VIOLATIONS_PFPR));
-    }
-    
     private void loadDetermineFiletypesAutomatically() {
         loadPreferencesStore.setDefault(DETERMINE_FILETYPES_AUTOMATICALLY, IPreferences.DETERMINE_FILETYPES_AUTOMATICALLY_DEFAULT);
         preferences.setDetermineFiletypesAutomatically(loadPreferencesStore.getBoolean(DETERMINE_FILETYPES_AUTOMATICALLY));
