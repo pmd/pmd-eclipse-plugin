@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.eclipse.search;
 
-import java.util.List;
+import java.util.Collection;
 
 import org.eclipse.jface.dialogs.DialogPage;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -39,7 +39,7 @@ public class RuleSearchPage extends DialogPage implements ISearchPage {
     private Button description;
     private Button example;
     private Button xpath;
-    private Combo language;
+    private Combo languageCombo;
 
     public RuleSearchPage() {
     }
@@ -65,21 +65,23 @@ public class RuleSearchPage extends DialogPage implements ISearchPage {
 
     public void buildLanguageCombo(Composite parent) {
 
-        final List<Language> languages = LanguageRegistry.findWithRuleSupport();
+        final Collection<Language> languages = LanguageRegistry.getLanguages();
 
-        language = new Combo(parent, SWT.READ_ONLY);
+        languageCombo = new Combo(parent, SWT.READ_ONLY);
 
-        Language deflt = LanguageRegistry.getDefaultLanguage();
+        Language defaultLanguage = LanguageRegistry.getDefaultLanguage();
         int selectionIndex = -1;
+        int i = 0;
 
-        for (int i = 0; i < languages.size(); i++) {
-            if (languages.get(i) == deflt) {
+        for (Language language : languages) {
+            if (language == defaultLanguage) {
                 selectionIndex = i;
             }
-            language.add(languages.get(i).getName());
+            languageCombo.add(language.getName());
+            i++;
         }
 
-        language.select(selectionIndex);
+        languageCombo.select(selectionIndex);
     }
 
     private void addButtons(Composite parent, int horizSpan) {

@@ -13,6 +13,7 @@ import org.junit.Test;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetNotFoundException;
+import net.sourceforge.pmd.RulesetsFactoryUtils;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 
 /**
@@ -33,7 +34,7 @@ public class RuleSetsExtensionProcessorTest {
         final Collection<RuleSet> registeredRuleSets = PMDPlugin.getDefault().getRuleSetManager().getDefaultRuleSets();
         Assert.assertFalse("No registered default rulesets!", registeredRuleSets.isEmpty());
 
-        final RuleSetFactory factory = new RuleSetFactory();
+        final RuleSetFactory factory = RulesetsFactoryUtils.defaultFactory();
         RuleSet ruleSet = factory.createRuleSet("rulesets/extra1.xml");
         Assert.assertTrue("RuleSet \"rulesets/extra1.xml\" has not been registered",
                 ruleSetRegistered(ruleSet, registeredRuleSets));
@@ -54,7 +55,7 @@ public class RuleSetsExtensionProcessorTest {
                 .getRegisteredRuleSets();
         Assert.assertFalse("No registered rulesets!", registeredRuleSets.isEmpty());
 
-        final RuleSetFactory factory = new RuleSetFactory();
+        final RuleSetFactory factory = RulesetsFactoryUtils.defaultFactory();
         RuleSet ruleSet = factory.createRuleSet("rulesets/extra1.xml");
         Assert.assertTrue("RuleSet \"rulesets/extra1.xml\" has not been registered",
                 ruleSetRegistered(ruleSet, registeredRuleSets));

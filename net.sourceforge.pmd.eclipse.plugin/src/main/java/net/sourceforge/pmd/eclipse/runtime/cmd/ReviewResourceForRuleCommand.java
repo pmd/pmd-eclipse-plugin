@@ -33,8 +33,6 @@ import net.sourceforge.pmd.eclipse.ui.actions.RuleSetUtil;
  */
 public class ReviewResourceForRuleCommand extends AbstractDefaultCommand {
 
-    private static final long serialVersionUID = 1L;
-
     private IResource resource;
     private RuleContext context;
     private Rule rule;

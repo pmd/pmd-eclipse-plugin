@@ -11,6 +11,7 @@ import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IMarker;
@@ -33,7 +34,6 @@ import net.sourceforge.pmd.eclipse.runtime.PMDRuntimeConstants;
 import net.sourceforge.pmd.eclipse.runtime.builder.MarkerUtil;
 import net.sourceforge.pmd.eclipse.util.IOUtil;
 import net.sourceforge.pmd.renderers.Renderer;
-import net.sourceforge.pmd.util.StringUtil;
 
 /**
  * This command produce a report for a project using the specified renderer.
@@ -42,8 +42,6 @@ import net.sourceforge.pmd.util.StringUtil;
  *
  */
 public class RenderReportsCmd extends AbstractProjectCommand {
-
-    private static final long serialVersionUID = 1L;
 
     private static final Logger LOG = LoggerFactory.getLogger(RenderReportsCmd.class);
 
@@ -103,7 +101,7 @@ public class RenderReportsCmd extends AbstractProjectCommand {
             IOUtil.closeQuietly(writer);
         }
 
-        if (StringUtil.isEmpty(reportString)) {
+        if (StringUtils.isBlank(reportString)) {
             LOG.debug("Missing content for report: " + reportName);
             return;
         }

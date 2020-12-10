@@ -38,6 +38,7 @@ import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetNotFoundException;
 import net.sourceforge.pmd.RuleSets;
+import net.sourceforge.pmd.RulesetsFactoryUtils;
 import net.sourceforge.pmd.eclipse.core.IRuleSetManager;
 import net.sourceforge.pmd.eclipse.core.internal.FileModificationUtil;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
@@ -50,6 +51,7 @@ import net.sourceforge.pmd.eclipse.runtime.writer.IRuleSetWriter;
 import net.sourceforge.pmd.eclipse.runtime.writer.WriterException;
 import net.sourceforge.pmd.eclipse.ui.Shape;
 import net.sourceforge.pmd.eclipse.ui.actions.RuleSetUtil;
+import net.sourceforge.pmd.eclipse.ui.actions.internal.InternalRuleSetUtil;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.RuleTableColumns;
 import net.sourceforge.pmd.eclipse.ui.priority.PriorityDescriptor;
@@ -602,7 +604,7 @@ class PreferencesManagerImpl implements IPreferencesManager {
      */
     private RuleSet getRuleSetFromStateLocation() {
         RuleSet preferredRuleSet = null;
-        RuleSetFactory factory = new RuleSetFactory();
+        RuleSetFactory factory = RulesetsFactoryUtils.defaultFactory();
 
         // First find the ruleset file in the state location
         IPath ruleSetLocation = PMDPlugin.getDefault().getStateLocation().append(PREFERENCE_RULESET_FILE);
@@ -678,8 +680,10 @@ class PreferencesManagerImpl implements IPreferencesManager {
                         // add the new rules to the first ruleset
                         RuleSet firstProjectRuleset = properties.getProjectRuleSet();
                         firstProjectRuleset = RuleSetUtil.addRules(firstProjectRuleset, getNewRules(updatedRuleSet));
-                        firstProjectRuleset = RuleSetUtil.setExcludePatterns(firstProjectRuleset, updatedRuleSet.getExcludePatterns());
-                        firstProjectRuleset = RuleSetUtil.setIncludePatterns(firstProjectRuleset, updatedRuleSet.getIncludePatterns());
+                        firstProjectRuleset = InternalRuleSetUtil
+                                .setFileExclusions(firstProjectRuleset, updatedRuleSet.getFileExclusions());
+                        firstProjectRuleset = InternalRuleSetUtil
+                                .setFileInclusions(firstProjectRuleset, updatedRuleSet.getFileInclusions());
                         newProjectRuleSet.addRuleSet(firstProjectRuleset);
 
                         // take the remaining rulesets as-is

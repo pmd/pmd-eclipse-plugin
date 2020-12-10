@@ -40,6 +40,7 @@ import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetNotFoundException;
 import net.sourceforge.pmd.RuleSets;
+import net.sourceforge.pmd.RulesetsFactoryUtils;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.ui.actions.RuleSetUtil;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
@@ -440,7 +441,7 @@ public class RuleSetSelectionDialog extends Dialog {
             importedRuleSetName = inputCombo.getText();
             if (StringUtil.isNotEmpty(importedRuleSetName)) {
                 try {
-                    RuleSetFactory factory = new RuleSetFactory();
+                    RuleSetFactory factory = RulesetsFactoryUtils.defaultFactory();
                     RuleSets rs = factory.createRuleSets(importedRuleSetName);
                     return rs.getAllRuleSets()[0];
                 } catch (RuleSetNotFoundException rsnfe) {

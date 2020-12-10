@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IResource;
@@ -32,7 +33,6 @@ import net.sourceforge.pmd.eclipse.runtime.PMDRuntimeConstants;
 import net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties;
 import net.sourceforge.pmd.eclipse.runtime.properties.PropertiesException;
 import net.sourceforge.pmd.eclipse.util.IOUtil;
-import net.sourceforge.pmd.util.StringUtil;
 
 /**
  * This command produces a report of the Cut And Paste detector
@@ -49,7 +49,6 @@ public class DetectCutAndPasteCmd extends AbstractProjectCommand {
     private boolean createReport;
     private List<IPropertyListener> listeners;
 
-    private static final long serialVersionUID = 1L;
     private static final Logger LOG = LoggerFactory.getLogger(DetectCutAndPasteCmd.class);
 
     /**
@@ -174,7 +173,7 @@ public class DetectCutAndPasteCmd extends AbstractProjectCommand {
     }
 
     private boolean canRenderReport() {
-        return renderer != null && StringUtil.isNotEmpty(reportName);
+        return renderer != null && StringUtils.isNotBlank(reportName);
     }
 
     @Override

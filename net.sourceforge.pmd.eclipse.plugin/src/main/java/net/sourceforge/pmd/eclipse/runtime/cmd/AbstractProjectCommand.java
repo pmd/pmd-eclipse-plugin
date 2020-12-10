@@ -21,8 +21,6 @@ public abstract class AbstractProjectCommand extends AbstractDefaultCommand {
 
     private IProject project;
 
-    private static final long serialVersionUID = 1L;
-
     protected AbstractProjectCommand(String theName, String theDescription) {
         super(theName, theDescription);
     }

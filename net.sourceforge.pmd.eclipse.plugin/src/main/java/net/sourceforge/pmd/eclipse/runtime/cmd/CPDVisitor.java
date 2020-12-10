@@ -7,6 +7,7 @@ package net.sourceforge.pmd.eclipse.runtime.cmd;
 import java.io.File;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceVisitor;
@@ -18,7 +19,6 @@ import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.cpd.Language;
 import net.sourceforge.pmd.eclipse.runtime.properties.PropertiesException;
-import net.sourceforge.pmd.util.StringUtil;
 
 /**
  * A visitor to process IFile resource against CPD
@@ -86,7 +86,7 @@ public class CPDVisitor implements IResourceVisitor {
             IFile file = (IFile) resource;
             File ioFile = file.getLocation().toFile();
             try {
-                if (StringUtil.isNotEmpty(file.getFileExtension())
+                if (StringUtils.isNotBlank(file.getFileExtension())
                         && language.getFileFilter().accept(ioFile, file.getName()) && isFileInWorkingSet(file)
                         && (includeDerivedFiles || !file.isDerived())) {
                     LOG.debug("Add file " + resource.getName());

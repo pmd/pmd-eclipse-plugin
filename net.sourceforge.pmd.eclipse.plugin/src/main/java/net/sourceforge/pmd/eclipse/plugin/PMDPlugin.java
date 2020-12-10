@@ -59,6 +59,7 @@ import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetNotFoundException;
+import net.sourceforge.pmd.RulesetsFactoryUtils;
 import net.sourceforge.pmd.eclipse.core.IRuleSetManager;
 import net.sourceforge.pmd.eclipse.core.ext.RuleSetsExtensionProcessor;
 import net.sourceforge.pmd.eclipse.core.impl.RuleSetManagerImpl;
@@ -77,7 +78,6 @@ import net.sourceforge.pmd.eclipse.runtime.writer.IAstWriter;
 import net.sourceforge.pmd.eclipse.runtime.writer.IRuleSetWriter;
 import net.sourceforge.pmd.eclipse.runtime.writer.impl.WriterFactoryImpl;
 import net.sourceforge.pmd.eclipse.ui.RuleLabelDecorator;
-import net.sourceforge.pmd.eclipse.ui.ShapePainter;
 import net.sourceforge.pmd.eclipse.ui.actions.RuleSetUtil;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
 import net.sourceforge.pmd.eclipse.ui.nls.StringTable;
@@ -344,31 +344,32 @@ public class PMDPlugin extends AbstractUIPlugin {
      */ 
     public void refreshView(final String viewId) {
         Display.getCurrent().asyncExec(new Runnable() {
-            @Override 
-            public void run() { 
-                try { 
-                    IViewPart view = getView(viewId); 
-                    if (view == null) { 
-                        return; 
-                    } 
-                    boolean found = false; 
-                    IViewPart[] views = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getViews(); 
-                    for (IViewPart activeView: views) { 
-                        if (activeView.getTitle().equals(view.getTitle())) { 
-                            found = true; 
-                        } 
-                    } 
-                    if (!found) { 
-                        return; 
-                    } 
-                    PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().hideView(view); 
-                    PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(viewId); 
+            @Override
+            public void run() {
+                try {
+                    IViewPart view = getView(viewId);
+                    if (view == null) {
+                        return;
+                    }
+                    boolean found = false;
+                    IViewReference[] views = PlatformUI.getWorkbench()
+                            .getActiveWorkbenchWindow().getActivePage().getViewReferences();
+                    for (IViewReference viewRef : views) {
+                        if (viewRef.getTitle().equals(view.getTitle())) {
+                            found = true;
+                        }
+                    }
+                    if (!found) {
+                        return;
+                    }
+                    PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().hideView(view);
+                    PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(viewId);
                 } catch (PartInitException e) { 
                     LOG.error("Error while refreshing view {}", viewId, e);
-                } 
-            } 
-        }); 
-    } 
+                }
+            }
+        });
+    }
 
     /*
      * (non-Javadoc)
@@ -379,7 +380,6 @@ public class PMDPlugin extends AbstractUIPlugin {
         fileChangeListenerEnabled(false);
 
         disposeResources();
-        ShapePainter.disposeAll();
         ResourceManager.dispose();
         PriorityDescriptorCache.INSTANCE.dispose();
         logbackConfiguration.unconfigureLogback();
@@ -593,7 +593,7 @@ public class PMDPlugin extends AbstractUIPlugin {
      */
     private void registerStandardRuleSets() {
 
-        final RuleSetFactory factory = new RuleSetFactory();
+        final RuleSetFactory factory = RulesetsFactoryUtils.defaultFactory();
         try {
             Iterator<RuleSet> iterator = factory.getRegisteredRuleSets();
             final IRuleSetManager manager = getRuleSetManager();
@@ -639,7 +639,7 @@ public class PMDPlugin extends AbstractUIPlugin {
     }
 
     public RuleLabelDecorator ruleLabelDecorator() {
-        IDecoratorManager mgr = getWorkbench().getDecoratorManager();
+        IDecoratorManager mgr = PlatformUI.getWorkbench().getDecoratorManager();
         return (RuleLabelDecorator) mgr.getBaseLabelProvider(RuleLabelDecorator.ID);
     }
 

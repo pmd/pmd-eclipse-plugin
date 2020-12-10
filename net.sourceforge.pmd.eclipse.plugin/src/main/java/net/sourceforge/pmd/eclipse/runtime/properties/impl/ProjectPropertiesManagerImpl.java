@@ -38,6 +38,7 @@ import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetNotFoundException;
 import net.sourceforge.pmd.RuleSets;
+import net.sourceforge.pmd.RulesetsFactoryUtils;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.runtime.builder.PMDNature;
 import net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties;
@@ -154,7 +155,7 @@ public class ProjectPropertiesManagerImpl implements IProjectPropertiesManager {
         if (projectProperties.isRuleSetFileExist() && projectProperties.isNeedRebuild()) {
             LOG.debug("Loading ruleset from project ruleset file: " + projectProperties.getRuleSetFile());
             try {
-                final RuleSetFactory factory = new RuleSetFactory();
+                final RuleSetFactory factory = RulesetsFactoryUtils.defaultFactory();
                 RuleSets allRulesets = new RuleSets();
                 for (final File ruleSetFile : projectProperties.getResolvedRuleSetFiles()) {
                     RuleSet ruleSet = factory.createRuleSets(ruleSetFile.getPath()).getAllRuleSets()[0];

@@ -17,6 +17,11 @@ This is a minor release.
 
 ### API Changes
 
+*   The following methods in `net.sourceforge.pmd.eclipse.ui.actions.RuleSetUtil` are deprecated:
+    *   `setExcludePatterns(RuleSet ruleSet, Collection<String> excludePatterns)`
+    *   `setIncludePatterns(RuleSet ruleSet, Collection<String> includePatterns)`
+    *   These methods are not supposed to be public API and will be removed eventually.
+
 ### External Contributions
 
 ## 24-October-2020: 4.18.0.v20201024-1129

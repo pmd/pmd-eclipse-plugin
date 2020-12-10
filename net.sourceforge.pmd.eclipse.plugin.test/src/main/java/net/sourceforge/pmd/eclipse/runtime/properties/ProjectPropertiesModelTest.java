@@ -27,6 +27,7 @@ import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetNotFoundException;
 import net.sourceforge.pmd.RuleSets;
+import net.sourceforge.pmd.RulesetsFactoryUtils;
 import net.sourceforge.pmd.eclipse.EclipseUtils;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.runtime.builder.PMDNature;
@@ -213,7 +214,7 @@ public class ProjectPropertiesModelTest {
         final IProjectPropertiesManager mgr = PMDPlugin.getDefault().getPropertiesManager();
         final IProjectProperties model = mgr.loadProjectProperties(this.testProject);
 
-        final RuleSetFactory factory = new RuleSetFactory();
+        final RuleSetFactory factory = RulesetsFactoryUtils.defaultFactory();
 
         // use the best practices ruleset because it should be included in the plugin
         // ruleset.
@@ -246,7 +247,7 @@ public class ProjectPropertiesModelTest {
         Assert.assertEquals("The project ruleset is not equal to the plugin ruleset",
                 this.initialPluginRuleSet.getRules(), projectRuleSet.getRules());
 
-        final RuleSetFactory factory = new RuleSetFactory();
+        final RuleSetFactory factory = RulesetsFactoryUtils.defaultFactory();
 
         // use the best practices ruleset because it should be included in the
         // plugin ruleset.
@@ -387,7 +388,7 @@ public class ProjectPropertiesModelTest {
         final IProjectPropertiesManager mgr = PMDPlugin.getDefault().getPropertiesManager();
         final IProjectProperties model = mgr.loadProjectProperties(this.testProject);
 
-        final RuleSetFactory factory = new RuleSetFactory();
+        final RuleSetFactory factory = RulesetsFactoryUtils.defaultFactory();
         final RuleSet bestPracticesRuleSet = factory.createRuleSet("category/java/bestpractices.xml");
         model.setPmdEnabled(true);
         model.setRuleSetStoredInProject(false);
@@ -413,7 +414,7 @@ public class ProjectPropertiesModelTest {
         final IProjectPropertiesManager mgr = PMDPlugin.getDefault().getPropertiesManager();
         final IProjectProperties model = mgr.loadProjectProperties(this.testProject);
 
-        final RuleSetFactory factory = new RuleSetFactory();
+        final RuleSetFactory factory = RulesetsFactoryUtils.defaultFactory();
         final RuleSet basicRuleSet = factory.createRuleSet("category/java/bestpractices.xml");
         model.setPmdEnabled(true);
         model.setRuleSetStoredInProject(false);

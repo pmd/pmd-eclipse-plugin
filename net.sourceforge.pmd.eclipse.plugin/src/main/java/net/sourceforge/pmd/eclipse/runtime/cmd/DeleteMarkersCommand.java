@@ -16,8 +16,6 @@ import org.eclipse.core.runtime.CoreException;
  */
 public class DeleteMarkersCommand extends AbstractDefaultCommand {
 
-    private static final long serialVersionUID = 1L;
-
     private IMarker[] markers;
 
     public DeleteMarkersCommand() {

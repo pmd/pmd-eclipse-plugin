@@ -13,13 +13,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
 
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResource;
@@ -55,8 +55,6 @@ import net.sourceforge.pmd.lang.java.JavaLanguageModule;
 import net.sourceforge.pmd.processor.MonoThreadProcessor;
 import net.sourceforge.pmd.renderers.AbstractRenderer;
 import net.sourceforge.pmd.renderers.Renderer;
-import net.sourceforge.pmd.util.NumericConstants;
-import net.sourceforge.pmd.util.StringUtil;
 import net.sourceforge.pmd.util.datasource.DataSource;
 import net.sourceforge.pmd.util.datasource.ReaderDataSource;
 
@@ -355,14 +353,14 @@ public class BaseVisitor {
 
                     @Override
                     public void renderFileReport(Report report) throws IOException {
-                        for (RuleViolation v : report) {
+                        for (RuleViolation v : report.getViolations()) {
                             collectingReport.addRuleViolation(v);
                         }
-                        for (Iterator<ProcessingError> it = report.errors(); it.hasNext();) {
-                            collectingReport.addError(it.next());
+                        for (ProcessingError error : report.getProcessingErrors()) {
+                            collectingReport.addError(error);
                         }
-                        for (Iterator<ConfigurationError> it = report.configErrors(); it.hasNext();) {
-                            collectingReport.addConfigError(it.next());
+                        for (ConfigurationError configError : report.getConfigurationErrors()) {
+                            collectingReport.addConfigError(configError);
                         }
                     }
 
@@ -388,22 +386,18 @@ public class BaseVisitor {
 
                 pmdDuration += System.currentTimeMillis() - start;
 
-                LOG.debug("PMD found {} violations for file {}", collectingReport.size(), file);
+                LOG.debug("PMD found {} violations for file {}", collectingReport.getViolations().size(), file);
 
-                if (collectingReport.hasConfigErrors()) {
+                if (!collectingReport.getConfigurationErrors().isEmpty()) {
                     StringBuilder message = new StringBuilder("There were configuration errors!\n");
-                    Iterator<ConfigurationError> errors = collectingReport.configErrors();
-                    while (errors.hasNext()) {
-                        ConfigurationError error = errors.next();
+                    for (ConfigurationError error : collectingReport.getConfigurationErrors()) {
                         message.append(error.rule().getName()).append(": ").append(error.issue()).append('\n');
                     }
                     LOG.warn(message.toString());
                 }
-                if (collectingReport.hasErrors()) {
+                if (!collectingReport.getProcessingErrors().isEmpty()) {
                     StringBuilder message = new StringBuilder("There were processing errors!\n");
-                    Iterator<ProcessingError> errors = collectingReport.errors();
-                    while (errors.hasNext()) {
-                        ProcessingError error = errors.next();
+                    for (ProcessingError error : collectingReport.getProcessingErrors()) {
                         message.append(error.getFile()).append(": ").append(error.getMsg()).append(' ')
                         .append(error.getDetail())
                         .append("\n");
@@ -412,7 +406,7 @@ public class BaseVisitor {
                     throw new PMDException(message.toString());
                 }
 
-                updateMarkers(file, collectingReport.iterator(), isUseTaskMarker());
+                updateMarkers(file, collectingReport.getViolations(), isUseTaskMarker());
 
                 worked(1);
                 fileCount++;
@@ -502,7 +496,7 @@ public class BaseVisitor {
         }
     }
 
-    private void updateMarkers(IFile file, Iterator<RuleViolation> violations, boolean fTask)
+    private void updateMarkers(IFile file, List<RuleViolation> violations, boolean fTask)
             throws CoreException, PropertiesException {
 
         Map<IFile, Set<MarkerInfo2>> accumulator = getAccumulator();
@@ -516,8 +510,7 @@ public class BaseVisitor {
         Map<Rule, Integer> violationsByRule = new HashMap<Rule, Integer>();
 
         Rule rule;
-        while (violations.hasNext()) {
-            RuleViolation violation = violations.next();
+        for (RuleViolation violation : violations) {
             rule = violation.getRule();
             review.ruleName = rule.getName();
             review.lineNumber = violation.getBeginLine();
@@ -530,7 +523,7 @@ public class BaseVisitor {
 
             Integer count = violationsByRule.get(rule);
             if (count == null) {
-                count = NumericConstants.ZERO;
+                count = 0;
                 violationsByRule.put(rule, count);
             }
 
@@ -592,7 +585,7 @@ public class BaseVisitor {
                         final String ruleName = tail.substring(0, tail.indexOf(':'));
                         pendingReviews.push(ruleName);
                         findLine = true;
-                    } else if (!comment && findLine && StringUtil.isNotEmpty(line) && !line.startsWith("//")) {
+                    } else if (!comment && findLine && StringUtils.isNotBlank(line) && !line.startsWith("//")) {
                         findLine = false;
                         while (!pendingReviews.empty()) {
                             // @PMD:REVIEWED:AvoidInstantiatingObjectsInLoops:

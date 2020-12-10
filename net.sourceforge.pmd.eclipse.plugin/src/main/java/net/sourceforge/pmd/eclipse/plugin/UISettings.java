@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
@@ -29,7 +30,6 @@ import net.sourceforge.pmd.eclipse.ui.nls.StringTable;
 import net.sourceforge.pmd.eclipse.ui.priority.PriorityDescriptor;
 import net.sourceforge.pmd.eclipse.ui.priority.PriorityDescriptorCache;
 import net.sourceforge.pmd.eclipse.util.FontBuilder;
-import net.sourceforge.pmd.util.StringUtil;
 
 /**
  * 
@@ -44,7 +44,6 @@ public class UISettings {
 
     private static Map<RulePriority, String> labelsByPriority = new HashMap<RulePriority, String>();
 
-    private static final int MAX_MARKER_DIMENSION = 9;
     private static IPreferencesManager preferencesManager = PMDPlugin.getDefault().getPreferencesManager();
 
     public static final FontBuilder CODE_FONT_BUILDER = new FontBuilder("Courier", 11, SWT.NORMAL);
@@ -150,7 +149,7 @@ public class UISettings {
         }
 
         String custom = descriptorFor(priority).label;
-        return StringUtil.isEmpty(custom) ? preferencesManager.defaultDescriptorFor(priority).label : custom;
+        return StringUtils.isBlank(custom) ? preferencesManager.defaultDescriptorFor(priority).label : custom;
     }
 
     public static void useCustomPriorityLabels(boolean flag) {
