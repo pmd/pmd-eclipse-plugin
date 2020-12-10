@@ -37,10 +37,10 @@ import net.sourceforge.pmd.eclipse.ui.preferences.br.ValueChangeListener;
 import net.sourceforge.pmd.eclipse.ui.preferences.editors.MethodEditorFactory;
 import net.sourceforge.pmd.eclipse.ui.preferences.editors.SWTUtil;
 import net.sourceforge.pmd.eclipse.util.Util;
+import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.lang.rule.XPathRule;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertySource;
-import net.sourceforge.pmd.util.StringUtil;
 
 /**
  * Implements a dialog for adding or editing a rule property. As the user
@@ -191,8 +191,7 @@ public class NewPropertyDialog extends TitleAreaDialog implements SizeChangeList
     }
 
     private boolean isValidNewLabel(String labelCandidate) {
-
-        return !StringUtil.isEmpty(labelCandidate);
+        return StringUtils.isNotBlank(labelCandidate);
     }
 
     private boolean isPreExistingLabel(String labelCandidate) {
@@ -278,12 +277,27 @@ public class NewPropertyDialog extends TitleAreaDialog implements SizeChangeList
         return propertySource.getPropertyDescriptor(name) != null;
     }
 
+    private static XPathRule toXPathRule(PropertySource propertySource) {
+        PropertySource rule = propertySource;
+        if (propertySource instanceof RuleReference) {
+            rule = ((RuleReference) propertySource).getRule();
+        }
+        if (rule instanceof XPathRule) {
+            return (XPathRule) rule;
+        }
+        return null;
+    }
+
     /**
      * Pick the first name in the xpath source the rule doesn't know about
      */
     private void setPreferredName() {
+        String xpath = "";
+        XPathRule rule = toXPathRule(propertySource);
+        if (rule != null) {
+            xpath = rule.getXPathExpression().trim();
+        }
 
-        String xpath = propertySource.getProperty(XPathRule.XPATH_DESCRIPTOR).trim();
         List<int[]> positions = Util.referencedNamePositionsIn(xpath, '$');
         List<String> names = Util.fragmentsWithin(xpath, positions);
 
@@ -312,15 +326,16 @@ public class NewPropertyDialog extends TitleAreaDialog implements SizeChangeList
         }
     }
 
-    private void factory(EditorFactory<?> theFactory) {
+    private <T> void factory(EditorFactory<T> theFactory) {
 
         factory = theFactory;
-        // dummy values that will be replaced
-        descriptor = factory.createDescriptor("??", "??", null); 
-        labelField.setText(descriptor.description());
+        // dummy values (??) that will be replaced
+        PropertyDescriptor<T> theDescriptor = theFactory.createDescriptor("??", "??", null);
+        descriptor = theDescriptor;
+        labelField.setText(theDescriptor.description());
         cleanFactoryStuff();
 
-        factoryControls = factory.createOtherControlsOn(dlgArea, (PropertyDescriptor) descriptor, propertySource, changeListener, this);
+        factoryControls = theFactory.createOtherControlsOn(dlgArea, theDescriptor, propertySource, changeListener, this);
 
         dlgArea.getShell().layout();
         dlgArea.pack();

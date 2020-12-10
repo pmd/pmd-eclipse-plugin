@@ -19,7 +19,6 @@ import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.eclipse.ui.PMDUiConstants;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
 import net.sourceforge.pmd.eclipse.util.ResourceManager;
-import net.sourceforge.pmd.util.CollectionUtil;
 
 /**
  *
@@ -29,15 +28,22 @@ public class IconColumnDescriptor extends AbstractRuleColumnDescriptor {
 
     private Map<Object, Image> iconsByValue;
 
-    private static final Map<Object, String> ICON_NAMES_BY_PRIORITY = CollectionUtil.mapFrom(
-            new Object[] { RulePriority.LOW, RulePriority.MEDIUM_LOW, RulePriority.MEDIUM, RulePriority.MEDIUM_HIGH,
-                RulePriority.HIGH },
-            new String[] { PMDUiConstants.ICON_BUTTON_PRIO5, PMDUiConstants.ICON_BUTTON_PRIO4,
-                PMDUiConstants.ICON_BUTTON_PRIO3, PMDUiConstants.ICON_BUTTON_PRIO2, PMDUiConstants.ICON_BUTTON_PRIO1 });
+    private static final Map<Object, String> ICON_NAMES_BY_PRIORITY = new HashMap<>();
 
-    private static final Map<Object, String> ICON_NAMES_BY_BOOLEAN = CollectionUtil.mapFrom(
-            new Object[] { Boolean.TRUE, Boolean.FALSE },
-            new String[] { PMDUiConstants.ICON_GREEN_CHECK, PMDUiConstants.ICON_EMPTY });
+    static {
+        ICON_NAMES_BY_PRIORITY.put(RulePriority.LOW, PMDUiConstants.ICON_BUTTON_PRIO5);
+        ICON_NAMES_BY_PRIORITY.put(RulePriority.MEDIUM_LOW, PMDUiConstants.ICON_BUTTON_PRIO4);
+        ICON_NAMES_BY_PRIORITY.put(RulePriority.MEDIUM, PMDUiConstants.ICON_BUTTON_PRIO3);
+        ICON_NAMES_BY_PRIORITY.put(RulePriority.MEDIUM_HIGH, PMDUiConstants.ICON_BUTTON_PRIO2);
+        ICON_NAMES_BY_PRIORITY.put(RulePriority.HIGH, PMDUiConstants.ICON_BUTTON_PRIO1);
+    }
+
+    private static final Map<Object, String> ICON_NAMES_BY_BOOLEAN = new HashMap<>();
+
+    static {
+        ICON_NAMES_BY_BOOLEAN.put(Boolean.TRUE, PMDUiConstants.ICON_GREEN_CHECK);
+        ICON_NAMES_BY_BOOLEAN.put(Boolean.FALSE, PMDUiConstants.ICON_EMPTY);
+    }
 
     public static final RuleColumnDescriptor PRIORITY = new IconColumnDescriptor("iPriority",
             StringKeys.PREF_RULESET_COLUMN_PRIORITY, SWT.RIGHT, 53, RuleFieldAccessor.PRIORITY, true,

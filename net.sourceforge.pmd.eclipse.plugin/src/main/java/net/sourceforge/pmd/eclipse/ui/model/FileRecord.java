@@ -285,7 +285,6 @@ public class FileRecord extends AbstractPMDRecord {
     public static int linesOfCodeIn(final String source, boolean ignoreSingleBrackets) {
 
         int loc = 0;
-        int ignoredLines = 0;
         final int firstCurly = source.indexOf('{');
         if (firstCurly != -1) {
             final String body = source.substring(firstCurly + 1, source.length() - 1).trim();
@@ -303,7 +302,6 @@ public class FileRecord extends AbstractPMDRecord {
 
                 if (ignoreSingleBrackets) {
                     if ("{".equals(trimmed) || "}".equals(trimmed)) {
-                        ignoredLines++;
                         continue;
                     }
                 }
@@ -313,8 +311,6 @@ public class FileRecord extends AbstractPMDRecord {
                 }
             }
         }
-        // System.out.println("ignored lines: " + ignoredLines);
-
         return loc;
     }
 

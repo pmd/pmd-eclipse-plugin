@@ -43,13 +43,13 @@ public interface RuleSetFieldAccessor {
 
     RuleSetFieldAccessor INCLUDE_PATTERN_COUNT = new BasicRuleSetFieldAccessor() {
         public Comparable<Integer> valueFor(RuleSet ruleSet) {
-            return ruleSet.getIncludePatterns().size();
+            return ruleSet.getFileInclusions().size();
         }
     };
 
     RuleSetFieldAccessor EXCLUDE_PATTERN_COUNT = new BasicRuleSetFieldAccessor() {
         public Comparable<Integer> valueFor(RuleSet ruleSet) {
-            return ruleSet.getExcludePatterns().size();
+            return ruleSet.getFileExclusions().size();
         }
     };
 

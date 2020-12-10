@@ -7,6 +7,7 @@ package net.sourceforge.pmd.eclipse.ui.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
@@ -18,7 +19,6 @@ import net.sourceforge.pmd.eclipse.runtime.builder.MarkerUtil;
 import net.sourceforge.pmd.eclipse.ui.PMDUiConstants;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.util.StringUtil;
 
 /**
  * This class holds information for use with the dataflow view. It contains a
@@ -168,7 +168,7 @@ public class DataflowMethodRecord {
 
                 // if it is a String, it has to be the Variable
                 // or Message, which shouldn't be empty
-                if (values[k] instanceof String && StringUtil.isEmpty((String) values[k])) {
+                if (values[k] instanceof String && StringUtils.isBlank((String) values[k])) {
                     isValid = false;
                 } else if (values[k] instanceof Number && ((Number) values[k]).intValue() == 0) {
                     // else it is one of the Lines (Line, Line2)

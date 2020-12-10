@@ -20,6 +20,10 @@ This is a minor release.
 *   The following methods in `net.sourceforge.pmd.eclipse.ui.actions.RuleSetUtil` are deprecated:
     *   `setExcludePatterns(RuleSet ruleSet, Collection<String> excludePatterns)`
     *   `setIncludePatterns(RuleSet ruleSet, Collection<String> includePatterns)`
+    *   `addExcludePatterns(RuleSet ruleSet, Collection<String> activeExclusionPatterns, Collection<String> buildPathExcludePatterns)`
+    *   `addIncludePatterns(RuleSet ruleSet, Collection<String> activeInclusionPatterns, Collection<String> buildPathIncludePatterns)`
+    *   `addExcludePatterns(RuleSet rs, Collection<String> excludePatterns)`
+    *   `addIncludePatterns(RuleSet rs, Collection<String> includePatterns)`
     *   These methods are not supposed to be public API and will be removed eventually.
 *   The property `net.sourceforge.pmd.eclipse.runtime.PMDRuntimeConstants.MAX_VIOLATIONS_DESCRIPTOR`
     is deprecated and will be removed.

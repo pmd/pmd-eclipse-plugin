@@ -14,7 +14,6 @@ import net.sourceforge.pmd.eclipse.ui.quickfix.PMDResolutionGenerator;
 import net.sourceforge.pmd.eclipse.util.Util;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageVersion;
-import net.sourceforge.pmd.lang.rule.XPathRule;
 
 /**
  * A value and label extractor interface for anything implementing the Rule
@@ -112,7 +111,7 @@ public interface RuleFieldAccessor {
     RuleFieldAccessor RULE_TYPE = new BasicRuleFieldAccessor() {
         public Comparable<String> valueFor(Rule rule) {
             StringBuilder sb = new StringBuilder(3);
-            if (rule.hasDescriptor(XPathRule.XPATH_DESCRIPTOR)) {
+            if (RuleUtil.isXPathRule(rule)) {
                 sb.append(RULE_TYPE_XPATH[0]);
             }
             if (rule.isDfa()) {
@@ -131,7 +130,7 @@ public interface RuleFieldAccessor {
 
         public String labelFor(Rule rule) {
             List<String> types = new ArrayList<String>(3);
-            if (rule.hasDescriptor(XPathRule.XPATH_DESCRIPTOR)) {
+            if (RuleUtil.isXPathRule(rule)) {
                 types.add(RULE_TYPE_XPATH[labelTypeIdx]);
             }
             // if (if (RuleUtil.isXPathRule(rule)) TODO

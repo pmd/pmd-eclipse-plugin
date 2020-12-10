@@ -190,7 +190,7 @@ public class Util {
         }
     }
 
-    public static Comparator<?> comparatorFrom(final RuleFieldAccessor accessor, final boolean inverted) {
+    public static Comparator<Rule> comparatorFrom(final RuleFieldAccessor accessor, final boolean inverted) {
 
         if (accessor == null) {
             throw new IllegalArgumentException("Accessor is required");

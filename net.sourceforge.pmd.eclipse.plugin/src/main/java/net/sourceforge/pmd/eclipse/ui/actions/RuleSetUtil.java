@@ -64,6 +64,7 @@ public class RuleSetUtil {
         return retainOnly(ruleSet, wantedRules);
     }
 
+    @Deprecated
     public static RuleSet addExcludePatterns(RuleSet ruleSet, Collection<String> activeExclusionPatterns,
             Collection<String> buildPathExcludePatterns) {
         Set<String> newExcludePatterns = new HashSet<String>(InternalRuleSetUtil.convert(ruleSet.getFileExclusions()));
@@ -76,6 +77,7 @@ public class RuleSetUtil {
                 newExcludePatterns, newIncludePatterns, ruleSet.getRules());
     }
 
+    @Deprecated
     public static RuleSet addIncludePatterns(RuleSet ruleSet, Collection<String> activeInclusionPatterns,
             Collection<String> buildPathIncludePatterns) {
         Set<String> newExcludePatterns = new HashSet<String>(InternalRuleSetUtil.convert(ruleSet.getFileExclusions()));
@@ -156,10 +158,12 @@ public class RuleSetUtil {
                 InternalRuleSetUtil.convert(ruleSet.getFileInclusions()), ruleSet.getRules());
     }
 
+    @Deprecated
     public static RuleSet addExcludePatterns(RuleSet rs, Collection<String> excludePatterns) {
         return addExcludePatterns(rs, excludePatterns, new HashSet<String>());
     }
 
+    @Deprecated
     public static RuleSet addIncludePatterns(RuleSet rs, Collection<String> includePatterns) {
         return addIncludePatterns(rs, includePatterns, new HashSet<String>());
     }

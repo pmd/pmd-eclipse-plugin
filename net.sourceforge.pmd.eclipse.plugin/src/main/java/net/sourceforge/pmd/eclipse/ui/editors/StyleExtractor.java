@@ -9,12 +9,11 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Display;
-
-import net.sourceforge.pmd.util.StringUtil;
 
 /**
  * 
@@ -27,7 +26,6 @@ public class StyleExtractor {
 
     private static final Color COMMENT_COLOR = Display.getCurrent().getSystemColor(SWT.COLOR_DARK_GREEN);
     private static final Color REFERENCED_VAR_COLOR = Display.getCurrent().getSystemColor(SWT.COLOR_DARK_GREEN);
-    private static final Color UNREFERENCED_VAR_COLOR = Display.getCurrent().getSystemColor(SWT.COLOR_YELLOW);
     private static final Color COMMENT_BACKGROUND = Display.getCurrent().getSystemColor(SWT.COLOR_WHITE);
     private static final Color PUNCTUATION_COLOR = Display.getCurrent().getSystemColor(SWT.COLOR_BLACK);
     private static final Color KEYWORD_COLOR = Display.getCurrent().getSystemColor(SWT.COLOR_DARK_MAGENTA);
@@ -115,7 +113,7 @@ public class StyleExtractor {
     }
 
     private boolean isDefinedVariable(String text) {
-        return StringUtil.isNotEmpty(text);
+        return StringUtils.isNotBlank(text);
     }
 
     private boolean atMultiLineCommentStart(String text, int position) {

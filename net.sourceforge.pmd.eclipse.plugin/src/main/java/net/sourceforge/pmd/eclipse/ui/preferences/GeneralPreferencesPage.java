@@ -10,6 +10,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.preferences.InstanceScope;
@@ -50,7 +51,7 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.dialogs.PreferencesUtil;
 import org.eclipse.ui.preferences.ScopedPreferenceStore;
 
-import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.PMDVersion;
 import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.plugin.UISettings;
@@ -66,7 +67,6 @@ import net.sourceforge.pmd.eclipse.ui.priority.PriorityColumnUI;
 import net.sourceforge.pmd.eclipse.ui.priority.PriorityDescriptor;
 import net.sourceforge.pmd.eclipse.ui.priority.PriorityDescriptorCache;
 import net.sourceforge.pmd.eclipse.ui.priority.PriorityDescriptorIcon;
-import net.sourceforge.pmd.util.StringUtil;
 
 /**
  * The top-level page for PMD preferences
@@ -384,7 +384,7 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
 
     private void setName(String newName) {
 
-        if (StringUtil.isEmpty(newName)) {
+        if (StringUtils.isBlank(newName)) {
             return;
         }
 
@@ -568,8 +568,8 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
         StringBuilder aboutText = new StringBuilder();
         aboutText.append(getMessage(StringKeys.PREF_GENERAL_LABEL_PMD_ECLIPSE_VERSION)).append(" ")
                 .append(PMDPlugin.version).append("\n");
-        aboutText.append(getMessage(StringKeys.PREF_GENERAL_LABEL_PMD_VERSION)).append(" ").append(PMD.VERSION)
-                .append("\n");
+        aboutText.append(getMessage(StringKeys.PREF_GENERAL_LABEL_PMD_VERSION)).append(" ")
+                .append(PMDVersion.VERSION).append("\n");
 
         Label aboutLabel = new Label(aboutGroup, SWT.NONE);
         aboutLabel.setText(aboutText.toString());

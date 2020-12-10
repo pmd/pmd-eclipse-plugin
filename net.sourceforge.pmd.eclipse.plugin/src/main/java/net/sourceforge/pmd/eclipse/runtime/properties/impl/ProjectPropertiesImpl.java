@@ -13,6 +13,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -38,8 +39,8 @@ import net.sourceforge.pmd.eclipse.runtime.properties.PropertiesException;
 import net.sourceforge.pmd.eclipse.runtime.writer.IRuleSetWriter;
 import net.sourceforge.pmd.eclipse.runtime.writer.WriterException;
 import net.sourceforge.pmd.eclipse.ui.actions.RuleSetUtil;
+import net.sourceforge.pmd.eclipse.ui.actions.internal.InternalRuleSetUtil;
 import net.sourceforge.pmd.eclipse.util.IOUtil;
-import net.sourceforge.pmd.util.StringUtil;
 
 /**
  * Implementation of a project properties information structure
@@ -214,7 +215,7 @@ public class ProjectPropertiesImpl implements IProjectProperties {
      * @see net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties#getRuleSetFile()
      */
     public String getRuleSetFile() {
-        return StringUtil.isEmpty(ruleSetFile) ? PROJECT_RULESET_FILE : ruleSetFile;
+        return StringUtils.isBlank(ruleSetFile) ? PROJECT_RULESET_FILE : ruleSetFile;
     }
 
     /**
@@ -378,8 +379,8 @@ public class ProjectPropertiesImpl implements IProjectProperties {
                     RuleSetUtil.DEFAULT_RULESET_DESCRIPTION);
             for (RuleSet rs : projectRuleSets.getAllRuleSets()) {
                 ruleSet = RuleSetUtil.addRules(ruleSet, rs.getRules());
-                ruleSet = RuleSetUtil.addIncludePatterns(ruleSet, rs.getIncludePatterns());
-                ruleSet = RuleSetUtil.addExcludePatterns(ruleSet, rs.getExcludePatterns());
+                ruleSet = InternalRuleSetUtil.addFileInclusions(ruleSet, rs.getFileInclusions());
+                ruleSet = InternalRuleSetUtil.addFileExclusions(ruleSet, rs.getFileExclusions());
             }
             writer.write(baos, ruleSet);
 

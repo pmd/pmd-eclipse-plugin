@@ -21,12 +21,11 @@ import net.sourceforge.pmd.eclipse.util.Util;
 /**
  * @author Brian Remedios
  */
-@SuppressWarnings("rawtypes")
 public class RuleSetTreeItemProvider implements ITreeContentProvider {
 
     private RuleFieldAccessor fieldAccessor;
     private final String groupDescription;
-    private final Comparator comparator;
+    private final Comparator<Rule> comparator;
     private final Map<Object, RuleGroup> ruleGroups;
 
     /**
@@ -37,7 +36,7 @@ public class RuleSetTreeItemProvider implements ITreeContentProvider {
      * @param description
      *            String
      */
-    public RuleSetTreeItemProvider(RuleFieldAccessor accessor, String description, Comparator<?> theComparator) {
+    public RuleSetTreeItemProvider(RuleFieldAccessor accessor, String description, Comparator<Rule> theComparator) {
         fieldAccessor = accessor;
         groupDescription = description;
         comparator = theComparator;
@@ -54,7 +53,7 @@ public class RuleSetTreeItemProvider implements ITreeContentProvider {
     }
 
     private Object[] sort(Collection<Rule> ruleColl) {
-        Object[] rules = ruleColl.toArray();
+        Rule[] rules = ruleColl.toArray(new Rule[0]);
         if (comparator == null) {
             return rules;
         }

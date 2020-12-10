@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.eclipse.ui.preferences;
 
-import java.util.List;
-
 import net.sourceforge.pmd.RuleSet;
 
 /**
@@ -30,8 +28,8 @@ public class RuleSetExcludeIncludePatternContentProvider extends AbstractStructu
 
         if (inputElement instanceof RuleSet) {
             RuleSet ruleSet = (RuleSet) inputElement;
-            List<String> patterns = exclude ? ruleSet.getExcludePatterns() : ruleSet.getIncludePatterns();
-            RuleSetExcludeIncludePattern[] patternList = new RuleSetExcludeIncludePattern[patterns.size()];
+            int patternCount = exclude ? ruleSet.getFileExclusions().size() : ruleSet.getFileInclusions().size();
+            RuleSetExcludeIncludePattern[] patternList = new RuleSetExcludeIncludePattern[patternCount];
             for (int i = 0; i < patternList.length; i++) {
                 patternList[i] = new RuleSetExcludeIncludePattern(ruleSet, exclude, i);
             }

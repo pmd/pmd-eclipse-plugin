@@ -40,9 +40,7 @@ import net.sourceforge.pmd.eclipse.ui.ModifyListener;
 import net.sourceforge.pmd.eclipse.ui.actions.RuleSetUtil;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
 import net.sourceforge.pmd.eclipse.ui.preferences.editors.SWTUtil;
-import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.DescriptionPanelManager;
 import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.EditorUsageMode;
-import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.ExamplePanelManager;
 import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.ExclusionPanelManager;
 import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.PerRulePropertyPanelManager;
 import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.RulePanelManager;
@@ -264,24 +262,6 @@ public class PMDPreferencePage2 extends AbstractPMDPreferencePage
      * @param index
      *            int
      */
-    private static RulePropertyManager buildDescriptionTab(TabFolder parent, int index, String title,
-            ValueChangeListener listener) {
-
-        TabItem tab = new TabItem(parent, 0, index);
-        tab.setText(title);
-
-        DescriptionPanelManager manager = new DescriptionPanelManager(title, EditorUsageMode.Editing, listener);
-        tab.setControl(manager.setupOn(parent));
-        manager.tab(tab);
-        return manager;
-    }
-
-    /**
-     * @param parent
-     *            TabFolder
-     * @param index
-     *            int
-     */
     private static RulePropertyManager buildXPathTab(TabFolder parent, int index, String title,
             ValueChangeListener listener) {
 
@@ -311,45 +291,6 @@ public class PMDPreferencePage2 extends AbstractPMDPreferencePage
         manager.tab(tab);
         return manager;
     }
-
-    /**
-     * @param parent
-     *            TabFolder
-     * @param index
-     *            int
-     */
-    private static RulePropertyManager buildExampleTab(TabFolder parent, int index, String title,
-            ValueChangeListener listener) {
-
-        TabItem tab = new TabItem(parent, 0, index);
-        tab.setText(title);
-
-        ExamplePanelManager manager = new ExamplePanelManager(title, EditorUsageMode.Editing, listener);
-        tab.setControl(manager.setupOn(parent));
-        manager.tab(tab);
-        return manager;
-    }
-
-    /**
-     * @param parent
-     *            TabFolder
-     * @param index
-     *            int
-     */
-    // private static RulePropertyManager buildQuickFixTab(TabFolder parent, int
-    // index, String title, ValueChangeListener listener) {
-    //
-    // TabItem tab = new TabItem(parent, 0, index);
-    // tab.setText(title);
-    //
-    // QuickFixPanelManager manager = new QuickFixPanelManager(title,
-    // EditorUsageMode.Editing, listener);
-    // tab.setControl(
-    // manager.setupOn(parent)
-    // );
-    // manager.tab(tab);
-    // return manager;
-    // }
 
     /**
      *
