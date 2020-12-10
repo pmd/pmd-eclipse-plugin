@@ -12,10 +12,8 @@ import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
 
-import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
-import net.sourceforge.pmd.eclipse.runtime.PMDRuntimeConstants;
 import net.sourceforge.pmd.eclipse.ui.PMDUiConstants;
 import net.sourceforge.pmd.eclipse.ui.model.AbstractPMDRecord;
 import net.sourceforge.pmd.eclipse.ui.model.FileRecord;
@@ -123,46 +121,7 @@ public class ViolationOverviewLabelProvider extends LabelProvider implements ITa
      */
     private String getNumberOfViolations(AbstractPMDRecord element) {
         final int violations = this.violationView.getNumberOfFilteredViolations(element);
-        String result = String.valueOf(violations);
-
-        if (element instanceof MarkerRecord && violationView.getShowType() != ViolationOverview.SHOW_MARKERS_FILES) {
-            final String ruleName = ((MarkerRecord) element).getName();
-            final int maxViolations = getMaxViolations(ruleName);
-
-            if (violations == maxViolations) {
-                result = "(max) " + result;
-            }
-        } else if (element instanceof FileToMarkerRecord) {
-            final String ruleName = ((FileToMarkerRecord) element).getParent().getName();
-            final int maxViolations = getMaxViolations(ruleName);
-
-            if (violations == maxViolations) {
-                result = "(max) " + result;
-            }
-        }
-
-        return result;
-    }
-
-    /**
-     * Gets the maximum number of violations to a rule.
-     * 
-     * @param ruleName
-     *            name of the rule
-     * @return maximum number
-     */
-    private int getMaxViolations(String ruleName) {
-        int maxViolations = PMDPlugin.getDefault().loadPreferences().getMaxViolationsPerFilePerRule();
-        final Rule rule = PMDPlugin.getDefault().getPreferencesManager().getRuleSet().getRuleByName(ruleName);
-        if (rule != null) {
-            if (rule.hasDescriptor(PMDRuntimeConstants.MAX_VIOLATIONS_DESCRIPTOR)) {
-                return rule.getProperty(PMDRuntimeConstants.MAX_VIOLATIONS_DESCRIPTOR);
-            } else {
-                return PMDRuntimeConstants.MAX_VIOLATIONS_DESCRIPTOR.defaultValue();
-            }
-        }
-
-        return maxViolations;
+        return String.valueOf(violations);
     }
 
     /**

@@ -261,7 +261,6 @@ class PreferencesManagerImpl implements IPreferencesManager {
         storePmdViolationsOutlineEnabled();
         storeCheckAfterSaveEnabled();
         storeUseCustomPriorityNames();
-        storeMaxViolationsPerFilePerRule();
         storeDetermineFiletypesAutomatically();
         storeReviewAdditionalComment();
         storeReviewPmdStyleEnabled();
@@ -535,10 +534,6 @@ class PreferencesManagerImpl implements IPreferencesManager {
     
     private void storePmdViolationsOutlineEnabled() {
         storePreferencesStore.setValue(PMD_VIOLATIONS_OUTLINE_ENABLED, preferences.isPmdViolationsOutlineEnabled());
-    }
-    
-    private void storeMaxViolationsPerFilePerRule() {
-        storePreferencesStore.setValue(MAX_VIOLATIONS_PFPR, preferences.getMaxViolationsPerFilePerRule());
     }
 
     private void storeDetermineFiletypesAutomatically() {

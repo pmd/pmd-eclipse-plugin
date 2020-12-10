@@ -14,6 +14,8 @@ import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RulesetsFactoryUtils;
 
 public class InternalRuleSetUtil {
+    private InternalRuleSetUtil() {}
+
     public static RuleSet setFileExclusions(RuleSet ruleSet, Collection<Pattern> excludePatterns) {
         RuleSetFactory factory = RulesetsFactoryUtils.defaultFactory();
         return factory.createNewRuleSet(ruleSet.getName(), ruleSet.getDescription(), ruleSet.getFileName(),

@@ -26,6 +26,7 @@ public interface IPreferences {
     boolean PMD_VIOLATIONS_OUTLINE_ENABLED_DEFAULT = false;
     boolean PMD_CHECK_AFTER_SAVE_DEFAULT = false;
     boolean PMD_USE_CUSTOM_PRIORITY_NAMES_DEFAULT = true;
+    @Deprecated
     int MAX_VIOLATIONS_PFPR_DEFAULT = 5;
     boolean DETERMINE_FILETYPES_AUTOMATICALLY_DEFAULT = true;
     String REVIEW_ADDITIONAL_COMMENT_DEFAULT = "by {0} on {1}";
@@ -131,7 +132,10 @@ public interface IPreferences {
     /**
      * Get the maximum number of violations per file per rule reported by the
      * plugin. This parameter is used to improve performances
+     *
+     * @deprecated
      */
+    @Deprecated
     int getMaxViolationsPerFilePerRule();
 
     /**
@@ -139,7 +143,10 @@ public interface IPreferences {
      * plugin
      * 
      * @param maxViolationPerFilePerRule
+     *
+     * @deprecated
      */
+    @Deprecated
     void setMaxViolationsPerFilePerRule(int maxViolationPerFilePerRule);
 
     /**

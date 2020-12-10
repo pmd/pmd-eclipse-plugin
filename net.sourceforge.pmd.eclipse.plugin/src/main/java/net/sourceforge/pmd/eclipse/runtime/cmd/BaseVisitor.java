@@ -11,7 +11,6 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
@@ -452,26 +451,6 @@ public class BaseVisitor {
         return fileInWorkingSet;
     }
 
-    /**
-     * Update markers list for the specified file
-     *
-     * @param file
-     *            the file for which markers are to be updated
-     * @param context
-     *            a PMD context
-     * @param fTask
-     *            indicate if a task marker should be created
-     * @param accumulator
-     *            a map that contains impacted file and marker informations
-     */
-
-    private int maxAllowableViolationsFor(Rule rule) {
-
-        return rule.hasDescriptor(PMDRuntimeConstants.MAX_VIOLATIONS_DESCRIPTOR)
-                ? rule.getProperty(PMDRuntimeConstants.MAX_VIOLATIONS_DESCRIPTOR)
-                : PMDRuntimeConstants.MAX_VIOLATIONS_DESCRIPTOR.defaultValue();
-    }
-
     public static String markerTypeFor(RuleViolation violation) {
         switch (violation.getRule().getPriority()) {
         case HIGH:
@@ -505,9 +484,6 @@ public class BaseVisitor {
         Review review = new Review();
         // final IPreferences preferences =
         // PMDPlugin.getDefault().loadPreferences();
-        // final int maxViolationsPerFilePerRule =
-        // preferences.getMaxViolationsPerFilePerRule();
-        Map<Rule, Integer> violationsByRule = new HashMap<Rule, Integer>();
 
         Rule rule;
         for (RuleViolation violation : violations) {
@@ -521,34 +497,20 @@ public class BaseVisitor {
                 continue;
             }
 
-            Integer count = violationsByRule.get(rule);
-            if (count == null) {
-                count = 0;
-                violationsByRule.put(rule, count);
-            }
+            // Ryan Gustafson 02/16/2008 - Always use PMD_MARKER, as people
+            // get confused as to why PMD problems don't always show up on
+            // Problems view like they do when you do build.
+            // markerSet.add(getMarkerInfo(violation, fTask ?
+            // PMDRuntimeConstants.PMD_TASKMARKER :
+            // PMDRuntimeConstants.PMD_MARKER));
+            markerSet.add(getMarkerInfo(violation, markerTypeFor(violation)));
+            /*
+             * if (isDfaEnabled && violation.getRule().usesDFA()) { markerSet.add(getMarkerInfo(violation,
+             * PMDRuntimeConstants.PMD_DFA_MARKER)); } else { markerSet.add(getMarkerInfo(violation, fTask ?
+             * PMDRuntimeConstants.PMD_TASKMARKER : PMDRuntimeConstants.PMD_MARKER)); }
+             */
 
-            int maxViolations = maxAllowableViolationsFor(rule);
-
-            if (count.intValue() < maxViolations) {
-                // Ryan Gustafson 02/16/2008 - Always use PMD_MARKER, as people
-                // get confused as to why PMD problems don't always show up on
-                // Problems view like they do when you do build.
-                // markerSet.add(getMarkerInfo(violation, fTask ?
-                // PMDRuntimeConstants.PMD_TASKMARKER :
-                // PMDRuntimeConstants.PMD_MARKER));
-                markerSet.add(getMarkerInfo(violation, markerTypeFor(violation)));
-                /*
-                 * if (isDfaEnabled && violation.getRule().usesDFA()) { markerSet.add(getMarkerInfo(violation,
-                 * PMDRuntimeConstants.PMD_DFA_MARKER)); } else { markerSet.add(getMarkerInfo(violation, fTask ?
-                 * PMDRuntimeConstants.PMD_TASKMARKER : PMDRuntimeConstants.PMD_MARKER)); }
-                 */
-                violationsByRule.put(rule, Integer.valueOf(count.intValue() + 1));
-
-                LOG.debug("Adding a violation for rule " + rule.getName() + " at line " + violation.getBeginLine());
-            } else {
-                LOG.debug("Ignoring violation of rule " + rule.getName() + " at line " + violation.getBeginLine()
-                        + " because maximum violations has been reached for file " + file.getName());
-            }
+            LOG.debug("Adding a violation for rule " + rule.getName() + " at line " + violation.getBeginLine());
         }
 
         if (accumulator != null) {

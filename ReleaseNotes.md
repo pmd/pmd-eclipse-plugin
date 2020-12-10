@@ -21,6 +21,14 @@ This is a minor release.
     *   `setExcludePatterns(RuleSet ruleSet, Collection<String> excludePatterns)`
     *   `setIncludePatterns(RuleSet ruleSet, Collection<String> includePatterns)`
     *   These methods are not supposed to be public API and will be removed eventually.
+*   The property `net.sourceforge.pmd.eclipse.runtime.PMDRuntimeConstants.MAX_VIOLATIONS_DESCRIPTOR`
+    is deprecated and will be removed.
+*   The preference "net.sourceforge.pmd.eclipse.plugin.max_violations_pfpr" is deprecated and will be removed.
+    It was never implemented. The following methods and fields are deprecated:
+    *   `net.sourceforge.pmd.eclipse.runtime.preferences.IPreferences.getMaxViolationsPerFilePerRule()`
+    *   `net.sourceforge.pmd.eclipse.runtime.preferences.IPreferences.setMaxViolationsPerFilePerRule(int)`
+    *   `net.sourceforge.pmd.eclipse.runtime.preferences.IPreferences.MAX_VIOLATIONS_PFPR_DEFAULT`
+
 
 ### External Contributions
 
