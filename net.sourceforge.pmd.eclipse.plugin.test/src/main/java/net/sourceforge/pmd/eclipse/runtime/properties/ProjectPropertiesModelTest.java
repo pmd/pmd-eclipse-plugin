@@ -571,6 +571,9 @@ public class ProjectPropertiesModelTest {
         sampleLib4.create(IOUtils.toInputStream("", "UTF-8"), false, null);
         File realSampleLib4 = sampleLib4.getLocation().toFile().getCanonicalFile();
 
+        // build the project, so that the output folder "bin/" is created
+        this.testProject.build(IncrementalProjectBuilder.FULL_BUILD, null);
+
         IFile file = this.testProject.getFile(".classpath");
         String newClasspathContent = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
             + "<classpath>\n"
