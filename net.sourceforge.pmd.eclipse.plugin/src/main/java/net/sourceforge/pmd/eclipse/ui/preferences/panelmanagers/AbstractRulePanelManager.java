@@ -33,7 +33,6 @@ import net.sourceforge.pmd.eclipse.util.ColourManager;
 import net.sourceforge.pmd.eclipse.util.ResourceManager;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.StringProperty;
-import net.sourceforge.pmd.util.StringUtil;
 
 /**
  * Concrete subclasses can also be used as tab folders outside of a wizard
@@ -171,11 +170,11 @@ public abstract class AbstractRulePanelManager extends WizardPage implements Rul
             updateTabUI(warnings, errors);
         }
 
-        String errorText = errors.isEmpty() ? null : StringUtil.asString(errors.toArray(), ", ");
+        String errorText = errors.isEmpty() ? null : StringUtils.join(errors, ", ");
 
         setErrorMessage(errorText);
 
-        setPageComplete(StringUtil.isEmpty(errorText));
+        setPageComplete(StringUtils.isBlank(errorText));
 
         return errorText == null;
     }
@@ -273,7 +272,7 @@ public abstract class AbstractRulePanelManager extends WizardPage implements Rul
         String cleanValue = newValue.trim();
         String existingValue = rules.commonStringValue(property);
 
-        if (StringUtil.areSemanticEquals(existingValue, cleanValue)) {
+        if (StringUtils.equals(StringUtils.stripToNull(existingValue), StringUtils.stripToNull(cleanValue))) {
             return;
         }
 
@@ -329,7 +328,7 @@ public abstract class AbstractRulePanelManager extends WizardPage implements Rul
 
         int index = -1;
         for (int i = 0; i < choices.length; i++) {
-            if (StringUtil.areSemanticEquals(choices[i], value)) {
+            if (StringUtils.equals(StringUtils.stripToNull(choices[i]), StringUtils.stripToNull(value))) {
                 index = i;
                 break;
             }
@@ -355,7 +354,7 @@ public abstract class AbstractRulePanelManager extends WizardPage implements Rul
 
         int index = -1;
         for (int i = 0; i < choices.length; i++) {
-            if (StringUtil.areSemanticEquals(choices[i], value)) {
+            if (StringUtils.equals(StringUtils.stripToNull(choices[i]), StringUtils.stripToNull(value))) {
                 index = i;
                 break;
             }

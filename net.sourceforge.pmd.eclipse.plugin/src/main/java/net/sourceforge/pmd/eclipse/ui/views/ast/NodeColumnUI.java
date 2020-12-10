@@ -67,16 +67,16 @@ public interface NodeColumnUI {
         }
     };
 
-    ItemColumnDescriptor TYPE_NAME = new ItemColumnDescriptor("", StringKeys.NODE_COLUMN_NAME, SWT.LEFT, 85, true,
-            TYPE_NAME_ACC);
-    ItemColumnDescriptor IMAGE_DATA = new ItemColumnDescriptor("", StringKeys.NODE_IMAGE_DATA, SWT.LEFT, 25, true,
-            IMAGE_ACC);
-    ItemColumnDescriptor LINE_NUM = new ItemColumnDescriptor("", StringKeys.NODE_LINE_NUM, SWT.RIGHT, 35, true,
-            BEGIN_LINE_NUM_ACC);
-    ItemColumnDescriptor DERIVED = new ItemColumnDescriptor("", StringKeys.NODE_DERIVED, SWT.LEFT, 25, true,
-            DERIVED_ACC);
-    ItemColumnDescriptor IMAGE_OR_DERIVED = new ItemColumnDescriptor("", StringKeys.NODE_IMG_OR_DERIVED, SWT.LEFT, 25,
-            true, IMAGE_OR_DERIVED_ACC);
+    ItemColumnDescriptor<String, Node> TYPE_NAME = new ItemColumnDescriptor<>("", StringKeys.NODE_COLUMN_NAME,
+            SWT.LEFT, 85, true, TYPE_NAME_ACC);
+    ItemColumnDescriptor<String, Node> IMAGE_DATA = new ItemColumnDescriptor<>("", StringKeys.NODE_IMAGE_DATA,
+            SWT.LEFT, 25, true, IMAGE_ACC);
+    ItemColumnDescriptor<Integer, Node> LINE_NUM = new ItemColumnDescriptor<>("", StringKeys.NODE_LINE_NUM,
+            SWT.RIGHT, 35, true, BEGIN_LINE_NUM_ACC);
+    ItemColumnDescriptor<String, Node> DERIVED = new ItemColumnDescriptor<>("", StringKeys.NODE_DERIVED,
+            SWT.LEFT, 25, true, DERIVED_ACC);
+    ItemColumnDescriptor<String, Node> IMAGE_OR_DERIVED = new ItemColumnDescriptor<>("", StringKeys.NODE_IMG_OR_DERIVED,
+            SWT.LEFT, 25, true, IMAGE_OR_DERIVED_ACC);
 
     ItemColumnDescriptor[] VISIBLE_COLUMNS = new ItemColumnDescriptor[] { LINE_NUM, TYPE_NAME, IMAGE_OR_DERIVED };
 

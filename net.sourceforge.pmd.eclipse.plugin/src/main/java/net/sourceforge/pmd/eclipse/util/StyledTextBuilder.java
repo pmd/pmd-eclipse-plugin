@@ -7,6 +7,7 @@ package net.sourceforge.pmd.eclipse.util;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Rectangle;
@@ -21,7 +22,6 @@ import org.eclipse.swt.widgets.TreeItem;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.eclipse.ui.IndexedString;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.RuleFieldAccessor;
-import net.sourceforge.pmd.util.StringUtil;
 
 public class StyledTextBuilder extends AbstractCellPainterBuilder {
 
@@ -46,7 +46,7 @@ public class StyledTextBuilder extends AbstractCellPainterBuilder {
         }
         layout.setText(text);
 
-        if (StringUtil.isEmpty(text)) {
+        if (StringUtils.isBlank(text)) {
             layout.setStyle(style, 0, 0);
         } else {
             for (int i = 0; i < is.indexSpans.size(); i++) {

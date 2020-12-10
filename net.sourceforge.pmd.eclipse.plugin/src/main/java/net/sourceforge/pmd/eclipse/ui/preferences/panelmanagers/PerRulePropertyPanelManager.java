@@ -19,6 +19,7 @@ import org.eclipse.swt.widgets.Control;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.EditorFactory;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.RuleSelection;
+import net.sourceforge.pmd.eclipse.ui.preferences.br.RuleUtil;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.SizeChangeListener;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.ValueChangeListener;
 import net.sourceforge.pmd.eclipse.ui.preferences.editors.BooleanEditorFactory;
@@ -30,7 +31,6 @@ import net.sourceforge.pmd.eclipse.ui.preferences.editors.MultiIntegerEditorFact
 import net.sourceforge.pmd.eclipse.ui.preferences.editors.MultiStringEditorFactory;
 import net.sourceforge.pmd.eclipse.ui.preferences.editors.RegexEditorFactory;
 import net.sourceforge.pmd.eclipse.ui.preferences.editors.StringEditorFactory;
-import net.sourceforge.pmd.lang.rule.XPathRule;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertySource;
 
@@ -82,15 +82,8 @@ public class PerRulePropertyPanelManager extends AbstractRulePanelManager implem
     }
 
     protected boolean canWorkWith(Rule rule) {
-
-        // TODO if (rule.hasDescriptor(XPathRule.XPATH_DESCRIPTOR)) return true;
-        // won't work, need to tweak Rule implementation as map is empty
-
-        // alternate approach for now
-        for (PropertyDescriptor<?> desc : rule.getPropertyDescriptors()) {
-            if (desc.equals(XPathRule.XPATH_DESCRIPTOR)) {
-                return true;
-            }
+        if (RuleUtil.isXPathRule(rule)) {
+            return true;
         }
 
         return !Configuration.filteredPropertiesOf(rule).isEmpty();

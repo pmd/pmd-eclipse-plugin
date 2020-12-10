@@ -44,7 +44,6 @@ import net.sourceforge.pmd.eclipse.ui.model.MarkerRecord;
 import net.sourceforge.pmd.eclipse.ui.model.PackageRecord;
 import net.sourceforge.pmd.eclipse.ui.model.RootRecord;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
-import net.sourceforge.pmd.util.NumericConstants;
 
 /**
  * A View for PMD-Violations, provides an Overview as well as statistical
@@ -568,8 +567,8 @@ public class ViolationOverview extends ViewPart implements ISelectionProvider, I
         return new TableColumnSorter(column, sortOrder) {
             @Override
             public int compare(Viewer viewer, Object e1, Object e2) {
-                Float vioPerLoc1 = NumericConstants.FLOAT_ZERO;
-                Float vioPerLoc2 = NumericConstants.FLOAT_ZERO;
+                Float vioPerLoc1 = 0f;
+                Float vioPerLoc2 = 0f;
                 if (e1 instanceof PackageRecord && e2 instanceof PackageRecord
                         || e1 instanceof FileRecord && e2 instanceof FileRecord
                         || e1 instanceof MarkerRecord && e2 instanceof MarkerRecord
@@ -604,8 +603,8 @@ public class ViolationOverview extends ViewPart implements ISelectionProvider, I
             @Override
             public int compare(Viewer viewer, Object e1, Object e2) {
 
-                Float vioPerMethod1 = NumericConstants.FLOAT_ZERO;
-                Float vioPerMethod2 = NumericConstants.FLOAT_ZERO;
+                Float vioPerMethod1 = 0f;
+                Float vioPerMethod2 = 0f;
                 if (e1 instanceof PackageRecord && e2 instanceof PackageRecord
                         || e1 instanceof FileRecord && e2 instanceof FileRecord
                         || e1 instanceof MarkerRecord && e2 instanceof MarkerRecord

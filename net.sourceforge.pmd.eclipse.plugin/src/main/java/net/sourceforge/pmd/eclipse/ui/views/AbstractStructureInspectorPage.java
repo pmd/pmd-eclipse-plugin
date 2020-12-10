@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.eclipse.ui.views;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -328,7 +329,7 @@ public abstract class AbstractStructureInspectorPage extends Page
             RuleSet rs = RuleSetUtil.newSingle(dfaGraphRule);
 
             RuleContext ctx = new RuleContext();
-            ctx.setSourceCodeFilename("[scratchpad]");
+            ctx.setSourceCodeFile(new File("[scratchpad]"));
 
             // StringReader reader = new StringReader(getDocument().get());
             // run PMD using the DFAGraphRule and the Text of the Resource

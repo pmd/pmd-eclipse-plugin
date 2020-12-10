@@ -15,7 +15,6 @@ import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.ui.PMDUiConstants;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
 import net.sourceforge.pmd.eclipse.ui.priority.PriorityDescriptorCache;
-import net.sourceforge.pmd.util.NumericConstants;
 
 /**
  * Provides the ViolationsOutlinePages with labels and images
@@ -33,7 +32,7 @@ public class ViolationOutlineLabelProvider extends LabelProvider implements ITab
         }
 
         if (columnIndex == 0) {
-            Integer priority = NumericConstants.ZERO;
+            Integer priority = 0;
             try {
                 priority = (Integer) marker.getAttribute(PMDUiConstants.KEY_MARKERATT_PRIORITY);
             } catch (CoreException ce) {

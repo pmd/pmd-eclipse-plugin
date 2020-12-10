@@ -38,7 +38,6 @@ import net.sourceforge.pmd.eclipse.ui.PMDUiConstants;
 import net.sourceforge.pmd.eclipse.ui.model.FileRecord;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
 import net.sourceforge.pmd.eclipse.ui.views.actions.RemoveViolationAction;
-import net.sourceforge.pmd.util.NumericConstants;
 
 /**
  * Creates a Page for the Violation Outline
@@ -183,8 +182,8 @@ public class ViolationOutlinePage extends Page implements IPage, ISelectionChang
                     IMarker marker1 = (IMarker) e1;
                     IMarker marker2 = (IMarker) e2;
 
-                    Integer prio1 = NumericConstants.ZERO;
-                    Integer prio2 = NumericConstants.ZERO;
+                    Integer prio1 = 0;
+                    Integer prio2 = 0;
 
                     try {
                         prio1 = (Integer) marker1.getAttribute(PMDUiConstants.KEY_MARKERATT_PRIORITY);

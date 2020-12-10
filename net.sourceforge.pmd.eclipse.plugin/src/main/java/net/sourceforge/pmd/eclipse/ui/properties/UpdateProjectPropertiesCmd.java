@@ -20,8 +20,6 @@ import net.sourceforge.pmd.eclipse.runtime.properties.PropertiesException;
  */
 public class UpdateProjectPropertiesCmd extends AbstractProjectCommand {
 
-    private static final long serialVersionUID = 1L;
-
     // private IProject project;
     private boolean pmdEnabled;
     private IWorkingSet projectWorkingSet;

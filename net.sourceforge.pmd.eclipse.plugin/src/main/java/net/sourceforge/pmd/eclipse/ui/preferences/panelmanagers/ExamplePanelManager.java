@@ -85,7 +85,7 @@ public class ExamplePanelManager extends AbstractRulePanelManager {
                 String cleanValue = exampleField.getText().trim();
                 String existingValue = soleRule.getDescription();
 
-                if (StringUtil.areSemanticEquals(existingValue, cleanValue)) {
+                if (StringUtils.equals(StringUtils.stripToNull(existingValue), StringUtils.stripToNull(cleanValue))) {
                     return;
                 }
 

@@ -42,6 +42,7 @@ import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.ui.actions.RuleSetUtil;
+import net.sourceforge.pmd.eclipse.ui.actions.internal.InternalRuleSetUtil;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
 import net.sourceforge.pmd.eclipse.ui.preferences.PMDPreferencePage;
 import net.sourceforge.pmd.eclipse.ui.preferences.RuleLabelProvider;
@@ -583,8 +584,8 @@ public class PMDProjectPropertyPage extends PropertyPage {
 
         final RuleSets activeRuleSet = model.getProjectRuleSets();
         for (RuleSet rs : activeRuleSet.getAllRuleSets()) {
-            ruleSet = RuleSetUtil.addExcludePatterns(ruleSet, rs.getExcludePatterns());
-            ruleSet = RuleSetUtil.addIncludePatterns(ruleSet, rs.getIncludePatterns());
+            ruleSet = InternalRuleSetUtil.addFileExclusions(ruleSet, rs.getFileExclusions());
+            ruleSet = InternalRuleSetUtil.addFileInclusions(ruleSet, rs.getFileInclusions());
         }
 
         return ruleSet;
