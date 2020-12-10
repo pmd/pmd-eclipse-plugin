@@ -5,9 +5,12 @@
 package net.sourceforge.pmd.eclipse.runtime.cmd;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -28,11 +31,11 @@ import net.sourceforge.pmd.cpd.Language;
 import net.sourceforge.pmd.cpd.LanguageFactory;
 import net.sourceforge.pmd.cpd.Match;
 import net.sourceforge.pmd.cpd.Renderer;
+import net.sourceforge.pmd.cpd.renderer.CPDRenderer;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.runtime.PMDRuntimeConstants;
 import net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties;
 import net.sourceforge.pmd.eclipse.runtime.properties.PropertiesException;
-import net.sourceforge.pmd.eclipse.util.IOUtil;
 
 /**
  * This command produces a report of the Cut And Paste detector
@@ -44,7 +47,7 @@ public class DetectCutAndPasteCmd extends AbstractProjectCommand {
 
     private Language language;
     private int minTileSize;
-    private Renderer renderer;
+    private CPDRenderer renderer;
     private String reportName;
     private boolean createReport;
     private List<IPropertyListener> listeners;
@@ -114,7 +117,7 @@ public class DetectCutAndPasteCmd extends AbstractProjectCommand {
 
         setTerminated(false);
         setReportName(null);
-        setRenderer(null);
+        setCPDRenderer(null);
         setLanguage("java");
         setMinTileSize(PMDPlugin.getDefault().loadPreferences().getMinTileSize());
         setCreateReport(false);
@@ -139,10 +142,22 @@ public class DetectCutAndPasteCmd extends AbstractProjectCommand {
     }
 
     /**
-     * @param renderer
-     *            The renderer to set.
+     * @deprecated Use {@link #setCPDRenderer(CPDRenderer)} instead.
      */
     public void setRenderer(final Renderer renderer) {
+        if (renderer != null) {
+            this.setCPDRenderer(new CPDRenderer() {
+                @Override
+                public void render(Iterator<Match> matches, Writer writer) throws IOException {
+                    writer.write(renderer.render(matches));
+                }
+            });
+        } else {
+            this.setCPDRenderer(null);
+        }
+    }
+
+    public void setCPDRenderer(CPDRenderer renderer) {
         this.renderer = renderer;
     }
 
@@ -254,12 +269,9 @@ public class DetectCutAndPasteCmd extends AbstractProjectCommand {
      *            matches of the CPD
      */
     private void renderReport(Iterator<Match> matches) {
-        InputStream contentsStream = null;
-
         try {
             LOG.debug("Rendering CPD report");
             subTask("Rendering CPD report");
-            final String reportString = renderer.render(matches);
 
             // Create the report folder if not already existing
             LOG.debug("Create the report folder");
@@ -267,25 +279,38 @@ public class DetectCutAndPasteCmd extends AbstractProjectCommand {
             if (!folder.exists()) {
                 folder.create(true, true, getMonitor());
             }
-
             // Create the report file
             LOG.debug("Create the report file");
             final IFile reportFile = folder.getFile(reportName);
-            contentsStream = new ByteArrayInputStream(reportString.getBytes());
-            if (reportFile.exists()) {
-                LOG.debug("   Overwriting report file");
-                reportFile.setContents(contentsStream, true, false, getMonitor());
-            } else {
-                LOG.debug("   Creating report file");
-                reportFile.create(contentsStream, true, getMonitor());
+
+            byte[] data = new byte[0];
+            try (ByteArrayOutputStream renderedReport = new ByteArrayOutputStream();
+                 Writer writer = new OutputStreamWriter(renderedReport);) {
+                renderer.render(matches, writer);
+                data = renderedReport.toByteArray();
+            } catch (IOException e) {
+                LOG.error("Error while renderering CPD Report", e);
+                throw new RuntimeException(e);
             }
+
+            try (InputStream contentsStream = new ByteArrayInputStream(data)) {
+                if (reportFile.exists()) {
+                    LOG.debug("   Overwriting report file");
+                    reportFile.setContents(contentsStream, true, false, getMonitor());
+                } else {
+                    LOG.debug("   Creating report file");
+                    reportFile.create(contentsStream, true, getMonitor());
+                }
+            } catch (IOException e) {
+                LOG.error("Error while writing CPD Report", e);
+                throw new RuntimeException(e);
+            }
+
             reportFile.refreshLocal(IResource.DEPTH_INFINITE, getMonitor());
 
         } catch (CoreException e) {
             LOG.debug("Core Exception: " + e.getMessage(), e);
             throw new RuntimeException(e);
-        } finally {
-            IOUtil.closeQuietly(contentsStream);
         }
     }
 }

@@ -70,7 +70,7 @@ public class DetectCutAndPasteCmdTest {
     public void testDetectCutAndPasteCmdBasic1() throws CoreException {
         final DetectCutAndPasteCmd cmd = new DetectCutAndPasteCmd();
         cmd.setProject(this.testProject);
-        cmd.setRenderer(new SimpleRenderer());
+        cmd.setCPDRenderer(new SimpleRenderer());
         cmd.setReportName(PMDRuntimeConstants.SIMPLE_CPDREPORT_NAME);
         cmd.setCreateReport(true);
         cmd.setLanguage("java");
@@ -121,7 +121,7 @@ public class DetectCutAndPasteCmdTest {
     public void testDetectCutAndPasteCmdNullArg1() {
         final DetectCutAndPasteCmd cmd = new DetectCutAndPasteCmd();
         cmd.setProject(null);
-        cmd.setRenderer(new SimpleRenderer());
+        cmd.setCPDRenderer(new SimpleRenderer());
         cmd.setReportName(PMDRuntimeConstants.SIMPLE_CPDREPORT_NAME);
         cmd.performExecute();
     }
@@ -133,7 +133,7 @@ public class DetectCutAndPasteCmdTest {
     public void testDetectCutAndPasteCmdNullArg2() {
         final DetectCutAndPasteCmd cmd = new DetectCutAndPasteCmd();
         cmd.setProject(this.testProject);
-        cmd.setRenderer(null);
+        cmd.setCPDRenderer(null);
         cmd.setReportName(PMDRuntimeConstants.SIMPLE_CPDREPORT_NAME);
         cmd.performExecute();
     }
@@ -145,7 +145,7 @@ public class DetectCutAndPasteCmdTest {
     public void testDetectCutAndPasteCmdNullArg3() {
         final DetectCutAndPasteCmd cmd = new DetectCutAndPasteCmd();
         cmd.setProject(this.testProject);
-        cmd.setRenderer(new SimpleRenderer());
+        cmd.setCPDRenderer(new SimpleRenderer());
         cmd.setReportName(null);
         cmd.performExecute();
     }
@@ -157,7 +157,7 @@ public class DetectCutAndPasteCmdTest {
     public void testDetectCutAndPasteCmdNullArg4() {
         final DetectCutAndPasteCmd cmd = new DetectCutAndPasteCmd();
         cmd.setProject(null);
-        cmd.setRenderer(null);
+        cmd.setCPDRenderer(null);
         cmd.setReportName(PMDRuntimeConstants.SIMPLE_CPDREPORT_NAME);
         cmd.performExecute();
     }
@@ -169,7 +169,7 @@ public class DetectCutAndPasteCmdTest {
     public void testDetectCutAndPasteCmdNullArg5() {
         final DetectCutAndPasteCmd cmd = new DetectCutAndPasteCmd();
         cmd.setProject(null);
-        cmd.setRenderer(new SimpleRenderer());
+        cmd.setCPDRenderer(new SimpleRenderer());
         cmd.setReportName(null);
         cmd.performExecute();
     }
@@ -181,7 +181,7 @@ public class DetectCutAndPasteCmdTest {
     public void testDetectCutAndPasteCmdNullArg6() {
         final DetectCutAndPasteCmd cmd = new DetectCutAndPasteCmd();
         cmd.setProject(this.testProject);
-        cmd.setRenderer(null);
+        cmd.setCPDRenderer(null);
         cmd.setReportName(null);
         cmd.performExecute();
     }
@@ -193,7 +193,7 @@ public class DetectCutAndPasteCmdTest {
     public void testDetectCutAndPasteCmdNullArg7() {
         final DetectCutAndPasteCmd cmd = new DetectCutAndPasteCmd();
         cmd.setProject(null);
-        cmd.setRenderer(null);
+        cmd.setCPDRenderer(null);
         cmd.setReportName(null);
         cmd.performExecute();
     }

@@ -28,6 +28,7 @@ This is a minor release.
     *   `net.sourceforge.pmd.eclipse.runtime.preferences.IPreferences.getMaxViolationsPerFilePerRule()`
     *   `net.sourceforge.pmd.eclipse.runtime.preferences.IPreferences.setMaxViolationsPerFilePerRule(int)`
     *   `net.sourceforge.pmd.eclipse.runtime.preferences.IPreferences.MAX_VIOLATIONS_PFPR_DEFAULT`
+*   `net.sourceforge.pmd.eclipse.runtime.cmd.DetectCutAndPasteCmd.setRenderer(Renderer)` is deprecated.
 
 
 ### External Contributions
