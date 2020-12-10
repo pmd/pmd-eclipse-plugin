@@ -13,6 +13,7 @@ import java.net.URI;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -24,8 +25,11 @@ import org.apache.commons.io.IOUtils;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.ui.IWorkingSet;
 import org.junit.After;
 import org.junit.Assert;
@@ -522,6 +526,17 @@ public class ProjectPropertiesModelTest {
         System.out.println();
     }
 
+    /**
+     * Project structure:
+     * <ul>
+     * <li>this.testProject "PMDTestProject": main project, with build path, contains lib/sample-lib3.jar</li>
+     * <li>otherProject "OtherProject": contains sample-lib1.jar, sample-lib2.jar</li>
+     * <li>otherProject2 "OtherProject2": PMDTestProject depends on this</li>
+     * <li>externalProject "ExternalProject": not stored within workspace, contains sample-lib4.jar</li>
+     * </ul>
+     *
+     * @throws Exception
+     */
     @Test
     public void testProjectClasspath() throws Exception {
         IProject otherProject = EclipseUtils.createJavaProject("OtherProject");
@@ -532,6 +547,7 @@ public class ProjectPropertiesModelTest {
         IFile sampleLib2 = otherProject.getFile("sample-lib2.jar");
         sampleLib2.create(IOUtils.toInputStream("", "UTF-8"), false, null);
         File realSampleLib2 = sampleLib2.getLocation().toFile().getCanonicalFile();
+
         IFolder libFolder = this.testProject.getFolder("lib");
         libFolder.create(false, true, null);
         IFile sampleLib3 = libFolder.getFile("sample-lib3.jar");
@@ -543,6 +559,18 @@ public class ProjectPropertiesModelTest {
         // build the project, so that the output folder "bin/" is created
         otherProject2.build(IncrementalProjectBuilder.FULL_BUILD, null);
 
+        IProject externalProject = ResourcesPlugin.getWorkspace().getRoot().getProject("ExternalProject");
+        additionalProjects.add(externalProject);
+        Assert.assertFalse("Project must not exist yet", externalProject.exists());
+        java.nio.file.Path externalProjectDir = Files.createTempDirectory("pmd-eclipse-plugin");
+        IProjectDescription description = externalProject.getWorkspace().newProjectDescription("ExternalProject");
+        description.setLocation(Path.fromOSString(externalProjectDir.toString()));
+        externalProject.create(description, null);
+        externalProject.open(null);
+        IFile sampleLib4 = externalProject.getFile("sample-lib4.jar");
+        sampleLib4.create(IOUtils.toInputStream("", "UTF-8"), false, null);
+        File realSampleLib4 = sampleLib4.getLocation().toFile().getCanonicalFile();
+
         IFile file = this.testProject.getFile(".classpath");
         String newClasspathContent = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
             + "<classpath>\n"
@@ -553,6 +581,7 @@ public class ProjectPropertiesModelTest {
             + "    <classpathentry kind=\"lib\" path=\"" + realSampleLib2.getAbsolutePath() + "\"/>\n"
             + "    <classpathentry kind=\"lib\" path=\"lib/sample-lib3.jar\"/>\n"
             + "    <classpathentry kind=\"output\" path=\"bin\"/>\n"
+            + "    <classpathentry kind=\"lib\" path=\"/ExternalProject/sample-lib4.jar\"/>\n"
             + "</classpath>\n";
         file.setContents(IOUtils.toInputStream(newClasspathContent, "UTF-8"), 0, null);
         final IProjectPropertiesManager mgr = PMDPlugin.getDefault().getPropertiesManager();
@@ -563,7 +592,7 @@ public class ProjectPropertiesModelTest {
             urls.add(url.toURI());
         }
 
-        Assert.assertEquals(5, urls.size());
+        Assert.assertEquals(6, urls.size());
 
         // own project's output folder
         Assert.assertTrue(urls.remove(
@@ -577,6 +606,8 @@ public class ProjectPropertiesModelTest {
         Assert.assertTrue(urls.remove(realSampleLib2.toURI()));
         // sample-lib3.jar stored in own project folder lib
         Assert.assertTrue(urls.remove(realSampleLib3.toURI()));
+        // sample-lib4.jar stored in external project folder outside of workspace
+        Assert.assertTrue(urls.remove(realSampleLib4.toURI()));
 
         // no remaining urls
         Assert.assertTrue(urls.isEmpty());
