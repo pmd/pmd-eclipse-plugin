@@ -4,13 +4,16 @@
 
 package net.sourceforge.pmd.eclipse.runtime.cmd;
 
+import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jdt.core.IClasspathEntry;
@@ -20,13 +23,19 @@ import org.eclipse.jdt.core.JavaModelException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.sourceforge.pmd.eclipse.core.internal.FileModificationUtil;
+
 /**
  * This is a ClassLoader for the Build Path of an IJavaProject.
  */
 public class JavaProjectClassLoader extends URLClassLoader {
     private static final Logger LOG = LoggerFactory.getLogger(JavaProjectClassLoader.class);
 
+    private final IJavaProject javaProject;
+    private final long lastModTimestamp;
+    private final IWorkspace workspace;
     private Set<IJavaProject> javaProjects = new HashSet<IJavaProject>();
+
 
     public JavaProjectClassLoader(ClassLoader parent, IProject project) {
         super(new URL[0], parent);
@@ -38,15 +47,27 @@ public class JavaProjectClassLoader extends URLClassLoader {
             throw new IllegalArgumentException("The project " + project + " is not a java project", e);
         }
 
-        IJavaProject javaProject = JavaCore.create(project);
+        workspace = project.getWorkspace();
+        javaProject = JavaCore.create(project);
+        lastModTimestamp = getClasspathModificationTimestamp();
         addURLs(javaProject, false);
 
         // No longer need these things, drop references
         javaProjects = null;
     }
 
-    private static IProject projectFor(IJavaProject javaProject, IClasspathEntry classpathEntry) {
-        return javaProject.getProject().getWorkspace().getRoot().getProject(classpathEntry.getPath().toString());
+    public boolean isModified() {
+        long newTimestamp = getClasspathModificationTimestamp();
+        return newTimestamp != lastModTimestamp;
+    }
+
+    private long getClasspathModificationTimestamp() {
+        IFile classpathFile = javaProject.getProject().getFile(IJavaProject.CLASSPATH_FILE_NAME);
+        return FileModificationUtil.getFileModificationTimestamp(classpathFile.getLocation().toFile());
+    }
+
+    private IProject projectFor(IClasspathEntry classpathEntry) {
+        return workspace.getRoot().getProject(classpathEntry.getPath().toString());
     }
 
     private void addURLs(IJavaProject javaProject, boolean exportsOnly) {
@@ -70,7 +91,7 @@ public class JavaProjectClassLoader extends URLClassLoader {
 
                     // Recurse on projects
                     case IClasspathEntry.CPE_PROJECT:
-                        IProject project = projectFor(javaProject, classpathEntry);
+                        IProject project = projectFor(classpathEntry);
                         IJavaProject javaProj = JavaCore.create(project);
                         if (javaProj != null) {
                             addURLs(javaProj, true);
@@ -101,7 +122,7 @@ public class JavaProjectClassLoader extends URLClassLoader {
                 }
             }
         } catch (JavaModelException e) {
-            LOG.debug("MalformedURLException occurred: " + e.getLocalizedMessage(), e);
+            LOG.warn("JavaModelException occurred: {}", e.getMessage(), e);
         }
     }
 
@@ -111,10 +132,27 @@ public class JavaProjectClassLoader extends URLClassLoader {
 
     private void addURL(IPath path) {
         try {
-            URL url = path.toFile().getAbsoluteFile().toURI().toURL();
+            File absoluteFile = null;
+            IPath location = workspace.getRoot().getFile(path).getLocation();
+            if (location != null) {
+                // location is only present, if a project exists in the workspace
+                // in other words: only if path referenced something inside an existing project
+                absoluteFile = location.toFile().getAbsoluteFile();
+            }
+
+            if (absoluteFile == null) {
+                // if location couldn't be resolved, then it is already an absolute path
+                absoluteFile = path.toFile().getAbsoluteFile();
+            }
+
+            if (!absoluteFile.exists()) {
+                LOG.warn("auxclasspath: Resolved file {} does not exist", absoluteFile);
+            }
+            URL url = absoluteFile.toURI().toURL();
+            LOG.debug("auxclasspath: Adding url {}", url);
             addURL(url);
         } catch (MalformedURLException e) {
-            LOG.debug("MalformedURLException occurred: " + e.getLocalizedMessage(), e);
+            LOG.warn("MalformedURLException occurred: {}", e.getMessage(), e);
         }
     }
 }

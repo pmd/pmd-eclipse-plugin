@@ -64,7 +64,7 @@ You should see 6 projects:
 ### Debugging
 You can run eclipse with debugging enabled and connect to it via remote debugging:
 
-    eclipse -data workspace-directory -vmargs -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=8000
+    eclipse -data workspace-directory -vmargs -agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=8000
 
 
 ### Releasing and updating the official eclipse update site

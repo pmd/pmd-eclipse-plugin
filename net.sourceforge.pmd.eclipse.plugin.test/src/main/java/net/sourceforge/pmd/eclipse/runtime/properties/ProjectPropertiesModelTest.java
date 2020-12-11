@@ -6,15 +6,30 @@ package net.sourceforge.pmd.eclipse.runtime.properties;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.InputStream;
 import java.io.PrintStream;
+import java.net.URI;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
 
+import org.apache.commons.io.IOUtils;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IProjectDescription;
+import org.eclipse.core.resources.IncrementalProjectBuilder;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.ui.IWorkingSet;
 import org.junit.After;
 import org.junit.Assert;
@@ -43,6 +58,7 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 public class ProjectPropertiesModelTest {
     private IProject testProject;
     private RuleSet initialPluginRuleSet;
+    private List<IProject> additionalProjects = new LinkedList<>();
 
     @Before
     public void setUp() throws Exception {
@@ -88,6 +104,13 @@ public class ProjectPropertiesModelTest {
 
         // 2. Restore the plugin initial rule set
         PMDPlugin.getDefault().getPreferencesManager().setRuleSet(this.initialPluginRuleSet);
+
+        // 3. Delete additional projects
+        for (IProject project : additionalProjects) {
+            if (project.exists() && project.isAccessible()) {
+                project.delete(true, true, null);
+            }
+        }
     }
 
     public static void compareTwoRuleSets(RuleSet ruleSet1, RuleSet ruleSet2) {
@@ -503,4 +526,93 @@ public class ProjectPropertiesModelTest {
         System.out.println();
     }
 
+    /**
+     * Project structure:
+     * <ul>
+     * <li>this.testProject "PMDTestProject": main project, with build path, contains lib/sample-lib3.jar</li>
+     * <li>otherProject "OtherProject": contains sample-lib1.jar, sample-lib2.jar</li>
+     * <li>otherProject2 "OtherProject2": PMDTestProject depends on this</li>
+     * <li>externalProject "ExternalProject": not stored within workspace, contains sample-lib4.jar</li>
+     * </ul>
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testProjectClasspath() throws Exception {
+        IProject otherProject = EclipseUtils.createJavaProject("OtherProject");
+        additionalProjects.add(otherProject);
+        IFile sampleLib1 = otherProject.getFile("sample-lib1.jar");
+        sampleLib1.create(IOUtils.toInputStream("", "UTF-8"), false, null);
+        File realSampleLib1 = sampleLib1.getLocation().toFile().getCanonicalFile();
+        IFile sampleLib2 = otherProject.getFile("sample-lib2.jar");
+        sampleLib2.create(IOUtils.toInputStream("", "UTF-8"), false, null);
+        File realSampleLib2 = sampleLib2.getLocation().toFile().getCanonicalFile();
+
+        IFolder libFolder = this.testProject.getFolder("lib");
+        libFolder.create(false, true, null);
+        IFile sampleLib3 = libFolder.getFile("sample-lib3.jar");
+        sampleLib3.create(IOUtils.toInputStream("", "UTF-8"), false, null);
+        File realSampleLib3 = sampleLib3.getLocation().toFile().getCanonicalFile();
+
+        IProject otherProject2 = EclipseUtils.createJavaProject("OtherProject2");
+        additionalProjects.add(otherProject2);
+        // build the project, so that the output folder "bin/" is created
+        otherProject2.build(IncrementalProjectBuilder.FULL_BUILD, null);
+
+        IProject externalProject = ResourcesPlugin.getWorkspace().getRoot().getProject("ExternalProject");
+        additionalProjects.add(externalProject);
+        Assert.assertFalse("Project must not exist yet", externalProject.exists());
+        java.nio.file.Path externalProjectDir = Files.createTempDirectory("pmd-eclipse-plugin");
+        IProjectDescription description = externalProject.getWorkspace().newProjectDescription("ExternalProject");
+        description.setLocation(Path.fromOSString(externalProjectDir.toString()));
+        externalProject.create(description, null);
+        externalProject.open(null);
+        IFile sampleLib4 = externalProject.getFile("sample-lib4.jar");
+        sampleLib4.create(IOUtils.toInputStream("", "UTF-8"), false, null);
+        File realSampleLib4 = sampleLib4.getLocation().toFile().getCanonicalFile();
+
+        // build the project, so that the output folder "bin/" is created
+        this.testProject.build(IncrementalProjectBuilder.FULL_BUILD, null);
+
+        IFile file = this.testProject.getFile(".classpath");
+        String newClasspathContent = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+            + "<classpath>\n"
+            + "    <classpathentry kind=\"src\" path=\"src\"/>\n"
+            + "    <!-- <classpathentry kind=\"con\" path=\"org.eclipse.jdt.launching.JRE_CONTAINER\"/> -->\n"
+            + "    <classpathentry combineaccessrules=\"false\" kind=\"src\" path=\"/OtherProject2\"/>\n"
+            + "    <classpathentry kind=\"lib\" path=\"/OtherProject/sample-lib1.jar\"/>\n"
+            + "    <classpathentry kind=\"lib\" path=\"" + realSampleLib2.getAbsolutePath() + "\"/>\n"
+            + "    <classpathentry kind=\"lib\" path=\"lib/sample-lib3.jar\"/>\n"
+            + "    <classpathentry kind=\"output\" path=\"bin\"/>\n"
+            + "    <classpathentry kind=\"lib\" path=\"/ExternalProject/sample-lib4.jar\"/>\n"
+            + "</classpath>\n";
+        file.setContents(IOUtils.toInputStream(newClasspathContent, "UTF-8"), 0, null);
+        final IProjectPropertiesManager mgr = PMDPlugin.getDefault().getPropertiesManager();
+        IProjectProperties model = mgr.loadProjectProperties(this.testProject);
+        URLClassLoader auxClasspath = (URLClassLoader) model.getAuxClasspath();
+        Set<URI> urls = new HashSet<>();
+        for (URL url : auxClasspath.getURLs()) {
+            urls.add(url.toURI());
+        }
+
+        Assert.assertEquals(6, urls.size());
+
+        // own project's output folder
+        Assert.assertTrue(urls.remove(
+                URI.create(this.testProject.getLocation().toFile().getAbsoluteFile().toURI() + "bin/")));
+        // output folder of other project 2 (project dependency)
+        Assert.assertTrue(urls.remove(
+                URI.create(otherProject2.getLocation().toFile().getAbsoluteFile().toURI() + "bin/")));
+        // sample-lib1.jar stored in OtherProject
+        Assert.assertTrue(urls.remove(realSampleLib1.toURI()));
+        // sample-lib2.jar referenced with absolute path
+        Assert.assertTrue(urls.remove(realSampleLib2.toURI()));
+        // sample-lib3.jar stored in own project folder lib
+        Assert.assertTrue(urls.remove(realSampleLib3.toURI()));
+        // sample-lib4.jar stored in external project folder outside of workspace
+        Assert.assertTrue(urls.remove(realSampleLib4.toURI()));
+
+        // no remaining urls
+        Assert.assertTrue(urls.isEmpty());
+    }
 }

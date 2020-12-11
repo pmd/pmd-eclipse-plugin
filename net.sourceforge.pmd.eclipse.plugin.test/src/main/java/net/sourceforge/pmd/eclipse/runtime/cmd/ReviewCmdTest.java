@@ -45,9 +45,6 @@ import net.sourceforge.pmd.eclipse.ui.actions.RuleSetUtil;
 public class ReviewCmdTest {
     private IProject testProject;
 
-    /**
-     * @see junit.framework.TestCase#setUp()
-     */
     @Before
     public void setUp() throws Exception {
 
@@ -68,9 +65,6 @@ public class ReviewCmdTest {
         properties.setPmdEnabled(true);
     }
 
-    /**
-     * @see junit.framework.TestCase#tearDown()
-     */
     @After
     public void tearDown() throws Exception {
         try {
