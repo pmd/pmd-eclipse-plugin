@@ -7,7 +7,7 @@ Eclipse Update Site:
 *   Releases: <https://dl.bintray.com/pmd/pmd-eclipse-plugin/updates/>
 *   Snapshots: <https://dl.bintray.com/pmd/pmd-eclipse-plugin/snapshots/updates/>
 
-## ????: 4.19.0.v????
+## 12-December-2020: 4.19.0.v20201212-1115
 
 This is a minor release.
 
@@ -18,10 +18,6 @@ This is a minor release.
 ### Fixed Issues
 
 *   [#135](https://github.com/pmd/pmd-eclipse-plugin/pull/135): Fix JavaProjectClassLoader (auxclasspath support) for workspace relative libraries
-
-### API Changes
-
-### External Contributions
 
 ## 24-October-2020: 4.18.0.v20201024-1129
 
