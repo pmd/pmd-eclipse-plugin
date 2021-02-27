@@ -16,6 +16,7 @@ function build() {
     log_group_start "Install xvfb"
         #see https://github.com/GabrielBB/xvfb-action
         sudo apt-get install --yes xvfb
+        sudo apt-get install --yes libgtk2.0-0
     log_group_end
 
     log_group_start "Determine project name + version"
