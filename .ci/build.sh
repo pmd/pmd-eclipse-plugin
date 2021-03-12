@@ -1,85 +1,88 @@
 #!/usr/bin/env bash
 
-source $(dirname $0)/inc/github-releases-api.bash || exit 1
-
 # Exit this script immediately if a command/function exits with a non-zero status.
 set -e
 
-function build() {
-    fetch_ci_scripts
+SCRIPT_INCLUDES="log.bash utils.bash setup-secrets.bash openjdk.bash maven.bash"
+# shellcheck source=inc/fetch_ci_scripts.bash
+source "$(dirname "$0")/inc/fetch_ci_scripts.bash" && fetch_ci_scripts
 
-    log_group_start "Install OpenJDK"
+function build() {
+    pmd_ci_log_group_start "Install OpenJDK"
         pmd_ci_openjdk_install_adoptopenjdk 8
         pmd_ci_openjdk_setdefault 8
-    log_group_end
+    pmd_ci_log_group_end
 
-    log_group_start "Install xvfb"
+    pmd_ci_log_group_start "Install xvfb"
         #see https://github.com/GabrielBB/xvfb-action
         sudo apt-get install --yes xvfb
         sudo apt-get install --yes libgtk2.0-0
-    log_group_end
-
-    log_group_start "Determine project name + version"
-        pmd_ci_maven_get_project_name
-        local name="${RESULT}"
-        pmd_ci_maven_get_project_version
-        local version="${RESULT}"
-    log_group_end
+    pmd_ci_log_group_end
 
     echo
-    echo
-    log_info "======================================================================="
-    log_info "Building ${name} ${version}"
-    log_info "======================================================================="
-    pmd_ci_determine_build_env pmd/pmd-eclipse-plugin
-    echo
+    pmd_ci_maven_display_info_banner
+    pmd_ci_utils_determine_build_env pmd/pmd-eclipse-plugin
     echo
 
-    if pmd_ci_is_fork_or_pull_request; then
-        log_group_start "Build with mvnw"
-        xvfb-run --auto-servernum ./mvnw clean verify -B -V -e
-        log_group_end
+    if pmd_ci_utils_is_fork_or_pull_request; then
+        pmd_ci_log_group_start "Build with mvnw"
+            xvfb-run --auto-servernum ./mvnw clean verify --show-version --errors --batch-mode --no-transfer-progress
+        pmd_ci_log_group_end
         exit 0
     fi
 
-    # only builds on pmd/build-tools continue here
-    log_group_start "Setup environment"
-        # PMD_SF_USER, BINTRAY_USER, BINTRAY_APIKEY, GITHUB_OAUTH_TOKEN, GITHUB_BASE_URL
-        pmd_ci_secrets_load_private_env
-        pmd_ci_secrets_setup_ssh
+    # only builds on pmd/pmd-eclipse-plugin continue here
+    pmd_ci_log_group_start "Setup environment"
+        pmd_ci_setup_secrets_private_env
+        pmd_ci_setup_secrets_ssh
         pmd_ci_maven_setup_settings
-    log_group_end
+    pmd_ci_log_group_end
 
-    if [[ "${version}" == *-SNAPSHOT && "${PMD_CI_BRANCH}" != "" ]]; then
-        log_group_start "Snapshot Build: ${version}"
-        log_info "This is a snapshot build on branch ${PMD_CI_BRANCH} (version: ${version})"
+    if pmd_ci_maven_isSnapshotBuild; then
+        snapshot_build
+    elif pmd_ci_maven_isReleaseBuild; then
+        release_build
+    else
+        pmd_ci_log_error "Invalid combination: version=${PMD_CI_MAVEN_PROJECT_VERSION} branch=${PMD_CI_BRANCH} tag=${PMD_CI_TAG}"
+        exit 1
+    fi
+}
+
+function snapshot_build() {
+    pmd_ci_log_group_start "Snapshot Build: ${PMD_CI_MAVEN_PROJECT_VERSION}"
+        pmd_ci_log_info "This is a snapshot build on branch ${PMD_CI_BRANCH} (version: ${PMD_CI_MAVEN_PROJECT_VERSION})"
 
         # Uploading the update site to Bintray
-        xvfb-run --auto-servernum ./mvnw clean verify -B -V -e -Psnapshot-properties -Prelease-composite
+        xvfb-run --auto-servernum ./mvnw clean verify --show-version --errors --batch-mode \
+            --no-transfer-progress \
+            --activate-profiles snapshot-properties,release-composite
 
         # Cleanup old snapshots
         (
             cd net.sourceforge.pmd.eclipse.p2updatesite
             ./cleanup-bintray-snapshots.sh
         )
-        log_group_end
+    pmd_ci_log_group_end
+}
 
-    elif [[ "${version}" != *-SNAPSHOT && "${PMD_CI_TAG}" != "" ]]; then
-        log_group_start "Release Build: ${version}"
-        log_info "This is a release build for tag ${PMD_CI_TAG} (version: ${version})"
+function release_build() {
+    pmd_ci_log_group_start "Release Build: ${PMD_CI_MAVEN_PROJECT_VERSION}"
+        pmd_ci_log_info "This is a release build for tag ${PMD_CI_TAG} (version: ${PMD_CI_MAVEN_PROJECT_VERSION})"
 
         # create a draft github release
-        gh_releases_createDraftRelease "${PMD_CI_TAG}" "$(git rev-list -n 1 ${PMD_CI_TAG})"
+        pmd_ci_gh_releases_createDraftRelease "${PMD_CI_TAG}" "$(git rev-list -n 1 "${PMD_CI_TAG}")"
         GH_RELEASE="$RESULT"
 
         # Deploy the update site to bintray
-        xvfb-run --auto-servernum ./mvnw clean verify -B -V -e -Prelease-composite
+        xvfb-run --auto-servernum ./mvnw clean verify --show-version --errors --batch-mode \
+            --no-transfer-progress \
+            --activate-profiles release-composite
 
         # Deploy to github releases
-        gh_release_uploadAsset "$GH_RELEASE" "net.sourceforge.pmd.eclipse.p2updatesite/target/net.sourceforge.pmd.eclipse.p2updatesite-${version}.zip"
+        pmd_ci_gh_releases_uploadAsset "$GH_RELEASE" "net.sourceforge.pmd.eclipse.p2updatesite/target/net.sourceforge.pmd.eclipse.p2updatesite-${PMD_CI_MAVEN_PROJECT_VERSION}.zip"
 
         # extract the release notes
-        RELEASE_NAME="PMD For Eclipse ${version} ($(date -u +%d-%B-%Y))"
+        RELEASE_NAME="PMD For Eclipse ${PMD_CI_MAVEN_PROJECT_VERSION} ($(date -u +%d-%B-%Y))"
         BEGIN_LINE=$(grep -n "^## " ReleaseNotes.md|head -1|cut -d ":" -f 1)
         END_LINE=$(grep -n "^## " ReleaseNotes.md|head -2|tail -1|cut -d ":" -f 1)
         END_LINE=$((END_LINE - 1))
@@ -87,37 +90,15 @@ function build() {
         RELEASE_BODY="A new PMD for Eclipse plugin version has been released.
 It is available via the update site: https://dl.bintray.com/pmd/pmd-eclipse-plugin/updates/
 
-$(cat ReleaseNotes.md|head -$END_LINE|tail -$((END_LINE - BEGIN_LINE)))
+$(head -$END_LINE ReleaseNotes.md | tail -$((END_LINE - BEGIN_LINE)))
 "
 
-        gh_release_updateRelease "$GH_RELEASE" "$RELEASE_NAME" "$RELEASE_BODY"
+        pmd_ci_gh_releases_updateRelease "$GH_RELEASE" "$RELEASE_NAME" "$RELEASE_BODY"
 
         # Publish release
-        gh_release_publishRelease "$GH_RELEASE"
+        pmd_ci_gh_releases_publishRelease "$GH_RELEASE"
 
-        log_group_end
-
-    else
-        log_error "Invalid combination: version=${version} branch=${PMD_CI_BRANCH} tag=${PMD_CI_TAG}"
-        exit 1
-    fi
-}
-
-function fetch_ci_scripts() {
-    mkdir -p .ci/inc
-
-    for f in \
-                logger.bash \
-                utils.bash \
-                openjdk.bash \
-                secrets.bash \
-                maven.bash \
-            ; do
-        if [ ! -e .ci/inc/$f ]; then
-            curl -sSL https://raw.githubusercontent.com/pmd/build-tools/master/.ci/inc/$f > .ci/inc/$f
-        fi
-        source .ci/inc/$f || exit 1
-    done
+    pmd_ci_log_group_end
 }
 
 build

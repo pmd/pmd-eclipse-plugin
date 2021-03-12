@@ -79,6 +79,11 @@
                 <activeByDefault>false</activeByDefault>
             </activation>
 
+            <properties>
+                <bintray.user>${env.BINTRAY_USER}</bintray.user>
+                <bintray.apikey>${env.BINTRAY_APIKEY}</bintray.apikey>
+            </properties>
+
             <build>
                 <plugins>
                     <plugin>
