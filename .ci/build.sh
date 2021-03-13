@@ -3,7 +3,7 @@
 # Exit this script immediately if a command/function exits with a non-zero status.
 set -e
 
-SCRIPT_INCLUDES="log.bash utils.bash setup-secrets.bash openjdk.bash maven.bash"
+SCRIPT_INCLUDES="log.bash utils.bash setup-secrets.bash openjdk.bash maven.bash sourceforge-api.bash"
 # shellcheck source=inc/fetch_ci_scripts.bash
 source "$(dirname "$0")/inc/fetch_ci_scripts.bash" && fetch_ci_scripts
 
@@ -62,6 +62,25 @@ function snapshot_build() {
             cd net.sourceforge.pmd.eclipse.p2updatesite
             ./cleanup-bintray-snapshots.sh
         )
+
+        # Add snapshot to update site
+        pmd_ci_log_info "Updating pmd-eclipse-plugin-p2-site..."
+        prepare_local_p2_site
+        (
+            cd current-p2-site
+
+            rm -rf snapshot
+            unzip -q -d snapshot "../net.sourceforge.pmd.eclipse.p2updatesite/target/net.sourceforge.pmd.eclipse.p2updatesite-*.zip"
+            echo -e "This is a Eclipse Update Site for the PMD Eclipse Plugin for version ${PMD_CI_MAVEN_PROJECT_VERSION} ($(date -Iminutes)).\n\n<https://github.com/pmd/pmd-eclipse-plugin/>" > snapshot/index.md
+            git add snapshot
+
+            # create a new single commit
+            git checkout --orphan=gh-pages-2
+            git commit -a -m "Update pmd/pmd-eclipse-plugin-p2-site"
+            git push --force origin gh-pages-2:gh-pages
+            pmd_ci_log_success "Successfully updated https://pmd.github.io/pmd-eclipse-plugin-p2-site/"
+        )
+
     pmd_ci_log_group_end
 }
 
@@ -73,7 +92,7 @@ function release_build() {
         pmd_ci_gh_releases_createDraftRelease "${PMD_CI_TAG}" "$(git rev-list -n 1 "${PMD_CI_TAG}")"
         GH_RELEASE="$RESULT"
 
-        # Deploy the update site to bintray
+        # Build and deploy the update site to bintray
         xvfb-run --auto-servernum ./mvnw clean verify --show-version --errors --batch-mode \
             --no-transfer-progress \
             --activate-profiles release-composite
@@ -88,17 +107,121 @@ function release_build() {
         END_LINE=$((END_LINE - 1))
 
         RELEASE_BODY="A new PMD for Eclipse plugin version has been released.
-It is available via the update site: https://dl.bintray.com/pmd/pmd-eclipse-plugin/updates/
+It is available via the update site: https://pmd.github.io/pmd-eclipse-plugin-p2-site/
 
 $(head -$END_LINE ReleaseNotes.md | tail -$((END_LINE - BEGIN_LINE)))
 "
 
         pmd_ci_gh_releases_updateRelease "$GH_RELEASE" "$RELEASE_NAME" "$RELEASE_BODY"
 
-        # Publish release
+        # Upload it to sourceforge
+        pmd_ci_sourceforge_uploadFile "pmd-eclipse/zipped" "net.sourceforge.pmd.eclipse.p2updatesite/target/net.sourceforge.pmd.eclipse.p2updatesite-${PMD_CI_MAVEN_PROJECT_VERSION}.zip"
+
+        # Add new release to update site
+        pmd_ci_log_info "Updating pmd-eclipse-plugin-p2-site..."
+        prepare_local_p2_site
+        (
+            cd current-p2-site
+
+            unzip -q -d "${PMD_CI_MAVEN_PROJECT_VERSION}" "net.sourceforge.pmd.eclipse.p2updatesite/target/net.sourceforge.pmd.eclipse.p2updatesite-${PMD_CI_MAVEN_PROJECT_VERSION}.zip"
+            git add "${PMD_CI_MAVEN_PROJECT_VERSION}"
+            regenerate_metadata
+
+            # create a new single commit
+            git checkout --orphan=gh-pages-2
+            git commit -a -m "Update pmd/pmd-eclipse-plugin-p2-site"
+            git push --force origin gh-pages-2:gh-pages
+            pmd_ci_log_success "Successfully updated https://pmd.github.io/pmd-eclipse-plugin-p2-site/"
+        )
+
+        # Publish release - this sends out notifications on github
         pmd_ci_gh_releases_publishRelease "$GH_RELEASE"
 
     pmd_ci_log_group_end
+}
+
+
+function prepare_local_p2_site() {
+    pmd_ci_log_info "Preparing local copy of p2-site..."
+    rm -rf current-p2-site
+    mkdir current-p2-site
+    (
+        cd current-p2-site
+        git init -q
+        git config user.name "PMD CI (pmd-bot)"
+        git config user.email "andreas.dangel+pmd-bot@adangel.org"
+        git remote add origin git@github.com:pmd/pmd-eclipse-plugin-p2-site.git
+        git pull origin gh-pages
+    )
+}
+
+function regenerate_metadata() {
+    pmd_ci_log_info "Regenerating metadata for p2-site..."
+    local releases=($(find . -maxdepth 1 -type d -regex "\./[0-9]+\.[0-9]+\.[0-9]+\..*" -printf '%TY-%Tm-%Td\0%f\n' | sort -t '\0' -r|awk -F '\0' '{print $2}'))
+    # remove old releases
+    for i in "${releases[@]:5}"; do
+      pmd_ci_log_info "Removing old release $i..."
+      rm -rf "$i"
+    done
+    releases=("${releases[@]:0:5}")
+
+    # regenerate metadata
+    local now
+    now=$(date +%s000)
+    local children=""
+    local children_index=""
+    for i in "${releases[@]}"; do
+      children="${children}    <child location=\"$i\"/>\n"
+      children_index="${children_index}  * [$i]($i/)\n"
+      echo -e "This is a Eclipse Update Site for the PMD Eclipse Plugin for version $i.\n\n<https://github.com/pmd/pmd-eclipse-plugin/>" > "$i"/index.md
+      git add "$i"/index.md
+    done
+
+    local site_name="PMD for Eclipse - Update Site"
+    local artifactsTemplate="<?xml version=\"1.0\" encoding=\"UTF-8\"?>
+<?compositeArtifactRepository version=\"1.0.0\"?>
+<repository name=\"${site_name}\" type=\"org.eclipse.equinox.internal.p2.artifact.repository.CompositeArtifactRepository\" version=\"1.0.0\">
+  <properties size=\"2\">
+    <property name=\"p2.timestamp\" value=\"${now}\"/>
+    <property name=\"p2.atomic.composite.loading\" value=\"true\"/>
+  </properties>
+  <children size=\"${#releases[@]}\">
+${children}  </children>
+</repository>"
+    echo -e "${artifactsTemplate}" > compositeArtifacts.xml
+
+    local contentTemplate="<?xml version=\"1.0\" encoding=\"UTF-8\"?>
+<?compositeMetadataRepository version=\"1.0.0\"?>
+<repository name=\"${site_name}\" type=\"org.eclipse.equinox.internal.p2.metadata.repository.CompositeMetadataRepository\" version=\"1.0.0\">
+  <properties size=\"2\">
+    <property name=\"p2.timestamp\" value=\"${now}\"/>
+    <property name=\"p2.atomic.composite.loading\" value=\"true\"/>
+  </properties>
+  <children size=\"${#releases[@]}\">
+${children}  </children>
+</repository>"
+    echo -e "${contentTemplate}" > compositeContent.xml
+
+    # p2.index
+    local p2_index="version = 1
+metadata.repository.factory.order = compositeContent.xml,\!
+artifact.repository.factory.order = compositeArtifacts.xml,\!"
+    echo -e "${p2_index}" > p2.index
+
+    # regenerate index.md
+    local index_md="This URL is a composite Eclipse Update Site for the PMD Eclipse Plugin.
+
+Github: <https://github.com/pmd/pmd-eclipse-plugin/>
+
+----
+
+Versions available at <https://pmd.github.io/pmd-eclipse-plugin-p2-site/>:
+
+${children_index}
+
+For older versions, see <https://sourceforge.net/projects/pmd/files/pmd-eclipse/zipped/>
+"
+    echo -e "${index_md}" > index.md
 }
 
 build

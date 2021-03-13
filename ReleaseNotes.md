@@ -4,8 +4,8 @@ Installation instructions: <https://pmd.github.io/eclipse/>
 
 Eclipse Update Site:
 
-*   Releases: <https://dl.bintray.com/pmd/pmd-eclipse-plugin/updates/>
-*   Snapshots: <https://dl.bintray.com/pmd/pmd-eclipse-plugin/snapshots/updates/>
+*   Releases: <https://pmd.github.io/pmd-eclipse-plugin-p2-site/>
+*   Snapshots: <https://pmd.github.io/pmd-eclipse-plugin-p2-site/snapshot/>
 
 ## ????: 4.22.0.v????
 
@@ -13,7 +13,14 @@ This is a minor release.
 
 ### New and noteworthy
 
+*   The update site moved from Bintray to Github Pages. The new URL is from now on:
+    <https://pmd.github.io/pmd-eclipse-plugin-p2-site/>
+*   Archives of the old versions can be found on sourceforge:
+    <https://sourceforge.net/projects/pmd/files/pmd-eclipse/zipped/>
+
 ### Fixed Issues
+
+*   [#140](https://github.com/pmd/pmd-eclipse-plugin/issues/140): Use gh pages for update site
 
 ### API Changes
 
