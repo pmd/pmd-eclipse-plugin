@@ -62,8 +62,9 @@ function snapshot_build() {
             cd net.sourceforge.pmd.eclipse.p2updatesite
             ./cleanup-bintray-snapshots.sh
         )
+    pmd_ci_log_group_end
 
-        # Add snapshot to update site
+    pmd_ci_log_group_start "Add snapshot to update site"
         pmd_ci_log_info "Updating pmd-eclipse-plugin-p2-site..."
         prepare_local_p2_site
         (
@@ -88,14 +89,16 @@ function release_build() {
     pmd_ci_log_group_start "Release Build: ${PMD_CI_MAVEN_PROJECT_VERSION}"
         pmd_ci_log_info "This is a release build for tag ${PMD_CI_TAG} (version: ${PMD_CI_MAVEN_PROJECT_VERSION})"
 
-        # create a draft github release
-        pmd_ci_gh_releases_createDraftRelease "${PMD_CI_TAG}" "$(git rev-list -n 1 "${PMD_CI_TAG}")"
-        GH_RELEASE="$RESULT"
-
         # Build and deploy the update site to bintray
         xvfb-run --auto-servernum ./mvnw clean verify --show-version --errors --batch-mode \
             --no-transfer-progress \
             --activate-profiles release-composite
+    pmd_ci_log_group_end
+
+    pmd_ci_log_group_start "Update Github Releases"
+        # create a draft github release
+        pmd_ci_gh_releases_createDraftRelease "${PMD_CI_TAG}" "$(git rev-list -n 1 "${PMD_CI_TAG}")"
+        GH_RELEASE="$RESULT"
 
         # Deploy to github releases
         pmd_ci_gh_releases_uploadAsset "$GH_RELEASE" "net.sourceforge.pmd.eclipse.p2updatesite/target/net.sourceforge.pmd.eclipse.p2updatesite-${PMD_CI_MAVEN_PROJECT_VERSION}.zip"
@@ -116,8 +119,9 @@ $(head -$END_LINE ReleaseNotes.md | tail -$((END_LINE - BEGIN_LINE)))
 
         # Upload it to sourceforge
         pmd_ci_sourceforge_uploadFile "pmd-eclipse/zipped" "net.sourceforge.pmd.eclipse.p2updatesite/target/net.sourceforge.pmd.eclipse.p2updatesite-${PMD_CI_MAVEN_PROJECT_VERSION}.zip"
+    pmd_ci_log_group_end
 
-        # Add new release to update site
+    pmd_ci_log_group_start "Add new release to update site"
         pmd_ci_log_info "Updating pmd-eclipse-plugin-p2-site..."
         prepare_local_p2_site
         (
@@ -133,11 +137,10 @@ $(head -$END_LINE ReleaseNotes.md | tail -$((END_LINE - BEGIN_LINE)))
             git push --force origin gh-pages-2:gh-pages
             pmd_ci_log_success "Successfully updated https://pmd.github.io/pmd-eclipse-plugin-p2-site/"
         )
-
-        # Publish release - this sends out notifications on github
-        pmd_ci_gh_releases_publishRelease "$GH_RELEASE"
-
     pmd_ci_log_group_end
+
+    # Publish release - this sends out notifications on github
+    pmd_ci_gh_releases_publishRelease "$GH_RELEASE"
 }
 
 
@@ -147,11 +150,11 @@ function prepare_local_p2_site() {
     mkdir current-p2-site
     (
         cd current-p2-site
-        git init -q
+        git init -q --initial-branch=gh-pages
         git config user.name "PMD CI (pmd-bot)"
         git config user.email "andreas.dangel+pmd-bot@adangel.org"
         git remote add origin git@github.com:pmd/pmd-eclipse-plugin-p2-site.git
-        git pull origin gh-pages
+        git pull --rebase origin gh-pages
     )
 }
 
