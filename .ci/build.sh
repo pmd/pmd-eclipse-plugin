@@ -57,6 +57,9 @@ function snapshot_build() {
             --no-transfer-progress \
             --activate-profiles snapshot-properties,release-composite
 
+        mv "net.sourceforge.pmd.eclipse.p2updatesite/target/net.sourceforge.pmd.eclipse.p2updatesite-*.zip" "net.sourceforge.pmd.eclipse.p2updatesite/target/net.sourceforge.pmd.eclipse.p2updatesite-LATEST.zip"
+        pmd_ci_sourceforge_uploadFile "pmd-eclipse/zipped" "net.sourceforge.pmd.eclipse.p2updatesite/target/net.sourceforge.pmd.eclipse.p2updatesite-LATEST.zip"
+
         # Cleanup old snapshots
         (
             cd net.sourceforge.pmd.eclipse.p2updatesite
