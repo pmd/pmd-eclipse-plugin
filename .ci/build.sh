@@ -3,7 +3,7 @@
 # Exit this script immediately if a command/function exits with a non-zero status.
 set -e
 
-SCRIPT_INCLUDES="log.bash utils.bash setup-secrets.bash openjdk.bash maven.bash"
+SCRIPT_INCLUDES="log.bash utils.bash setup-secrets.bash openjdk.bash maven.bash sourceforge-api.bash"
 # shellcheck source=inc/fetch_ci_scripts.bash
 source "$(dirname "$0")/inc/fetch_ci_scripts.bash" && fetch_ci_scripts
 
@@ -94,6 +94,9 @@ $(head -$END_LINE ReleaseNotes.md | tail -$((END_LINE - BEGIN_LINE)))
 "
 
         pmd_ci_gh_releases_updateRelease "$GH_RELEASE" "$RELEASE_NAME" "$RELEASE_BODY"
+
+        # Upload it to sourceforge
+        pmd_ci_sourceforge_uploadFile "pmd-eclipse/zipped" "net.sourceforge.pmd.eclipse.p2updatesite/target/net.sourceforge.pmd.eclipse.p2updatesite-${PMD_CI_MAVEN_PROJECT_VERSION}.zip"
 
         # Publish release
         pmd_ci_gh_releases_publishRelease "$GH_RELEASE"
