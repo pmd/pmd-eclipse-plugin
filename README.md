@@ -7,8 +7,8 @@ Release Notes: <https://github.com/pmd/pmd-eclipse-plugin/blob/master/ReleaseNot
 
 Eclipse Update Site:
 
-*   Releases: <https://dl.bintray.com/pmd/pmd-eclipse-plugin/updates/>
-*   Snapshots: <https://dl.bintray.com/pmd/pmd-eclipse-plugin/snapshots/updates/>
+*   Releases: <https://pmd.github.io/pmd-eclipse-plugin-p2-site/>
+*   Snapshots: <https://pmd.github.io/pmd-eclipse-plugin-p2-site/snapshot/>
 
 Marketplace: [![Drag to your running Eclipse workspace. Requires Eclipse Marketplace Client](https://marketplace.eclipse.org/sites/all/themes/solstice/public/images/marketplace/btn-install.png)](http://marketplace.eclipse.org/marketplace-client-intro?mpc_install=2755329)
 
@@ -69,16 +69,12 @@ You can run eclipse with debugging enabled and connect to it via remote debuggin
 
 ### Releasing and updating the official eclipse update site
 
-From now on, we use [bintray](https://bintray.com) for hosting the eclipse update site.
-There is a nice [blog post by Lorenzo Bettini](http://www.lorenzobettini.it/2016/02/publish-an-eclipse-p2-composite-repository-on-bintray/), which explains how it is done. There is also an [example repository](https://github.com/LorenzoBettini/p2composite-bintray-example) on github.
+The update site is hosted on github as a Github Pages site of the repository
+<https://github.com/pmd/pmd-eclipse-plugin-p2-site/>.
 
-
-Have a look at the `net.sourceforge.pmd.eclipse.p2updatesite` module, there you see
-
-*   a profile `release-composite` which enables the steps
-*   the ant script `bintray.ant` which is used to upload and download the site
-*   the ant script `packaging-p2composite.ant` which is used to modify the metadata of the
-    p2 repo locally before uploading
+The release script running on Github Actions will automatically update the repository pmd-eclipse-plugin-p2-site and
+add the new release, update the repository metadata (compositeContent.xml and compositeArtifacts.xml
+as well as index.md) and push the changes.
 
 The release happens in two phases:
 
@@ -89,7 +85,7 @@ The release happens in two phases:
     *   Update the changelog for the next version
     *   Update the versions
 2.  Push the changes and the tag. The [Github Actions build](https://github.com/pmd/pmd-eclipse-plugin/actions) will
-    then publish the new version on [bintray](https://dl.bintray.com/pmd/pmd-eclipse-plugin/) and
+    then publish the new version on [update site](https://github.com/pmd/pmd-eclipse-plugin-p2-site/) and
     [github releases](https://github.com/pmd/pmd-eclipse-plugin/releases)
 
 
@@ -111,7 +107,7 @@ The release happens in two phases:
     echo
     echo "Press enter to continue..."
     read
-    ./mvnw -Dtycho.mode=maven org.eclipse.tycho:tycho-versions-plugin:set-version -DnewVersion=$VERSION.$BUILDQUALIFIER
+    ./mvnw -Dtycho.mode=maven org.eclipse.tycho:tycho-versions-plugin:1.7.0:set-version -DnewVersion=$VERSION.$BUILDQUALIFIER
     git commit -a -m "Prepare release pmd-eclipse-plugin $VERSION.$BUILDQUALIFIER"
     git tag $VERSION.$BUILDQUALIFIER
     echo "Create (temporary) release branch"
@@ -126,7 +122,7 @@ The release happens in two phases:
     read
     
     echo "Updating version in master to next"
-    ./mvnw -Dtycho.mode=maven org.eclipse.tycho:tycho-versions-plugin:set-version -DnewVersion=$NEXT-SNAPSHOT
+    ./mvnw -Dtycho.mode=maven org.eclipse.tycho:tycho-versions-plugin:1.7.0:set-version -DnewVersion=$NEXT-SNAPSHOT
     git commit -a -m "Prepare next pmd-eclipse-plugin development version $NEXT-SNAPSHOT"
     
     echo Checkout the release branch and build the plugin
@@ -166,7 +162,7 @@ You can use the following template:
     PMD for Eclipse $VERSION.$BUILDQUALIFIER released
     
     A new PMD for Eclipse plugin version has been released.
-    It is available via the update site: <https://dl.bintray.com/pmd/pmd-eclipse-plugin/updates/>
+    It is available via the update site: <https://pmd.github.io/pmd-eclipse-plugin-p2-site/>
     
     * Release Notes: <https://github.com/pmd/pmd-eclipse-plugin/blob/$VERSION.$BUILDQUALIFIER/ReleaseNotes.md>
 

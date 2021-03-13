@@ -107,7 +107,7 @@ function release_build() {
         END_LINE=$((END_LINE - 1))
 
         RELEASE_BODY="A new PMD for Eclipse plugin version has been released.
-It is available via the update site: https://dl.bintray.com/pmd/pmd-eclipse-plugin/updates/
+It is available via the update site: https://pmd.github.io/pmd-eclipse-plugin-p2-site/
 
 $(head -$END_LINE ReleaseNotes.md | tail -$((END_LINE - BEGIN_LINE)))
 "

@@ -20,7 +20,7 @@
    </license>
 
    <url>
-      <update label="%feature.update_site_name" url="https://dl.bintray.com/pmd/pmd-eclipse-plugin/updates/"/>
+      <update label="%feature.update_site_name" url="https://pmd.github.io/pmd-eclipse-plugin-p2-site/"/>
    </url>
 
    <requires>
