@@ -157,7 +157,7 @@ function prepare_local_p2_site() {
 
 function regenerate_metadata() {
     pmd_ci_log_info "Regenerating metadata for p2-site..."
-    local releases=($(find . -maxdepth 1 -type d -regex "\./[0-9]+\.[0-9]+\.[0-9]+\..*" -printf '%TY-%Tm-%Td\0%f\n' | sort -t '\0' -r|awk -F '\0' '{print $2}'))
+    local releases=($(find . -maxdepth 1 -type d -regex "\./[0-9]+\.[0-9]+\.[0-9]+\..*" -printf '%f\n'| tr '.' '\0' | sort -t '\0' -k1,1nr -k2,2nr -k3,3nr -k4dr |awk -F '\0' '{printf "%s.%s.%s.%s\n", $1, $2, $3, $4}'))
     # remove old releases
     for i in "${releases[@]:5}"; do
       pmd_ci_log_info "Removing old release $i..."
