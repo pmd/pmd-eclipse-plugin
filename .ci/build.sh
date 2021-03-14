@@ -57,8 +57,8 @@ function snapshot_build() {
             --no-transfer-progress \
             --activate-profiles snapshot-properties,release-composite
 
-        mv net.sourceforge.pmd.eclipse.p2updatesite/target/net.sourceforge.pmd.eclipse.p2updatesite-*.zip "net.sourceforge.pmd.eclipse.p2updatesite/target/net.sourceforge.pmd.eclipse.p2updatesite-LATEST.zip"
-        pmd_ci_sourceforge_uploadFile "pmd-eclipse/zipped" "net.sourceforge.pmd.eclipse.p2updatesite/target/net.sourceforge.pmd.eclipse.p2updatesite-LATEST.zip"
+        mv net.sourceforge.pmd.eclipse.p2updatesite/target/net.sourceforge.pmd.eclipse.p2updatesite-*.zip "net.sourceforge.pmd.eclipse.p2updatesite/target/net.sourceforge.pmd.eclipse.p2updatesite-SNAPSHOT.zip"
+        pmd_ci_sourceforge_uploadFile "pmd-eclipse/zipped" "net.sourceforge.pmd.eclipse.p2updatesite/target/net.sourceforge.pmd.eclipse.p2updatesite-SNAPSHOT.zip"
 
         # Cleanup old snapshots
         (
@@ -74,7 +74,7 @@ function snapshot_build() {
             cd current-p2-site
 
             rm -rf snapshot
-            unzip -q -d snapshot "../net.sourceforge.pmd.eclipse.p2updatesite/target/net.sourceforge.pmd.eclipse.p2updatesite-LATEST.zip"
+            unzip -q -d snapshot "../net.sourceforge.pmd.eclipse.p2updatesite/target/net.sourceforge.pmd.eclipse.p2updatesite-SNAPSHOT.zip"
             echo -e "This is a Eclipse Update Site for the PMD Eclipse Plugin for version ${PMD_CI_MAVEN_PROJECT_VERSION} ($(date -Iminutes)).\n\n<https://github.com/pmd/pmd-eclipse-plugin/>" > snapshot/index.md
             git add snapshot
 
