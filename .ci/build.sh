@@ -52,12 +52,16 @@ function snapshot_build() {
     pmd_ci_log_group_start "Snapshot Build: ${PMD_CI_MAVEN_PROJECT_VERSION}"
         pmd_ci_log_info "This is a snapshot build on branch ${PMD_CI_BRANCH} (version: ${PMD_CI_MAVEN_PROJECT_VERSION})"
 
-        # Uploading the update site to Bintray
+        # Build and upload the update site to Bintray
         xvfb-run --auto-servernum ./mvnw clean verify --show-version --errors --batch-mode \
             --no-transfer-progress \
             --activate-profiles snapshot-properties,release-composite
 
-        mv net.sourceforge.pmd.eclipse.p2updatesite/target/net.sourceforge.pmd.eclipse.p2updatesite-*.zip "net.sourceforge.pmd.eclipse.p2updatesite/target/net.sourceforge.pmd.eclipse.p2updatesite-SNAPSHOT.zip"
+        local qualifiedVersion
+        qualifiedVersion="$(basename net.sourceforge.pmd.eclipse.p2updatesite/target/net.sourceforge.pmd.eclipse.p2updatesite-*.zip)"
+        qualifiedVersion="${qualifiedVersion%.zip}"
+        qualifiedVersion="${qualifiedVersion#net.sourceforge.pmd.eclipse.p2updatesite-}"
+        mv "net.sourceforge.pmd.eclipse.p2updatesite/target/net.sourceforge.pmd.eclipse.p2updatesite-${qualifiedVersion}.zip" "net.sourceforge.pmd.eclipse.p2updatesite/target/net.sourceforge.pmd.eclipse.p2updatesite-SNAPSHOT.zip"
         pmd_ci_sourceforge_uploadFile "pmd-eclipse/zipped" "net.sourceforge.pmd.eclipse.p2updatesite/target/net.sourceforge.pmd.eclipse.p2updatesite-SNAPSHOT.zip"
 
         # Cleanup old snapshots
@@ -75,7 +79,18 @@ function snapshot_build() {
 
             rm -rf snapshot
             unzip -q -d snapshot "../net.sourceforge.pmd.eclipse.p2updatesite/target/net.sourceforge.pmd.eclipse.p2updatesite-SNAPSHOT.zip"
-            echo -e "This is a Eclipse Update Site for the PMD Eclipse Plugin for version ${PMD_CI_MAVEN_PROJECT_VERSION} ($(date -Iminutes)).\n\n<https://github.com/pmd/pmd-eclipse-plugin/>" > snapshot/index.md
+            echo "This is a Eclipse Update Site for the [PMD Eclipse Plugin](https://github.com/pmd/pmd-eclipse-plugin/) ${PMD_CI_MAVEN_PROJECT_VERSION}.
+
+Use <https://pmd.github.io/pmd-eclipse-plugin-p2-site/snapshot/> to install the plugin with the Eclipse Update Manager.
+
+<dl>
+  <dt>Feature ID</dt>
+  <dd>net.sourceforge.pmd.eclipse</dd>
+  <dt>Version</dt>
+  <dd>${qualifiedVersion}</dd>
+</dl>
+
+" > snapshot/index.md
             git add snapshot
 
             # create a new single commit
@@ -179,7 +194,19 @@ function regenerate_metadata() {
     for i in "${releases[@]}"; do
       children="${children}    <child location=\"$i\"/>\n"
       children_index="${children_index}  * [$i]($i/)\n"
-      echo -e "This is a Eclipse Update Site for the PMD Eclipse Plugin for version $i.\n\n<https://github.com/pmd/pmd-eclipse-plugin/>" > "$i"/index.md
+      echo "This is a Eclipse Update Site for the [PMD Eclipse Plugin](https://github.com/pmd/pmd-eclipse-plugin/) ${i}.
+
+Use <https://pmd.github.io/pmd-eclipse-plugin-p2-site/${i}/> to install the plugin with the Eclipse Update Manager.
+
+<dl>
+  <dt>Feature ID</dt>
+  <dd>net.sourceforge.pmd.eclipse</dd>
+  <dt>Version</dt>
+  <dd>${i}</dd>
+</dl>
+
+" > "$i"/index.md
+
       git add "$i"/index.md
     done
 
@@ -215,9 +242,9 @@ artifact.repository.factory.order = compositeArtifacts.xml,\!"
     echo -e "${p2_index}" > p2.index
 
     # regenerate index.md
-    local index_md="This URL is a composite Eclipse Update Site for the PMD Eclipse Plugin.
+    echo -e "This is a composite Eclipse Update Site for the [PMD Eclipse Plugin](https://github.com/pmd/pmd-eclipse-plugin/).
 
-Github: <https://github.com/pmd/pmd-eclipse-plugin/>
+Use <https://pmd.github.io/pmd-eclipse-plugin-p2-site/> to install the plugin with the Eclipse Update Manager.
 
 ----
 
@@ -226,8 +253,8 @@ Versions available at <https://pmd.github.io/pmd-eclipse-plugin-p2-site/>:
 ${children_index}
 
 For older versions, see <https://sourceforge.net/projects/pmd/files/pmd-eclipse/zipped/>
-"
-    echo -e "${index_md}" > index.md
+
+" > index.md
 }
 
 build
