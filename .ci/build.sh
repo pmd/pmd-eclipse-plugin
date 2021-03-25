@@ -122,7 +122,7 @@ function release_build() {
         pmd_ci_gh_releases_uploadAsset "$GH_RELEASE" "net.sourceforge.pmd.eclipse.p2updatesite/target/net.sourceforge.pmd.eclipse.p2updatesite-${PMD_CI_MAVEN_PROJECT_VERSION}.zip"
 
         # extract the release notes
-        RELEASE_NAME="PMD For Eclipse ${PMD_CI_MAVEN_PROJECT_VERSION} ($(date -u +%d-%B-%Y))"
+        RELEASE_NAME="PMD For Eclipse ${PMD_CI_MAVEN_PROJECT_VERSION}"
         BEGIN_LINE=$(grep -n "^## " ReleaseNotes.md|head -1|cut -d ":" -f 1)
         END_LINE=$(grep -n "^## " ReleaseNotes.md|head -2|tail -1|cut -d ":" -f 1)
         END_LINE=$((END_LINE - 1))
@@ -137,6 +137,10 @@ $(head -$END_LINE ReleaseNotes.md | tail -$((END_LINE - BEGIN_LINE)))
 
         # Upload it to sourceforge
         pmd_ci_sourceforge_uploadFile "pmd-eclipse/zipped" "net.sourceforge.pmd.eclipse.p2updatesite/target/net.sourceforge.pmd.eclipse.p2updatesite-${PMD_CI_MAVEN_PROJECT_VERSION}.zip"
+
+        # Create sourceforge blog entry
+        pmd_ci_sourceforge_createDraftBlogPost "$RELEASE_NAME released" "$RELEASE_BODY" "pmd-eclipse-plugin,release"
+        local sf_blog_url="${RESULT}"
     pmd_ci_log_group_end
 
     pmd_ci_log_group_start "Add new release to update site"
@@ -159,6 +163,8 @@ $(head -$END_LINE ReleaseNotes.md | tail -$((END_LINE - BEGIN_LINE)))
 
     # Publish release - this sends out notifications on github
     pmd_ci_gh_releases_publishRelease "$GH_RELEASE"
+    # Publish sourceforge blog entry
+    pmd_ci_sourceforge_publishBlogPost "${sf_blog_url}"
 }
 
 

@@ -86,7 +86,9 @@ The release happens in two phases:
     *   Update the versions
 2.  Push the changes and the tag. The [Github Actions build](https://github.com/pmd/pmd-eclipse-plugin/actions) will
     then publish the new version on [update site](https://github.com/pmd/pmd-eclipse-plugin-p2-site/) and
-    [github releases](https://github.com/pmd/pmd-eclipse-plugin/releases)
+    [github releases](https://github.com/pmd/pmd-eclipse-plugin/releases). It will also upload the update site
+    to [sourceforge](https://sourceforge.net/projects/pmd/files/pmd-eclipse/zipped/) and create a sourceforge
+    [blog entry](https://sourceforge.net/p/pmd/news/).
 
 
 #### Script
@@ -153,20 +155,9 @@ The release happens in two phases:
     
     echo Done.
 
-Also, don't forget to create a [News](https://sourceforge.net/p/pmd/news/) and
-verify, that the zipped update site has been uploaded to
-[GitHub Releases](https://github.com/pmd/pmd-eclipse-plugin/releases).
-
-You can use the following template:
-
-    PMD for Eclipse $VERSION.$BUILDQUALIFIER released
-    
-    A new PMD for Eclipse plugin version has been released.
-    It is available via the update site: <https://pmd.github.io/pmd-eclipse-plugin-p2-site/>
-    
-    * Release Notes: <https://github.com/pmd/pmd-eclipse-plugin/blob/$VERSION.$BUILDQUALIFIER/ReleaseNotes.md>
-
-
+Verify, that the zipped update site has been uploaded to
+[GitHub Releases](https://github.com/pmd/pmd-eclipse-plugin/releases) and [sourceforge](https://pmd.github.io/pmd-eclipse-plugin-p2-site/)
+and that a [news blog entry](https://sourceforge.net/p/pmd/news/) has been created on sourceforge.
 
 ### Updating the used PMD version
 The parent pom contains the property `pmd.version`. This is used inside the plugin module, to resolve the dependencies.
