@@ -17,6 +17,7 @@ This is a minor release.
     <https://pmd.github.io/pmd-eclipse-plugin-p2-site/>
 *   Archives of the old versions can be found on sourceforge:
     <https://sourceforge.net/projects/pmd/files/pmd-eclipse/zipped/>
+*   Updated to PMD 6.33.0
 
 ### Fixed Issues
 
