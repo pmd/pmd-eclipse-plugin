@@ -13,6 +13,9 @@
   <artifactId>net.sourceforge.pmd.eclipse.plugin</artifactId>
   <packaging>eclipse-plugin</packaging>
 
+  <properties>
+    <keystore>${basedir}/../${keystorePath}</keystore>
+  </properties>
 
   <dependencies>
     <dependency>

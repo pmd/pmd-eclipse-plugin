@@ -39,6 +39,7 @@ function build() {
         pmd_ci_setup_secrets_private_env
         pmd_ci_setup_secrets_ssh
         pmd_ci_maven_setup_settings
+        extract_keystore
     pmd_ci_log_group_end
 
     if pmd_ci_maven_isSnapshotBuild; then
@@ -58,7 +59,7 @@ function snapshot_build() {
         # Build and upload the update site to Bintray
         xvfb-run --auto-servernum ./mvnw clean verify --show-version --errors --batch-mode \
             --no-transfer-progress \
-            --activate-profiles snapshot-properties,release-composite
+            --activate-profiles snapshot-properties,release-composite,sign
 
         local qualifiedVersion
         qualifiedVersion="$(basename net.sourceforge.pmd.eclipse.p2updatesite/target/net.sourceforge.pmd.eclipse.p2updatesite-*.zip)"
@@ -113,7 +114,7 @@ function release_build() {
         # Build and deploy the update site to bintray
         xvfb-run --auto-servernum ./mvnw clean verify --show-version --errors --batch-mode \
             --no-transfer-progress \
-            --activate-profiles release-composite
+            --activate-profiles release-composite,sign
     pmd_ci_log_group_end
 
     pmd_ci_log_group_start "Update Github Releases"
@@ -264,6 +265,15 @@ ${children_index}
 For older versions, see <https://sourceforge.net/projects/pmd/files/pmd-eclipse/zipped/>
 
 " > index.md
+}
+
+function extract_keystore() {
+    local -r keystore=".ci/files/pmd-eclipse-plugin.p12"
+    pmd_ci_log_info "Extracting keystore ${keystore}..."
+    printenv PMD_CI_SECRET_PASSPHRASE | gpg --batch --yes --decrypt \
+        --passphrase-fd 0 \
+        --output "${keystore}" "${keystore}.asc"
+    chmod 600 "${keystore}"
 }
 
 build

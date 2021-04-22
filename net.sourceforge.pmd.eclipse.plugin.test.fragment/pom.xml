@@ -13,4 +13,8 @@
   <artifactId>net.sourceforge.pmd.eclipse.plugin.test.fragment</artifactId>
   <packaging>eclipse-plugin</packaging>
 
+  <properties>
+    <keystore>${basedir}/../${keystorePath}</keystore>
+  </properties>
+
 </project>
