@@ -18,6 +18,8 @@ This is a minor release.
 
 ### Fixed Issues
 
+*   [#144](https://github.com/pmd/pmd-eclipse-plugin/pull/144): Remove support and scripts for bintray
+
 ### API Changes
 
 ### External Contributions
