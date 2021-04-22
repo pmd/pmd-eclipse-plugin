@@ -15,6 +15,8 @@ This is a minor release.
 
 ### Fixed Issues
 
+*   [#143](https://github.com/pmd/pmd-eclipse-plugin/pull/143): Support JAR Signing for the update site
+
 ### API Changes
 
 ### External Contributions
