@@ -13,6 +13,9 @@ This is a minor release.
 
 ### New and noteworthy
 
+*   The Eclipse Update site is now hosted on GitHub Pages: <https://pmd.github.io/pmd-eclipse-plugin-p2-site/>
+    The old update site on Bintray is no longer updated.
+
 ### Fixed Issues
 
 ### API Changes
