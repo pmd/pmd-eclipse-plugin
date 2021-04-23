@@ -37,7 +37,7 @@ import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetNotFoundException;
-import net.sourceforge.pmd.RuleSets;
+import net.sourceforge.pmd.RulesetsFactoryUtils;
 import net.sourceforge.pmd.eclipse.core.IRuleSetManager;
 import net.sourceforge.pmd.eclipse.core.internal.FileModificationUtil;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
@@ -50,6 +50,7 @@ import net.sourceforge.pmd.eclipse.runtime.writer.IRuleSetWriter;
 import net.sourceforge.pmd.eclipse.runtime.writer.WriterException;
 import net.sourceforge.pmd.eclipse.ui.Shape;
 import net.sourceforge.pmd.eclipse.ui.actions.RuleSetUtil;
+import net.sourceforge.pmd.eclipse.ui.actions.internal.InternalRuleSetUtil;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.RuleTableColumns;
 import net.sourceforge.pmd.eclipse.ui.priority.PriorityDescriptor;
@@ -70,7 +71,6 @@ class PreferencesManagerImpl implements IPreferencesManager {
     private static final String PMD_VIOLATIONS_OVERVIEW_ENABLED = PMDPlugin.PLUGIN_ID + ".pmd_overview_enabled";
     private static final String PMD_VIOLATIONS_OUTLINE_ENABLED = PMDPlugin.PLUGIN_ID + ".pmd_outline_enabled";
     private static final String PMD_CHECK_AFTER_SAVE_ENABLED = PMDPlugin.PLUGIN_ID + ".pmd_check_after_save_enabled";
-    private static final String MAX_VIOLATIONS_PFPR = PMDPlugin.PLUGIN_ID + ".max_violations_pfpr";
     private static final String DETERMINE_FILETYPES_AUTOMATICALLY = PMDPlugin.PLUGIN_ID + ".determine_filetypes_automatically";
     private static final String REVIEW_ADDITIONAL_COMMENT = PMDPlugin.PLUGIN_ID + ".review_additional_comment";
     private static final String REVIEW_PMD_STYLE_ENABLED = PMDPlugin.PLUGIN_ID + ".review_pmd_style_enabled";
@@ -184,7 +184,6 @@ class PreferencesManagerImpl implements IPreferencesManager {
         loadPmdViolationsOutlineEnabled();
         loadCheckAfterSaveEnabled();
         loadUseCustomPriorityNames();
-        loadMaxViolationsPerFilePerRule();
         loadDetermineFiletypesAutomatically();
         loadReviewAdditionalComment();
         loadReviewPmdStyleEnabled();
@@ -259,7 +258,6 @@ class PreferencesManagerImpl implements IPreferencesManager {
         storePmdViolationsOutlineEnabled();
         storeCheckAfterSaveEnabled();
         storeUseCustomPriorityNames();
-        storeMaxViolationsPerFilePerRule();
         storeDetermineFiletypesAutomatically();
         storeReviewAdditionalComment();
         storeReviewPmdStyleEnabled();
@@ -344,11 +342,6 @@ class PreferencesManagerImpl implements IPreferencesManager {
         preferences.useCustomPriorityNames(loadPreferencesStore.getBoolean(PMD_USE_CUSTOM_PRIORITY_NAMES));
     }
 
-    private void loadMaxViolationsPerFilePerRule() {
-        loadPreferencesStore.setDefault(MAX_VIOLATIONS_PFPR, IPreferences.MAX_VIOLATIONS_PFPR_DEFAULT);
-        preferences.setMaxViolationsPerFilePerRule(loadPreferencesStore.getInt(MAX_VIOLATIONS_PFPR));
-    }
-    
     private void loadDetermineFiletypesAutomatically() {
         loadPreferencesStore.setDefault(DETERMINE_FILETYPES_AUTOMATICALLY, IPreferences.DETERMINE_FILETYPES_AUTOMATICALLY_DEFAULT);
         preferences.setDetermineFiletypesAutomatically(loadPreferencesStore.getBoolean(DETERMINE_FILETYPES_AUTOMATICALLY));
@@ -534,10 +527,6 @@ class PreferencesManagerImpl implements IPreferencesManager {
     private void storePmdViolationsOutlineEnabled() {
         storePreferencesStore.setValue(PMD_VIOLATIONS_OUTLINE_ENABLED, preferences.isPmdViolationsOutlineEnabled());
     }
-    
-    private void storeMaxViolationsPerFilePerRule() {
-        storePreferencesStore.setValue(MAX_VIOLATIONS_PFPR, preferences.getMaxViolationsPerFilePerRule());
-    }
 
     private void storeDetermineFiletypesAutomatically() {
         storePreferencesStore.setValue(DETERMINE_FILETYPES_AUTOMATICALLY, preferences.isDetermineFiletypesAutomatically());
@@ -602,7 +591,7 @@ class PreferencesManagerImpl implements IPreferencesManager {
      */
     private RuleSet getRuleSetFromStateLocation() {
         RuleSet preferredRuleSet = null;
-        RuleSetFactory factory = new RuleSetFactory();
+        RuleSetFactory factory = RulesetsFactoryUtils.defaultFactory();
 
         // First find the ruleset file in the state location
         IPath ruleSetLocation = PMDPlugin.getDefault().getStateLocation().append(PREFERENCE_RULESET_FILE);
@@ -672,23 +661,25 @@ class PreferencesManagerImpl implements IPreferencesManager {
             if (project.isAccessible()) {
                 try {
                     IProjectProperties properties = PMDPlugin.getDefault().loadProjectProperties(project);
-                    RuleSets projectRuleSets = properties.getProjectRuleSets();
-                    RuleSets newProjectRuleSet = new RuleSets();
-                    if (projectRuleSets != null && projectRuleSets.getAllRuleSets().length > 0) {
+                    List<RuleSet> projectRuleSets = properties.getProjectRuleSetList();
+                    List<RuleSet> newProjectRuleSet = new ArrayList<>();
+                    if (projectRuleSets != null && !projectRuleSets.isEmpty()) {
                         // add the new rules to the first ruleset
                         RuleSet firstProjectRuleset = properties.getProjectRuleSet();
                         firstProjectRuleset = RuleSetUtil.addRules(firstProjectRuleset, getNewRules(updatedRuleSet));
-                        firstProjectRuleset = RuleSetUtil.setExcludePatterns(firstProjectRuleset, updatedRuleSet.getExcludePatterns());
-                        firstProjectRuleset = RuleSetUtil.setIncludePatterns(firstProjectRuleset, updatedRuleSet.getIncludePatterns());
-                        newProjectRuleSet.addRuleSet(firstProjectRuleset);
+                        firstProjectRuleset = InternalRuleSetUtil
+                                .setFileExclusions(firstProjectRuleset, updatedRuleSet.getFileExclusions());
+                        firstProjectRuleset = InternalRuleSetUtil
+                                .setFileInclusions(firstProjectRuleset, updatedRuleSet.getFileInclusions());
+                        newProjectRuleSet.add(firstProjectRuleset);
 
                         // take the remaining rulesets as-is
-                        for (int i = 1; i < projectRuleSets.getAllRuleSets().length; i++) {
-                            newProjectRuleSet.addRuleSet(projectRuleSets.getAllRuleSets()[i]);
+                        for (int i = 1; i < projectRuleSets.size(); i++) {
+                            newProjectRuleSet.add(projectRuleSets.get(i));
                         }
 
                         // save the new rulesets
-                        properties.setProjectRuleSets(newProjectRuleSet);
+                        properties.setProjectRuleSetList(newProjectRuleSet);
                         properties.sync();
                     }
                 } catch (PropertiesException e) {

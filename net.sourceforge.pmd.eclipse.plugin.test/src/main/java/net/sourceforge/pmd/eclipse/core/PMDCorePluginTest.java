@@ -13,6 +13,7 @@ import org.junit.Test;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetNotFoundException;
+import net.sourceforge.pmd.RulesetsFactoryUtils;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 
 /**
@@ -33,7 +34,7 @@ public class PMDCorePluginTest {
         final Collection<RuleSet> defaultRuleSets = PMDPlugin.getDefault().getRuleSetManager().getRegisteredRuleSets();
         Assert.assertFalse("No registered default rulesets!", defaultRuleSets.isEmpty());
 
-        final RuleSetFactory factory = new RuleSetFactory();
+        final RuleSetFactory factory = RulesetsFactoryUtils.defaultFactory();
         final Iterator<RuleSet> iterator = factory.getRegisteredRuleSets();
         while (iterator.hasNext()) {
             final RuleSet ruleSet = iterator.next();
@@ -71,7 +72,7 @@ public class PMDCorePluginTest {
                 .getRegisteredRuleSets();
         Assert.assertFalse("No registered rulesets!", registeredRuleSets.isEmpty());
 
-        final RuleSetFactory factory = new RuleSetFactory();
+        final RuleSetFactory factory = RulesetsFactoryUtils.defaultFactory();
         final Iterator<RuleSet> iterator = factory.getRegisteredRuleSets();
         while (iterator.hasNext()) {
             final RuleSet ruleSet = iterator.next();

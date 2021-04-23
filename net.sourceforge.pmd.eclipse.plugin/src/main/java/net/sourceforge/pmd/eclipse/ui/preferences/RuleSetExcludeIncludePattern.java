@@ -4,9 +4,11 @@
 
 package net.sourceforge.pmd.eclipse.ui.preferences;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import net.sourceforge.pmd.RuleSet;
+import net.sourceforge.pmd.eclipse.ui.actions.internal.InternalRuleSetUtil;
 
 /**
  * Helper class to display rule set exclude/include patterns in a table
@@ -48,6 +50,8 @@ public class RuleSetExcludeIncludePattern {
     }
 
     private List<String> getPatterns() {
-        return exclude ? ruleSet.getExcludePatterns() : ruleSet.getIncludePatterns();
+        return exclude
+                ? new ArrayList<>(InternalRuleSetUtil.convert(ruleSet.getFileExclusions()))
+                : new ArrayList<>(InternalRuleSetUtil.convert(ruleSet.getFileInclusions()));
     }
 }

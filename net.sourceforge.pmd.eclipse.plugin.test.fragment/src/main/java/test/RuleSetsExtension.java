@@ -11,6 +11,7 @@ import org.eclipse.core.runtime.IStatus;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetNotFoundException;
+import net.sourceforge.pmd.RulesetsFactoryUtils;
 import net.sourceforge.pmd.eclipse.core.IRuleSetsExtension;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 
@@ -68,7 +69,7 @@ public class RuleSetsExtension implements IRuleSetsExtension {
      */
     private RuleSet getRuleSet1() throws RuleSetNotFoundException {
         if (this.ruleSet1 == null) {
-            RuleSetFactory factory = new RuleSetFactory();
+            RuleSetFactory factory = RulesetsFactoryUtils.defaultFactory();
             this.ruleSet1 = factory.createRuleSets("rulesets/extra1.xml").getAllRuleSets()[0];
         }
 
@@ -82,7 +83,7 @@ public class RuleSetsExtension implements IRuleSetsExtension {
      */
     private RuleSet getRuleSet2() throws RuleSetNotFoundException {
         if (this.ruleSet2 == null) {
-            RuleSetFactory factory = new RuleSetFactory();
+            RuleSetFactory factory = RulesetsFactoryUtils.defaultFactory();
             this.ruleSet2 = factory.createRuleSets("rulesets/extra2.xml").getAllRuleSets()[0];
         }
 

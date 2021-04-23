@@ -10,6 +10,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.preferences.InstanceScope;
@@ -43,7 +44,6 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Link;
 import org.eclipse.swt.widgets.Scale;
-import org.eclipse.swt.widgets.Spinner;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbench;
@@ -51,7 +51,7 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.dialogs.PreferencesUtil;
 import org.eclipse.ui.preferences.ScopedPreferenceStore;
 
-import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.PMDVersion;
 import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.plugin.UISettings;
@@ -67,7 +67,6 @@ import net.sourceforge.pmd.eclipse.ui.priority.PriorityColumnUI;
 import net.sourceforge.pmd.eclipse.ui.priority.PriorityDescriptor;
 import net.sourceforge.pmd.eclipse.ui.priority.PriorityDescriptorCache;
 import net.sourceforge.pmd.eclipse.ui.priority.PriorityDescriptorIcon;
-import net.sourceforge.pmd.util.StringUtil;
 
 /**
  * The top-level page for PMD preferences
@@ -92,7 +91,6 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
     private Button useProjectBuildPath;
     private Button checkCodeOnSave;
     private Button useCustomPriorityNames;
-    private Spinner maxViolationsPerFilePerRule;
     private Button reviewPmdStyleBox;
     private Text logFileNameText;
     private Scale logLevelScale;
@@ -169,7 +167,6 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
         checkCodeOnSave = buildCheckCodeOnSaveButton(group);
         determineFiletypesAutomatically = buildDetermineFiletypesAutomatically(group);
         Label separator = new Label(group, SWT.SEPARATOR | SWT.SHADOW_IN | SWT.HORIZONTAL);
-        maxViolationsPerFilePerRule = buildMaxViolationsPerFilePerRuleText(group);
 
         GridData data = new GridData();
         data.horizontalAlignment = GridData.FILL;
@@ -195,11 +192,6 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
         data.horizontalAlignment = GridData.FILL;
         data.grabExcessHorizontalSpace = true;
         separator.setLayoutData(data);
-
-        data = new GridData();
-        data.horizontalAlignment = GridData.FILL;
-        data.grabExcessHorizontalSpace = true;
-        maxViolationsPerFilePerRule.setLayoutData(data);
 
         return group;
     }
@@ -392,7 +384,7 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
 
     private void setName(String newName) {
 
-        if (StringUtil.isEmpty(newName)) {
+        if (StringUtils.isBlank(newName)) {
             return;
         }
 
@@ -576,8 +568,8 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
         StringBuilder aboutText = new StringBuilder();
         aboutText.append(getMessage(StringKeys.PREF_GENERAL_LABEL_PMD_ECLIPSE_VERSION)).append(" ")
                 .append(PMDPlugin.version).append("\n");
-        aboutText.append(getMessage(StringKeys.PREF_GENERAL_LABEL_PMD_VERSION)).append(" ").append(PMD.VERSION)
-                .append("\n");
+        aboutText.append(getMessage(StringKeys.PREF_GENERAL_LABEL_PMD_VERSION)).append(" ")
+                .append(PMDVersion.VERSION).append("\n");
 
         Label aboutLabel = new Label(aboutGroup, SWT.NONE);
         aboutLabel.setText(aboutText.toString());
@@ -710,29 +702,6 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
         return button;
     }
 
-    /**
-     * Build the text for maximum violations per file per rule
-     *
-     * @param parent
-     * @return
-     */
-    private Spinner buildMaxViolationsPerFilePerRuleText(Composite parent) {
-
-        Composite comp = new Composite(parent, 0);
-        comp.setLayout(new GridLayout(2, false));
-
-        Label label = buildLabel(comp, StringKeys.PREF_GENERAL_LABEL_MAX_VIOLATIONS_PFPR);
-        label.setLayoutData(
-                new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING, GridData.VERTICAL_ALIGN_CENTER, false, false, 1, 1));
-
-        final Spinner spinner = new Spinner(comp, SWT.BORDER);
-        spinner.setLayoutData(
-                new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING, GridData.VERTICAL_ALIGN_CENTER, true, false, 1, 1));
-        spinner.setMinimum(preferences.getMaxViolationsPerFilePerRule());
-        spinner.setToolTipText(getMessage(StringKeys.PREF_GENERAL_TOOLTIP_MAX_VIOLATIONS_PFPR));
-        return spinner;
-    }
-
     private Button buildDetermineFiletypesAutomatically(Composite viewGroup) {
         Button button = new Button(viewGroup, SWT.CHECK);
         button.setText(getMessage(StringKeys.PREF_GENERAL_LABEL_DETERMINE_FILETYPES_AUTOMATICALLY));
@@ -793,10 +762,6 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
         setSelection(useProjectBuildPath, IPreferences.PROJECT_BUILD_PATH_ENABLED_DEFAULT);
         setSelection(reviewPmdStyleBox, IPreferences.REVIEW_PMD_STYLE_ENABLED_DEFAULT);
         setSelection(determineFiletypesAutomatically, IPreferences.DETERMINE_FILETYPES_AUTOMATICALLY_DEFAULT);
-
-        if (maxViolationsPerFilePerRule != null) {
-            maxViolationsPerFilePerRule.setMinimum(IPreferences.MAX_VIOLATIONS_PFPR_DEFAULT);
-        }
 
         setText(logFileNameText, IPreferences.LOG_FILENAME_DEFAULT);
 
@@ -914,11 +879,6 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
 
         if (useProjectBuildPath != null) {
             preferences.setProjectBuildPathEnabled(useProjectBuildPath.getSelection());
-        }
-
-        if (maxViolationsPerFilePerRule != null) {
-            preferences
-                    .setMaxViolationsPerFilePerRule(Integer.valueOf(maxViolationsPerFilePerRule.getText()).intValue());
         }
 
         if (determineFiletypesAutomatically != null) {

@@ -39,9 +39,9 @@ import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSet;
-import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.ui.actions.RuleSetUtil;
+import net.sourceforge.pmd.eclipse.ui.actions.internal.InternalRuleSetUtil;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
 import net.sourceforge.pmd.eclipse.ui.preferences.PMDPreferencePage;
 import net.sourceforge.pmd.eclipse.ui.preferences.RuleLabelProvider;
@@ -524,9 +524,9 @@ public class PMDProjectPropertyPage extends PropertyPage {
      */
     private void populateAvailableRulesTable() {
         availableRulesTableViewer.setInput(controller.getAvailableRules());
-        final RuleSets activeRuleSet = model.getProjectRuleSets();
+        final List<RuleSet> activeRuleSet = model.getProjectRuleSetList();
         if (activeRuleSet != null) {
-            final Collection<Rule> activeRules = activeRuleSet.getAllRules();
+            final Collection<Rule> activeRules = InternalRuleSetUtil.allRules(activeRuleSet);
 
             final TableItem[] itemList = availableRulesTableViewer.getTable().getItems();
             for (TableItem element2 : itemList) {
@@ -581,10 +581,10 @@ public class PMDProjectPropertyPage extends PropertyPage {
             }
         }
 
-        final RuleSets activeRuleSet = model.getProjectRuleSets();
-        for (RuleSet rs : activeRuleSet.getAllRuleSets()) {
-            ruleSet = RuleSetUtil.addExcludePatterns(ruleSet, rs.getExcludePatterns());
-            ruleSet = RuleSetUtil.addIncludePatterns(ruleSet, rs.getIncludePatterns());
+        final List<RuleSet> activeRuleSet = model.getProjectRuleSetList();
+        for (RuleSet rs : activeRuleSet) {
+            ruleSet = InternalRuleSetUtil.addFileExclusions(ruleSet, rs.getFileExclusions());
+            ruleSet = InternalRuleSetUtil.addFileInclusions(ruleSet, rs.getFileInclusions());
         }
 
         return ruleSet;

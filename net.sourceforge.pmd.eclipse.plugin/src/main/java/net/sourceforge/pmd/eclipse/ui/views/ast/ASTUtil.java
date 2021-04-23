@@ -9,7 +9,6 @@ import java.util.Comparator;
 import java.util.List;
 
 import net.sourceforge.pmd.lang.ast.AbstractNode;
-import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ecmascript.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
@@ -17,11 +16,11 @@ import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclarator;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType;
 import net.sourceforge.pmd.lang.java.ast.ASTResultType;
 import net.sourceforge.pmd.lang.java.ast.ASTType;
-import net.sourceforge.pmd.lang.java.ast.AbstractJavaAccessNode;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.lang.java.ast.AccessNode;
 
 /**
  * 
@@ -31,7 +30,7 @@ public class ASTUtil {
 
     public static final Comparator<ASTMethodDeclaration> METHOD_COMPARATOR = new Comparator<ASTMethodDeclaration>() {
         public int compare(ASTMethodDeclaration m1, ASTMethodDeclaration m2) {
-            return m1.getMethodName().compareTo(m2.getMethodName());
+            return m1.getName().compareTo(m2.getName());
         }
     };
 
@@ -55,7 +54,7 @@ public class ASTUtil {
             sb.append(' ');
         }
 
-        sb.append(pmdMethod.getMethodName());
+        sb.append(pmdMethod.getName());
         sb.append('(').append(parameterTypes(pmdMethod)).append(')');
         if (returnType == null) {
             return sb.toString();
@@ -65,7 +64,7 @@ public class ASTUtil {
         return sb.toString();
     }
 
-    private static List<String> modifiersFor(AbstractJavaAccessNode node) {
+    private static List<String> modifiersFor(AccessNode node) {
 
         List<String> modifiers = new ArrayList<String>();
         if (node.isPublic()) {
@@ -107,7 +106,7 @@ public class ASTUtil {
         return modifiers;
     }
 
-    private static void addModifiers(AbstractJavaAccessNode node, StringBuilder sb) {
+    private static void addModifiers(AccessNode node, StringBuilder sb) {
 
         List<String> modifiers = modifiersFor(node);
         if (modifiers.isEmpty()) {
@@ -130,7 +129,15 @@ public class ASTUtil {
             sb.append(' ').append(type.getTypeImage());
         }
 
-        sb.append(' ').append(pmdField.getVariableName());
+        sb.append(' ');
+        boolean first = true;
+        for (ASTVariableDeclaratorId id : pmdField) {
+            if (!first) {
+                sb.append(", ");
+            }
+            first = false;
+            sb.append(id.getName());
+        }
 
         return sb.toString();
     }
@@ -139,22 +146,15 @@ public class ASTUtil {
 
         StringBuilder sb = new StringBuilder();
 
-        for (int ix = 0; ix < node.jjtGetNumChildren(); ix++) {
-            Node sn = node.jjtGetChild(ix);
-            if (sn instanceof ASTMethodDeclarator) {
-                List<ASTFormalParameter> allParams = ((ASTMethodDeclarator) sn)
-                        .findDescendantsOfType(ASTFormalParameter.class);
-                for (ASTFormalParameter formalParam : allParams) {
-                    AbstractNode param = formalParam.getFirstDescendantOfType(ASTClassOrInterfaceType.class);
-                    if (param == null) {
-                        param = formalParam.getFirstDescendantOfType(ASTPrimitiveType.class);
-                    }
-                    if (param == null) {
-                        continue;
-                    }
-                    sb.append(param.getImage()).append(", ");
-                }
+        for (ASTFormalParameter formalParam : node.getFormalParameters()) {
+            AbstractNode param = formalParam.getFirstDescendantOfType(ASTClassOrInterfaceType.class);
+            if (param == null) {
+                param = formalParam.getFirstDescendantOfType(ASTPrimitiveType.class);
             }
+            if (param == null) {
+                continue;
+            }
+            sb.append(param.getImage()).append(", ");
         }
 
         int length = sb.length();
@@ -162,22 +162,15 @@ public class ASTUtil {
     }
 
     public static String returnType(ASTMethodDeclaration node) {
-
-        for (int ix = 0; ix < node.jjtGetNumChildren(); ix++) {
-            Node sn = node.jjtGetChild(ix);
-            if (sn instanceof ASTResultType) {
-                ASTResultType resultType = (ASTResultType) sn;
-                AbstractNode param = resultType.getFirstDescendantOfType(ASTClassOrInterfaceType.class);
-                if (param == null) {
-                    param = resultType.getFirstDescendantOfType(ASTPrimitiveType.class);
-                }
-                if (param == null) {
-                    continue;
-                }
-                return param.getImage();
-            }
+        ASTResultType resultType = node.getResultType();
+        if (resultType.isVoid()) {
+            return "void";
         }
-        return null;
+        AbstractNode param = resultType.getFirstDescendantOfType(ASTClassOrInterfaceType.class);
+        if (param == null) {
+            param = resultType.getFirstDescendantOfType(ASTPrimitiveType.class);
+        }
+        return param.getImage();
     }
 
     public static String getLocalVarDeclarationLabel(ASTLocalVariableDeclaration node) {
@@ -188,11 +181,17 @@ public class ASTUtil {
         ASTType type = node.getTypeNode();
         sb.append(' ').append(type.getTypeImage());
 
-        for (int i = 0; i < node.getArrayDepth(); i++) {
-            sb.append("[]");
+        boolean first = true;
+        for (ASTVariableDeclaratorId id : node) {
+            if (!first) {
+                sb.append(", ");
+            }
+            first = false;
+            sb.append(id.getName());
+            if (id.hasArrayType()) {
+                sb.append("[]");
+            }
         }
-
-        sb.append(' ').append(node.getVariableName());
 
         return sb.toString();
     }

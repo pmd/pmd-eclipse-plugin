@@ -234,7 +234,6 @@ public class EclipseUtils {
                                 JavaCore.newContainerEntry(new Path("org.eclipse.jdt.launching.JRE_CONTAINER")) },
                             null);
 
-            @SuppressWarnings("unchecked")
             Hashtable<String, String> javaOptions = JavaCore.getOptions();
             javaOptions.put(JavaCore.COMPILER_COMPLIANCE, JavaCore.VERSION_1_5);
             javaOptions.put(JavaCore.COMPILER_CODEGEN_TARGET_PLATFORM, JavaCore.VERSION_1_5);

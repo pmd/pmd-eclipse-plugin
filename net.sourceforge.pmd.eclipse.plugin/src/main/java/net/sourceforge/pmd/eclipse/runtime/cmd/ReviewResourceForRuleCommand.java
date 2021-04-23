@@ -6,6 +6,7 @@ package net.sourceforge.pmd.eclipse.runtime.cmd;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.core.resources.IFile;
@@ -20,10 +21,10 @@ import net.sourceforge.pmd.PMDException;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSet;
-import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.SourceCodeProcessor;
 import net.sourceforge.pmd.eclipse.runtime.PMDRuntimeConstants;
 import net.sourceforge.pmd.eclipse.ui.actions.RuleSetUtil;
+import net.sourceforge.pmd.eclipse.ui.actions.internal.InternalRuleSetUtil;
 
 /**
  * This command reviews a resource - a file - for a specific rule.
@@ -32,8 +33,6 @@ import net.sourceforge.pmd.eclipse.ui.actions.RuleSetUtil;
  *
  */
 public class ReviewResourceForRuleCommand extends AbstractDefaultCommand {
-
-    private static final long serialVersionUID = 1L;
 
     private IResource resource;
     private RuleContext context;
@@ -107,9 +106,8 @@ public class ReviewResourceForRuleCommand extends AbstractDefaultCommand {
 
                     // Reader input = new InputStreamReader(file.getContents(),
                     // file.getCharset());
-                    RuleSets rSets = new RuleSets(ruleSet);
-
-                    new SourceCodeProcessor(new PMDConfiguration()).processSourceCode(file.getContents(), rSets,
+                    new SourceCodeProcessor(new PMDConfiguration()).processSourceCode(file.getContents(),
+                            InternalRuleSetUtil.toRuleSets(Collections.singletonList(ruleSet)),
                             context);
                     // input.close();
                     // } catch (CoreException e) {
@@ -124,7 +122,7 @@ public class ReviewResourceForRuleCommand extends AbstractDefaultCommand {
                 Display.getDefault().asyncExec(new Runnable() {
                     public void run() {
                         for (IPropertyListener listener : listenerList) {
-                            listener.propertyChanged(context.getReport().iterator(),
+                            listener.propertyChanged(context.getReport().getViolations().iterator(),
                                     PMDRuntimeConstants.PROPERTY_REVIEW);
                         }
                     }

@@ -42,7 +42,7 @@ public class PMDResolutionGenerator implements IMarkerResolutionGenerator {
 
     public static final IMarkerResolution[] EMPTY_RESOLUTIONS = new IMarkerResolution[0];
 
-    public static Class<Fix> fixClassFor(String className, String ruleName) {
+    public static Class<? extends Fix> fixClassFor(String className, String ruleName) {
 
         if (StringUtils.isBlank(className)) {
             return null;
@@ -51,7 +51,7 @@ public class PMDResolutionGenerator implements IMarkerResolutionGenerator {
         try {
             Class<?> cls = Class.forName(className);
             if (Fix.class.isAssignableFrom(cls)) {
-                return (Class<Fix>) cls;
+                return cls.asSubclass(Fix.class);
             } else {
                 BROKEN_FIXES.put(ruleName, className);
                 return null;
@@ -108,7 +108,7 @@ public class PMDResolutionGenerator implements IMarkerResolutionGenerator {
             if (StringUtils.isBlank(fixClassName)) {
                 continue;
             }
-            Class<Fix> fixClass = fixClassFor(fixClassName.trim(), ruleName);
+            Class<? extends Fix> fixClass = fixClassFor(fixClassName.trim(), ruleName);
             if (fixClass != null) {
                 Fix fix = fixFor(ruleName, fixClass);
                 if (fix != null) {
@@ -141,10 +141,10 @@ public class PMDResolutionGenerator implements IMarkerResolutionGenerator {
         return FIXERS_BY_RULE_NAME.containsKey(ruleName);
     }
 
-    private static Fix fixFor(String ruleName, Class<Fix> fixClass) {
+    private static Fix fixFor(String ruleName, Class<? extends Fix> fixClass) {
 
         try {
-            return fixClass.newInstance();
+            return fixClass.getConstructor().newInstance();
         } catch (Exception ex) {
             BROKEN_FIXES.put(ruleName, fixClass.getName());
             return null;

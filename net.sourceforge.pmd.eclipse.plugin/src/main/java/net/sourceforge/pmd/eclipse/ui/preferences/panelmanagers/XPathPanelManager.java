@@ -32,7 +32,6 @@ import net.sourceforge.pmd.eclipse.ui.preferences.editors.SWTUtil;
 import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.lang.rule.XPathRule;
 import net.sourceforge.pmd.properties.EnumeratedProperty;
-import net.sourceforge.pmd.util.StringUtil;
 
 /**
  *
@@ -128,7 +127,7 @@ public class XPathPanelManager extends AbstractRulePanelManager {
                 String newValue = xpathField.getText().trim();
                 String existingValue = soleRule.getProperty(XPathRule.XPATH_DESCRIPTOR).trim();
 
-                if (StringUtil.areSemanticEquals(existingValue, newValue)) {
+                if (StringUtils.equals(StringUtils.stripToNull(existingValue), StringUtils.stripToNull(newValue))) {
                     return;
                 }
 

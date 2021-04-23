@@ -6,6 +6,7 @@ package net.sourceforge.pmd.eclipse.ui.properties;
 
 import java.io.File;
 import java.io.InputStream;
+import java.util.Collections;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -17,7 +18,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.RuleSet;
-import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.eclipse.EclipseUtils;
 import net.sourceforge.pmd.eclipse.internal.ResourceUtil;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
@@ -82,7 +82,7 @@ public class ExternalRuleSetFileTest {
         cmd.setPmdEnabled(true);
         cmd.setProject(this.testProject);
         cmd.setProjectWorkingSet(null);
-        cmd.setProjectRuleSets(new RuleSets(RuleSetUtil.newEmpty("empty", "empty")));
+        cmd.setProjectRuleSetList(Collections.singletonList((RuleSetUtil.newEmpty("empty", "empty"))));
         cmd.setRuleSetStoredInProject(true);
         cmd.setRuleSetFile(PROJECT_RULESET_FILENAME);
         cmd.execute();
@@ -158,8 +158,8 @@ public class ExternalRuleSetFileTest {
         cmd.setPmdEnabled(true);
         cmd.setProject(this.testProject);
         cmd.setProjectWorkingSet(null);
-        RuleSets rulesets = new RuleSets(PMDPlugin.getDefault().getPreferencesManager().getRuleSet());
-        cmd.setProjectRuleSets(rulesets);
+        RuleSet ruleSet = PMDPlugin.getDefault().getPreferencesManager().getRuleSet();
+        cmd.setProjectRuleSetList(Collections.singletonList(ruleSet));
         cmd.setRuleSetStoredInProject(false);
         cmd.execute();
 
@@ -176,7 +176,7 @@ public class ExternalRuleSetFileTest {
         final IProjectPropertiesManager mgr = PMDPlugin.getDefault().getPropertiesManager();
         final IProjectProperties model = mgr.loadProjectProperties(this.testProject);
         RuleSet projectRuleSet = model.getProjectRuleSet();
-        int numberOfRules = rulesets.getAllRules().size();
+        int numberOfRules = ruleSet.size();
         Assert.assertEquals(numberOfRules, projectRuleSet.getRules().size());
         // after the rebuild above, the project should be in a consistent state
         Assert.assertFalse(model.isNeedRebuild());

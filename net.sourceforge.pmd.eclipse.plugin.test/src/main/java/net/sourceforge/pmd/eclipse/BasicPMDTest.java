@@ -5,25 +5,30 @@
 package net.sourceforge.pmd.eclipse;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
+import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Test;
 
+import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.PMDConfiguration;
-import net.sourceforge.pmd.PMDException;
-import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetNotFoundException;
-import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.SourceCodeProcessor;
+import net.sourceforge.pmd.RulesetsFactoryUtils;
+import net.sourceforge.pmd.ThreadSafeReportListener;
 import net.sourceforge.pmd.lang.LanguageRegistry;
+import net.sourceforge.pmd.renderers.Renderer;
+import net.sourceforge.pmd.stat.Metric;
 import net.sourceforge.pmd.util.datasource.DataSource;
 
 /**
@@ -62,13 +67,13 @@ public class BasicPMDTest {
     }
 
     /**
-     * Try to load all the plugin known rulesets
+     * Try to load all the plugin known rulesets.
      * 
      */
     @Test
     public void testDefaulltRuleSets() {
         try {
-            final RuleSetFactory factory = new RuleSetFactory();
+            final RuleSetFactory factory = RulesetsFactoryUtils.defaultFactory();
             final Iterator<RuleSet> iterator = factory.getRegisteredRuleSets();
             while (iterator.hasNext()) {
                 iterator.next();
@@ -79,117 +84,65 @@ public class BasicPMDTest {
         }
     }
 
+    private void runPmd(String javaVersion) {
+        PMDConfiguration configuration = new PMDConfiguration();
+        configuration.setDefaultLanguageVersion(LanguageRegistry.findLanguageByTerseName("java").getVersion(javaVersion));
+        configuration.setRuleSets("category/java/codestyle.xml/UnnecessaryReturn");
+        RuleSetFactory ruleSetFactory = RulesetsFactoryUtils.createFactory(configuration);
+
+        List<DataSource> files = new ArrayList<>();
+        final String sourceCode = "public class Foo {\n public void foo() {\nreturn;\n}}";
+        files.add(new StringDataSource(sourceCode));
+
+        final List<RuleViolation> violations = new ArrayList<>();
+        final RuleContext ctx = new RuleContext();
+        ctx.setSourceCodeFile(new File("foo.java"));
+        ctx.getReport().addListener(new ThreadSafeReportListener() {
+            @Override
+            public void ruleViolationAdded(RuleViolation ruleViolation) {
+                violations.add(ruleViolation);
+            }
+
+            @Override
+            public void metricAdded(Metric metric) {
+            }
+        });
+
+
+        PMD.processFiles(configuration, ruleSetFactory, files, ctx,
+                Collections.<Renderer>emptyList());
+
+        Assert.assertFalse("There should be at least one violation", violations.isEmpty());
+
+        final RuleViolation violation = violations.get(0);
+        Assert.assertEquals(violation.getRule().getName(), "UnnecessaryReturn");
+        Assert.assertEquals(3, violation.getBeginLine());
+    }
+
     /**
-     * One first thing the plugin must be able to do is to run PMD
+     * One first thing the plugin must be able to do is to run PMD.
      * 
      */
     @Test
     public void testRunPmdJdk13() {
-
-        try {
-            PMDConfiguration configuration = new PMDConfiguration();
-            configuration.setDefaultLanguageVersion(LanguageRegistry.findLanguageVersionByTerseName("java 1.3"));
-
-            final String sourceCode = "public class Foo {\n public void foo() {\nreturn;\n}}";
-
-            final RuleContext context = new RuleContext();
-            context.setSourceCodeFilename("foo.java");
-            context.setReport(new Report());
-
-            final RuleSet codeStyleRuleSet = new RuleSetFactory().createRuleSet("category/java/codestyle.xml/UnnecessaryReturn");
-            RuleSets rSets = new RuleSets(codeStyleRuleSet);
-            new SourceCodeProcessor(configuration).processSourceCode(new StringDataSource(sourceCode).getInputStream(),
-                    rSets, context);
-
-            final Iterator<RuleViolation> iter = context.getReport().iterator();
-            Assert.assertTrue("There should be at least one violation", iter.hasNext());
-
-            final RuleViolation violation = iter.next();
-            Assert.assertEquals(violation.getRule().getName(), "UnnecessaryReturn");
-            Assert.assertEquals(3, violation.getBeginLine());
-
-        } catch (final RuleSetNotFoundException e) {
-            e.printStackTrace();
-            Assert.fail();
-        } catch (final PMDException e) {
-            e.printStackTrace();
-            Assert.fail();
-        }
+        runPmd("1.3");
     }
 
     /**
-     * Let see with Java 1.4
+     * Let see with Java 1.4.
      * 
      */
     @Test
     public void testRunPmdJdk14() {
-
-        try {
-            PMDConfiguration configuration = new PMDConfiguration();
-            configuration.setDefaultLanguageVersion(LanguageRegistry.findLanguageVersionByTerseName("java 1.4"));
-
-            final String sourceCode = "public class Foo {\n public void foo() {\nreturn;\n}}";
-
-            final RuleContext context = new RuleContext();
-            context.setSourceCodeFilename("foo.java");
-            context.setReport(new Report());
-
-            final RuleSet codeStyleRuleSet = new RuleSetFactory().createRuleSet("category/java/codestyle.xml/UnnecessaryReturn");
-            RuleSets rSets = new RuleSets(codeStyleRuleSet);
-            new SourceCodeProcessor(configuration).processSourceCode(new StringDataSource(sourceCode).getInputStream(),
-                    rSets, context);
-
-            final Iterator<RuleViolation> iter = context.getReport().iterator();
-            Assert.assertTrue("There should be at least one violation", iter.hasNext());
-
-            final RuleViolation violation = iter.next();
-            Assert.assertEquals(violation.getRule().getName(), "UnnecessaryReturn");
-            Assert.assertEquals(3, violation.getBeginLine());
-
-        } catch (final RuleSetNotFoundException e) {
-            e.printStackTrace();
-            Assert.fail();
-        } catch (final PMDException e) {
-            e.printStackTrace();
-            Assert.fail();
-        }
+        runPmd("1.4");
     }
 
     /**
-     * Let see with Java 1.5
+     * Let see with Java 1.5.
      * 
      */
     @Test
     public void testRunPmdJdk15() {
-
-        try {
-            PMDConfiguration configuration = new PMDConfiguration();
-            configuration.setDefaultLanguageVersion(LanguageRegistry.findLanguageVersionByTerseName("java 1.5"));
-
-            final String sourceCode = "public class Foo {\n public void foo() {\nreturn;\n}}";
-
-            final RuleContext context = new RuleContext();
-            context.setSourceCodeFilename("foo.java");
-            context.setReport(new Report());
-
-            final RuleSet codeStyleRuleSet = new RuleSetFactory().createRuleSet("category/java/codestyle.xml/UnnecessaryReturn");
-            RuleSets rSets = new RuleSets(codeStyleRuleSet);
-            new SourceCodeProcessor(configuration).processSourceCode(new StringDataSource(sourceCode).getInputStream(),
-                    rSets, context);
-
-            final Iterator<RuleViolation> iter = context.getReport().iterator();
-            Assert.assertTrue("There should be at least one violation", iter.hasNext());
-
-            final RuleViolation violation = iter.next();
-            Assert.assertEquals(violation.getRule().getName(), "UnnecessaryReturn");
-            Assert.assertEquals(3, violation.getBeginLine());
-
-        } catch (final RuleSetNotFoundException e) {
-            e.printStackTrace();
-            Assert.fail();
-        } catch (final PMDException e) {
-            e.printStackTrace();
-            Assert.fail();
-        }
+        runPmd("1.5");
     }
 }

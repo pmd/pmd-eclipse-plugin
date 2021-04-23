@@ -11,15 +11,14 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
 
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResource;
@@ -37,26 +36,21 @@ import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Report.ConfigurationError;
 import net.sourceforge.pmd.Report.ProcessingError;
 import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSet;
-import net.sourceforge.pmd.RuleSetFactory;
-import net.sourceforge.pmd.RuleSetNotFoundException;
 import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.runtime.PMDRuntimeConstants;
 import net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties;
 import net.sourceforge.pmd.eclipse.runtime.properties.PropertiesException;
+import net.sourceforge.pmd.eclipse.ui.actions.internal.InternalRuleSetUtil;
 import net.sourceforge.pmd.eclipse.util.IOUtil;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.LanguageVersionDiscoverer;
 import net.sourceforge.pmd.lang.java.JavaLanguageModule;
-import net.sourceforge.pmd.processor.MonoThreadProcessor;
 import net.sourceforge.pmd.renderers.AbstractRenderer;
 import net.sourceforge.pmd.renderers.Renderer;
-import net.sourceforge.pmd.util.NumericConstants;
-import net.sourceforge.pmd.util.StringUtil;
 import net.sourceforge.pmd.util.datasource.DataSource;
 import net.sourceforge.pmd.util.datasource.ReaderDataSource;
 
@@ -72,7 +66,7 @@ public class BaseVisitor {
     private boolean useTaskMarker = false;
     private Map<IFile, Set<MarkerInfo2>> accumulator;
     // private PMDEngine pmdEngine;
-    private RuleSets ruleSets;
+    private List<RuleSet> ruleSets;
     private Set<String> fileExtensions;
     private int fileCount;
     private long pmdDuration;
@@ -196,8 +190,14 @@ public class BaseVisitor {
 
     /**
      * @return Returns all the ruleSets.
+     * @deprecated Use {@link #getRuleSetList()}
      */
+    @Deprecated
     public RuleSets getRuleSets() {
+        return InternalRuleSetUtil.toRuleSets(this.ruleSets);
+    }
+
+    public List<RuleSet> getRuleSetList() {
         return this.ruleSets;
     }
 
@@ -206,7 +206,7 @@ public class BaseVisitor {
      * @return
      */
     public RuleSet getRuleSet() {
-        return this.ruleSets.getAllRuleSets()[0];
+        return this.ruleSets.get(0);
     }
     
     /**
@@ -216,14 +216,21 @@ public class BaseVisitor {
      * @param ruleSet
      */
     public void setRuleSet(RuleSet ruleSet) {
-        this.ruleSets = new RuleSets(ruleSet);
+        this.ruleSets = new ArrayList<>();
+        this.ruleSets.add(ruleSet);
     }
     
     /**
      * @param ruleSet
      *            The ruleSet to set.
+     * @deprecated Use {@link #setRuleSetList(List)}
      */
+    @Deprecated
     public void setRuleSets(final RuleSets ruleSets) {
+        setRuleSetList(Arrays.asList(ruleSets.getAllRuleSets()));
+    }
+
+    public void setRuleSetList(List<RuleSet> ruleSets) {
         this.ruleSets = ruleSets;
     }
 
@@ -310,14 +317,11 @@ public class BaseVisitor {
             }
 
             final File sourceCodeFile = file.getRawLocation().toFile();
-            if (included && getRuleSets().applies(sourceCodeFile) && isFileInWorkingSet(file)
+            if (included && InternalRuleSetUtil.ruleSetsApplies(ruleSets, sourceCodeFile) && isFileInWorkingSet(file)
                     && languageVersion != null) {
                 subTask("PMD checking: " + file.getProject() + ": " + file.getName());
 
                 long start = System.currentTimeMillis();
-
-                RuleContext context = PMD.newRuleContext(file.getName(), sourceCodeFile);
-                context.setLanguageVersion(languageVersion);
 
                 input = new InputStreamReader(file.getContents(), file.getCharset());
                 // getPmdEngine().processFile(input, getRuleSet(), context);
@@ -325,13 +329,6 @@ public class BaseVisitor {
                 // context);
 
                 DataSource dataSource = new ReaderDataSource(input, file.getRawLocation().toFile().getPath());
-                RuleSetFactory ruleSetFactory = new RuleSetFactory() {
-                    @Override
-                    public synchronized RuleSets createRuleSets(String referenceString)
-                            throws RuleSetNotFoundException {
-                        return new RuleSets(getRuleSets());
-                    }
-                };
                 // need to disable multi threading, as the ruleset is
                 // not recreated and shared between threads...
                 // but as we anyway have only one file to process, it won't hurt
@@ -355,14 +352,14 @@ public class BaseVisitor {
 
                     @Override
                     public void renderFileReport(Report report) throws IOException {
-                        for (RuleViolation v : report) {
+                        for (RuleViolation v : report.getViolations()) {
                             collectingReport.addRuleViolation(v);
                         }
-                        for (Iterator<ProcessingError> it = report.errors(); it.hasNext();) {
-                            collectingReport.addError(it.next());
+                        for (ProcessingError error : report.getProcessingErrors()) {
+                            collectingReport.addError(error);
                         }
-                        for (Iterator<ConfigurationError> it = report.configErrors(); it.hasNext();) {
-                            collectingReport.addConfigError(it.next());
+                        for (ConfigurationError configError : report.getConfigurationErrors()) {
+                            collectingReport.addConfigError(configError);
                         }
                     }
 
@@ -379,31 +376,23 @@ public class BaseVisitor {
                     }
                 };
 
-                // PMD.processFiles(configuration(), ruleSetFactory,
-                // Arrays.asList(dataSource), context,
-                // Arrays.asList(collectingRenderer));
-                new MonoThreadProcessor(configuration()).processFiles(ruleSetFactory, Arrays.asList(dataSource),
-                        context, Arrays.asList(collectingRenderer));
+                PMD.processFiles(configuration(), ruleSets, Arrays.asList(dataSource), Arrays.asList(collectingRenderer));
                 LOG.debug("PMD run finished.");
 
                 pmdDuration += System.currentTimeMillis() - start;
 
-                LOG.debug("PMD found {} violations for file {}", collectingReport.size(), file);
+                LOG.debug("PMD found {} violations for file {}", collectingReport.getViolations().size(), file);
 
-                if (collectingReport.hasConfigErrors()) {
+                if (!collectingReport.getConfigurationErrors().isEmpty()) {
                     StringBuilder message = new StringBuilder("There were configuration errors!\n");
-                    Iterator<ConfigurationError> errors = collectingReport.configErrors();
-                    while (errors.hasNext()) {
-                        ConfigurationError error = errors.next();
+                    for (ConfigurationError error : collectingReport.getConfigurationErrors()) {
                         message.append(error.rule().getName()).append(": ").append(error.issue()).append('\n');
                     }
                     LOG.warn(message.toString());
                 }
-                if (collectingReport.hasErrors()) {
+                if (!collectingReport.getProcessingErrors().isEmpty()) {
                     StringBuilder message = new StringBuilder("There were processing errors!\n");
-                    Iterator<ProcessingError> errors = collectingReport.errors();
-                    while (errors.hasNext()) {
-                        ProcessingError error = errors.next();
+                    for (ProcessingError error : collectingReport.getProcessingErrors()) {
                         message.append(error.getFile()).append(": ").append(error.getMsg()).append(' ')
                         .append(error.getDetail())
                         .append("\n");
@@ -412,7 +401,7 @@ public class BaseVisitor {
                     throw new PMDException(message.toString());
                 }
 
-                updateMarkers(file, collectingReport.iterator(), isUseTaskMarker());
+                updateMarkers(file, collectingReport.getViolations(), isUseTaskMarker());
 
                 worked(1);
                 fileCount++;
@@ -458,26 +447,6 @@ public class BaseVisitor {
         return fileInWorkingSet;
     }
 
-    /**
-     * Update markers list for the specified file
-     *
-     * @param file
-     *            the file for which markers are to be updated
-     * @param context
-     *            a PMD context
-     * @param fTask
-     *            indicate if a task marker should be created
-     * @param accumulator
-     *            a map that contains impacted file and marker informations
-     */
-
-    private int maxAllowableViolationsFor(Rule rule) {
-
-        return rule.hasDescriptor(PMDRuntimeConstants.MAX_VIOLATIONS_DESCRIPTOR)
-                ? rule.getProperty(PMDRuntimeConstants.MAX_VIOLATIONS_DESCRIPTOR)
-                : PMDRuntimeConstants.MAX_VIOLATIONS_DESCRIPTOR.defaultValue();
-    }
-
     public static String markerTypeFor(RuleViolation violation) {
         switch (violation.getRule().getPriority()) {
         case HIGH:
@@ -502,7 +471,7 @@ public class BaseVisitor {
         }
     }
 
-    private void updateMarkers(IFile file, Iterator<RuleViolation> violations, boolean fTask)
+    private void updateMarkers(IFile file, List<RuleViolation> violations, boolean fTask)
             throws CoreException, PropertiesException {
 
         Map<IFile, Set<MarkerInfo2>> accumulator = getAccumulator();
@@ -511,13 +480,9 @@ public class BaseVisitor {
         Review review = new Review();
         // final IPreferences preferences =
         // PMDPlugin.getDefault().loadPreferences();
-        // final int maxViolationsPerFilePerRule =
-        // preferences.getMaxViolationsPerFilePerRule();
-        Map<Rule, Integer> violationsByRule = new HashMap<Rule, Integer>();
 
         Rule rule;
-        while (violations.hasNext()) {
-            RuleViolation violation = violations.next();
+        for (RuleViolation violation : violations) {
             rule = violation.getRule();
             review.ruleName = rule.getName();
             review.lineNumber = violation.getBeginLine();
@@ -528,34 +493,20 @@ public class BaseVisitor {
                 continue;
             }
 
-            Integer count = violationsByRule.get(rule);
-            if (count == null) {
-                count = NumericConstants.ZERO;
-                violationsByRule.put(rule, count);
-            }
+            // Ryan Gustafson 02/16/2008 - Always use PMD_MARKER, as people
+            // get confused as to why PMD problems don't always show up on
+            // Problems view like they do when you do build.
+            // markerSet.add(getMarkerInfo(violation, fTask ?
+            // PMDRuntimeConstants.PMD_TASKMARKER :
+            // PMDRuntimeConstants.PMD_MARKER));
+            markerSet.add(getMarkerInfo(violation, markerTypeFor(violation)));
+            /*
+             * if (isDfaEnabled && violation.getRule().usesDFA()) { markerSet.add(getMarkerInfo(violation,
+             * PMDRuntimeConstants.PMD_DFA_MARKER)); } else { markerSet.add(getMarkerInfo(violation, fTask ?
+             * PMDRuntimeConstants.PMD_TASKMARKER : PMDRuntimeConstants.PMD_MARKER)); }
+             */
 
-            int maxViolations = maxAllowableViolationsFor(rule);
-
-            if (count.intValue() < maxViolations) {
-                // Ryan Gustafson 02/16/2008 - Always use PMD_MARKER, as people
-                // get confused as to why PMD problems don't always show up on
-                // Problems view like they do when you do build.
-                // markerSet.add(getMarkerInfo(violation, fTask ?
-                // PMDRuntimeConstants.PMD_TASKMARKER :
-                // PMDRuntimeConstants.PMD_MARKER));
-                markerSet.add(getMarkerInfo(violation, markerTypeFor(violation)));
-                /*
-                 * if (isDfaEnabled && violation.getRule().usesDFA()) { markerSet.add(getMarkerInfo(violation,
-                 * PMDRuntimeConstants.PMD_DFA_MARKER)); } else { markerSet.add(getMarkerInfo(violation, fTask ?
-                 * PMDRuntimeConstants.PMD_TASKMARKER : PMDRuntimeConstants.PMD_MARKER)); }
-                 */
-                violationsByRule.put(rule, Integer.valueOf(count.intValue() + 1));
-
-                LOG.debug("Adding a violation for rule " + rule.getName() + " at line " + violation.getBeginLine());
-            } else {
-                LOG.debug("Ignoring violation of rule " + rule.getName() + " at line " + violation.getBeginLine()
-                        + " because maximum violations has been reached for file " + file.getName());
-            }
+            LOG.debug("Adding a violation for rule " + rule.getName() + " at line " + violation.getBeginLine());
         }
 
         if (accumulator != null) {
@@ -592,7 +543,7 @@ public class BaseVisitor {
                         final String ruleName = tail.substring(0, tail.indexOf(':'));
                         pendingReviews.push(ruleName);
                         findLine = true;
-                    } else if (!comment && findLine && StringUtil.isNotEmpty(line) && !line.startsWith("//")) {
+                    } else if (!comment && findLine && StringUtils.isNotBlank(line) && !line.startsWith("//")) {
                         findLine = false;
                         while (!pendingReviews.empty()) {
                             // @PMD:REVIEWED:AvoidInstantiatingObjectsInLoops:

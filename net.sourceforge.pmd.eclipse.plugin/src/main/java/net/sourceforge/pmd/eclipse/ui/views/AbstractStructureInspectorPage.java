@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.eclipse.ui.views;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -39,11 +40,11 @@ import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.PMDException;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSet;
-import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.SourceCodeProcessor;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.ui.actions.RuleSetUtil;
+import net.sourceforge.pmd.eclipse.ui.actions.internal.InternalRuleSetUtil;
 import net.sourceforge.pmd.eclipse.ui.model.FileRecord;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
 import net.sourceforge.pmd.eclipse.ui.views.ast.ASTUtil;
@@ -328,7 +329,7 @@ public abstract class AbstractStructureInspectorPage extends Page
             RuleSet rs = RuleSetUtil.newSingle(dfaGraphRule);
 
             RuleContext ctx = new RuleContext();
-            ctx.setSourceCodeFilename("[scratchpad]");
+            ctx.setSourceCodeFile(new File("[scratchpad]"));
 
             // StringReader reader = new StringReader(getDocument().get());
             // run PMD using the DFAGraphRule and the Text of the Resource
@@ -337,8 +338,8 @@ public abstract class AbstractStructureInspectorPage extends Page
             byte[] bytes = getDocument().get().getBytes();
             InputStream input = new ByteArrayInputStream(bytes);
 
-            RuleSets rSets = new RuleSets(rs);
-            new SourceCodeProcessor(new PMDConfiguration()).processSourceCode(input, rSets, ctx);
+            new SourceCodeProcessor(new PMDConfiguration()).processSourceCode(input,
+                    InternalRuleSetUtil.toRuleSets(Collections.singletonList(rs)), ctx);
 
             // the Rule then can give us the Methods
             for (DFAGraphMethod m : dfaGraphRule.getMethods()) {

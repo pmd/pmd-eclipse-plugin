@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.viewers.CheckStateChangedEvent;
@@ -39,13 +40,13 @@ import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetNotFoundException;
-import net.sourceforge.pmd.RuleSets;
+import net.sourceforge.pmd.RulesetsFactoryUtils;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.ui.actions.RuleSetUtil;
+import net.sourceforge.pmd.eclipse.ui.actions.internal.InternalRuleSetUtil;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.RuleColumnDescriptor;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.RuleLabelProvider;
-import net.sourceforge.pmd.util.StringUtil;
 
 /**
  * Implements a dialog for the user to select a rule set to import
@@ -57,7 +58,6 @@ import net.sourceforge.pmd.util.StringUtil;
 public class RuleSetSelectionDialog extends Dialog {
 
     private Combo inputCombo;
-    private Button referenceButton;
     private Button copyButton;
     private String importedRuleSetName;
     private RuleSet selectedRuleSet;
@@ -157,7 +157,7 @@ public class RuleSetSelectionDialog extends Dialog {
 
         buildBrowseButton(dlgArea);
 
-        referenceButton = buildReferenceButton(dlgArea);
+        buildReferenceButton(dlgArea);
 
         copyButton = buildCopyButton(dlgArea);
         data = new GridData();
@@ -289,7 +289,7 @@ public class RuleSetSelectionDialog extends Dialog {
             public void widgetSelected(SelectionEvent event) {
                 FileDialog dialog = new FileDialog(getShell(), SWT.OPEN);
                 String fileName = dialog.open();
-                if (StringUtil.isNotEmpty(fileName)) {
+                if (StringUtils.isNotBlank(fileName)) {
                     inputCombo.setText(fileName);
                     ruleSetChanged();
                 }
@@ -359,8 +359,8 @@ public class RuleSetSelectionDialog extends Dialog {
     private RuleSet getSelectedRules() {
         RuleSet rs = RuleSetUtil.newEmpty(RuleSetUtil.DEFAULT_RULESET_NAME, RuleSetUtil.DEFAULT_RULESET_DESCRIPTION);
         rs = RuleSetUtil.setFileName(rs, selectedRuleSet.getFileName());
-        rs = RuleSetUtil.addExcludePatterns(rs, selectedRuleSet.getExcludePatterns());
-        rs = RuleSetUtil.addIncludePatterns(rs, selectedRuleSet.getIncludePatterns());
+        rs = InternalRuleSetUtil.addFileExclusions(rs, selectedRuleSet.getFileExclusions());
+        rs = InternalRuleSetUtil.addFileInclusions(rs, selectedRuleSet.getFileInclusions());
 
         Collection<Rule> rules = new ArrayList<Rule>();
         for (Object rul : ruleTable.getCheckedElements()) {
@@ -438,11 +438,10 @@ public class RuleSetSelectionDialog extends Dialog {
 
         if (selectionIndex == -1) {
             importedRuleSetName = inputCombo.getText();
-            if (StringUtil.isNotEmpty(importedRuleSetName)) {
+            if (StringUtils.isNotBlank(importedRuleSetName)) {
                 try {
-                    RuleSetFactory factory = new RuleSetFactory();
-                    RuleSets rs = factory.createRuleSets(importedRuleSetName);
-                    return rs.getAllRuleSets()[0];
+                    RuleSetFactory factory = RulesetsFactoryUtils.defaultFactory();
+                    return factory.createRuleSet(importedRuleSetName);
                 } catch (RuleSetNotFoundException rsnfe) {
                     warningField.setText(rsnfe.getMessage());
                     return null;

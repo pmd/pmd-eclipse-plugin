@@ -41,7 +41,7 @@ import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetNotFoundException;
-import net.sourceforge.pmd.RuleSets;
+import net.sourceforge.pmd.RulesetsFactoryUtils;
 import net.sourceforge.pmd.eclipse.EclipseUtils;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.runtime.builder.PMDNature;
@@ -143,8 +143,8 @@ public class ProjectPropertiesModelTest {
         final IProjectPropertiesManager mgr = PMDPlugin.getDefault().getPropertiesManager();
         final IProjectProperties model = mgr.loadProjectProperties(this.testProject);
 
-        RuleSets projectRuleSets = model.getProjectRuleSets();
-        if (projectRuleSets.getAllRuleSets().length != 1) {
+        List<RuleSet> projectRuleSets = model.getProjectRuleSetList();
+        if (projectRuleSets.size() != 1) {
             Assert.fail("More than one ruleset configured - wrong test case setup");
         }
 
@@ -236,7 +236,7 @@ public class ProjectPropertiesModelTest {
         final IProjectPropertiesManager mgr = PMDPlugin.getDefault().getPropertiesManager();
         final IProjectProperties model = mgr.loadProjectProperties(this.testProject);
 
-        final RuleSetFactory factory = new RuleSetFactory();
+        final RuleSetFactory factory = RulesetsFactoryUtils.defaultFactory();
 
         // use the best practices ruleset because it should be included in the plugin
         // ruleset.
@@ -269,7 +269,7 @@ public class ProjectPropertiesModelTest {
         Assert.assertEquals("The project ruleset is not equal to the plugin ruleset",
                 this.initialPluginRuleSet.getRules(), projectRuleSet.getRules());
 
-        final RuleSetFactory factory = new RuleSetFactory();
+        final RuleSetFactory factory = RulesetsFactoryUtils.defaultFactory();
 
         // use the best practices ruleset because it should be included in the
         // plugin ruleset.
@@ -331,7 +331,7 @@ public class ProjectPropertiesModelTest {
         final IProjectProperties model = mgr.loadProjectProperties(this.testProject);
 
         try {
-            model.setProjectRuleSets(null);
+            model.setProjectRuleSetList(null);
             Assert.fail("A ModelException must be raised when setting a project ruleset to null");
         } catch (final PropertiesException e) {
             // OK that's correct
@@ -410,7 +410,7 @@ public class ProjectPropertiesModelTest {
         final IProjectPropertiesManager mgr = PMDPlugin.getDefault().getPropertiesManager();
         final IProjectProperties model = mgr.loadProjectProperties(this.testProject);
 
-        final RuleSetFactory factory = new RuleSetFactory();
+        final RuleSetFactory factory = RulesetsFactoryUtils.defaultFactory();
         final RuleSet bestPracticesRuleSet = factory.createRuleSet("category/java/bestpractices.xml");
         model.setPmdEnabled(true);
         model.setRuleSetStoredInProject(false);
@@ -436,7 +436,7 @@ public class ProjectPropertiesModelTest {
         final IProjectPropertiesManager mgr = PMDPlugin.getDefault().getPropertiesManager();
         final IProjectProperties model = mgr.loadProjectProperties(this.testProject);
 
-        final RuleSetFactory factory = new RuleSetFactory();
+        final RuleSetFactory factory = RulesetsFactoryUtils.defaultFactory();
         final RuleSet basicRuleSet = factory.createRuleSet("category/java/bestpractices.xml");
         model.setPmdEnabled(true);
         model.setRuleSetStoredInProject(false);
@@ -488,10 +488,10 @@ public class ProjectPropertiesModelTest {
         // reload the project properties
         model = mgr.loadProjectProperties(this.testProject);
         Assert.assertFalse(model.isRuleSetStoredInProject());
-        RuleSets projectRuleSets = model.getProjectRuleSets();
+        List<RuleSet> projectRuleSets = model.getProjectRuleSetList();
         Assert.assertNotNull(projectRuleSets);
-        Assert.assertEquals(1, projectRuleSets.getAllRuleSets().length);
-        Assert.assertEquals(0, projectRuleSets.getAllRules().size());
+        Assert.assertEquals(1, projectRuleSets.size());
+        Assert.assertEquals(0, projectRuleSets.get(0).size());
     }
 
     /**

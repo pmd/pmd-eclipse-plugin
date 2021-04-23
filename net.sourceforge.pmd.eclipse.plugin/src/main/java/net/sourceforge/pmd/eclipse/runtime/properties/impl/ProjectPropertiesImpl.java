@@ -9,10 +9,13 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -38,8 +41,8 @@ import net.sourceforge.pmd.eclipse.runtime.properties.PropertiesException;
 import net.sourceforge.pmd.eclipse.runtime.writer.IRuleSetWriter;
 import net.sourceforge.pmd.eclipse.runtime.writer.WriterException;
 import net.sourceforge.pmd.eclipse.ui.actions.RuleSetUtil;
+import net.sourceforge.pmd.eclipse.ui.actions.internal.InternalRuleSetUtil;
 import net.sourceforge.pmd.eclipse.util.IOUtil;
-import net.sourceforge.pmd.util.StringUtil;
 
 /**
  * Implementation of a project properties information structure
@@ -58,7 +61,7 @@ public class ProjectPropertiesImpl implements IProjectProperties {
     private boolean pmdEnabled;
     private boolean ruleSetStoredInProject;
     private String ruleSetFile;
-    private RuleSets projectRuleSets;
+    private List<RuleSet> projectRuleSets;
     private long projectRuleFileLastModified = 0;
     private IWorkingSet projectWorkingSet;
     private boolean includeDerivedFiles;
@@ -75,9 +78,8 @@ public class ProjectPropertiesImpl implements IProjectProperties {
         super();
         this.project = project;
         this.projectPropertiesManager = projectPropertiesManager;
-        RuleSets ruleSets = new RuleSets();
-        ruleSets.addRuleSet(PMDPlugin.getDefault().getPreferencesManager().getRuleSet());
-        this.projectRuleSets = ruleSets;
+        this.projectRuleSets = new ArrayList<>();
+        this.projectRuleSets.add(PMDPlugin.getDefault().getPreferencesManager().getRuleSet());
         determineBuildPathIncludesExcludes();
     }
 
@@ -143,9 +145,15 @@ public class ProjectPropertiesImpl implements IProjectProperties {
     }
 
     /**
-     * @see net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties#getProjectRuleSet()
+     * @deprecated Use {@link #getProjectRuleSetList()}
      */
+    @Deprecated
+    @Override
     public RuleSets getProjectRuleSets() throws PropertiesException {
+        return InternalRuleSetUtil.toRuleSets(projectRuleSets);
+    }
+
+    public List<RuleSet> getProjectRuleSetList() throws PropertiesException {
         return projectRuleSets;
     }
 
@@ -153,23 +161,32 @@ public class ProjectPropertiesImpl implements IProjectProperties {
      * @see net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties#getProjectRuleSet()
      */
     public RuleSet getProjectRuleSet() throws PropertiesException {
-        return projectRuleSets.getAllRuleSets()[0];
+        return projectRuleSets.get(0);
     }
 
     @Override
     public void setProjectRuleSet(RuleSet projectRuleSet) throws PropertiesException {
-        setProjectRuleSets(new RuleSets(projectRuleSet));
+        setProjectRuleSetList(Collections.singletonList(projectRuleSet));
+    }
+
+    /**
+     * @deprecated Use {@link #setProjectRuleSetList(List)}
+     */
+    @Override
+    @Deprecated
+    public void setProjectRuleSets(final RuleSets newProjectRuleSets) throws PropertiesException {
+        setProjectRuleSetList(Arrays.asList(newProjectRuleSets.getAllRuleSets()));
     }
 
     @Override
-    public void setProjectRuleSets(final RuleSets newProjectRuleSets) throws PropertiesException {
+    public void setProjectRuleSetList(List<RuleSet> newProjectRuleSets) throws PropertiesException {
         LOG.debug("Set a rule set for project {}", this.project.getName());
         if (newProjectRuleSets == null) {
             // TODO: NLS
             throw new PropertiesException("Setting a project rule set to null");
         }
 
-        this.setNeedRebuild(!this.projectRuleSets.getAllRules().equals(newProjectRuleSets.getAllRules()));
+        this.setNeedRebuild(!this.projectRuleSets.equals(newProjectRuleSets));
         this.projectRuleSets = newProjectRuleSets;
         if (this.ruleSetStoredInProject) {
             for (File f : getResolvedRuleSetFiles()) {
@@ -214,7 +231,7 @@ public class ProjectPropertiesImpl implements IProjectProperties {
      * @see net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties#getRuleSetFile()
      */
     public String getRuleSetFile() {
-        return StringUtil.isEmpty(ruleSetFile) ? PROJECT_RULESET_FILE : ruleSetFile;
+        return StringUtils.isBlank(ruleSetFile) ? PROJECT_RULESET_FILE : ruleSetFile;
     }
 
     /**
@@ -376,10 +393,10 @@ public class ProjectPropertiesImpl implements IProjectProperties {
             // the ruleset writer is only capable of writing one ruleset
             RuleSet ruleSet = RuleSetUtil.newEmpty(RuleSetUtil.DEFAULT_RULESET_NAME,
                     RuleSetUtil.DEFAULT_RULESET_DESCRIPTION);
-            for (RuleSet rs : projectRuleSets.getAllRuleSets()) {
+            for (RuleSet rs : projectRuleSets) {
                 ruleSet = RuleSetUtil.addRules(ruleSet, rs.getRules());
-                ruleSet = RuleSetUtil.addIncludePatterns(ruleSet, rs.getIncludePatterns());
-                ruleSet = RuleSetUtil.addExcludePatterns(ruleSet, rs.getExcludePatterns());
+                ruleSet = InternalRuleSetUtil.addFileInclusions(ruleSet, rs.getFileInclusions());
+                ruleSet = InternalRuleSetUtil.addFileExclusions(ruleSet, rs.getFileExclusions());
             }
             writer.write(baos, ruleSet);
 
@@ -469,7 +486,7 @@ public class ProjectPropertiesImpl implements IProjectProperties {
         }
         if (projectRuleSets != null) {
             projectRuleSetName = "";
-            for (RuleSet rs : projectRuleSets.getAllRuleSets()) {
+            for (RuleSet rs : projectRuleSets) {
                 projectRuleSetName += rs.getName() + ",";
             }
         }

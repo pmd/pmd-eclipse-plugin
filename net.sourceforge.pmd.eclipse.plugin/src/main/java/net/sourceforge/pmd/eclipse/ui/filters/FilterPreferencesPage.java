@@ -10,6 +10,8 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -38,10 +40,11 @@ import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 
 import net.sourceforge.pmd.RuleSet;
+import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.runtime.preferences.IPreferencesManager;
 import net.sourceforge.pmd.eclipse.ui.BasicTableLabelProvider;
 import net.sourceforge.pmd.eclipse.ui.PMDUiConstants;
-import net.sourceforge.pmd.eclipse.ui.actions.RuleSetUtil;
+import net.sourceforge.pmd.eclipse.ui.actions.internal.InternalRuleSetUtil;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.AbstractPMDPreferencePage;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.BasicTableManager;
@@ -144,11 +147,11 @@ public class FilterPreferencesPage extends AbstractPMDPreferencePage
 
         RuleSet ruleSet = plugin.getPreferencesManager().getRuleSet();
 
-        for (String pattern : ruleSet.getExcludePatterns()) {
-            holders.add(new FilterHolder(pattern, true, false, false));
+        for (Pattern pattern : ruleSet.getFileExclusions()) {
+            holders.add(new FilterHolder(pattern.pattern(), true, false, false));
         }
-        for (String pattern : ruleSet.getIncludePatterns()) {
-            holders.add(new FilterHolder(pattern, true, false, true));
+        for (Pattern pattern : ruleSet.getFileInclusions()) {
+            holders.add(new FilterHolder(pattern.pattern(), true, false, true));
         }
         return holders.toArray(new FilterHolder[holders.size()]);
     }
@@ -160,14 +163,19 @@ public class FilterPreferencesPage extends AbstractPMDPreferencePage
         }
     }
 
-    private List<String> tableFilters(boolean isInclude) {
+    private List<Pattern> tableFilters(boolean isInclude) {
 
-        List<String> filters = new ArrayList<String>();
+        List<Pattern> filters = new ArrayList<Pattern>();
 
         for (TableItem ti : tableViewer.getTable().getItems()) {
             FilterHolder fh = (FilterHolder) ti.getData();
             if (fh.isInclude == isInclude) {
-                filters.add(fh.pattern);
+                try {
+                    Pattern pattern = Pattern.compile(fh.pattern);
+                    filters.add(pattern);
+                } catch (PatternSyntaxException e) {
+                    PMDPlugin.getDefault().showError("Invalid Pattern: " + fh.pattern, e);
+                }
             }
         }
 
@@ -608,8 +616,8 @@ public class FilterPreferencesPage extends AbstractPMDPreferencePage
 
         IPreferencesManager ipMgr = plugin.getPreferencesManager();
         RuleSet ruleSet = ipMgr.getRuleSet();
-        ruleSet = RuleSetUtil.setExcludePatterns(ruleSet, tableFilters(false));
-        ruleSet = RuleSetUtil.setIncludePatterns(ruleSet, tableFilters(true));
+        ruleSet = InternalRuleSetUtil.setFileExclusions(ruleSet, tableFilters(false));
+        ruleSet = InternalRuleSetUtil.setFileInclusions(ruleSet, tableFilters(true));
         ipMgr.setRuleSet(ruleSet);
 
         Set<FilterHolder> filters = currentCheckedFilters();

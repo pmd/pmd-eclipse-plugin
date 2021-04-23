@@ -11,7 +11,10 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
+
+import org.apache.commons.lang3.StringUtils;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RulePriority;
@@ -23,8 +26,6 @@ import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.lang.rule.XPathRule;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.StringProperty;
-import net.sourceforge.pmd.util.CollectionUtil;
-import net.sourceforge.pmd.util.StringUtil;
 
 /**
  * Represents a set of selected rules in a rule selection widget. Provides
@@ -119,7 +120,7 @@ public class RuleSelection implements RuleCollection {
             return false;
         }
         for (int i = 0; i < thisArray.length; i++) {
-            if (!CollectionUtil.areEqual(thisArray[i], thatArray[i])) {
+            if (!Objects.deepEquals(thisArray[i], thatArray[i])) {
                 return false; // recurse if req'd
             }
         }
@@ -339,7 +340,8 @@ public class RuleSelection implements RuleCollection {
         }
 
         for (int i = 1; i < ruleItems.length; i++) {
-            if (StringUtil.areSemanticEquals(value, commonStringValueFor(ruleItems[i], desc))) {
+            if (StringUtils.equals(StringUtils.stripToNull(value),
+                    StringUtils.stripToNull(commonStringValueFor(ruleItems[i], desc)))) {
                 return null;
             }
         }

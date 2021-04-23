@@ -37,7 +37,7 @@ public class ASTContentProvider implements ITreeContentProvider {
     };
 
     public ASTContentProvider(boolean includeImportsFlag, boolean includeCommentsFlag) {
-        this(Collections.EMPTY_SET);
+        this(Collections.<Class<?>>emptySet());
 
         includeImports = includeImportsFlag;
         includeComments = includeCommentsFlag;
@@ -75,9 +75,9 @@ public class ASTContentProvider implements ITreeContentProvider {
         }
 
         AbstractNode node = (AbstractNode) parent;
-        int kidCount = node.jjtGetNumChildren();
+        int kidCount = node.getNumChildren();
         for (int i = 0; i < kidCount; i++) {
-            Node kid = node.jjtGetChild(i);
+            Node kid = node.getChild(i);
             // if (hiddenNodeTypes.contains(kid.getClass())) continue;
             if (!includeImports && kid instanceof ASTImportDeclaration) {
                 continue;
@@ -108,13 +108,13 @@ public class ASTContentProvider implements ITreeContentProvider {
     public Object getParent(Object element) {
 
         AbstractNode parent = (AbstractNode) element;
-        return parent.jjtGetParent();
+        return parent.getParent();
     }
 
     public boolean hasChildren(Object element) {
 
         AbstractNode parent = (AbstractNode) element;
-        return parent.jjtGetNumChildren() > 0;
+        return parent.getNumChildren() > 0;
     }
 
     public static void setupSorter(TableViewer viewer) {

@@ -15,6 +15,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.WorkbenchException;
@@ -22,8 +23,6 @@ import org.eclipse.ui.XMLMemento;
 
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
-import net.sourceforge.pmd.util.NumericConstants;
-import net.sourceforge.pmd.util.StringUtil;
 
 /**
  * Provides functions to save the state of a View during a session, even when the view is closed and re-opened 
@@ -295,10 +294,10 @@ public class ViewMemento {
         if (valueString != null) {
             final String[] objects = valueString.split(LIST_SEPARATOR);
             for (String object : objects) {
-                if (StringUtil.isEmpty(object) || "null".equals(object)) {
-                    valuelist.add(NumericConstants.ZERO); // NOPMD by Herlin on 11/10/06 00:13
+                if (StringUtils.isBlank(object) || "null".equals(object)) {
+                    valuelist.add(0);
                 } else {
-                    valuelist.add(Integer.valueOf(object)); // NOPMD by Herlin on 11/10/06 00:14
+                    valuelist.add(Integer.valueOf(object));
                 }
             }
         }

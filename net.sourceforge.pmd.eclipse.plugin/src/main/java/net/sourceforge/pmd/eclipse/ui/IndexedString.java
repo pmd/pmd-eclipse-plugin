@@ -20,7 +20,7 @@ public class IndexedString implements Comparable<IndexedString> {
     public static final IndexedString EMPTY = new IndexedString("");
 
     public IndexedString(String theString) {
-        this(theString, Collections.EMPTY_LIST);
+        this(theString, Collections.<int[]>emptyList());
     }
 
     public IndexedString(String theString, List<int[]> theSpans) {

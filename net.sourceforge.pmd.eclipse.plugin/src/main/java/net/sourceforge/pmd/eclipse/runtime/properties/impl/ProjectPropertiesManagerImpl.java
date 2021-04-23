@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.regex.Pattern;
 import javax.xml.bind.DataBindingException;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
@@ -37,13 +38,14 @@ import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetNotFoundException;
-import net.sourceforge.pmd.RuleSets;
+import net.sourceforge.pmd.RulesetsFactoryUtils;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.runtime.builder.PMDNature;
 import net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties;
 import net.sourceforge.pmd.eclipse.runtime.properties.IProjectPropertiesManager;
 import net.sourceforge.pmd.eclipse.runtime.properties.PropertiesException;
 import net.sourceforge.pmd.eclipse.ui.actions.RuleSetUtil;
+import net.sourceforge.pmd.eclipse.ui.actions.internal.InternalRuleSetUtil;
 
 /**
  * This class manages the persistence of the ProjectProperies information structure
@@ -154,13 +156,13 @@ public class ProjectPropertiesManagerImpl implements IProjectPropertiesManager {
         if (projectProperties.isRuleSetFileExist() && projectProperties.isNeedRebuild()) {
             LOG.debug("Loading ruleset from project ruleset file: " + projectProperties.getRuleSetFile());
             try {
-                final RuleSetFactory factory = new RuleSetFactory();
-                RuleSets allRulesets = new RuleSets();
+                final RuleSetFactory factory = RulesetsFactoryUtils.defaultFactory();
+                List<RuleSet> allRulesets = new ArrayList<>();
                 for (final File ruleSetFile : projectProperties.getResolvedRuleSetFiles()) {
-                    RuleSet ruleSet = factory.createRuleSets(ruleSetFile.getPath()).getAllRuleSets()[0];
-                    allRulesets.addRuleSet(ruleSet);
+                    RuleSet ruleSet = factory.createRuleSet(ruleSetFile.getPath());
+                    allRulesets.add(ruleSet);
                 }
-                projectProperties.setProjectRuleSets(allRulesets);
+                projectProperties.setProjectRuleSetList(allRulesets);
             } catch (RuleSetNotFoundException e) {
                 PMDPlugin.getDefault()
                         .logError("Project RuleSet cannot be loaded for project "
@@ -280,8 +282,8 @@ public class ProjectPropertiesManagerImpl implements IProjectPropertiesManager {
         RuleSet ruleSet = RuleSetUtil.newEmpty(RuleSetUtil.DEFAULT_RULESET_NAME,
                 RuleSetUtil.DEFAULT_RULESET_DESCRIPTION);
         ruleSet = RuleSetUtil.addRules(ruleSet, rulesToAdd);
-        ruleSet = RuleSetUtil.setExcludePatterns(ruleSet, pluginRuleSet.getExcludePatterns());
-        ruleSet = RuleSetUtil.setIncludePatterns(ruleSet, pluginRuleSet.getIncludePatterns());
+        ruleSet = InternalRuleSetUtil.setFileExclusions(ruleSet, pluginRuleSet.getFileExclusions());
+        ruleSet = InternalRuleSetUtil.setFileInclusions(ruleSet, pluginRuleSet.getFileInclusions());
         projectProperties.setProjectRuleSet(ruleSet);
     }
 
@@ -345,17 +347,21 @@ public class ProjectPropertiesManagerImpl implements IProjectPropertiesManager {
         bean.setFullBuildEnabled(projectProperties.isFullBuildEnabled());
 
         if (!projectProperties.isRuleSetStoredInProject()) {
-            final RuleSets ruleSets = projectProperties.getProjectRuleSets();
+            final List<RuleSet> ruleSets = projectProperties.getProjectRuleSetList();
             final List<RuleSpecTO> rules = new ArrayList<RuleSpecTO>();
-            List<String> excludePatterns = new ArrayList<String>();
-            List<String> includePatterns = new ArrayList<String>();
+            List<String> excludePatterns = new ArrayList<>();
+            List<String> includePatterns = new ArrayList<>();
 
-            for (RuleSet ruleSet : ruleSets.getAllRuleSets()) {
-                for (Rule rule : ruleSets.getAllRules()) {
+            for (RuleSet ruleSet : ruleSets) {
+                for (Rule rule : ruleSet.getRules()) {
                     rules.add(new RuleSpecTO(rule.getName(), rule.getRuleSetName())); // NOPMD:AvoidInstantiatingObjectInLoop
                 }
-                excludePatterns.addAll(ruleSet.getExcludePatterns());
-                includePatterns.addAll(ruleSet.getIncludePatterns());
+                for (Pattern pattern : ruleSet.getFileExclusions()) {
+                    excludePatterns.add(pattern.pattern());
+                }
+                for (Pattern pattern : ruleSet.getFileInclusions()) {
+                    includePatterns.add(pattern.pattern());
+                }
             }
 
             bean.setRules(rules.toArray(new RuleSpecTO[rules.size()]));
@@ -374,13 +380,13 @@ public class ProjectPropertiesManagerImpl implements IProjectPropertiesManager {
     private boolean synchronizeRuleSet(IProjectProperties projectProperties) throws PropertiesException {
         LOG.debug("Synchronizing the project ruleset with the plugin ruleset");
         final RuleSet pluginRuleSet = PMDPlugin.getDefault().getPreferencesManager().getRuleSet();
-        final RuleSets projectRuleSets = projectProperties.getProjectRuleSets();
+        final List<RuleSet> projectRuleSets = projectProperties.getProjectRuleSetList();
         boolean flChanged = false;
 
         // Note: projectRuleSets.getAllRules() doesn't preserve the order...
         // that's why we need to collect the rules ourselves.
         List<Rule> projectRules = new ArrayList<Rule>();
-        for (RuleSet ruleset : projectRuleSets.getAllRuleSets()) {
+        for (RuleSet ruleset : projectRuleSets) {
             projectRules.addAll(ruleset.getRules());
         }
 
@@ -390,11 +396,11 @@ public class ProjectPropertiesManagerImpl implements IProjectPropertiesManager {
             // 1-If rules have been deleted from preferences, delete them also
             // from the project ruleset
             // 2-For all other rules, replace the current one by the plugin one
-            RuleSet ruleset = projectRuleSets.getAllRuleSets()[0];
+            RuleSet ruleset = projectRuleSets.get(0);
             RuleSet newRuleSet = RuleSetUtil.newEmpty(ruleset.getName(), ruleset.getDescription());
             List<Rule> newRules = new ArrayList<Rule>();
             List<Rule> haystack = new ArrayList<Rule>(pluginRuleSet.getRules());
-            for (RuleSet projectRuleSet : projectRuleSets.getAllRuleSets()) {
+            for (RuleSet projectRuleSet : projectRuleSets) {
                 for (Rule projectRule : projectRuleSet.getRules()) {
                     final Rule pluginRule = RuleSetUtil.findSameRule(haystack, projectRule);
                     if (pluginRule == null) {

@@ -37,7 +37,8 @@ public class PMDBuilder extends IncrementalProjectBuilder {
      * @see org.eclipse.core.resources.IncrementalProjectBuilder#build(int,
      *      java.util.Map, org.eclipse.core.runtime.IProgressMonitor)
      */
-    protected IProject[] build(int kind, Map args, IProgressMonitor monitor) throws CoreException {
+    @Override
+    protected IProject[] build(int kind, Map<String, String> args, IProgressMonitor monitor) throws CoreException {
         IProject currentProject = this.getProject();
         LOG.debug("Incremental builder activated for {}", currentProject);
 

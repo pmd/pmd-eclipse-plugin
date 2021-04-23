@@ -5,22 +5,23 @@
 package net.sourceforge.pmd.eclipse.ui.preferences.br;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
+
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.properties.StringProperty;
-import net.sourceforge.pmd.util.StringUtil;
 
 /**
  * Holds a collection of rules as assembled by the tree widget manager.
  *
  * @author Brian Remedios
  */
-public class RuleGroup implements RuleCollection, Comparable<RuleGroup> {
+public class RuleGroup<T extends Comparable<T>> implements RuleCollection, Comparable<RuleGroup<T>> {
 
-    private Comparable id;
+    private T id;
     private String label;
     private String description;
     private List<Rule> rules = new ArrayList<Rule>();
@@ -31,7 +32,7 @@ public class RuleGroup implements RuleCollection, Comparable<RuleGroup> {
      * @param theDescription
      *            String
      */
-    public RuleGroup(Comparable<?> theId, String theLabel, String theDescription) {
+    public RuleGroup(T theId, String theLabel, String theDescription) {
         id = theId;
         label = theLabel;
         description = theDescription;
@@ -65,7 +66,7 @@ public class RuleGroup implements RuleCollection, Comparable<RuleGroup> {
     /**
      * @return Comparable
      */
-    public Comparable<?> id() {
+    public T id() {
         return id;
     }
 
@@ -87,20 +88,12 @@ public class RuleGroup implements RuleCollection, Comparable<RuleGroup> {
         return id == null ? "" : id.toString();
     }
 
-    @SuppressWarnings("rawtypes")
-    public void sortBy(Comparator ruleComparator) {
-
+    public void sortBy(Comparator<Rule> ruleComparator) {
         if (!hasRules()) {
             return;
         }
 
-        Object[] sortedRules = rules.toArray();
-
-        Arrays.sort(sortedRules, ruleComparator);
-        rules.clear();
-        for (Object rule : sortedRules) {
-            rules.add((Rule) rule);
-        }
+        Collections.sort(rules, ruleComparator);
     }
 
     /**
@@ -141,7 +134,8 @@ public class RuleGroup implements RuleCollection, Comparable<RuleGroup> {
 
         String value = rules.get(0).getProperty(desc);
         for (int i = 1; i < rules.size(); i++) {
-            if (!StringUtil.areSemanticEquals(rules.get(i).getProperty(desc), value)) {
+            if (!StringUtils.equals(StringUtils.stripToNull(rules.get(i).getProperty(desc)),
+                    StringUtils.stripToNull(value))) {
                 return null;
             }
         }
@@ -156,7 +150,7 @@ public class RuleGroup implements RuleCollection, Comparable<RuleGroup> {
         return label() + " rules: " + ruleCount();
     }
 
-    public int compareTo(RuleGroup otherGroup) {
+    public int compareTo(RuleGroup<T> otherGroup) {
 
         if (id == null) {
             return -1;

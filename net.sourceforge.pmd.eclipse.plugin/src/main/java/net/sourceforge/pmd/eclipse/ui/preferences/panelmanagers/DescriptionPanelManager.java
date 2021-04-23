@@ -33,7 +33,6 @@ import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.ValueChangeListener;
 import net.sourceforge.pmd.eclipse.ui.preferences.editors.SWTUtil;
 import net.sourceforge.pmd.lang.rule.RuleReference;
-import net.sourceforge.pmd.util.StringUtil;
 
 /**
  *
@@ -47,8 +46,6 @@ public class DescriptionPanelManager extends AbstractRulePanelManager {
     private Button browseButton;
     private Label messageLabel;
     private Text messageField;
-
-    private static final int MIN_MESSAGE_LENGTH = 10; // chars
 
     public static final String ID = "description";
 
@@ -115,7 +112,7 @@ public class DescriptionPanelManager extends AbstractRulePanelManager {
                 String cleanValue = asCleanString(descriptionBox.getText());
                 String existingValue = soleRule.getDescription();
 
-                if (StringUtil.areSemanticEquals(existingValue, cleanValue)) {
+                if (StringUtils.equals(StringUtils.stripToNull(existingValue), StringUtils.stripToNull(cleanValue))) {
                     return;
                 }
 
@@ -135,7 +132,7 @@ public class DescriptionPanelManager extends AbstractRulePanelManager {
 
         validate();
 
-        boolean urlOK = StringUtil.isEmpty(externalURLField.getText()) || hasValidURL();
+        boolean urlOK = StringUtils.isBlank(externalURLField.getText()) || hasValidURL();
         adjustBrowseButton(urlOK);
     }
 
@@ -201,7 +198,8 @@ public class DescriptionPanelManager extends AbstractRulePanelManager {
         String newURL = asCleanString(externalURLField.getText());
         Rule rule = soleRule();
 
-        if (!StringUtil.areSemanticEquals(asCleanString(rule.getExternalInfoUrl()), newURL)) {
+        if (!StringUtils.equals(StringUtils.stripToNull(asCleanString(rule.getExternalInfoUrl())),
+                StringUtils.stripToNull(newURL))) {
             rule.setExternalInfoUrl(newURL);
             valueChanged(null, newURL);
         }
@@ -214,7 +212,8 @@ public class DescriptionPanelManager extends AbstractRulePanelManager {
         String newMessage = asCleanString(messageField.getText());
         Rule rule = soleRule();
 
-        if (!StringUtil.areSemanticEquals(asCleanString(rule.getMessage()), newMessage)) {
+        if (!StringUtils.equals(StringUtils.stripToNull(asCleanString(rule.getMessage())),
+                StringUtils.stripToNull(newMessage))) {
             rule.setMessage(newMessage);
             updateUI();
         }
@@ -291,16 +290,6 @@ public class DescriptionPanelManager extends AbstractRulePanelManager {
         return isValidURL(url);
     }
 
-    private boolean hasValidMessage() {
-        String message = messageField.getText().trim();
-        return StringUtil.isNotEmpty(message) && (message.length() > MIN_MESSAGE_LENGTH);
-    }
-
-    private boolean hasValidDescription() {
-        String description = descriptionBox.getText().trim();
-        return StringUtil.isNotEmpty(description) && (description.length() > MIN_MESSAGE_LENGTH);
-    }
-
     private void adjustBrowseButton(boolean hasValidURL) {
 
         browseButton.setEnabled(hasValidURL);
@@ -311,10 +300,10 @@ public class DescriptionPanelManager extends AbstractRulePanelManager {
 
         List<String> errors = new ArrayList<String>(3);
 
-        if (StringUtil.isEmpty(descriptionBox.getText().trim())) {
+        if (StringUtils.isBlank(descriptionBox.getText().trim())) {
             errors.add("Missing description");
         }
-        if (StringUtil.isEmpty(messageField.getText().trim())) {
+        if (StringUtils.isBlank(messageField.getText().trim())) {
             errors.add("Missing message");
         }
 

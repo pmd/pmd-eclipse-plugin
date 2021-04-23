@@ -17,6 +17,34 @@ This is a minor release.
 
 ### API Changes
 
+*   The following methods in `net.sourceforge.pmd.eclipse.ui.actions.RuleSetUtil` are deprecated:
+    *   `setExcludePatterns(RuleSet ruleSet, Collection<String> excludePatterns)`
+    *   `setIncludePatterns(RuleSet ruleSet, Collection<String> includePatterns)`
+    *   `addExcludePatterns(RuleSet ruleSet, Collection<String> activeExclusionPatterns, Collection<String> buildPathExcludePatterns)`
+    *   `addIncludePatterns(RuleSet ruleSet, Collection<String> activeInclusionPatterns, Collection<String> buildPathIncludePatterns)`
+    *   `addExcludePatterns(RuleSet rs, Collection<String> excludePatterns)`
+    *   `addIncludePatterns(RuleSet rs, Collection<String> includePatterns)`
+    *   These methods are not supposed to be public API and will be removed eventually.
+*   The property `net.sourceforge.pmd.eclipse.runtime.PMDRuntimeConstants.MAX_VIOLATIONS_DESCRIPTOR`
+    is deprecated and will be removed.
+*   The preference "net.sourceforge.pmd.eclipse.plugin.max_violations_pfpr" is deprecated and will be removed.
+    It was never implemented. The following methods and fields are deprecated:
+    *   `net.sourceforge.pmd.eclipse.runtime.preferences.IPreferences.getMaxViolationsPerFilePerRule()`
+    *   `net.sourceforge.pmd.eclipse.runtime.preferences.IPreferences.setMaxViolationsPerFilePerRule(int)`
+    *   `net.sourceforge.pmd.eclipse.runtime.preferences.IPreferences.MAX_VIOLATIONS_PFPR_DEFAULT`
+*   `net.sourceforge.pmd.eclipse.runtime.cmd.DetectCutAndPasteCmd.setRenderer(Renderer)` is deprecated.
+*   Removed usages of deprecated class `net.sourceforge.pmd.RuleSets`. Therefore the following methods are
+    deprecated now:
+    *   `net.sourceforge.pmd.eclipse.runtime.cmd.BaseVisitor.getRuleSets()`
+    *   `net.sourceforge.pmd.eclipse.runtime.cmd.BaseVisitor.setRuleSets(RuleSets)`
+    *   `net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties.getProjectRuleSets()`
+    *   `net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties.setProjectRuleSets(RuleSets)`
+    *   `net.sourceforge.pmd.eclipse.runtime.properties.impl.ProjectPropertiesImpl.getProjectRuleSets()`
+    *   `net.sourceforge.pmd.eclipse.runtime.properties.impl.ProjectPropertiesImpl.setProjectRuleSets(RuleSets)`
+    *   `net.sourceforge.pmd.eclipse.ui.properties.PMDPropertyPageBean.getProjectRuleSets()`
+    *   `net.sourceforge.pmd.eclipse.ui.properties.PMDPropertyPageBean.setProjectRuleSets(RuleSets)`
+    *   `net.sourceforge.pmd.eclipse.ui.properties.UpdateProjectPropertiesCmd.setProjectRuleSets(RuleSets)`
+
 ### External Contributions
 
 ## 27-March-2021: 4.22.0.v20210327-1603

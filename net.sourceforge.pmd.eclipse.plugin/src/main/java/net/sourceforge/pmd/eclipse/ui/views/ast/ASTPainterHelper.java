@@ -18,7 +18,6 @@ import net.sourceforge.pmd.lang.ast.AbstractNode;
 import net.sourceforge.pmd.lang.java.ast.ASTBooleanLiteral;
 import net.sourceforge.pmd.lang.java.ast.Comment;
 import net.sourceforge.pmd.lang.java.ast.JavadocElement;
-import net.sourceforge.pmd.util.ClassUtil;
 
 /**
  * 
@@ -50,7 +49,7 @@ public class ASTPainterHelper {
 
         StringBuilder sb = new StringBuilder();
 
-        if (comment.isSingleLine()) {
+        if (comment.getBeginLine() == comment.getEndLine()) {
             sb.append(comment.getBeginLine());
         } else {
             sb.append(comment.getBeginLine()).append('-').append(comment.getEndLine());
@@ -79,7 +78,7 @@ public class ASTPainterHelper {
     }
 
     private TextLayout layoutFor(Comment comment) {
-        String label = ClassUtil.withoutPackageName(comment.getClass().getSimpleName());
+        String label = comment.getClass().getSimpleName();
         int labelLength = label.length();
 
         String lineText = lineTextFor(comment);
@@ -124,7 +123,7 @@ public class ASTPainterHelper {
         }
 
         AbstractNode node = (AbstractNode) data;
-        String label = node.toString();
+        String label = node.getXPathNodeName();
 
         TextStyle extraStyle = imageStyle;
         String extra = NodeImageDeriver.derivedTextFor(node);

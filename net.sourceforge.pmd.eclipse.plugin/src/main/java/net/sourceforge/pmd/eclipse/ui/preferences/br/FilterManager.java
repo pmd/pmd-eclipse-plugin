@@ -9,9 +9,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
+
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.properties.StringProperty;
-import net.sourceforge.pmd.util.StringUtil;
 
 /**
  * 
@@ -42,7 +43,7 @@ public class FilterManager {
         }
 
         String filter = rule.getProperty(filterPropertyDesc);
-        if (StringUtil.isEmpty(filter)) {
+        if (StringUtils.isBlank(filter)) {
             return;
         }
 
@@ -74,7 +75,7 @@ public class FilterManager {
 
     public String[] names() {
         if (rulesByFilterName == null) {
-            return StringUtil.getEmptyStrings();
+            return new String[0];
         }
         return rulesByFilterName.keySet().toArray(new String[rulesByFilterName.size()]);
     }

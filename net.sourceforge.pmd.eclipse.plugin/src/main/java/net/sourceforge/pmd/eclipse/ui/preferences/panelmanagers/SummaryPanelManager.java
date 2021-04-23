@@ -7,6 +7,7 @@ package net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.layout.FillLayout;
@@ -21,7 +22,6 @@ import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.ValueChangeListener;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.util.ClassUtil;
-import net.sourceforge.pmd.util.StringUtil;
 
 /**
  * 
@@ -86,7 +86,7 @@ public class SummaryPanelManager extends AbstractRulePanelManager {
         pb.addRawText(arranger.format(rule.getDescription()).toString());
 
         String url = rule.getExternalInfoUrl();
-        if (StringUtil.isNotEmpty(url)) {
+        if (StringUtils.isNotBlank(url)) {
             pb.addRawText(arranger.withIndent("More information can be found "));
             pb.addLink("here.\n", url);
         }

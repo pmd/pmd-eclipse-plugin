@@ -7,6 +7,8 @@ package net.sourceforge.pmd.eclipse.ui.actions;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Iterator;
 
@@ -35,10 +37,13 @@ import net.sourceforge.pmd.eclipse.runtime.writer.IAstWriter;
 import net.sourceforge.pmd.eclipse.runtime.writer.WriterException;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
 import net.sourceforge.pmd.eclipse.util.IOUtil;
-import net.sourceforge.pmd.lang.ast.JavaCharStream;
+import net.sourceforge.pmd.lang.Language;
+import net.sourceforge.pmd.lang.LanguageRegistry;
+import net.sourceforge.pmd.lang.LanguageVersionHandler;
+import net.sourceforge.pmd.lang.Parser;
+import net.sourceforge.pmd.lang.ast.ParseException;
+import net.sourceforge.pmd.lang.java.JavaLanguageModule;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
-import net.sourceforge.pmd.lang.java.ast.JavaParser;
-import net.sourceforge.pmd.lang.java.ast.ParseException;
 
 /**
  * Process PMDGenerateAST action menu. Generate a AST from the selected file.
@@ -55,6 +60,7 @@ public class PMDGenerateASTAction extends AbstractUIAction implements IRunnableW
     /**
      * @see org.eclipse.ui.IActionDelegate#run(IAction)
      */
+    @Override
     public void run(IAction action) {
         LOG.info("Generation AST action requested");
 
@@ -94,6 +100,7 @@ public class PMDGenerateASTAction extends AbstractUIAction implements IRunnableW
     /**
      * @see org.eclipse.ui.IActionDelegate#selectionChanged(IAction, ISelection)
      */
+    @Override
     public void selectionChanged(IAction action, ISelection selection) {
     }
 
@@ -107,10 +114,11 @@ public class PMDGenerateASTAction extends AbstractUIAction implements IRunnableW
         LOG.info("Generating AST for file " + file.getName());
         ByteArrayOutputStream byteArrayOutputStream = null;
         ByteArrayInputStream astInputStream = null;
-        try {
-            JavaParser parser = new JavaParser(new JavaCharStream(file.getContents()));
-            parser.setJdkVersion(Integer.MAX_VALUE);
-            ASTCompilationUnit compilationUnit = parser.CompilationUnit();
+        try (Reader reader = new InputStreamReader(file.getContents(), file.getCharset())) {
+            Language javaLanguage = LanguageRegistry.getLanguage(JavaLanguageModule.NAME);
+            LanguageVersionHandler languageVersionHandler = javaLanguage.getDefaultVersion().getLanguageVersionHandler();
+            Parser parser = languageVersionHandler.getParser(languageVersionHandler.getDefaultParserOptions());
+            ASTCompilationUnit compilationUnit = (ASTCompilationUnit) parser.parse(file.getName(), reader);
             byteArrayOutputStream = new ByteArrayOutputStream();
             IAstWriter astWriter = PMDPlugin.getDefault().getAstWriter();
             astWriter.write(byteArrayOutputStream, compilationUnit);
@@ -158,13 +166,13 @@ public class PMDGenerateASTAction extends AbstractUIAction implements IRunnableW
 
         String name = file.getName();
         int dotPosition = name.indexOf('.');
-        String astName = name.substring(0, dotPosition) + ".ast";
-        return astName;
+        return name.substring(0, dotPosition) + ".ast";
     }
 
     /**
      * @see org.eclipse.jface.operation.IRunnableWithProgress#run(org.eclipse.core.runtime.IProgressMonitor)
      */
+    @Override
     public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
         monitor.beginTask("", structuredSelection.size());
         for (Iterator<?> i = structuredSelection.iterator(); i.hasNext();) {

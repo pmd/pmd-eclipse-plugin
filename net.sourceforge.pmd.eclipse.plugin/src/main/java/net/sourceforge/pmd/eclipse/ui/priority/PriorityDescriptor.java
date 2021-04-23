@@ -8,6 +8,7 @@ import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
@@ -20,7 +21,6 @@ import net.sourceforge.pmd.eclipse.ui.Shape;
 import net.sourceforge.pmd.eclipse.ui.ShapeDescriptor;
 import net.sourceforge.pmd.eclipse.ui.ShapePainter;
 import net.sourceforge.pmd.eclipse.ui.views.actions.AbstractPMDAction;
-import net.sourceforge.pmd.util.StringUtil;
 
 /**
  * 
@@ -120,11 +120,12 @@ public class PriorityDescriptor implements Cloneable {
 
         PriorityDescriptor otherOne = (PriorityDescriptor) other;
 
-        return priority.equals(otherOne.priority) && StringUtil.isSame(label, otherOne.label, false, false, false)
+        return priority.equals(otherOne.priority)
+                && StringUtils.equals(label, otherOne.label)
                 && shape.equals(otherOne.shape)
-                && StringUtil.isSame(description, otherOne.description, false, false, false)
-                && StringUtil.isSame(filterText, otherOne.filterText, false, false, false)
-                && StringUtil.isSame(iconId, otherOne.iconId, false, false, false);
+                && StringUtils.equals(description, otherOne.description)
+                && StringUtils.equals(filterText, otherOne.filterText)
+                && StringUtils.equals(iconId, otherOne.iconId);
     }
 
     public int hashCode() {

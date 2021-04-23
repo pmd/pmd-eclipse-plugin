@@ -100,7 +100,6 @@ public class BasicTableManager<T extends Object> extends AbstractTableManager<T>
         return null;
     }
 
-    @SuppressWarnings("rawtypes")
     private ViewerSorter createSorter() {
 
         return new ViewerSorter() {
@@ -186,7 +185,7 @@ public class BasicTableManager<T extends Object> extends AbstractTableManager<T>
      * @param groupingField
      *            RuleFieldAccessor
      */
-    public void setupColumns(ItemColumnDescriptor[] columnDescs) {
+    public void setupColumns(ItemColumnDescriptor<?, ?>[] columnDescs) {
 
         Table table = tableViewer.getTable();
 

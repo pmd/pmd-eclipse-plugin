@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IMarkerDelta;
@@ -31,7 +32,6 @@ import net.sourceforge.pmd.eclipse.ui.model.AbstractPMDRecord;
 import net.sourceforge.pmd.eclipse.ui.model.FileRecord;
 import net.sourceforge.pmd.eclipse.ui.model.MarkerRecord;
 import net.sourceforge.pmd.eclipse.ui.model.RootRecord;
-import net.sourceforge.pmd.util.StringUtil;
 
 /**
  * 
@@ -189,7 +189,7 @@ public class MarkerUtil {
 
         for (IMarker marker : markers) {
             String name = ruleNameFor(marker);
-            if (StringUtil.isEmpty(name)) {
+            if (StringUtils.isBlank(name)) {
                 continue;
             }
             Rule rule = ruleset.getRuleByName(name);
@@ -294,7 +294,7 @@ public class MarkerUtil {
 
     private static Rule ruleFrom(IMarker marker) {
         String ruleName = marker.getAttribute(PMDRuntimeConstants.KEY_MARKERATT_RULENAME, "");
-        if (StringUtil.isEmpty(ruleName)) {
+        if (StringUtils.isBlank(ruleName)) {
             return null; // printValues(marker);
         }
         return rulesByName.get(ruleName);

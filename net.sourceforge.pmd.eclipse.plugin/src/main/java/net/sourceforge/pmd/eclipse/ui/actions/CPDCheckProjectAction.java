@@ -22,9 +22,9 @@ import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.cpd.CSVRenderer;
 import net.sourceforge.pmd.cpd.LanguageFactory;
-import net.sourceforge.pmd.cpd.Renderer;
 import net.sourceforge.pmd.cpd.SimpleRenderer;
 import net.sourceforge.pmd.cpd.XMLRenderer;
+import net.sourceforge.pmd.cpd.renderer.CPDRenderer;
 import net.sourceforge.pmd.eclipse.runtime.PMDRuntimeConstants;
 import net.sourceforge.pmd.eclipse.runtime.cmd.DetectCutAndPasteCmd;
 import net.sourceforge.pmd.eclipse.ui.PMDUiConstants;
@@ -105,7 +105,7 @@ public class CPDCheckProjectAction extends AbstractUIAction {
         final String selectedLanguage = dialog.getSelectedLanguage();
         final int tilesize = dialog.getTileSize();
         final boolean createReport = dialog.isCreateReportSelected();
-        final Renderer selectedRenderer = this.createRenderer(dialog.getSelectedFormat());
+        final CPDRenderer selectedRenderer = this.createRenderer(dialog.getSelectedFormat());
         final String fileName = this.createFileName(dialog.getSelectedFormat());
         final CPDView2 view = showView();
 
@@ -115,7 +115,7 @@ public class CPDCheckProjectAction extends AbstractUIAction {
             detectCmd.setCreateReport(createReport);
             detectCmd.setLanguage(selectedLanguage);
             detectCmd.setMinTileSize(tilesize);
-            detectCmd.setRenderer(selectedRenderer);
+            detectCmd.setCPDRenderer(selectedRenderer);
             detectCmd.setReportName(fileName);
             detectCmd.setUserInitiated(true);
             detectCmd.addPropertyListener(view);
@@ -145,8 +145,8 @@ public class CPDCheckProjectAction extends AbstractUIAction {
      * @param rendererKey xml, simple or cvs key
      * @return Renderer
      */
-    private Renderer createRenderer(final String rendererKey) {
-        Renderer renderer = null;
+    private CPDRenderer createRenderer(final String rendererKey) {
+        CPDRenderer renderer = null;
         if (XML_KEY.equals(rendererKey)) {
             renderer = new XMLRenderer();
         } else if (SIMPLE_KEY.equals(rendererKey)) {

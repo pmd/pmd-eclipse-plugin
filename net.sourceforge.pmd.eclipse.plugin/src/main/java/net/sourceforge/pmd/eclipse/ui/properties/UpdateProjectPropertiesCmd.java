@@ -4,6 +4,10 @@
 
 package net.sourceforge.pmd.eclipse.ui.properties;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 import org.eclipse.ui.IWorkingSet;
 
 import net.sourceforge.pmd.RuleSet;
@@ -20,12 +24,10 @@ import net.sourceforge.pmd.eclipse.runtime.properties.PropertiesException;
  */
 public class UpdateProjectPropertiesCmd extends AbstractProjectCommand {
 
-    private static final long serialVersionUID = 1L;
-
     // private IProject project;
     private boolean pmdEnabled;
     private IWorkingSet projectWorkingSet;
-    private RuleSets projectRuleSets;
+    private List<RuleSet> projectRuleSets;
     private boolean ruleSetStoredInProject;
     private String ruleSetFile;
     private boolean needRebuild;
@@ -49,7 +51,7 @@ public class UpdateProjectPropertiesCmd extends AbstractProjectCommand {
         try {
             final IProjectProperties properties = projectProperties();
             properties.setPmdEnabled(pmdEnabled);
-            properties.setProjectRuleSets(projectRuleSets);
+            properties.setProjectRuleSetList(projectRuleSets);
             properties.setProjectWorkingSet(projectWorkingSet);
             // ruleSetFile has to be set before ruleSetStoredInProject!
             properties.setRuleSetFile(ruleSetFile);
@@ -77,14 +79,20 @@ public class UpdateProjectPropertiesCmd extends AbstractProjectCommand {
     }
 
     public void setProjectRuleSet(final RuleSet projectRuleSet) {
-        this.projectRuleSets = new RuleSets(projectRuleSet);
+        this.projectRuleSets = Collections.singletonList(projectRuleSet);
     }
 
     /**
      * @param projectRuleSet
      *            The projectRuleSet to set.
+     * @deprecated Use {@link #setProjectRuleSetList(List)}
      */
+    @Deprecated
     public void setProjectRuleSets(final RuleSets projectRuleSets) {
+        this.projectRuleSets = Arrays.asList(projectRuleSets.getAllRuleSets());
+    }
+
+    public void setProjectRuleSetList(List<RuleSet> projectRuleSets) {
         this.projectRuleSets = projectRuleSets;
     }
 
@@ -154,7 +162,7 @@ public class UpdateProjectPropertiesCmd extends AbstractProjectCommand {
     public void reset() {
         setProject(null);
         setPmdEnabled(false);
-        setProjectRuleSets(null);
+        setProjectRuleSetList(null);
         setRuleSetStoredInProject(false);
         setRuleSetFile(null);
         setIncludeDerivedFiles(false);

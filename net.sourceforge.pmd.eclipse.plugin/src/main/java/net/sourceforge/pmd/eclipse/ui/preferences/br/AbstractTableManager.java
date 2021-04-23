@@ -72,14 +72,6 @@ public abstract class AbstractTableManager<T extends Object> implements SortList
             column = theColumn;
         }
 
-        private void delay(int mSec) {
-            try {
-                Thread.sleep(mSec);
-            } catch (Exception ex) {
-
-            }
-        }
-
         protected void setWidth(final int width) {
             column.display().syncExec(new Runnable() {
                 public void run() {

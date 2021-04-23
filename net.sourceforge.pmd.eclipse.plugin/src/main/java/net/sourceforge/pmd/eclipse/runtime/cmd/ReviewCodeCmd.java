@@ -45,7 +45,6 @@ import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSet;
-import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.runtime.PMDRuntimeConstants;
 import net.sourceforge.pmd.eclipse.runtime.builder.MarkerUtil;
@@ -53,6 +52,7 @@ import net.sourceforge.pmd.eclipse.runtime.preferences.IPreferences;
 import net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties;
 import net.sourceforge.pmd.eclipse.runtime.properties.PropertiesException;
 import net.sourceforge.pmd.eclipse.ui.actions.RuleSetUtil;
+import net.sourceforge.pmd.eclipse.ui.actions.internal.InternalRuleSetUtil;
 import net.sourceforge.pmd.lang.Language;
 
 /**
@@ -301,7 +301,7 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
         IProject project = resource.getProject();
         if (project != null && !fileExtensionsPerProject.containsKey(project)) {
             try {
-                RuleSets rulesets = rulesetsFrom(resource);
+                List<RuleSet> rulesets = rulesetsFrom(resource);
                 Set<String> fileExtensions = determineFileExtensions(rulesets);
                 fileExtensionsPerProject.put(project, fileExtensions);
             } catch (PropertiesException e) {
@@ -502,7 +502,7 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
         return propertyCache;
     }
 
-    private RuleSets rulesetsFrom(IResource resource) throws PropertiesException {
+    private List<RuleSet> rulesetsFrom(IResource resource) throws PropertiesException {
         IProject project = resource.getProject();
         IProjectProperties properties = getProjectProperties(project);
 
@@ -521,7 +521,7 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
                 return;
             }
 
-            RuleSets ruleSets = rulesetsFrom(resource);
+            List<RuleSet> ruleSets = rulesetsFrom(resource);
             Set<String> fileExtensions = determineFileExtensions(ruleSets);
             // final PMDEngine pmdEngine = getPmdEngineForProject(project);
             int targetCount = 0;
@@ -535,7 +535,7 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
                 if (resource.exists()) {
                     final ResourceVisitor visitor = new ResourceVisitor();
                     visitor.setMonitor(getMonitor());
-                    visitor.setRuleSets(ruleSets);
+                    visitor.setRuleSetList(ruleSets);
                     visitor.setFileExtensions(fileExtensions);
                     // visitor.setPmdEngine(pmdEngine);
                     visitor.setAccumulator(markersByFile);
@@ -543,7 +543,7 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
                     visitor.setProjectProperties(properties);
                     resource.accept(visitor);
 
-                    ruleCount = ruleSets.getAllRules().size();
+                    ruleCount = InternalRuleSetUtil.countRules(ruleSets);
                     fileCount += visitor.getProcessedFilesCount();
                     pmdDuration += visitor.getActualPmdDuration();
                 } else {
@@ -563,10 +563,12 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
         }
     }
 
-    private Set<String> determineFileExtensions(RuleSets ruleSets) {
+    private Set<String> determineFileExtensions(List<RuleSet> ruleSets) {
         Set<Language> languages = new HashSet<Language>();
-        for (Rule rule : ruleSets.getAllRules()) {
-            languages.add(rule.getLanguage());
+        for (RuleSet ruleset : ruleSets) {
+            for (Rule rule : ruleset.getRules()) {
+                languages.add(rule.getLanguage());
+            }
         }
         Set<String> fileExtensions = new HashSet<String>();
         for (Language language : languages) {
@@ -638,14 +640,14 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
                 + " rules");
     }
 
-    private RuleSets filteredRuleSets(IProjectProperties properties) throws PropertiesException {
-        final RuleSets projectRuleSets = properties.getProjectRuleSets();
+    private List<RuleSet> filteredRuleSets(IProjectProperties properties) throws PropertiesException {
+        final List<RuleSet> projectRuleSets = properties.getProjectRuleSetList();
         IPreferences preferences = PMDPlugin.getDefault().getPreferencesManager().loadPreferences();
         Set<String> onlyActiveRuleNames = preferences.getActiveRuleNames();
 
-        RuleSets filteredRuleSets = new RuleSets();
+        List<RuleSet> filteredRuleSets = new ArrayList<>();
 
-        for (RuleSet ruleSet : projectRuleSets.getAllRuleSets()) {
+        for (RuleSet ruleSet : projectRuleSets) {
             int rulesBefore = ruleSet.size();
             RuleSet filteredRuleSet = RuleSetUtil.newCopyOf(ruleSet);
             if (preferences.getGlobalRuleManagement()) {
@@ -665,18 +667,20 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
                             rulesAfter, rulesBefore, rulesBefore - rulesAfter);
                 }
             }
-            filteredRuleSet = RuleSetUtil.addExcludePatterns(filteredRuleSet, preferences.activeExclusionPatterns(),
-                    properties.getBuildPathExcludePatterns());
-            filteredRuleSet = RuleSetUtil.addIncludePatterns(filteredRuleSet, preferences.activeInclusionPatterns(),
-                    properties.getBuildPathIncludePatterns());
-            filteredRuleSets.addRuleSet(filteredRuleSet);
+            filteredRuleSet = InternalRuleSetUtil.addExcludePatterns(filteredRuleSet,
+                    InternalRuleSetUtil.convertStringPatterns(preferences.activeExclusionPatterns()),
+                    InternalRuleSetUtil.convertStringPatterns(properties.getBuildPathExcludePatterns()));
+            filteredRuleSet = InternalRuleSetUtil.addIncludePatterns(filteredRuleSet,
+                    InternalRuleSetUtil.convertStringPatterns(preferences.activeInclusionPatterns()),
+                    InternalRuleSetUtil.convertStringPatterns(properties.getBuildPathIncludePatterns()));
+            filteredRuleSets.add(filteredRuleSet);
         }
 
-        taskScope(filteredRuleSets.getAllRules().size(), projectRuleSets.getAllRules().size());
+        taskScope(InternalRuleSetUtil.countRules(filteredRuleSets), InternalRuleSetUtil.countRules(projectRuleSets));
         return filteredRuleSets;
     }
 
-    private RuleSets rulesetsFromResourceDelta() throws PropertiesException {
+    private List<RuleSet> rulesetsFromResourceDelta() throws PropertiesException {
 
         IResource resource = resourceDelta.getResource();
         final IProject project = resource.getProject();
@@ -695,7 +699,7 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
             final IProjectProperties properties = getProjectProperties(project);
             LOG.info("ReviewCodeCmd started on resource delta {} in {}", resource.getName(), project);
 
-            final RuleSets ruleSets = rulesetsFromResourceDelta();
+            final List<RuleSet> ruleSets = rulesetsFromResourceDelta();
             Set<String> fileExtensions = determineFileExtensions(ruleSets);
 
             // PMDEngine pmdEngine = getPmdEngineForProject(project);
@@ -707,7 +711,7 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
 
                 DeltaVisitor visitor = new DeltaVisitor();
                 visitor.setMonitor(getMonitor());
-                visitor.setRuleSets(ruleSets);
+                visitor.setRuleSetList(ruleSets);
                 visitor.setFileExtensions(fileExtensions);
                 // visitor.setPmdEngine(pmdEngine);
                 visitor.setAccumulator(markersByFile);
@@ -715,7 +719,7 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
                 visitor.setProjectProperties(properties);
                 resourceDelta.accept(visitor);
 
-                ruleCount = ruleSets.getAllRules().size();
+                ruleCount = InternalRuleSetUtil.countRules(ruleSets);
                 fileCount += visitor.getProcessedFilesCount();
                 pmdDuration += visitor.getActualPmdDuration();
             } else {
