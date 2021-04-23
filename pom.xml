@@ -19,7 +19,7 @@
     <target.platform>kepler</target.platform>
     <orbit.version>R20140114142710</orbit.version>
 
-    <tycho.version>1.7.0</tycho.version>
+    <tycho.version>2.3.0</tycho.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <pmd.version>6.33.0</pmd.version>
     <maven-antrun-plugin.version>1.8</maven-antrun-plugin.version>
@@ -127,8 +127,27 @@
         <artifactId>maven-checkstyle-plugin</artifactId>
         <!-- configuration is in plugin management section -->
       </plugin>
-    </plugins>
 
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-toolchains-plugin</artifactId>
+        <version>3.0.0</version>
+        <configuration>
+          <toolchains>
+            <jdk>
+              <id>JavaSE-1.8</id>
+            </jdk>
+          </toolchains>
+        </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>toolchain</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
     <pluginManagement>
       <plugins>
         <plugin>

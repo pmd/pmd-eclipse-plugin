@@ -19,11 +19,18 @@ the repository on github and create pull requests. Any contributions are welcome
 
 
 ### Testing the latest version
-Simply build the plugin locally using maven:
+
+The plugin builds with Java 11 but also requires Java 8. This is achieved through
+[maven toolchains](https://maven.apache.org/guides/mini/guide-using-toolchains.html).
+You can use [toolchains.xml](.ci/files/toolchains.xml) from this repo to
+configure your own `toolchains.xml` file.
+
+Then simply build the plugin locally using maven:
 
     ./mvnw clean verify
 
-You'll find the zipped update site in the folder `net.sourceforge.pmd.eclipse.p2updatesite/target/`. Point eclipse to the zip file in this folder as an update-site and install the
+You'll find the zipped update site in the folder `net.sourceforge.pmd.eclipse.p2updatesite/target/`.
+Point eclipse to the zip file in this folder as an update-site and install the
 latest SNAPSHOT version.
 
 

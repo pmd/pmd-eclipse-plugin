@@ -26,6 +26,24 @@
             <useUIHarness>true</useUIHarness>
             <showEclipseLog>true</showEclipseLog>
             <trimStackTrace>false</trimStackTrace>
+            <!-- http://wiki.eclipse.org/Eclipse4/RCP/FAQ#Why_won.27t_my_application_start.3F -->
+            <bundleStartLevel>
+              <bundle>
+                <id>org.eclipse.core.runtime</id>
+                <level>2</level>
+                <autoStart>true</autoStart>
+              </bundle>
+              <bundle>
+                <id>org.eclipse.equinox.ds</id>
+                <level>3</level>
+                <autoStart>true</autoStart>
+              </bundle>
+              <bundle>
+                <id>org.eclipse.equinox.event</id>
+                <level>3</level>
+                <autoStart>true</autoStart>
+              </bundle>
+            </bundleStartLevel>
         </configuration>
       </plugin>
       <plugin>

@@ -20,6 +20,7 @@ This is a minor release.
 
 *   [#143](https://github.com/pmd/pmd-eclipse-plugin/pull/143): Support JAR Signing for the update site
 *   [#144](https://github.com/pmd/pmd-eclipse-plugin/pull/144): Remove support and scripts for bintray
+*   [#145](https://github.com/pmd/pmd-eclipse-plugin/pull/145): Bump tycho from 1.7.0 to 2.3.0
 
 ### API Changes
 
