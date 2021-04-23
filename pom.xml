@@ -28,6 +28,9 @@
     <checkstyle.plugin.version>3.1.1</checkstyle.plugin.version>
 
     <updatesite.orbit>https://archive.eclipse.org/tools/orbit/downloads/drops/${orbit.version}/repository/</updatesite.orbit>
+
+    <keystorePath>.ci/files/pmd-eclipse-plugin.p12</keystorePath>
+    <keystore>${basedir}/${keystorePath}</keystore>
   </properties>
 
   <repositories>
@@ -267,4 +270,34 @@
     </pluginManagement>
   </build>
 
+  <profiles>
+    <profile>
+      <id>sign</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-jarsigner-plugin</artifactId>
+            <version>3.0.0</version>
+            <configuration>
+              <alias>eclipse-plugin</alias>
+              <keystore>${keystore}</keystore>
+              <keypass>${env.CI_SIGN_PASSPHRASE}</keypass>
+              <storepass>${env.CI_SIGN_PASSPHRASE}</storepass>
+              <tsa>http://timestamp.digicert.com</tsa>
+              <verbose>true</verbose>
+            </configuration>
+            <executions>
+              <execution>
+                <id>sign</id>
+                <goals>
+                  <goal>sign</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 </project>

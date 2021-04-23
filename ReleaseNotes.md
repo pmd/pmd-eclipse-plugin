@@ -15,6 +15,8 @@ This is a minor release.
 
 ### Fixed Issues
 
+*   [#143](https://github.com/pmd/pmd-eclipse-plugin/pull/143): Support JAR Signing for the update site
+
 ### API Changes
 
 *   The following methods in `net.sourceforge.pmd.eclipse.ui.actions.RuleSetUtil` are deprecated:
