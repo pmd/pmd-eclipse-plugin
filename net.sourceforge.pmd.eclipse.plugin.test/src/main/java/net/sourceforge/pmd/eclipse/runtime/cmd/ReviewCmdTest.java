@@ -45,9 +45,6 @@ import net.sourceforge.pmd.eclipse.ui.actions.RuleSetUtil;
 public class ReviewCmdTest {
     private IProject testProject;
 
-    /**
-     * @see junit.framework.TestCase#setUp()
-     */
     @Before
     public void setUp() throws Exception {
 
@@ -68,9 +65,6 @@ public class ReviewCmdTest {
         properties.setPmdEnabled(true);
     }
 
-    /**
-     * @see junit.framework.TestCase#tearDown()
-     */
     @After
     public void tearDown() throws Exception {
         try {
@@ -117,6 +111,18 @@ public class ReviewCmdTest {
         }
     }
 
+    private IFile createMissingOverrideTestCase(IProject project) throws Exception {
+        EclipseUtils.createTestSourceFile(project, "/src/MyInterface.java", "public interface MyInterface { void run(); }");
+        IFile sourceFile = EclipseUtils.createTestSourceFile(project, "/src/Foo.java",
+                "class Foo implements MyInterface {\n"
+              + "  void run() {\n" // line 2
+              + "  }\n"
+              + "}");
+        project.build(IncrementalProjectBuilder.FULL_BUILD, null);
+        project.refreshLocal(IResource.DEPTH_INFINITE, null);
+        return sourceFile;
+    }
+
     /**
      * https://sourceforge.net/p/pmd/bugs/1145/
      */
@@ -124,38 +130,33 @@ public class ReviewCmdTest {
     public void testProjectBuildPath() throws Exception {
         IProjectProperties properties = PMDPlugin.getDefault().getPropertiesManager()
                 .loadProjectProperties(testProject);
-        Rule compareObjectsWithEquals = properties.getProjectRuleSet().getRuleByName("CompareObjectsWithEquals");
-        RuleSet projectRuleSet = RuleSetUtil.newSingle(compareObjectsWithEquals);
+        Rule missingOverrideRule = properties.getProjectRuleSet().getRuleByName("MissingOverride");
+        RuleSet projectRuleSet = RuleSetUtil.newSingle(missingOverrideRule);
         properties.setProjectRuleSet(projectRuleSet);
         boolean oldSetting = PMDPlugin.getDefault().getPreferencesManager().loadPreferences()
                 .isProjectBuildPathEnabled();
 
         try {
             PMDPlugin.getDefault().getPreferencesManager().loadPreferences().setProjectBuildPathEnabled(true);
-            EclipseUtils.createTestSourceFile(testProject, "/src/MyEnum.java", "public enum MyEnum { A, B }");
-            IFile sourceFile = EclipseUtils.createTestSourceFile(testProject, "/src/Foo.java",
-                    "class Foo {\n" + "  boolean bar(MyEnum a, MyEnum b) {\n" + "    return a == b;\n" + // line 3
-                            "  }\n" + "}");
-            testProject.build(IncrementalProjectBuilder.FULL_BUILD, null);
-            testProject.refreshLocal(IResource.DEPTH_INFINITE, null);
+            IFile sourceFile = createMissingOverrideTestCase(testProject);
 
             ReviewCodeCmd cmd = new ReviewCodeCmd();
             cmd.addResource(testProject);
             cmd.performExecute();
             cmd.join();
             Map<IFile, Set<MarkerInfo2>> markers = cmd.getMarkers();
-            // with type resolution, this comparison is ok, as MyEnum is a enum
-            Assert.assertTrue("Type Resolution didn't work", markers.get(sourceFile).isEmpty());
+            // with type resolution, we detect missing override annotation
+            Assert.assertFalse("Type Resolution didn't work", markers.get(sourceFile).isEmpty());
 
-            // without type resolution, there is a violation
+            // without type resolution, there is no violation
             PMDPlugin.getDefault().getPreferencesManager().loadPreferences().setProjectBuildPathEnabled(false);
             cmd = new ReviewCodeCmd();
             cmd.addResource(testProject);
             cmd.performExecute();
             cmd.join();
             markers = cmd.getMarkers();
-            // there is a violation expected without type resolution
-            Assert.assertFalse(markers.get(sourceFile).isEmpty());
+            // there is no violation expected without type resolution
+            Assert.assertTrue(markers.get(sourceFile).isEmpty());
 
         } finally {
             PMDPlugin.getDefault().getPreferencesManager().loadPreferences().setProjectBuildPathEnabled(oldSetting);
@@ -189,35 +190,30 @@ public class ReviewCmdTest {
             IProjectProperties properties = PMDPlugin.getDefault().getPropertiesManager()
                     .loadProjectProperties(newProject);
             properties.setPmdEnabled(true);
-            Rule compareObjectsWithEquals = properties.getProjectRuleSet().getRuleByName("CompareObjectsWithEquals");
-            RuleSet projectRuleSet = RuleSetUtil.newSingle(compareObjectsWithEquals);
+            Rule missingOVerrideRule = properties.getProjectRuleSet().getRuleByName("MissingOverride");
+            RuleSet projectRuleSet = RuleSetUtil.newSingle(missingOVerrideRule);
             properties.setProjectRuleSet(projectRuleSet);
 
             PMDPlugin.getDefault().getPreferencesManager().loadPreferences().setProjectBuildPathEnabled(true);
-            EclipseUtils.createTestSourceFile(newProject, "/src/MyEnum.java", "public enum MyEnum { A, B }");
-            IFile sourceFile = EclipseUtils.createTestSourceFile(newProject, "/src/Foo.java",
-                    "class Foo {\n" + "  boolean bar(MyEnum a, MyEnum b) {\n" + "    return a == b;\n" + // line 3
-                            "  }\n" + "}");
-            newProject.build(IncrementalProjectBuilder.FULL_BUILD, null);
-            newProject.refreshLocal(IResource.DEPTH_INFINITE, null);
+            IFile sourceFile = createMissingOverrideTestCase(newProject);
 
             ReviewCodeCmd cmd = new ReviewCodeCmd();
             cmd.addResource(newProject);
             cmd.performExecute();
             cmd.join();
             Map<IFile, Set<MarkerInfo2>> markers = cmd.getMarkers();
-            // with type resolution, this comparison is ok, as MyEnum is a enum
-            Assert.assertTrue("Type Resolution didn't work", markers.get(sourceFile).isEmpty());
+            // with type resolution, we detect missing override annotation
+            Assert.assertFalse("Type Resolution didn't work", markers.get(sourceFile).isEmpty());
 
-            // without type resolution, there is a violation
+            // without type resolution, there is no violation
             PMDPlugin.getDefault().getPreferencesManager().loadPreferences().setProjectBuildPathEnabled(false);
             cmd = new ReviewCodeCmd();
             cmd.addResource(newProject);
             cmd.performExecute();
             cmd.join();
             markers = cmd.getMarkers();
-            // there is a violation expected without type resolution
-            Assert.assertFalse(markers.get(sourceFile).isEmpty());
+            // there is no violation expected without type resolution
+            Assert.assertTrue(markers.get(sourceFile).isEmpty());
 
         } finally {
             PMDPlugin.getDefault().getPreferencesManager().loadPreferences().setProjectBuildPathEnabled(oldSetting);

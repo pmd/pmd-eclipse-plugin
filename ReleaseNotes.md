@@ -4,10 +4,10 @@ Installation instructions: <https://pmd.github.io/eclipse/>
 
 Eclipse Update Site:
 
-*   Releases: <https://dl.bintray.com/pmd/pmd-eclipse-plugin/updates/>
-*   Snapshots: <https://dl.bintray.com/pmd/pmd-eclipse-plugin/snapshots/updates/>
+*   Releases: <https://pmd.github.io/pmd-eclipse-plugin-p2-site/>
+*   Snapshots: <https://pmd.github.io/pmd-eclipse-plugin-p2-site/snapshot/>
 
-## ????: 4.19.0.v????
+## ????: 4.23.0.v????
 
 This is a minor release.
 
@@ -46,6 +46,50 @@ This is a minor release.
     *   `net.sourceforge.pmd.eclipse.ui.properties.UpdateProjectPropertiesCmd.setProjectRuleSets(RuleSets)`
 
 ### External Contributions
+
+## 27-March-2021: 4.22.0.v20210327-1603
+
+This is a minor release.
+
+### New and noteworthy
+
+*   The update site moved from Bintray to Github Pages. The new URL is from now on:
+    <https://pmd.github.io/pmd-eclipse-plugin-p2-site/>
+*   Archives of the old versions can be found on sourceforge:
+    <https://sourceforge.net/projects/pmd/files/pmd-eclipse/zipped/>
+*   Updated to PMD 6.33.0
+
+### Fixed Issues
+
+*   [#140](https://github.com/pmd/pmd-eclipse-plugin/issues/140): Use gh pages for update site
+
+## 27-February-2021: 4.21.0.v20210227-1131
+
+This is a minor release.
+
+### New and noteworthy
+
+*   Updated to PMD 6.32.0
+
+## 30-January-2021: 4.20.0.v20210130-1744
+
+This is a minor release.
+
+### New and noteworthy
+
+*   Updated to PMD 6.31.0
+
+## 12-December-2020: 4.19.0.v20201212-1115
+
+This is a minor release.
+
+### New and noteworthy
+
+*   Updated to PMD 6.30.0
+
+### Fixed Issues
+
+*   [#135](https://github.com/pmd/pmd-eclipse-plugin/pull/135): Fix JavaProjectClassLoader (auxclasspath support) for workspace relative libraries
 
 ## 24-October-2020: 4.18.0.v20201024-1129
 

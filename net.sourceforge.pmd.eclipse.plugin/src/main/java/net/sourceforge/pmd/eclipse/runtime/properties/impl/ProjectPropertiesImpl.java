@@ -69,7 +69,7 @@ public class ProjectPropertiesImpl implements IProjectProperties {
     private boolean fullBuildEnabled = true; // default in case didn't come from properties
     private Set<String> buildPathExcludePatterns = new HashSet<String>();
     private Set<String> buildPathIncludePatterns = new HashSet<String>();
-    private ClassLoader auxclasspath;
+    private JavaProjectClassLoader auxclasspath;
 
     /**
      * The default constructor takes a project as an argument
@@ -512,6 +512,18 @@ public class ProjectPropertiesImpl implements IProjectProperties {
     public ClassLoader getAuxClasspath() {
         try {
             if (project != null && project.hasNature(JavaCore.NATURE_ID)) {
+                String projectName = project.getName();
+                if (auxclasspath != null && auxclasspath.isModified()) {
+                    PMDPlugin.getDefault().logInformation("Classpath of project " + projectName
+                            + " changed - recreating it.");
+                    try {
+                        auxclasspath.close();
+                    } catch (IOException e) {
+                        // ignored
+                    }
+                    auxclasspath = null;
+                }
+
                 if (auxclasspath == null) {
                     PMDPlugin.getDefault()
                             .logInformation("Creating new auxclasspath class loader for project " + project.getName());
