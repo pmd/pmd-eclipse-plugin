@@ -8,9 +8,10 @@ SCRIPT_INCLUDES="log.bash utils.bash setup-secrets.bash openjdk.bash maven.bash 
 source "$(dirname "$0")/inc/fetch_ci_scripts.bash" && fetch_ci_scripts
 
 function build() {
-    pmd_ci_log_group_start "Install OpenJDK"
+    pmd_ci_log_group_start "Install OpenJDK 8+11"
         pmd_ci_openjdk_install_adoptopenjdk 8
-        pmd_ci_openjdk_setdefault 8
+        pmd_ci_openjdk_install_adoptopenjdk 11
+        pmd_ci_openjdk_setdefault 11
     pmd_ci_log_group_end
 
     pmd_ci_log_group_start "Install xvfb"
@@ -26,7 +27,9 @@ function build() {
 
     if pmd_ci_utils_is_fork_or_pull_request; then
         pmd_ci_log_group_start "Build with mvnw"
-            xvfb-run --auto-servernum ./mvnw clean verify --show-version --errors --batch-mode --no-transfer-progress
+            xvfb-run --auto-servernum ./mvnw clean verify \
+                --show-version --errors --batch-mode --no-transfer-progress \
+                --toolchains .ci/files/toolchains.xml
         pmd_ci_log_group_end
         exit 0
     fi
@@ -59,6 +62,7 @@ function snapshot_build() {
         # Build
         xvfb-run --auto-servernum ./mvnw clean verify --show-version --errors --batch-mode \
             --no-transfer-progress \
+            --toolchains .ci/files/toolchains.xml \
             --activate-profiles sign
 
         # Upload update site to sourceforge
@@ -109,6 +113,7 @@ function release_build() {
         # Build
         xvfb-run --auto-servernum ./mvnw clean verify --show-version --errors --batch-mode \
             --no-transfer-progress \
+            --toolchains .ci/files/toolchains.xml \
             --activate-profiles sign
     pmd_ci_log_group_end
 
