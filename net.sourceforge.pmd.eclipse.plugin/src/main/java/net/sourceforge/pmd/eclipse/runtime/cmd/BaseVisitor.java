@@ -36,9 +36,7 @@ import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Report.ConfigurationError;
 import net.sourceforge.pmd.Report.ProcessingError;
 import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSet;
-import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
@@ -51,7 +49,6 @@ import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.LanguageVersionDiscoverer;
 import net.sourceforge.pmd.lang.java.JavaLanguageModule;
-import net.sourceforge.pmd.processor.MonoThreadProcessor;
 import net.sourceforge.pmd.renderers.AbstractRenderer;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.util.datasource.DataSource;
@@ -326,16 +323,12 @@ public class BaseVisitor {
 
                 long start = System.currentTimeMillis();
 
-                RuleContext context = PMD.newRuleContext(file.getName(), sourceCodeFile);
-                context.setLanguageVersion(languageVersion);
-
                 input = new InputStreamReader(file.getContents(), file.getCharset());
                 // getPmdEngine().processFile(input, getRuleSet(), context);
                 // getPmdEngine().processFile(sourceCodeFile, getRuleSet(),
                 // context);
 
                 DataSource dataSource = new ReaderDataSource(input, file.getRawLocation().toFile().getPath());
-                RuleSetFactory ruleSetFactory = InternalRuleSetUtil.createFactoryFromRuleSets(ruleSets);
                 // need to disable multi threading, as the ruleset is
                 // not recreated and shared between threads...
                 // but as we anyway have only one file to process, it won't hurt
@@ -383,11 +376,7 @@ public class BaseVisitor {
                     }
                 };
 
-                // PMD.processFiles(configuration(), ruleSetFactory,
-                // Arrays.asList(dataSource), context,
-                // Arrays.asList(collectingRenderer));
-                new MonoThreadProcessor(configuration()).processFiles(ruleSetFactory, Arrays.asList(dataSource),
-                        context, Arrays.asList(collectingRenderer));
+                PMD.processFiles(configuration(), ruleSets, Arrays.asList(dataSource), Arrays.asList(collectingRenderer));
                 LOG.debug("PMD run finished.");
 
                 pmdDuration += System.currentTimeMillis() - start;
