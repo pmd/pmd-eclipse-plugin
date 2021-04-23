@@ -56,23 +56,18 @@ function snapshot_build() {
     pmd_ci_log_group_start "Snapshot Build: ${PMD_CI_MAVEN_PROJECT_VERSION}"
         pmd_ci_log_info "This is a snapshot build on branch ${PMD_CI_BRANCH} (version: ${PMD_CI_MAVEN_PROJECT_VERSION})"
 
-        # Build and upload the update site to Bintray
+        # Build
         xvfb-run --auto-servernum ./mvnw clean verify --show-version --errors --batch-mode \
             --no-transfer-progress \
-            --activate-profiles snapshot-properties,release-composite,sign
+            --activate-profiles sign
 
+        # Upload update site to sourceforge
         local qualifiedVersion
         qualifiedVersion="$(basename net.sourceforge.pmd.eclipse.p2updatesite/target/net.sourceforge.pmd.eclipse.p2updatesite-*.zip)"
         qualifiedVersion="${qualifiedVersion%.zip}"
         qualifiedVersion="${qualifiedVersion#net.sourceforge.pmd.eclipse.p2updatesite-}"
         mv "net.sourceforge.pmd.eclipse.p2updatesite/target/net.sourceforge.pmd.eclipse.p2updatesite-${qualifiedVersion}.zip" "net.sourceforge.pmd.eclipse.p2updatesite/target/net.sourceforge.pmd.eclipse.p2updatesite-SNAPSHOT.zip"
         pmd_ci_sourceforge_uploadFile "pmd-eclipse/zipped" "net.sourceforge.pmd.eclipse.p2updatesite/target/net.sourceforge.pmd.eclipse.p2updatesite-SNAPSHOT.zip"
-
-        # Cleanup old snapshots
-        (
-            cd net.sourceforge.pmd.eclipse.p2updatesite
-            ./cleanup-bintray-snapshots.sh
-        )
     pmd_ci_log_group_end
 
     pmd_ci_log_group_start "Add snapshot to update site"
@@ -111,10 +106,10 @@ function release_build() {
     pmd_ci_log_group_start "Release Build: ${PMD_CI_MAVEN_PROJECT_VERSION}"
         pmd_ci_log_info "This is a release build for tag ${PMD_CI_TAG} (version: ${PMD_CI_MAVEN_PROJECT_VERSION})"
 
-        # Build and deploy the update site to bintray
+        # Build
         xvfb-run --auto-servernum ./mvnw clean verify --show-version --errors --batch-mode \
             --no-transfer-progress \
-            --activate-profiles release-composite,sign
+            --activate-profiles sign
     pmd_ci_log_group_end
 
     pmd_ci_log_group_start "Update Github Releases"

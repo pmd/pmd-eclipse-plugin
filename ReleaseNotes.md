@@ -13,9 +13,13 @@ This is a minor release.
 
 ### New and noteworthy
 
+*   The Eclipse Update site is now hosted on GitHub Pages: <https://pmd.github.io/pmd-eclipse-plugin-p2-site/>
+    The old update site on Bintray is no longer updated.
+
 ### Fixed Issues
 
 *   [#143](https://github.com/pmd/pmd-eclipse-plugin/pull/143): Support JAR Signing for the update site
+*   [#144](https://github.com/pmd/pmd-eclipse-plugin/pull/144): Remove support and scripts for bintray
 
 ### API Changes
 
