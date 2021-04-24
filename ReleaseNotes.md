@@ -15,6 +15,7 @@ This is a minor release.
 
 *   The Eclipse Update site is now hosted on GitHub Pages: <https://pmd.github.io/pmd-eclipse-plugin-p2-site/>
     The old update site on Bintray is no longer updated.
+*   Updated to PMD 6.34.0
 
 ### Fixed Issues
 
