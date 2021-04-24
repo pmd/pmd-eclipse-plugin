@@ -153,7 +153,7 @@ $(head -$END_LINE ReleaseNotes.md | tail -$((END_LINE - BEGIN_LINE)))
         (
             cd current-p2-site
 
-            unzip -q -d "${PMD_CI_MAVEN_PROJECT_VERSION}" "net.sourceforge.pmd.eclipse.p2updatesite/target/net.sourceforge.pmd.eclipse.p2updatesite-${PMD_CI_MAVEN_PROJECT_VERSION}.zip"
+            unzip -q -d "${PMD_CI_MAVEN_PROJECT_VERSION}" "../net.sourceforge.pmd.eclipse.p2updatesite/target/net.sourceforge.pmd.eclipse.p2updatesite-${PMD_CI_MAVEN_PROJECT_VERSION}.zip"
             git add "${PMD_CI_MAVEN_PROJECT_VERSION}"
             regenerate_metadata
 
