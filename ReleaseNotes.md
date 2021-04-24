@@ -7,7 +7,7 @@ Eclipse Update Site:
 *   Releases: <https://pmd.github.io/pmd-eclipse-plugin-p2-site/>
 *   Snapshots: <https://pmd.github.io/pmd-eclipse-plugin-p2-site/snapshot/>
 
-## ????: 4.23.0.v????
+## 24-April-2021: 4.23.0.v20210424-1524
 
 This is a minor release.
 
@@ -52,8 +52,6 @@ This is a minor release.
     *   `net.sourceforge.pmd.eclipse.ui.properties.PMDPropertyPageBean.getProjectRuleSets()`
     *   `net.sourceforge.pmd.eclipse.ui.properties.PMDPropertyPageBean.setProjectRuleSets(RuleSets)`
     *   `net.sourceforge.pmd.eclipse.ui.properties.UpdateProjectPropertiesCmd.setProjectRuleSets(RuleSets)`
-
-### External Contributions
 
 ## 27-March-2021: 4.22.0.v20210327-1603
 
