@@ -114,8 +114,8 @@ public class CPDViewTooltipListener2 implements Listener {
                 continue;
             }
             int classWidth = widths[1];
-            if (location.x > rightEdge - classWidth && // right of the start?
-                    location.x < rightEdge) { // left of the end?
+            if (location.x > rightEdge - classWidth // right of the start?
+                    && location.x < rightEdge) { // left of the end?
                 return CPDViewLabelProvider2.entriesFor((Match) item)[i];
             }
         }
