@@ -8,6 +8,10 @@ on:
     tags:
       - '**'
   pull_request:
+  schedule:
+    # build it monthly: At 05:00 on day-of-month 1.
+    - cron:  '0 5 1 * *'
+  workflow_dispatch:
 
 jobs:
   build:
@@ -29,7 +33,7 @@ jobs:
       run: |
         echo "LANG=en_US.UTF-8" >> $GITHUB_ENV
         echo "MAVEN_OPTS=-Dmaven.wagon.httpconnectionManager.ttlSeconds=180 -Dmaven.wagon.http.retryHandler.count=3" >> $GITHUB_ENV
-        echo "PMD_CI_SCRIPTS_URL=https://raw.githubusercontent.com/pmd/build-tools/11/scripts" >> $GITHUB_ENV
+        echo "PMD_CI_SCRIPTS_URL=https://raw.githubusercontent.com/pmd/build-tools/12/scripts" >> $GITHUB_ENV
     - name: Check Environment
       shell: bash
       run: |
