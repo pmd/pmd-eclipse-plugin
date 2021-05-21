@@ -6,6 +6,7 @@ package net.sourceforge.pmd.eclipse.ui.actions;
 
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IAdaptable;
@@ -20,7 +21,6 @@ import net.sourceforge.pmd.eclipse.runtime.cmd.RenderReportsCmd;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
 import net.sourceforge.pmd.eclipse.ui.reports.ReportManager;
 import net.sourceforge.pmd.renderers.Renderer;
-import net.sourceforge.pmd.util.StringUtil;
 
 /**
  * Process GenerateReport action menu. Generate a HTML report on the current
@@ -57,7 +57,7 @@ public class GenerateReportAction extends AbstractUIAction {
 
         for (Renderer renderer : renderers) {
             String issue = renderer.dysfunctionReason();
-            if (StringUtil.isNotEmpty(issue)) {
+            if (StringUtils.isNotBlank(issue)) {
                 errors.append(renderer.getName()).append(": ");
                 errors.append(issue).append("\n");
             }
@@ -71,9 +71,7 @@ public class GenerateReportAction extends AbstractUIAction {
         return false;
     }
 
-    /**
-     * @see org.eclipse.ui.IActionDelegate#run(IAction)
-     */
+    @Override
     public final void run(final IAction action) {
         LOG.info("Generation Report action requested");
         final ISelection sel = targetSelection();
@@ -99,22 +97,14 @@ public class GenerateReportAction extends AbstractUIAction {
     }
 
     /**
-     * @see org.eclipse.ui.IActionDelegate#selectionChanged(IAction, ISelection)
-     */
-    public final void selectionChanged(IAction action, ISelection selection) {
-        // nothing to do
-    }
-
-    /**
      * Get a project from a selection
      * 
      * @param selection
      * @return
      */
     private static IProject getProject(IStructuredSelection selection) {
-
         Object object = selection.getFirstElement();
-        if (object != null && object instanceof IAdaptable) {
+        if (object instanceof IAdaptable) {
             final IResource resource = (IResource) ((IAdaptable) object).getAdapter(IResource.class);
             if (resource != null) {
                 return resource.getProject();

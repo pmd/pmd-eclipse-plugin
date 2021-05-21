@@ -11,9 +11,6 @@ import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.ui.IEditorInput;
-import org.eclipse.ui.IEditorPart;
-import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.IWorkingSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,62 +31,28 @@ public class PMDCheckAction extends AbstractUIAction {
     private static final Logger LOG = LoggerFactory.getLogger(PMDCheckAction.class);
 
     /**
-     * @see org.eclipse.ui.IActionDelegate#run(IAction)
+     * 
      */
+    public PMDCheckAction() {
+        LOG.info("New Check Action created...");
+    }
+    
+    @Override
     public void run(IAction action) {
         LOG.info("Check PMD action requested");
 
         try {
-
-            // Execute PMD on a range of selected resource if action selected
-            // from a view part
-            if (isViewPart()) {
-                ISelection selection = targetSelection();
-                if (selection instanceof IStructuredSelection) {
-                    reviewSelectedResources((IStructuredSelection) selection);
-                } else {
-                    LOG.debug("The selection is not an instance of IStructuredSelection. This is not supported: "
-                            + selection.getClass().getName());
-                }
-            } else if (isEditorPart()) {
-                // If action is selected from an editor, run PMD on the file
-                // currently edited
-                IEditorInput editorInput = ((IEditorPart) targetPart()).getEditorInput();
-                if (editorInput instanceof IFileEditorInput) {
-                    reviewSingleResource(((IFileEditorInput) editorInput).getFile());
-                } else {
-                    LOG.debug("The kind of editor input is not supported. The editor input if of type: "
-                            + editorInput.getClass().getName());
-                }
+            ISelection selection = targetSelection();
+            if (selection instanceof IStructuredSelection) {
+                reviewSelectedResources((IStructuredSelection) selection);
             } else {
-                // Else, this is not supported for now
-                LOG.debug("Running PMD from this kind of part is not supported. Part is of type "
-                        + targetPartClassName());
+                LOG.debug("The selection is not an instance of IStructuredSelection. This is not supported: "
+                        + selection.getClass().getName());
             }
-
         } catch (RuntimeException e) {
             showErrorById(StringKeys.ERROR_CORE_EXCEPTION, e);
         }
 
-    }
-
-    /**
-     * @see org.eclipse.ui.IActionDelegate#selectionChanged(IAction, ISelection)
-     */
-    @Override
-    public void selectionChanged(IAction action, ISelection selection) {
-    }
-
-    /**
-     * Run the reviewCode command on a single resource
-     *
-     * @param resource
-     */
-    private void reviewSingleResource(IResource resource) {
-        ReviewCodeCmd cmd = new ReviewCodeCmd();
-        cmd.addResource(resource);
-
-        setupAndExecute(cmd);
     }
 
     private void setupAndExecute(ReviewCodeCmd cmd) {
