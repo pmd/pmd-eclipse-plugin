@@ -24,6 +24,7 @@
         <artifactId>tycho-surefire-plugin</artifactId>
         <configuration>
             <useUIHarness>true</useUIHarness>
+            <useUIThread>false</useUIThread>
             <showEclipseLog>true</showEclipseLog>
             <trimStackTrace>false</trimStackTrace>
             <!-- http://wiki.eclipse.org/Eclipse4/RCP/FAQ#Why_won.27t_my_application_start.3F -->

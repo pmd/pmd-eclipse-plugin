@@ -4,14 +4,16 @@
 
 package net.sourceforge.pmd.eclipse.ui.actions;
 
+import java.io.IOException;
 import java.io.InputStream;
 
-import org.eclipse.core.resources.IMarker;
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.io.IOUtils;
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.WorkspaceJob;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.widgets.Display;
@@ -24,18 +26,19 @@ import net.sourceforge.pmd.eclipse.EclipseUtils;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties;
 
-public class PMDCheckActionTest {
+public class PMDGenerateASTActionTest {
     private IProject testProject;
+    private IFile testFile;
 
     @Before
     public void setUp() throws Exception {
         // 1. Create a Java project
-        this.testProject = EclipseUtils.createJavaProject("PMDCheckActionTest");
+        this.testProject = EclipseUtils.createJavaProject("PMDGenerateASTActionTest");
         Assert.assertTrue("A test project cannot be created; the tests cannot be performed.",
                 this.testProject != null && this.testProject.exists() && this.testProject.isAccessible());
 
         // 2. Create a test source file inside that project
-        EclipseUtils.createTestSourceFile(this.testProject);
+        this.testFile = EclipseUtils.createTestSourceFile(this.testProject);
         final InputStream is = EclipseUtils.getResourceStream(this.testProject, "/src/Test.java");
         Assert.assertNotNull("Cannot find the test source file", is);
         is.close();
@@ -63,35 +66,29 @@ public class PMDCheckActionTest {
     }
 
     @Test
-    public void runCheckAction() throws CoreException, InterruptedException {
-        IMarker[] markers = testProject.findMarkers("net.sourceforge.pmd.eclipse.plugin.pmdMarker", true, IResource.DEPTH_INFINITE);
-        Assert.assertEquals(0, markers.length);
-
+    public void runGenerateASTAction() throws CoreException, InterruptedException, IOException {
         Display.getDefault().syncExec(new Runnable() {
             @Override
             public void run() {
-                ISelection selection = new StructuredSelection(testProject);
-                PMDCheckAction action = new PMDCheckAction();
+                ISelection selection = new StructuredSelection(testFile);
+                PMDGenerateASTAction action = new PMDGenerateASTAction();
                 action.selectionChanged(null, selection);
-                action.run(null);
+                action.run((IAction) null);
             }
         });
 
-        while (isReviewCodeJobStillRunning()) {
+        String astFilename = FilenameUtils.getBaseName(testFile.getName()) + ".ast";
+        IResource astFile;
+        long start = System.currentTimeMillis();
+        do {
             Thread.sleep(500);
-        }
+            astFile = testFile.getParent().findMember(astFilename);
+        } while (astFile == null || (System.currentTimeMillis() - start) > 60_000);
 
-        markers = testProject.findMarkers("net.sourceforge.pmd.eclipse.plugin.pmdMarker", true, IResource.DEPTH_INFINITE);
-        Assert.assertTrue("at least one marker is expected", markers.length > 0);
-    }
-
-    private boolean isReviewCodeJobStillRunning() {
-        Job[] jobs = WorkspaceJob.getJobManager().find(null);
-        for (Job job : jobs) {
-            if ("ReviewCode".equals(job.getName())) {
-                return true;
-            }
-        }
-        return false;
+        Assert.assertNotNull("No AST file has been generated", astFile);
+        IFile adapter = (IFile) astFile.getAdapter(IFile.class);
+        String content = IOUtils.toString(adapter.getContents(), adapter.getCharset());
+        Assert.assertTrue(content.startsWith("<?xml version=\"1.0\" encoding=\"UTF-8\"?>"));
+        Assert.assertTrue(content.contains("<CompilationUnit"));
     }
 }
