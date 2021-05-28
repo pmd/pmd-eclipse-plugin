@@ -15,6 +15,8 @@ This is a minor release.
 
 ### Fixed Issues
 
+*   [#146](https://github.com/pmd/pmd-eclipse-plugin/pull/146): Refactor actions to use correct selection
+
 ### API Changes
 
 ### External Contributions
