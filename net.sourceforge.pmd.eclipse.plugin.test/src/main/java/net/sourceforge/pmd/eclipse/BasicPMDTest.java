@@ -5,13 +5,11 @@
 package net.sourceforge.pmd.eclipse;
 
 import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 
 import org.junit.Assert;
@@ -19,16 +17,12 @@ import org.junit.Test;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.PMDConfiguration;
-import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.RuleSet;
-import net.sourceforge.pmd.RuleSetFactory;
-import net.sourceforge.pmd.RuleSetNotFoundException;
+import net.sourceforge.pmd.RuleSetLoader;
 import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.RulesetsFactoryUtils;
-import net.sourceforge.pmd.ThreadSafeReportListener;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.renderers.Renderer;
-import net.sourceforge.pmd.stat.Metric;
 import net.sourceforge.pmd.util.datasource.DataSource;
 
 /**
@@ -43,11 +37,7 @@ public class BasicPMDTest {
         private final ByteArrayInputStream is;
 
         StringDataSource(final String source) {
-            try {
-                this.is = new ByteArrayInputStream(source.getBytes("UTF-8"));
-            } catch (UnsupportedEncodingException e) {
-                throw new RuntimeException(e);
-            }
+            this.is = new ByteArrayInputStream(source.getBytes(StandardCharsets.UTF_8));
         }
 
         @Override
@@ -72,49 +62,29 @@ public class BasicPMDTest {
      */
     @Test
     public void testDefaulltRuleSets() {
-        try {
-            final RuleSetFactory factory = RulesetsFactoryUtils.defaultFactory();
-            final Iterator<RuleSet> iterator = factory.getRegisteredRuleSets();
-            while (iterator.hasNext()) {
-                iterator.next();
-            }
-        } catch (final RuleSetNotFoundException e) {
-            e.printStackTrace();
-            Assert.fail("unable to load registered rulesets ");
-        }
+        RuleSetLoader rulesetloader = new RuleSetLoader();
+        List<RuleSet> standardRuleSets = rulesetloader.getStandardRuleSets();
+        Assert.assertFalse("No Rulesets found", standardRuleSets.isEmpty());
     }
 
     private void runPmd(String javaVersion) {
         PMDConfiguration configuration = new PMDConfiguration();
         configuration.setDefaultLanguageVersion(LanguageRegistry.findLanguageByTerseName("java").getVersion(javaVersion));
         configuration.setRuleSets("category/java/codestyle.xml/UnnecessaryReturn");
-        RuleSetFactory ruleSetFactory = RulesetsFactoryUtils.createFactory(configuration);
+        configuration.setIgnoreIncrementalAnalysis(true);
+        RuleSetLoader rulesetLoader = RuleSetLoader.fromPmdConfig(configuration);
+        List<RuleSet> rulesets = rulesetLoader.loadFromResources(configuration.getRuleSets());
 
         List<DataSource> files = new ArrayList<>();
         final String sourceCode = "public class Foo {\n public void foo() {\nreturn;\n}}";
         files.add(new StringDataSource(sourceCode));
 
-        final List<RuleViolation> violations = new ArrayList<>();
-        final RuleContext ctx = new RuleContext();
-        ctx.setSourceCodeFile(new File("foo.java"));
-        ctx.getReport().addListener(new ThreadSafeReportListener() {
-            @Override
-            public void ruleViolationAdded(RuleViolation ruleViolation) {
-                violations.add(ruleViolation);
-            }
-
-            @Override
-            public void metricAdded(Metric metric) {
-            }
-        });
-
-
-        PMD.processFiles(configuration, ruleSetFactory, files, ctx,
+        Report result = PMD.processFiles(configuration, rulesets, files,
                 Collections.<Renderer>emptyList());
 
-        Assert.assertFalse("There should be at least one violation", violations.isEmpty());
+        Assert.assertFalse("There should be at least one violation", result.getViolations().isEmpty());
 
-        final RuleViolation violation = violations.get(0);
+        final RuleViolation violation = result.getViolations().get(0);
         Assert.assertEquals(violation.getRule().getName(), "UnnecessaryReturn");
         Assert.assertEquals(3, violation.getBeginLine());
     }

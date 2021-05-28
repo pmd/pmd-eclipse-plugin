@@ -273,7 +273,7 @@ Override both public boolean Object.equals(Object other), and public int Object.
 <![CDATA[
 //ClassOrInterfaceDeclaration[@Interface='false']//MethodDeclarator
 [(@Image = 'equals' and count(FormalParameters/*) = 1
-and not(//MethodDeclarator[count(FormalParameters/*) = 0][@Image = 'hashCode']))
+and not(//MethodDeclarator[count(FormalParameters/*) = 0][@Name = 'hashCode']))
 or
 (@Image='hashCode' and count(FormalParameters/*) = 0
 and

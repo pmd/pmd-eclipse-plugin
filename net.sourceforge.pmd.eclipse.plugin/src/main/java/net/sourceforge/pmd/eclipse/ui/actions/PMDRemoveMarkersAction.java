@@ -14,9 +14,6 @@ import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.ui.IEditorInput;
-import org.eclipse.ui.IEditorPart;
-import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.IViewActionDelegate;
 import org.eclipse.ui.IViewPart;
 import org.slf4j.Logger;
@@ -39,16 +36,12 @@ public class PMDRemoveMarkersAction extends AbstractUIAction implements IViewAct
     private static final String OBJECT_ACTION = "net.sourceforge.pmd.eclipse.ui.pmdRemoveMarkersAction";
     private static final Logger LOG = LoggerFactory.getLogger(PMDRemoveMarkersAction.class);
 
-    /**
-     * @see org.eclipse.ui.IViewActionDelegate#init(IViewPart)
-     */
+    @Override
     public void init(IViewPart view) {
-        // no initialization for now
+        setActivePart(null, view);
     }
 
-    /**
-     * @see org.eclipse.ui.IActionDelegate#run(IAction)
-     */
+    @Override
     public void run(IAction action) {
         LOG.info("Remove Markers action requested");
         try {
@@ -67,46 +60,22 @@ public class PMDRemoveMarkersAction extends AbstractUIAction implements IViewAct
     }
 
     /**
-     * @see org.eclipse.ui.IActionDelegate#selectionChanged(IAction, ISelection)
-     */
-    public void selectionChanged(IAction action, ISelection selection) {
-        // nothing to do
-    }
-
-    /**
      * Process removing of makers on a resource selection (project or file)
      */
     private void processResource() {
         LOG.debug("Processing a resource");
         try {
-            if (isViewPart()) {
-                // if action is run from a view, process the selected resources
-                final ISelection sel = targetSelection();
+            // if action is run from a view, process the selected resources
+            final ISelection sel = targetSelection();
 
-                if (sel instanceof IStructuredSelection) {
-                    final IStructuredSelection structuredSel = (IStructuredSelection) sel;
-                    for (final Iterator<?> i = structuredSel.iterator(); i.hasNext();) {
-                        final Object element = i.next();
-                        processElement(element);
-                    }
-                } else {
-                    LOG.warn("The view part selection is not a structured selection !");
-                }
-            } else if (isEditorPart()) {
-                // if action is run from an editor, process the file currently
-                // edited
-                final IEditorInput editorInput = ((IEditorPart) targetPart()).getEditorInput();
-                if (editorInput instanceof IFileEditorInput) {
-                    MarkerUtil.deleteAllMarkersIn(((IFileEditorInput) editorInput).getFile());
-                    LOG.debug("Remove markers on currently edited file "
-                            + ((IFileEditorInput) editorInput).getFile().getName());
-                } else {
-                    LOG.debug("The kind of editor input is not supported. The editor input type: "
-                            + editorInput.getClass().getName());
+            if (sel instanceof IStructuredSelection) {
+                final IStructuredSelection structuredSel = (IStructuredSelection) sel;
+                for (final Iterator<?> i = structuredSel.iterator(); i.hasNext();) {
+                    final Object element = i.next();
+                    processElement(element);
                 }
             } else {
-                // else, this is not supported
-                LOG.debug("This action is not supported on that part. This part type is: " + targetPartClassName());
+                LOG.warn("The view part selection is not a structured selection !");
             }
         } catch (CoreException e) {
             showErrorById(StringKeys.ERROR_CORE_EXCEPTION, e);

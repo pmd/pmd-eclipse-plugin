@@ -21,6 +21,7 @@ import net.sourceforge.pmd.eclipse.ui.views.ViolationOverview;
  */
 public abstract class AbstractUIAction implements IObjectActionDelegate {
 
+    private ISelection selection;
     private IWorkbenchPart targetPart;
 
     protected AbstractUIAction() {
@@ -59,7 +60,12 @@ public abstract class AbstractUIAction implements IObjectActionDelegate {
     }
 
     protected ISelection targetSelection() {
-        return targetPartSite().getSelectionProvider().getSelection();
+        return selection;
+    }
+
+    @Override
+    public void selectionChanged(IAction action, ISelection selection) {
+        this.selection = selection;
     }
 
     /**

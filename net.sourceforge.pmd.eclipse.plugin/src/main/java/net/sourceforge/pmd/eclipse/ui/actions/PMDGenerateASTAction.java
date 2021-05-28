@@ -25,9 +25,6 @@ import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.ui.IEditorInput;
-import org.eclipse.ui.IEditorPart;
-import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.PlatformUI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,53 +52,22 @@ public class PMDGenerateASTAction extends AbstractUIAction implements IRunnableW
 
     private static final Logger LOG = LoggerFactory.getLogger(PMDGenerateASTAction.class);
 
-    private IStructuredSelection structuredSelection;
-
-    /**
-     * @see org.eclipse.ui.IActionDelegate#run(IAction)
-     */
     @Override
     public void run(IAction action) {
         LOG.info("Generation AST action requested");
 
-        // If action is selected from a view, process the selection
-        if (isViewPart()) {
-            ISelection sel = targetSelection();
-            if (sel instanceof IStructuredSelection) {
-                this.structuredSelection = (IStructuredSelection) sel;
-                ProgressMonitorDialog dialog = new ProgressMonitorDialog(
-                        PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell());
-                try {
-                    dialog.run(false, false, this);
-                } catch (InvocationTargetException e) {
-                    showErrorById(StringKeys.ERROR_INVOCATIONTARGET_EXCEPTION, e);
-                } catch (InterruptedException e) {
-                    showErrorById(StringKeys.ERROR_INTERRUPTED_EXCEPTION, e);
-                }
+        ISelection sel = targetSelection();
+        if (sel instanceof IStructuredSelection) {
+            ProgressMonitorDialog dialog = new ProgressMonitorDialog(
+                    PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell());
+            try {
+                dialog.run(false, false, this);
+            } catch (InvocationTargetException e) {
+                showErrorById(StringKeys.ERROR_INVOCATIONTARGET_EXCEPTION, e);
+            } catch (InterruptedException e) {
+                showErrorById(StringKeys.ERROR_INTERRUPTED_EXCEPTION, e);
             }
         }
-
-        // If action is selected from an editor, process the file currently
-        // edited
-        if (isEditorPart()) {
-            IEditorInput editorInput = ((IEditorPart) targetPart()).getEditorInput();
-            if (editorInput instanceof IFileEditorInput) {
-                generateAST(((IFileEditorInput) editorInput).getFile());
-            } else {
-                LOG.debug("The kind of editor input is not supported. The editor input if of type: "
-                        + editorInput.getClass().getName());
-            }
-        } else {
-            // else this is not supported
-            LOG.debug("This action is not supported on this kind of part. This part type is: " + targetPartClassName());
-        }
-    }
-
-    /**
-     * @see org.eclipse.ui.IActionDelegate#selectionChanged(IAction, ISelection)
-     */
-    @Override
-    public void selectionChanged(IAction action, ISelection selection) {
     }
 
     /**
@@ -136,9 +102,7 @@ public class PMDGenerateASTAction extends AbstractUIAction implements IRunnableW
 
         } catch (CoreException e) {
             showErrorById(StringKeys.ERROR_CORE_EXCEPTION, e);
-        } catch (ParseException e) {
-            showErrorById(StringKeys.ERROR_PMD_EXCEPTION, e);
-        } catch (WriterException e) {
+        } catch (ParseException | WriterException e) {
             showErrorById(StringKeys.ERROR_PMD_EXCEPTION, e);
         } catch (IOException e) {
             showErrorById(StringKeys.ERROR_IO_EXCEPTION, e);
@@ -169,11 +133,9 @@ public class PMDGenerateASTAction extends AbstractUIAction implements IRunnableW
         return name.substring(0, dotPosition) + ".ast";
     }
 
-    /**
-     * @see org.eclipse.jface.operation.IRunnableWithProgress#run(org.eclipse.core.runtime.IProgressMonitor)
-     */
     @Override
     public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+        IStructuredSelection structuredSelection = (IStructuredSelection) targetSelection();
         monitor.beginTask("", structuredSelection.size());
         for (Iterator<?> i = structuredSelection.iterator(); i.hasNext();) {
             Object element = i.next();

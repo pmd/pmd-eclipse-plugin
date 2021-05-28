@@ -47,12 +47,10 @@ public class CPDCheckProjectAction extends AbstractUIAction {
     private static final String SIMPLE_KEY = "Simple Text";
     private static final String CSV_KEY = "CSV";
 
-    /*
-     * @see org.eclipse.ui.IActionDelegate#run(IAction)
-     */
+    @Override
     public void run(final IAction action) { // NOPMD:UnusedFormalParameter
         final IWorkbenchPartSite site = targetPartSite();
-        final ISelection sel = site.getSelectionProvider().getSelection();
+        final ISelection sel = targetSelection();
         final Shell shell = site.getShell();
         final String[] languages = LanguageFactory.supportedLanguages;
         
@@ -64,7 +62,7 @@ public class CPDCheckProjectAction extends AbstractUIAction {
         
         final CPDCheckDialog dialog = new CPDCheckDialog(shell, languages, formats);
         
-        if (dialog.open() == Dialog.OK && sel instanceof IStructuredSelection) {       
+        if (dialog.open() == Dialog.OK && sel instanceof IStructuredSelection) {
             final StructuredSelection ss = (StructuredSelection) sel;
             final Iterator<?> i = ss.iterator();
             while (i.hasNext()) {
@@ -83,15 +81,8 @@ public class CPDCheckProjectAction extends AbstractUIAction {
                     LOG.warn("The selected object is not adaptable");
                     LOG.debug("   -> selected object : " + obj);
                 }
-            }           
+            }
         }
-    }
-
-
-    /*
-     * @see org.eclipse.ui.IActionDelegate#selectionChanged(IAction, ISelection)
-     */
-    public void selectionChanged(final IAction action, final ISelection selection) { // NOPMD:UnusedFormalParameter
     }
 
     /**
@@ -173,5 +164,4 @@ public class CPDCheckProjectAction extends AbstractUIAction {
         }
         return fileName;
     }
-    
 }

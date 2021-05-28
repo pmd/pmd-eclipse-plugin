@@ -6,12 +6,13 @@ package net.sourceforge.pmd.eclipse.ui.actions;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Iterator;
+import java.util.Locale;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -28,9 +29,6 @@ import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.IEditorInput;
-import org.eclipse.ui.IEditorPart;
-import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.IViewActionDelegate;
 import org.eclipse.ui.IViewPart;
 import org.slf4j.Logger;
@@ -39,7 +37,6 @@ import org.slf4j.LoggerFactory;
 import net.sourceforge.pmd.eclipse.runtime.PMDRuntimeConstants;
 import net.sourceforge.pmd.eclipse.runtime.cmd.AbstractDefaultCommand;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
-import net.sourceforge.pmd.eclipse.util.IOUtil;
 
 /**
  * Implements the clear reviews action
@@ -52,21 +49,18 @@ public class ClearReviewsAction extends AbstractUIAction implements IResourceVis
     private static final Logger LOG = LoggerFactory.getLogger(ClearReviewsAction.class);
     private IProgressMonitor monitor;
 
-    /**
-     * @see org.eclipse.ui.IViewActionDelegate#init(org.eclipse.ui.IViewPart)
-     */
+    @Override
     public void init(IViewPart view) {
         setActivePart(null, view.getSite().getPage().getActivePart());
     }
 
-    /**
-     * @see org.eclipse.ui.IActionDelegate#run(org.eclipse.jface.action.IAction)
-     */
+    @Override
     public void run(IAction action) {
         LOG.info("Remove violation reviews requested.");
         ProgressMonitorDialog monitorDialog = new ProgressMonitorDialog(Display.getCurrent().getActiveShell());
         try {
             monitorDialog.run(false, false, new IRunnableWithProgress() {
+                @Override
                 public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
                     setMonitor(monitor);
                     clearReviews();
@@ -78,13 +72,6 @@ public class ClearReviewsAction extends AbstractUIAction implements IResourceVis
         } catch (InterruptedException e) {
             logError("Interrupted Exception when removing violation reviews", e);
         }
-    }
-
-    /**
-     * @see org.eclipse.ui.IActionDelegate#selectionChanged(org.eclipse.jface.action.IAction,
-     *      org.eclipse.jface.viewers.ISelection)
-     */
-    public void selectionChanged(IAction action, ISelection selection) {
     }
 
     /**
@@ -131,56 +118,36 @@ public class ClearReviewsAction extends AbstractUIAction implements IResourceVis
     protected void clearReviews() {
 
         try {
-            // If action is started from a view, the process all selected
-            // resource
-            if (isViewPart()) {
-                ISelection selection = targetSelection();
+            ISelection selection = targetSelection();
 
-                if (selection != null && selection instanceof IStructuredSelection) {
-                    IStructuredSelection structuredSelection = (IStructuredSelection) selection;
-                    if (getMonitor() != null) {
-                        getMonitor().beginTask(getString(StringKeys.MONITOR_REMOVE_REVIEWS), IProgressMonitor.UNKNOWN);
+            if (selection instanceof IStructuredSelection) {
+                IStructuredSelection structuredSelection = (IStructuredSelection) selection;
+                if (getMonitor() != null) {
+                    getMonitor().beginTask(getString(StringKeys.MONITOR_REMOVE_REVIEWS), IProgressMonitor.UNKNOWN);
 
-                        Iterator<?> i = structuredSelection.iterator();
-                        while (i.hasNext()) {
-                            Object object = i.next();
-                            IResource resource = null;
+                    Iterator<?> i = structuredSelection.iterator();
+                    while (i.hasNext()) {
+                        Object object = i.next();
+                        IResource resource = null;
 
-                            if (object instanceof IMarker) {
-                                resource = ((IMarker) object).getResource();
-                            } else if (object instanceof IAdaptable) {
-                                IAdaptable adaptable = (IAdaptable) object;
-                                resource = (IResource) adaptable.getAdapter(IResource.class);
-                            } else {
-                                LOG.warn("The selected object is not adaptable");
-                                LOG.debug("   -> selected object = " + object);
-                            }
+                        if (object instanceof IMarker) {
+                            resource = ((IMarker) object).getResource();
+                        } else if (object instanceof IAdaptable) {
+                            IAdaptable adaptable = (IAdaptable) object;
+                            resource = (IResource) adaptable.getAdapter(IResource.class);
+                        } else {
+                            LOG.warn("The selected object is not adaptable");
+                            LOG.debug("   -> selected object = " + object);
+                        }
 
-                            if (resource != null) {
-                                resource.accept(this);
-                            } else {
-                                LOG.warn("The selected object cannot adapt to a resource.");
-                                LOG.debug("   -> selected object" + object);
-                            }
+                        if (resource != null) {
+                            resource.accept(this);
+                        } else {
+                            LOG.warn("The selected object cannot adapt to a resource.");
+                            LOG.debug("   -> selected object" + object);
                         }
                     }
                 }
-            }
-
-            // If action is started from an editor, process the file currently
-            // edited
-            if (isEditorPart()) {
-                IEditorInput editorInput = ((IEditorPart) this.targetPart()).getEditorInput();
-                if (editorInput instanceof IFileEditorInput) {
-                    ((IFileEditorInput) editorInput).getFile().accept(this);
-                } else {
-                    LOG.debug("The kind of editor input is not supported. The editor input if of type: "
-                            + editorInput.getClass().getName());
-                }
-            } else {
-                // else this is not supported
-                LOG.debug("This action is not supported on this kind of part. This part type is: "
-                        + targetPartClassName());
             }
         } catch (CoreException e) {
             logError("Core Exception when clearing violations reviews", e);
@@ -208,7 +175,7 @@ public class ClearReviewsAction extends AbstractUIAction implements IResourceVis
         if (AbstractDefaultCommand.isJavaFile(file)) {
             return true;
         }
-        return file.getName().toLowerCase().endsWith(".jsp");
+        return file.getName().toLowerCase(Locale.ROOT).endsWith(".jsp");
     }
 
     /**
@@ -223,13 +190,11 @@ public class ClearReviewsAction extends AbstractUIAction implements IResourceVis
             return null;
         }
 
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        PrintWriter out = null;
+        StringWriter modified = new StringWriter();
         boolean noChange = true;
-        try {
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(file.getContents(), file.getCharset()));
+                PrintWriter out = new PrintWriter(modified)) {
             boolean comment = false;
-            BufferedReader reader = new BufferedReader(new InputStreamReader(file.getContents()));
-            out = new PrintWriter(baos);
 
             while (reader.ready()) {
                 String origLine = reader.readLine();
@@ -265,12 +230,9 @@ public class ClearReviewsAction extends AbstractUIAction implements IResourceVis
             logError(StringKeys.ERROR_CORE_EXCEPTION, e);
         } catch (IOException e) {
             logError(StringKeys.ERROR_IO_EXCEPTION, e);
-        } finally {
-            IOUtil.closeQuietly(baos);
-            IOUtil.closeQuietly(out);
         }
 
-        return noChange ? null : baos.toString();
+        return noChange ? null : modified.toString();
     }
 
     /**
@@ -281,15 +243,15 @@ public class ClearReviewsAction extends AbstractUIAction implements IResourceVis
      */
     private void saveNewContent(IFile file, String newContent) {
         try {
-            file.setContents(new ByteArrayInputStream(newContent.getBytes()), false, true, getMonitor());
+            file.setContents(new ByteArrayInputStream(newContent.getBytes(file.getCharset())), false, true, getMonitor());
         } catch (CoreException e) {
             logError(StringKeys.ERROR_CORE_EXCEPTION, e);
+        } catch (IOException e) {
+            logError(StringKeys.ERROR_IO_EXCEPTION, e);
         }
     }
 
-    /**
-     * @see org.eclipse.core.resources.IResourceVisitor#visit(org.eclipse.core.resources.IResource)
-     */
+    @Override
     public boolean visit(IResource resource) throws CoreException {
         if (resource instanceof IFile) {
             clearReviews((IFile) resource);

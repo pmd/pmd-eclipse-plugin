@@ -316,6 +316,9 @@ public class BaseVisitor {
                 configuration().setClassLoader(projectProperties.getAuxClasspath());
             }
 
+            // Avoid warnings about not providing cache for incremental analysis
+            configuration().setIgnoreIncrementalAnalysis(true);
+
             final File sourceCodeFile = file.getRawLocation().toFile();
             if (included && InternalRuleSetUtil.ruleSetsApplies(ruleSets, sourceCodeFile) && isFileInWorkingSet(file)
                     && languageVersion != null) {
