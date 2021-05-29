@@ -13,6 +13,8 @@ This is a minor release.
 
 ### New and noteworthy
 
+*   Updated to PMD 6.35.0
+
 ### Fixed Issues
 
 *   [#146](https://github.com/pmd/pmd-eclipse-plugin/pull/146): Refactor actions to use correct selection
