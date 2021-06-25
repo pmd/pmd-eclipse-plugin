@@ -14,7 +14,5 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.jdt.launching,
  org.junit,
  org.apache.commons.io
-Import-Package: ch.qos.logback.classic,
- org.slf4j
 Bundle-Activator: net.sourceforge.pmd.eclipse.internal.TestActivator
 Bundle-ActivationPolicy: lazy
