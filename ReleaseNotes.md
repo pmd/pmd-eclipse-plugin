@@ -15,6 +15,8 @@ This is a minor release.
 
 ### Fixed Issues
 
+*   [#134](https://github.com/pmd/pmd-eclipse-plugin/issues/134): Incompatibility between Groovy Eclipse Plugin and PMD Plugin
+
 ### API Changes
 
 ### External Contributions

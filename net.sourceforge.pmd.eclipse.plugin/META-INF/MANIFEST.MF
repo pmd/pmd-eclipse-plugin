@@ -16,9 +16,7 @@ Require-Bundle: org.eclipse.core.resources,
  org.eclipse.help,
  org.eclipse.help.ui,
  org.eclipse.wst.xml.core,
- org.eclipse.ui.workbench.texteditor,
- ch.qos.logback.classic,
- ch.qos.logback.core
+ org.eclipse.ui.workbench.texteditor
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-Vendor: %plugin.provider
@@ -37,7 +35,10 @@ Bundle-ClassPath: target/lib/antlr-runtime.jar,
  target/lib/jaxb-core.jar,
  target/lib/jaxb-impl.jar,
  target/lib/jcommander.jar,
+ target/lib/jul-to-slf4j.jar,
  target/lib/lenses_2.13.jar,
+ target/lib/logback-classic.jar,
+ target/lib/logback-core.jar,
  target/lib/parsers_2.13.jar,
  target/lib/pmd-apex-jorje-lib.jar,
  target/lib/pmd-apex.jar,
@@ -67,6 +68,7 @@ Bundle-ClassPath: target/lib/antlr-runtime.jar,
  target/lib/saxon.jar,
  target/lib/scala-library.jar,
  target/lib/scalapb-runtime_2.13.jar,
+ target/lib/slf4j-api.jar,
  target/lib/sourcecode_2.13.jar,
  target/lib/stringtemplate.jar,
  target/lib/trees_2.13.jar,
@@ -74,7 +76,8 @@ Bundle-ClassPath: target/lib/antlr-runtime.jar,
  target/schema/,
  .
 Bundle-Localization: plugin
-Export-Package: name.herlin.command,
+Export-Package: ch.qos.logback.classic;x-friends:="net.sourceforge.pmd.eclipse.plugin.test",
+ name.herlin.command,
  net.sourceforge.pmd;
   uses:="net.sourceforge.pmd.stat,
    net.sourceforge.pmd.lang,
@@ -162,5 +165,5 @@ Export-Package: name.herlin.command,
  net.sourceforge.pmd.renderers,
  net.sourceforge.pmd.stat,
  net.sourceforge.pmd.util;uses:="net.sourceforge.pmd.lang.java.ast",
- net.sourceforge.pmd.util.datasource
-Import-Package: org.slf4j
+ net.sourceforge.pmd.util.datasource,
+ org.slf4j;x-friends:="net.sourceforge.pmd.eclipse.plugin.test"
