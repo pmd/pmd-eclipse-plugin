@@ -17,7 +17,6 @@
 
   <properties>
     <target.platform>kepler</target.platform>
-    <orbit.version>R20140114142710</orbit.version>
 
     <tycho.version>2.3.0</tycho.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -26,8 +25,6 @@
     <pmd.build-tools.version>14</pmd.build-tools.version>
     <checkstyle.version>8.42</checkstyle.version>
     <checkstyle.plugin.version>3.1.2</checkstyle.plugin.version>
-
-    <updatesite.orbit>https://archive.eclipse.org/tools/orbit/downloads/drops/${orbit.version}/repository/</updatesite.orbit>
 
     <keystorePath>.ci/files/pmd-eclipse-plugin.p12</keystorePath>
     <keystore>${basedir}/${keystorePath}</keystore>

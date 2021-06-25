@@ -8,5 +8,4 @@
          PMD Plugin for Eclipse
       </description>
    </category-def>
-   <repository-reference location="${updatesite.orbit}" enabled="true" />
 </site>

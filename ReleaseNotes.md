@@ -15,6 +15,7 @@ This is a minor release.
 
 ### Fixed Issues
 
+*   [#133](https://github.com/pmd/pmd-eclipse-plugin/issues/133): Updates with outdated certificates from orbit
 *   [#134](https://github.com/pmd/pmd-eclipse-plugin/issues/134): Incompatibility between Groovy Eclipse Plugin and PMD Plugin
 
 ### API Changes
