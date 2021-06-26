@@ -7,7 +7,7 @@ Eclipse Update Site:
 *   Releases: <https://pmd.github.io/pmd-eclipse-plugin-p2-site/>
 *   Snapshots: <https://pmd.github.io/pmd-eclipse-plugin-p2-site/snapshot/>
 
-## ????: 4.25.0.v????
+## 26-June-2021: 4.25.0.v20210626-0908
 
 This is a minor release.
 
@@ -19,10 +19,6 @@ This is a minor release.
 
 *   [#133](https://github.com/pmd/pmd-eclipse-plugin/issues/133): Updates with outdated certificates from orbit
 *   [#134](https://github.com/pmd/pmd-eclipse-plugin/issues/134): Incompatibility between Groovy Eclipse Plugin and PMD Plugin
-
-### API Changes
-
-### External Contributions
 
 ## 29-May-2021: 4.24.0.v20210529-0600
 
