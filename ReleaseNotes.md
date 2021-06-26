@@ -13,6 +13,8 @@ This is a minor release.
 
 ### New and noteworthy
 
+*   Updated to PMD 6.36.0
+
 ### Fixed Issues
 
 *   [#133](https://github.com/pmd/pmd-eclipse-plugin/issues/133): Updates with outdated certificates from orbit
