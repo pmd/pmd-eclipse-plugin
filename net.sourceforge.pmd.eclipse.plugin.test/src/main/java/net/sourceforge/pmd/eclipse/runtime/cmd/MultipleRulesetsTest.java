@@ -11,6 +11,7 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.IClasspathEntry;
@@ -104,6 +105,9 @@ public class MultipleRulesetsTest {
      */
     @Test
     public void testReviewCmdBasic() throws CoreException {
+        // build first to avoid automatic build jumping in
+        this.testProject.build(IncrementalProjectBuilder.FULL_BUILD, null);
+
         final ReviewCodeCmd cmd = new ReviewCodeCmd();
         cmd.addResource(this.testProject);
         cmd.performExecute();
