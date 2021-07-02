@@ -87,17 +87,15 @@ public class MultipleRulesetsTest {
 
     @After
     public void tearDown() throws Exception {
-        try {
-            if (this.testProject != null) {
-                if (this.testProject.exists() && this.testProject.isAccessible()) {
-                    EclipseUtils.removePMDNature(this.testProject);
-                    this.testProject.refreshLocal(IResource.DEPTH_INFINITE, null);
-                    this.testProject.delete(true, true, null);
-                    this.testProject = null;
-                }
+        if (this.testProject != null) {
+            if (this.testProject.exists() && this.testProject.isAccessible()) {
+                EclipseUtils.removePMDNature(this.testProject);
+                this.testProject.refreshLocal(IResource.DEPTH_INFINITE, null);
+                this.testProject.delete(true, true, null);
+                this.testProject = null;
+            } else {
+                System.out.println("WARNING: Test Project has not been deleted!");
             }
-        } catch (final Exception e) {
-            System.out.println("Exception " + e.getClass().getName() + " when tearing down. Ignored.");
         }
     }
 

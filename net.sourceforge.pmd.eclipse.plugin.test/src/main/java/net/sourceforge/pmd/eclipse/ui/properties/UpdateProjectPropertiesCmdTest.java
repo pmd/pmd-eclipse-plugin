@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.eclipse.ui.properties;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -32,16 +33,15 @@ public class UpdateProjectPropertiesCmdTest {
 
     @After
     public void tearDown() throws Exception {
-        try {
-            // 1. Delete the test project
-            if (this.testProject != null) {
-                if (this.testProject.exists() && this.testProject.isAccessible()) {
-                    this.testProject.delete(true, true, null);
-                    this.testProject = null;
-                }
+        if (this.testProject != null) {
+            if (this.testProject.exists() && this.testProject.isAccessible()) {
+                EclipseUtils.removePMDNature(this.testProject);
+                this.testProject.refreshLocal(IResource.DEPTH_INFINITE, null);
+                this.testProject.delete(true, true, null);
+                this.testProject = null;
+            } else {
+                System.out.println("WARNING: Test Project has not been deleted!");
             }
-        } catch (final Exception e) {
-            System.out.println("Exception " + e.getClass().getName() + " when tearing down. Ignored.");
         }
     }
 

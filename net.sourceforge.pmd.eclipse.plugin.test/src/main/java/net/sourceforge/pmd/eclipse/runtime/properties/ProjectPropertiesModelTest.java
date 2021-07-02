@@ -26,6 +26,7 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
@@ -89,16 +90,17 @@ public class ProjectPropertiesModelTest {
 
     }
 
-    /**
-     * @see junit.framework.TestCase#tearDown()
-     */
     @After
     public void tearDown() throws Exception {
         // 1. Delete the test project
         if (this.testProject != null) {
             if (this.testProject.exists() && this.testProject.isAccessible()) {
+                EclipseUtils.removePMDNature(this.testProject);
+                this.testProject.refreshLocal(IResource.DEPTH_INFINITE, null);
                 this.testProject.delete(true, true, null);
                 this.testProject = null;
+            } else {
+                System.out.println("WARNING: Test Project has not been deleted!");
             }
         }
 

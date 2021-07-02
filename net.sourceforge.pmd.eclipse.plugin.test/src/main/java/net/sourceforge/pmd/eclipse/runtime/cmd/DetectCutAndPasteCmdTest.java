@@ -9,6 +9,7 @@ import java.io.InputStream;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.junit.After;
 import org.junit.Assert;
@@ -45,19 +46,16 @@ public class DetectCutAndPasteCmdTest {
         is.close();
     }
 
-    /**
-     * @see junit.framework.TestCase#tearDown()
-     */
     @After
     public void tearDown() throws Exception {
         if (this.testProject != null) {
             if (this.testProject.exists() && this.testProject.isAccessible()) {
                 EclipseUtils.removePMDNature(this.testProject);
-                // this.testProject.refreshLocal(IResource.DEPTH_INFINITE,
-                // null);
-                // Thread.sleep(500);
-                // this.testProject.delete(true, true, null);
-                // this.testProject = null;
+                this.testProject.refreshLocal(IResource.DEPTH_INFINITE, null);
+                this.testProject.delete(true, true, null);
+                this.testProject = null;
+            } else {
+                System.out.println("WARNING: Test Project has not been deleted!");
             }
         }
     }
