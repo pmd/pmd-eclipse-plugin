@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 
+import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 
 public class TestActivator extends AbstractUIPlugin {
@@ -21,6 +22,7 @@ public class TestActivator extends AbstractUIPlugin {
         if (l instanceof Logger) {
             Logger logger = (Logger) l;
             logger.setAdditive(true);
+            logger.setLevel(Level.DEBUG);
         } else {
             mainPlugin.getLog().log(new Status(IStatus.WARNING, PMDPlugin.PLUGIN_ID, "Couldn't setup logging for tests."));
         }
