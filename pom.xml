@@ -301,7 +301,6 @@
               <keypass>${env.CI_SIGN_PASSPHRASE}</keypass>
               <storepass>${env.CI_SIGN_PASSPHRASE}</storepass>
               <tsa>http://timestamp.digicert.com</tsa>
-              <verbose>true</verbose>
             </configuration>
             <executions>
               <execution>
