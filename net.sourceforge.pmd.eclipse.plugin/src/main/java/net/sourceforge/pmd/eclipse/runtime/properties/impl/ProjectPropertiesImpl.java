@@ -90,33 +90,38 @@ public class ProjectPropertiesImpl implements IProjectProperties {
         IClasspathEntry source = PMDPlugin.buildSourceClassPathEntryFor(project);
         if (source != null) {
             try {
-                String basePath = new File(project.getWorkspace().getRoot().getLocation().toOSString()
-                        + java.io.File.separator + source.getPath().toOSString()).getCanonicalPath();
+                String basePath = new File(project.getWorkspace().getRoot()
+                        .getFolder(source.getPath()).getLocation().toOSString()).getCanonicalPath();
                 if (!basePath.endsWith(File.separator)) {
                     basePath += File.separator;
                 }
                 if (source.getExclusionPatterns() != null) {
                     for (IPath path : source.getExclusionPatterns()) {
                         String pathString = path.toOSString();
-                        if (!pathString.endsWith(File.separator)) {
-                            pathString += File.separator;
-                        }
-                        buildPathExcludePatterns.add(basePath + pathString + ".*");
+                        buildPathExcludePatterns.add(basePath + convertPatternToRegex(pathString));
                     }
                 }
                 if (source.getInclusionPatterns() != null) {
                     for (IPath path : source.getInclusionPatterns()) {
                         String pathString = path.toOSString();
-                        if (!pathString.endsWith(File.separator)) {
-                            pathString += File.separator;
-                        }
-                        buildPathIncludePatterns.add(basePath + pathString + ".*");
+                        buildPathIncludePatterns.add(basePath + convertPatternToRegex(pathString));
                     }
                 }
             } catch (IOException e) {
                 LOG.error("Couldn't determine build class path", e);
             }
         }
+    }
+
+    /**
+     * Simple conversion from the Ant-like pattern to regex pattern.
+     */
+    private String convertPatternToRegex(String pattern) {
+        String regex = pattern.replaceAll("\\.", "\\\\."); // replace "." with "\\."
+        regex = regex.replaceAll("\\*\\*", ".*"); // replace "**" with ".*"
+        regex = regex.replaceAll("/\\*", "/[^/]*"); // replace "/*" with "/[^/]"
+        regex = regex.replaceAll("\\?", "."); // replace "?" with "."
+        return regex;
     }
 
     /**
