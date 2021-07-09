@@ -4,6 +4,9 @@
 
 package net.sourceforge.pmd.eclipse.ui;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Table;
 
@@ -15,9 +18,10 @@ import net.sourceforge.pmd.eclipse.ui.preferences.AbstractTableLabelProvider;
  */
 public class BasicTableLabelProvider extends AbstractTableLabelProvider {
 
-    private final ItemColumnDescriptor[] columns;
+    private final ItemColumnDescriptor<?, ?>[] columns;
+    private final List<Image> imagesToBeDisposed = new ArrayList<>();
 
-    public BasicTableLabelProvider(ItemColumnDescriptor[] theColumns) {
+    public BasicTableLabelProvider(ItemColumnDescriptor<?, ?>[] theColumns) {
         columns = theColumns;
     }
 
@@ -26,20 +30,32 @@ public class BasicTableLabelProvider extends AbstractTableLabelProvider {
     }
 
     public Image getColumnImage(Object element, int columnIndex) {
-
-        return columns[columnIndex].imageFor(element);
+        ItemColumnDescriptor itemColumnDescriptor = columns[columnIndex];
+        Image image = itemColumnDescriptor.imageFor(element);
+        if (image != null && itemColumnDescriptor.shouldImageBeDisposed()) {
+            imagesToBeDisposed.add(image);
+        }
+        return image;
     }
 
     public String getColumnText(Object element, int columnIndex) {
-
-        Object value = columns[columnIndex].textFor(element);
+        ItemColumnDescriptor itemColumnDescriptor = columns[columnIndex];
+        Object value = itemColumnDescriptor.textFor(element);
         return value == null ? null : value.toString();
     }
 
     public void addColumnsTo(Table table) {
-
-        for (ItemColumnDescriptor desc : columns) {
+        for (ItemColumnDescriptor<?, ?> desc : columns) {
             desc.buildTableColumn(table);
         }
+    }
+
+    @Override
+    public void dispose() {
+        super.dispose();
+        for (Image image : imagesToBeDisposed) {
+            image.dispose();
+        }
+        imagesToBeDisposed.clear();
     }
 }

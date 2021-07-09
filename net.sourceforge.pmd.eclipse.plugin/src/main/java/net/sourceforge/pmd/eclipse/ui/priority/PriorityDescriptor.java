@@ -224,7 +224,9 @@ public class PriorityDescriptor implements Cloneable {
     }
 
     /**
-     * Gets the marker image in a specific size. The image is cached and reused.
+     * Gets the marker image in a specific size. The image is cached and reused while the PMD Plugin is
+     * active. It is disposed automatically, when the PMD Plugin is disposed.
+     *
      * @param size
      * @return
      */
@@ -242,7 +244,8 @@ public class PriorityDescriptor implements Cloneable {
      * the priority descriptor is changed, but not persisted yet. The cached image returned by
      * {@link #getAnnotationImage()} would not reflect that change and a preview is not possible.
      *
-     * <p>The image is not cached.
+     * <p>The image is not cached. The returned image must be disposed manually.
+     *
      * @return
      */
     public Image createImage() {
