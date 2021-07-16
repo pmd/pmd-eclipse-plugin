@@ -5,6 +5,8 @@
 package net.sourceforge.pmd.eclipse.runtime.cmd;
 
 import java.nio.charset.StandardCharsets;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.io.IOUtils;
 import org.eclipse.core.resources.IFolder;
@@ -13,6 +15,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
@@ -101,12 +104,20 @@ public class MultipleRulesetsTest {
     }
 
     /**
-     * Test the basic usage of the processor command
+     * Test the basic usage of the processor command.
      */
     @Test
-    public void testReviewCmdBasic() throws CoreException {
-        // build first to avoid automatic build jumping in
-        this.testProject.build(IncrementalProjectBuilder.FULL_BUILD, null);
+    public void testReviewCmdBasic() throws CoreException, InterruptedException {
+        final CountDownLatch latch = new CountDownLatch(1);
+        // build first to avoid automatic build jumping in and wait until finished
+        this.testProject.build(IncrementalProjectBuilder.FULL_BUILD, new NullProgressMonitor() {
+            @Override
+            public void done() {
+                super.done();
+                latch.countDown();
+            }
+        });
+        latch.await(30, TimeUnit.SECONDS);
 
         final ReviewCodeCmd cmd = new ReviewCodeCmd();
         cmd.addResource(this.testProject);
