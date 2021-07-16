@@ -100,67 +100,7 @@ The release happens in two phases:
 
 #### Script
 
-    # Pick a release BUILDQUALIFIER (e.g. v20170401-0001) and update versions
-    # E.g. version is: "4.0.13" and BUILDQUALIFIER is "v20170401-0001".
-    # The complete version of the plugin will be "4.0.13.v20170401-0001
-    export BUILDQUALIFIER=$(date -u +v%Y%m%d-%H%M) && echo $BUILDQUALIFIER
-    
-    # Pick the version of the new release and the next development version
-    export VERSION=4.0.18
-    export NEXT=4.0.19
-    
-    echo Update the ReleaseNotes with the release date and version:
-    echo 
-    echo "## $(date -u +%d-%B-%Y): $VERSION.$BUILDQUALIFIER"
-    echo
-    echo
-    echo "Press enter to continue..."
-    read
-    ./mvnw -Dtycho.mode=maven org.eclipse.tycho:tycho-versions-plugin:1.7.0:set-version -DnewVersion=$VERSION.$BUILDQUALIFIER
-    git commit -a -m "Prepare release pmd-eclipse-plugin $VERSION.$BUILDQUALIFIER"
-    git tag $VERSION.$BUILDQUALIFIER
-    echo "Create (temporary) release branch"
-    git branch pmd-eclipse-plugin-rb-$VERSION
-    
-    echo
-    echo Update the ReleaseNotes and add a next version entry:
-    echo "## ????: $NEXT.v????"
-    echo
-    echo
-    echo Press enter...
-    read
-    
-    echo "Updating version in master to next"
-    ./mvnw -Dtycho.mode=maven org.eclipse.tycho:tycho-versions-plugin:1.7.0:set-version -DnewVersion=$NEXT-SNAPSHOT
-    git commit -a -m "Prepare next pmd-eclipse-plugin development version $NEXT-SNAPSHOT"
-    
-    echo Checkout the release branch and build the plugin
-    git checkout pmd-eclipse-plugin-rb-$VERSION
-    
-    ./mvnw clean verify
-    
-    echo
-    echo "Please test now!!!"
-    echo
-    echo "Update-site: jar:file:$(pwd)/net.sourceforge.pmd.eclipse.p2updatesite/target/net.sourceforge.pmd.eclipse.p2updatesite-$VERSION.$BUILDQUALIFIER.zip!/"
-    echo
-    read
-    
-    echo
-    echo "Publishing now..."
-    git checkout master
-    git branch -D pmd-eclipse-plugin-rb-$VERSION
-    git push origin master
-    git push origin tag $VERSION.$BUILDQUALIFIER
-    echo
-    echo
-    
-    echo
-    echo Update the marketplace entry with the new version:
-    echo https://marketplace.eclipse.org/content/pmd-eclipse-plugin
-    echo
-    
-    echo Done.
+See `do-release.sh`.
 
 Verify, that the zipped update site has been uploaded to
 [GitHub Releases](https://github.com/pmd/pmd-eclipse-plugin/releases) and [sourceforge](https://pmd.github.io/pmd-eclipse-plugin-p2-site/)

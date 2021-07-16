@@ -50,10 +50,10 @@ CURRENT_BRANCH=$(git symbolic-ref -q HEAD)
 CURRENT_BRANCH=${CURRENT_BRANCH##refs/heads/}
 CURRENT_BRANCH=${CURRENT_BRANCH:-HEAD}
 
-# Pick a release BUILDQUALIFIER (e.g. v20170401-0001) and update versions
-# E.g. version is: "4.0.13" and BUILDQUALIFIER is "v20170401-0001".
-# The complete version of the plugin will be "4.0.13.v20170401-0001
-BUILDQUALIFIER=$(date -u +v%Y%m%d-%H%M)
+# Pick a release BUILDQUALIFIER (e.g. v20170401-0001-r) and update versions
+# E.g. version is: "4.0.13" and BUILDQUALIFIER is "v20170401-0001-r".
+# The complete version of the plugin will be "4.0.13.v20170401-0001-r
+BUILDQUALIFIER="$(date -u +v%Y%m%d-%H%M)-r"
 export BUILDQUALIFIER
 
 echo "RELEASE_VERSION: ${RELEASE_VERSION}.${BUILDQUALIFIER} (this release)"
