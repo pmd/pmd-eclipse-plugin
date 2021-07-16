@@ -51,27 +51,20 @@ public class CPDCheckDialog extends Dialog {
         this.formats = formats;
     }
 
+    @Override
     public boolean close() {
         this.selectedLanguage = languageCombo.getText();
         return super.close();
     }
 
-    /*
-     * @see
-     * org.eclipse.jface.dialogs.Dialog#createDialogArea(org.eclipse.swt.widgets
-     * .Composite)
-     */
+    @Override
     protected Control createDialogArea(Composite parent) {
         final Composite container = (Composite) super.createDialogArea(parent);
         initialize(container);
         return container;
     }
 
-    /*
-     * @see
-     * org.eclipse.jface.window.Window#configureShell(org.eclipse.swt.widgets.
-     * Shell)
-     */
+    @Override
     protected void configureShell(Shell newShell) {
         super.configureShell(newShell);
         newShell.setText(getString(StringKeys.DIALOG_CPD_TITLE));
@@ -91,7 +84,7 @@ public class CPDCheckDialog extends Dialog {
     }
 
     /**
-     * Gets the selected format
+     * Gets the selected format.
      * 
      * @return format as string
      */
@@ -166,6 +159,7 @@ public class CPDCheckDialog extends Dialog {
         minTileSizeSpinner.setTextLimit(3);
 
         minTileSizeSpinner.addModifyListener(new ModifyListener() {
+            @Override
             public void modifyText(ModifyEvent e) {
                 tileSize = Integer.parseInt(minTileSizeSpinner.getText());
             }
@@ -173,7 +167,7 @@ public class CPDCheckDialog extends Dialog {
     }
 
     /**
-     * This method initializes reportGroup
+     * This method initializes reportGroup.
      * 
      * @param container
      *
@@ -213,11 +207,13 @@ public class CPDCheckDialog extends Dialog {
         createReportCheckbox.setSelection(true);
         this.createReport = true;
         createReportCheckbox.addSelectionListener(new SelectionListener() {
+            @Override
             public void widgetDefaultSelected(SelectionEvent e) {
                 formatCombo.setEnabled(createReportCheckbox.getSelection());
                 createReport = createReportCheckbox.getSelection();
             }
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 formatCombo.setEnabled(createReportCheckbox.getSelection());
                 createReport = createReportCheckbox.getSelection();
@@ -266,10 +262,12 @@ public class CPDCheckDialog extends Dialog {
         formatCombo.setToolTipText(getString(StringKeys.DIALOG_TOOLTIP_CPD_FORMAT));
         formatCombo.select(0);
         formatCombo.addSelectionListener(new SelectionListener() {
+            @Override
             public void widgetDefaultSelected(SelectionEvent e) {
                 selectedFormat = formatCombo.getSelectionIndex();
             }
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 selectedFormat = formatCombo.getSelectionIndex();
             }
@@ -277,7 +275,7 @@ public class CPDCheckDialog extends Dialog {
     }
 
     /**
-     * Helper method to shorten message access
+     * Helper method to shorten message access.
      * 
      * @param key
      *            a message key

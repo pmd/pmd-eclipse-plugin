@@ -29,7 +29,6 @@ import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.runtime.PMDRuntimeConstants;
 import net.sourceforge.pmd.eclipse.runtime.builder.MarkerUtil;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
-import net.sourceforge.pmd.eclipse.util.IOUtil;
 
 /**
  * AbstractPMDRecord for Files
@@ -260,7 +259,7 @@ public class FileRecord extends AbstractPMDRecord {
         }
 
         // return an Array of the Markers
-        return attributeMarkers.toArray(new IMarker[attributeMarkers.size()]);
+        return attributeMarkers.toArray(new IMarker[0]);
     }
 
     /**
@@ -333,11 +332,8 @@ public class FileRecord extends AbstractPMDRecord {
      */
     protected String resourceToString(IResource resource) {
         final StringBuilder fileContents = new StringBuilder();
-        BufferedReader bReader = null;
-        try {
-            // we create a FileReader
-            bReader = new BufferedReader(new FileReader(resource.getRawLocation().toFile()));
-
+        // we create a FileReader
+        try (BufferedReader bReader = new BufferedReader(new FileReader(resource.getRawLocation().toFile()))) {
             // ... and read the File line by line
             while (bReader.ready()) {
                 fileContents.append(bReader.readLine()).append('\n');
@@ -347,8 +343,6 @@ public class FileRecord extends AbstractPMDRecord {
                     .logError(StringKeys.ERROR_FILE_NOT_FOUND + resource.toString() + " in " + this.toString(), fnfe);
         } catch (IOException ioe) {
             PMDPlugin.getDefault().logError(StringKeys.ERROR_IO_EXCEPTION + this.toString(), ioe);
-        } finally {
-            IOUtil.closeQuietly(bReader);
         }
 
         return fileContents.toString();
@@ -394,25 +388,16 @@ public class FileRecord extends AbstractPMDRecord {
         return numberOfMethods; // deactivate this method for now
     }
 
-    /**
-     * @see net.sourceforge.pmd.eclipse.ui.model.AbstractPMDRecord#addResource(org.eclipse.core.resources.IResource)
-     */
     @Override
     public AbstractPMDRecord addResource(IResource resource) {
         return null;
     }
 
-    /**
-     * @see net.sourceforge.pmd.eclipse.ui.model.AbstractPMDRecord#removeResource(org.eclipse.core.resources.IResource)
-     */
     @Override
     public AbstractPMDRecord removeResource(IResource resource) {
         return null;
     }
 
-    /**
-     * @see net.sourceforge.pmd.eclipse.ui.model.AbstractPMDRecord#getName()
-     */
     @Override
     public String getName() {
         return resource.getName();
@@ -423,17 +408,11 @@ public class FileRecord extends AbstractPMDRecord {
         return RepositoryUtil.hasRepositoryAccess() ? RepositoryUtil.authorNameFor(resource) : null;
     }
 
-    /**
-     * @see net.sourceforge.pmd.eclipse.ui.model.AbstractPMDRecord#getResourceType()
-     */
     @Override
     public int getResourceType() {
         return TYPE_FILE;
     }
 
-    /**
-     * @see net.sourceforge.pmd.eclipse.ui.model.AbstractPMDRecord#getNumberOfViolationsToPriority(int)
-     */
     @Override
     public int getNumberOfViolationsToPriority(int prio, boolean invertMarkerAndFileRecords) {
         int number = 0;

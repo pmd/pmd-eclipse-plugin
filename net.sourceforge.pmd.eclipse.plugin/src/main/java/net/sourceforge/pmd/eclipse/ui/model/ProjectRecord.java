@@ -73,45 +73,33 @@ public class ProjectRecord extends AbstractPMDRecord {
 
     }
 
-    /**
-     * @see net.sourceforge.pmd.eclipse.ui.model.AbstractPMDRecord#getParent()
-     */
     @Override
     public AbstractPMDRecord getParent() {
         return parent;
     }
 
-    /**
-     * @see net.sourceforge.pmd.eclipse.ui.model.AbstractPMDRecord#getChildren()
-     */
     @Override
     public AbstractPMDRecord[] getChildren() {
         return children; // NOPMD by Herlin on 09/10/06 00:43
     }
 
-    /**
-     * @see net.sourceforge.pmd.eclipse.ui.model.AbstractPMDRecord#getResource()
-     */
     @Override
     public IResource getResource() {
         return project;
     }
 
-    /**
-     * @see net.sourceforge.pmd.eclipse.ui.model.AbstractPMDRecord#createChildren()
-     */
     @Override
     protected final AbstractPMDRecord[] createChildren() {
         final Set<AbstractPMDRecord> packages = new HashSet<AbstractPMDRecord>();
         try {
             // search for Packages
             project.accept(new IResourceVisitor() {
-
+                @Override
                 public boolean visit(IResource resource) throws CoreException {
                     boolean visitChildren;
                     switch (resource.getType()) {
                     case IResource.FOLDER:
-                        visitChildren = (ProjectRecord.this.isJavaProject) ? visitAsPackages(resource)
+                        visitChildren = ProjectRecord.this.isJavaProject ? visitAsPackages(resource)
                                 : visitAsFolders(resource);
                         break;
                     case IResource.PROJECT:
@@ -119,6 +107,7 @@ public class ProjectRecord extends AbstractPMDRecord {
                         break;
                     default:
                         visitChildren = false;
+                        break;
                     }
 
                     return visitChildren;
@@ -162,12 +151,12 @@ public class ProjectRecord extends AbstractPMDRecord {
         }
 
         // return the List as an Array of Packages
-        return packages.toArray(new AbstractPMDRecord[packages.size()]);
+        return packages.toArray(new AbstractPMDRecord[0]);
     }
 
     /**
      * Search for the Packages to a given FragmentRoot (Package-Root) and create
-     * PackageRecords for them
+     * PackageRecords for them.
      *
      * @param root
      * @return
@@ -208,16 +197,13 @@ public class ProjectRecord extends AbstractPMDRecord {
         return folder;
     }
 
-    /**
-     * @see net.sourceforge.pmd.eclipse.ui.model.AbstractPMDRecord#getName()
-     */
     @Override
     public String getName() {
         return project.getName();
     }
 
     /**
-     * Checks, if the underlying Project is open
+     * Checks, if the underlying Project is open.
      *
      * @return true, if the Project is open, false otherwise
      */
@@ -225,17 +211,11 @@ public class ProjectRecord extends AbstractPMDRecord {
         return project.isOpen();
     }
 
-    /**
-     * @see net.sourceforge.pmd.eclipse.ui.model.AbstractPMDRecord#getResourceType()
-     */
     @Override
     public int getResourceType() {
         return TYPE_PROJECT;
     }
 
-    /**
-     * @see net.sourceforge.pmd.eclipse.ui.model.AbstractPMDRecord#addResource(org.eclipse.core.resources.IResource)
-     */
     @Override
     public AbstractPMDRecord addResource(IResource resource) {
         AbstractPMDRecord added = null;
@@ -252,9 +232,6 @@ public class ProjectRecord extends AbstractPMDRecord {
         return added;
     }
 
-    /**
-     * @see net.sourceforge.pmd.eclipse.ui.model.AbstractPMDRecord#removeResource(org.eclipse.core.resources.IResource)
-     */
     @Override
     public AbstractPMDRecord removeResource(IResource resource) {
         AbstractPMDRecord removed = null;
@@ -406,9 +383,6 @@ public class ProjectRecord extends AbstractPMDRecord {
         return addedResource;
     }
 
-    /**
-     * @see net.sourceforge.pmd.eclipse.ui.model.AbstractPMDRecord#getNumberOfViolationsToPriority(int)
-     */
     @Override
     public int getNumberOfViolationsToPriority(int prio, boolean invertMarkerAndFileRecords) {
         int number = 0;
@@ -419,11 +393,6 @@ public class ProjectRecord extends AbstractPMDRecord {
         return number;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see net.sourceforge.pmd.eclipse.ui.model.AbstractPMDRecord#getLOC()
-     */
     @Override
     public int getLOC() {
         int number = 0;
@@ -434,13 +403,6 @@ public class ProjectRecord extends AbstractPMDRecord {
         return number;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * net.sourceforge.pmd.eclipse.ui.model.AbstractPMDRecord#getNumberOfMethods
-     * ()
-     */
     @Override
     public int getNumberOfMethods() {
         int number = 0;
@@ -450,5 +412,4 @@ public class ProjectRecord extends AbstractPMDRecord {
 
         return number;
     }
-
 }

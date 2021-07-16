@@ -14,13 +14,15 @@ import java.util.Set;
 import java.util.regex.Pattern;
 
 import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;
+import net.sourceforge.pmd.RuleSetLoader;
 import net.sourceforge.pmd.RuleSetNotFoundException;
 import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.RulesetsFactoryUtils;
 
-public class InternalRuleSetUtil {
+public final class InternalRuleSetUtil {
     private InternalRuleSetUtil() {}
 
     public static RuleSet setFileExclusions(RuleSet ruleSet, Collection<Pattern> excludePatterns) {
@@ -128,5 +130,12 @@ public class InternalRuleSetUtil {
                 return toRuleSets(rulesets);
             }
         };
+    }
+
+    public static RuleSetLoader getDefaultRuleSetLoader() {
+        return new RuleSetLoader()
+                .enableCompatibility(true)
+                .warnDeprecated(false)
+                .filterAbovePriority(RulePriority.LOW);
     }
 }

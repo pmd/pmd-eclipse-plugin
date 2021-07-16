@@ -12,102 +12,75 @@ import org.eclipse.core.resources.IResource;
  * @author Sven
  *
  */
-
 public class FileToMarkerRecord extends AbstractPMDRecord {
     private final MarkerRecord parent;
-    
+
     public FileToMarkerRecord(MarkerRecord parent) {
         super();
         this.parent = parent;
     }
 
-    /* (non-Javadoc)
-     * @see net.sourceforge.pmd.eclipse.ui.model.AbstractPMDRecord#addResource(org.eclipse.core.resources.IResource)
-     */
+    @Override
     public AbstractPMDRecord addResource(IResource resource) {
         return null;
     }
 
-    /* (non-Javadoc)
-     * @see net.sourceforge.pmd.eclipse.ui.model.AbstractPMDRecord#createChildren()
-     */
+    @Override
     protected AbstractPMDRecord[] createChildren() {
         return EMPTY_RECORDS;
     }
 
-    /* (non-Javadoc)
-     * @see net.sourceforge.pmd.eclipse.ui.model.AbstractPMDRecord#getChildren()
-     */
+    @Override
     public AbstractPMDRecord[] getChildren() {
         return EMPTY_RECORDS;
     }
 
-    /* (non-Javadoc)
-     * @see net.sourceforge.pmd.eclipse.ui.model.AbstractPMDRecord#getName()
-     */
+    @Override
     public String getName() {
         return "";
     }
 
-    /* (non-Javadoc)
-     * @see net.sourceforge.pmd.eclipse.ui.model.AbstractPMDRecord#getNumberOfViolationsToPriority(int, boolean)
-     */
+    @Override
     public int getNumberOfViolationsToPriority(int prio, boolean invertMarkerAndFileRecords) {
         return parent.getNumberOfViolationsToPriority(prio, false);
     }
 
-    /* (non-Javadoc)
-     * @see net.sourceforge.pmd.eclipse.ui.model.AbstractPMDRecord#getParent()
-     */
+    @Override
     public AbstractPMDRecord getParent() {
         return parent;
     }
 
-    /* (non-Javadoc)
-     * @see net.sourceforge.pmd.eclipse.ui.model.AbstractPMDRecord#getResource()
-     */
+    @Override
     public IResource getResource() {
         return parent.getResource();
     }
 
-    /* (non-Javadoc)
-     * @see net.sourceforge.pmd.eclipse.ui.model.AbstractPMDRecord#getResourceType()
-     */
+    @Override
     public int getResourceType() {
         return 0;
     }
 
-    /* (non-Javadoc)
-     * @see net.sourceforge.pmd.eclipse.ui.model.AbstractPMDRecord#removeResource(org.eclipse.core.resources.IResource)
-     */
+    @Override
     public AbstractPMDRecord removeResource(IResource resource) {
         return null;
     }
 
-    /* (non-Javadoc)
-     * @see net.sourceforge.pmd.eclipse.ui.model.AbstractPMDRecord#hasMarkers()
-     */
+    @Override
     public boolean hasMarkers() {
         return parent.hasMarkers();
     }
 
-    /* (non-Javadoc)
-     * @see net.sourceforge.pmd.eclipse.ui.model.AbstractPMDRecord#findMarkers()
-     */
+    @Override
     public IMarker[] findMarkers() {
         return parent.findMarkers();
     }
 
-    /* (non-Javadoc)
-     * @see net.sourceforge.pmd.eclipse.ui.model.AbstractPMDRecord#getLOC()
-     */
+    @Override
     public int getLOC() {
         return parent.getLOC();
     }
 
-    /* (non-Javadoc)
-     * @see net.sourceforge.pmd.eclipse.ui.model.AbstractPMDRecord#getNumberOfMethods()
-     */
+    @Override
     public int getNumberOfMethods() {
         return parent.getNumberOfMethods();
     }

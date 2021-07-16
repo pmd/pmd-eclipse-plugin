@@ -19,7 +19,7 @@ import net.sourceforge.pmd.eclipse.runtime.preferences.IPreferencesManager;
 import net.sourceforge.pmd.eclipse.ui.priority.PriorityDescriptor;
 
 /**
- * Implements the preferences information structure
+ * Implements the preferences information structure.
  * 
  * @author Herlin
  *
@@ -69,6 +69,7 @@ class PreferencesImpl implements IPreferences {
         this.preferencesManager = preferencesManager;
     }
 
+    @Override
     public boolean boolFor(String prefId) {
         Boolean value = booleansById.get(prefId);
         if (value == null) {
@@ -77,70 +78,52 @@ class PreferencesImpl implements IPreferences {
         return value;
     }
 
+    @Override
     public void boolFor(String prefId, boolean newValue) {
         booleansById.put(prefId, newValue);
     }
 
-    /**
-     * @see net.sourceforge.pmd.eclipse.runtime.preferences.IPreferences#isProjectBuildPathEnabled()
-     */
+    @Override
     public boolean isProjectBuildPathEnabled() {
         return projectBuildPathEnabled;
     }
 
-    /**
-     * @see net.sourceforge.pmd.eclipse.runtime.preferences.IPreferences#setProjectBuildPathEnabled(boolean)
-     */
-    public void setProjectBuildPathEnabled(boolean projectBuildPathEnabled) {
-        this.projectBuildPathEnabled = projectBuildPathEnabled;
+    @Override
+    public void setProjectBuildPathEnabled(boolean theProjectBuildPathEnabled) {
+        this.projectBuildPathEnabled = theProjectBuildPathEnabled;
     }
 
-    /**
-     * @see net.sourceforge.pmd.eclipse.runtime.preferences.IPreferences#isPmdPerspectiveEnabled()
-     */
+    @Override
     public boolean isPmdPerspectiveEnabled() {
         return pmdPerspectiveEnabled;
     }
 
-    /**
-     * @see net.sourceforge.pmd.eclipse.runtime.preferences.IPreferences#isCheckCodeAfterSaveEnabled()
-     */
+    @Override
     public boolean isCheckAfterSaveEnabled() {
         return checkAfterSaveEnabled;
     }
 
-    /**
-     * @see net.sourceforge.pmd.eclipse.runtime.preferences.IPreferences#isCheckCodeAfterSaveEnabled()
-     */
+    @Override
     public void isCheckAfterSaveEnabled(boolean flag) {
         checkAfterSaveEnabled = flag;
     }
 
-    /**
-     * @see net.sourceforge.pmd.eclipse.runtime.preferences.IPreferences#setPmdPerspectiveEnabled(boolean)
-     */
-    public void setPmdPerspectiveEnabled(boolean pmdPerspectiveEnabled) {
-        this.pmdPerspectiveEnabled = pmdPerspectiveEnabled;
+    @Override
+    public void setPmdPerspectiveEnabled(boolean thePmdPerspectiveEnabled) {
+        this.pmdPerspectiveEnabled = thePmdPerspectiveEnabled;
     }
-    
-    /**
-     * @see net.sourceforge.pmd.eclipse.runtime.preferences.IPreferences#setPmdViolationsOverviewEnabled(boolean)
-     */
-    public void setPmdViolationsOverviewEnabled(boolean pmdViolationsOverviewEnabled) {
-        this.pmdViolationsOverviewEnabled = pmdViolationsOverviewEnabled;
-    }
-    
 
-    /**
-     * @see net.sourceforge.pmd.eclipse.runtime.preferences.IPreferences#getMaxViolationsPerFilePerRule()
-     */
+    @Override
+    public void setPmdViolationsOverviewEnabled(boolean thePmdViolationsOverviewEnabled) {
+        this.pmdViolationsOverviewEnabled = thePmdViolationsOverviewEnabled;
+    }
+
+    @Override
     public int getMaxViolationsPerFilePerRule() {
         return maxViolationsPerFilePerRule;
     }
 
-    /**
-     * @see net.sourceforge.pmd.eclipse.runtime.preferences.IPreferences#setMaxViolationsPerFilePerRule(int)
-     */
+    @Override
     public void setMaxViolationsPerFilePerRule(int maxViolationPerFilePerRule) {
         this.maxViolationsPerFilePerRule = maxViolationPerFilePerRule;
     }
@@ -151,55 +134,41 @@ class PreferencesImpl implements IPreferences {
     }
 
     @Override
-    public void setDetermineFiletypesAutomatically(boolean determineFiletypesAutomatically) {
-        this.determineFiletypesAutomatically = determineFiletypesAutomatically;
+    public void setDetermineFiletypesAutomatically(boolean newDetermineFiletypesAutomatically) {
+        this.determineFiletypesAutomatically = newDetermineFiletypesAutomatically;
     }
 
-    /**
-     * @see net.sourceforge.pmd.eclipse.runtime.preferences.IPreferences#getReviewAdditionalComment()
-     */
+    @Override
     public String getReviewAdditionalComment() {
         return reviewAdditionalComment;
     }
 
-    /**
-     * @see net.sourceforge.pmd.eclipse.runtime.preferences.IPreferences#setReviewAdditionalComment(java.lang.String)
-     */
-    public void setReviewAdditionalComment(String reviewAdditionalComment) {
-        this.reviewAdditionalComment = reviewAdditionalComment;
+    @Override
+    public void setReviewAdditionalComment(String newReviewAdditionalComment) {
+        this.reviewAdditionalComment = newReviewAdditionalComment;
     }
 
-    /**
-     * @see net.sourceforge.pmd.eclipse.runtime.preferences.IPreferences#isReviewPmdStyleEnabled()
-     */
+    @Override
     public boolean isReviewPmdStyleEnabled() {
         return reviewPmdStyleEnabled;
     }
 
-    /**
-     * @see net.sourceforge.pmd.eclipse.runtime.preferences.IPreferences#setReviewPmdStyleEnabled(boolean)
-     */
-    public void setReviewPmdStyleEnabled(boolean reviewPmdStyleEnabled) {
-        this.reviewPmdStyleEnabled = reviewPmdStyleEnabled;
+    @Override
+    public void setReviewPmdStyleEnabled(boolean newReviewPmdStyleEnabled) {
+        this.reviewPmdStyleEnabled = newReviewPmdStyleEnabled;
     }
 
-    /**
-     * @see net.sourceforge.pmd.eclipse.runtime.preferences.IPreferences#getMinTileSize()
-     */
+    @Override
     public int getMinTileSize() {
         return minTileSize;
     }
 
-    /**
-     * @see net.sourceforge.pmd.eclipse.runtime.preferences.IPreferences#setMinTileSize(int)
-     */
-    public void setMinTileSize(int minTileSize) {
-        this.minTileSize = minTileSize;
+    @Override
+    public void setMinTileSize(int newMinTileSize) {
+        this.minTileSize = newMinTileSize;
     }
 
-    /**
-     * @see net.sourceforge.pmd.eclipse.runtime.preferences.IPreferences#getLogFileName()
-     */
+    @Override
     public String getLogFileName() {
         return logFileName;
     }
@@ -209,11 +178,9 @@ class PreferencesImpl implements IPreferences {
         return logLevel;
     }
 
-    /**
-     * @see net.sourceforge.pmd.eclipse.runtime.preferences.IPreferences#setLogFileName(java.lang.String)
-     */
-    public void setLogFileName(String logFileName) {
-        this.logFileName = logFileName;
+    @Override
+    public void setLogFileName(String theLogFileName) {
+        this.logFileName = theLogFileName;
     }
 
     @Override
@@ -221,29 +188,32 @@ class PreferencesImpl implements IPreferences {
         logLevel = level;
     }
 
-    /**
-     * @see net.sourceforge.pmd.eclipse.runtime.preferences.IPreferences#sync()
-     */
+    @Override
     public void sync() {
         preferencesManager.storePreferences(this);
     }
 
+    @Override
     public boolean getGlobalRuleManagement() {
         return globalRuleManagement;
     }
 
+    @Override
     public void setGlobalRuleManagement(boolean b) {
         globalRuleManagement = b;
     }
 
+    @Override
     public boolean isActive(String ruleName) {
         return activeRuleNames.contains(ruleName);
     }
 
+    @Override
     public boolean isActiveRenderer(String rendererName) {
         return activeRendererNames.contains(rendererName);
     }
 
+    @Override
     public void isActive(String ruleName, boolean isActive) {
         if (isActive) {
             activeRuleNames.add(ruleName);
@@ -252,6 +222,7 @@ class PreferencesImpl implements IPreferences {
         }
     }
 
+    @Override
     public Set<String> getActiveRuleNames() {
         return activeRuleNames;
     }
@@ -260,6 +231,7 @@ class PreferencesImpl implements IPreferences {
      * Returns a comma-separated list of rules that are active by default. This
      * contains all default rules of PMD.
      */
+    @Override
     public String getDefaultActiveRules() {
         StringBuilder rules = new StringBuilder();
         IRuleSetManager ruleSetManager = PMDPlugin.getDefault().getRuleSetManager();
@@ -274,42 +246,52 @@ class PreferencesImpl implements IPreferences {
         return rules.toString();
     }
 
+    @Override
     public void setActiveRuleNames(Set<String> ruleNames) {
         activeRuleNames = ruleNames;
     }
 
+    @Override
     public Set<String> activeExclusionPatterns() {
         return activeExclusionPatterns;
     }
 
+    @Override
     public void activeExclusionPatterns(Set<String> patterns) {
         activeExclusionPatterns = patterns;
     }
 
+    @Override
     public Set<String> activeInclusionPatterns() {
         return activeInclusionPatterns;
     }
 
+    @Override
     public void activeInclusionPatterns(Set<String> patterns) {
         activeInclusionPatterns = patterns;
     }
 
+    @Override
     public void setPriorityDescriptor(RulePriority priority, PriorityDescriptor pd) {
         uiDescriptorsByPriority.put(priority, pd);
     }
 
+    @Override
     public PriorityDescriptor getPriorityDescriptor(RulePriority priority) {
         return uiDescriptorsByPriority.get(priority);
     }
 
+    @Override
     public boolean useCustomPriorityNames() {
         return useCustomPriorityNames;
     }
 
+    @Override
     public void useCustomPriorityNames(boolean flag) {
         useCustomPriorityNames = flag;
     }
 
+    @Override
     public Set<String> activeReportRenderers() {
         return activeRendererNames;
     }

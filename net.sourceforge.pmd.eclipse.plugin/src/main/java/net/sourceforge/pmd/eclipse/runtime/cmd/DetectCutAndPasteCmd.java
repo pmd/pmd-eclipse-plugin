@@ -38,7 +38,7 @@ import net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties;
 import net.sourceforge.pmd.eclipse.runtime.properties.PropertiesException;
 
 /**
- * This command produces a report of the Cut And Paste detector
+ * This command produces a report of the Cut And Paste detector.
  *
  * @author Philippe Herlin, Sven Jacob
  *
@@ -69,6 +69,7 @@ public class DetectCutAndPasteCmd extends AbstractProjectCommand {
     private void notifyListeners(final CPD cpd) {
         // trigger event propertyChanged for all listeners
         Display.getDefault().asyncExec(new Runnable() {
+            @Override
             public void run() {
                 for (IPropertyListener listener : listeners) {
                     listener.propertyChanged(cpd.getMatches(), PMDRuntimeConstants.PROPERTY_CPD);
@@ -144,6 +145,7 @@ public class DetectCutAndPasteCmd extends AbstractProjectCommand {
     /**
      * @deprecated Use {@link #setCPDRenderer(CPDRenderer)} instead.
      */
+    @Deprecated
     public void setRenderer(final Renderer renderer) {
         if (renderer != null) {
             this.setCPDRenderer(new CPDRenderer() {

@@ -22,16 +22,12 @@ public class RuleSetManagerImpl implements IRuleSetManager {
     private final List<RuleSet> ruleSets = new ArrayList<RuleSet>();
     private final List<RuleSet> defaultRuleSets = new ArrayList<RuleSet>();
 
-    /**
-     * @see net.sourceforge.pmd.eclipse.core.IRuleSetManager#getRegisteredRuleSets()
-     */
+    @Override
     public Collection<RuleSet> getRegisteredRuleSets() {
         return ruleSets;
     }
 
-    /**
-     * @see net.sourceforge.pmd.eclipse.core.IRuleSetManager#registerRuleSet(net.sourceforge.pmd.RuleSet)
-     */
+    @Override
     public void registerRuleSet(RuleSet ruleSet) {
         checkForNull(ruleSet);
         if (!ruleSets.contains(ruleSet)) {
@@ -39,25 +35,19 @@ public class RuleSetManagerImpl implements IRuleSetManager {
         }
     }
 
-    /**
-     * @see net.sourceforge.pmd.eclipse.core.IRuleSetManager#unregisterRuleSet(net.sourceforge.pmd.RuleSet)
-     */
+    @Override
     public void unregisterRuleSet(RuleSet ruleSet) {
         checkForNull(ruleSet);
 
         ruleSets.remove(ruleSet);
     }
 
-    /**
-     * @see net.sourceforge.pmd.eclipse.core.IRuleSetManager#getDefaultRuleSets()
-     */
+    @Override
     public Collection<RuleSet> getDefaultRuleSets() {
         return defaultRuleSets;
     }
 
-    /**
-     * @see net.sourceforge.pmd.eclipse.core.IRuleSetManager#registerDefaultRuleSet(net.sourceforge.pmd.RuleSet)
-     */
+    @Override
     public void registerDefaultRuleSet(RuleSet ruleSet) {
         checkForNull(ruleSet);
 
@@ -66,15 +56,13 @@ public class RuleSetManagerImpl implements IRuleSetManager {
         }
     }
 
-    /**
-     * @see net.sourceforge.pmd.eclipse.core.IRuleSetManager#unregisterDefaultRuleSet(net.sourceforge.pmd.RuleSet)
-     */
+    @Override
     public void unregisterDefaultRuleSet(RuleSet ruleSet) {
         checkForNull(ruleSet);
 
         defaultRuleSets.remove(ruleSet);
     }
-    
+
     private void checkForNull(RuleSet ruleSet) {
         if (ruleSet == null) {
             throw new IllegalArgumentException("ruleSet cannot be null"); // TODO NLS

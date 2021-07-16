@@ -22,6 +22,7 @@ public class ShapeDescriptor implements Cloneable {
         size = theSize;
     }
 
+    @Override
     public boolean equals(Object other) {
         if (other == null) {
             return false;
@@ -38,17 +39,26 @@ public class ShapeDescriptor implements Cloneable {
         return shape.equals(otherOne.shape) && rgbColor.equals(otherOne.rgbColor) && size == otherOne.size;
     }
 
+    @Override
     public int hashCode() {
         return rgbColor.hashCode() ^ shape.hashCode() ^ size;
     }
 
+    @Override
     public ShapeDescriptor clone() {
-        ShapeDescriptor copy = new ShapeDescriptor(shape, new RGB(rgbColor.red, rgbColor.green, rgbColor.blue), size);
-        return copy;
+        try {
+            ShapeDescriptor copy = (ShapeDescriptor) super.clone();
+            copy.shape = shape;
+            copy.rgbColor = new RGB(rgbColor.red, rgbColor.green, rgbColor.blue);
+            copy.size = size;
+            return copy;
+        } catch (CloneNotSupportedException e) {
+            throw new RuntimeException(e);
+        }
     }
 
+    @Override
     public String toString() {
-
         return shape.name() + ", " + rgbColor + ", " + size;
     }
 }

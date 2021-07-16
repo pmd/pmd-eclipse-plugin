@@ -22,9 +22,7 @@ public class PMDNature implements IProjectNature {
     public static final String PMD_NATURE = "net.sourceforge.pmd.eclipse.plugin.pmdNature";
     private IProject project;
 
-    /**
-     * @see org.eclipse.core.resources.IProjectNature#configure()
-     */
+    @Override
     public void configure() throws CoreException {
         IProjectDescription description = project.getDescription();
         ICommand[] commands = description.getBuildSpec();
@@ -39,9 +37,7 @@ public class PMDNature implements IProjectNature {
         }
     }
 
-    /**
-     * @see org.eclipse.core.resources.IProjectNature#deconfigure()
-     */
+    @Override
     public void deconfigure() throws CoreException {
         IProjectDescription description = project.getDescription();
         ICommand[] commands = description.getBuildSpec();
@@ -57,22 +53,18 @@ public class PMDNature implements IProjectNature {
         }
     }
 
-    /**
-     * @see org.eclipse.core.resources.IProjectNature#getProject()
-     */
+    @Override
     public IProject getProject() {
         return project;
     }
 
-    /**
-     * @see org.eclipse.core.resources.IProjectNature#setProject(IProject)
-     */
-    public void setProject(IProject project) {
-        this.project = project;
+    @Override
+    public void setProject(IProject theProject) {
+        this.project = theProject;
     }
 
     /**
-     * Add the PMD Nature to a project
+     * Add the PMD Nature to a project.
      * 
      * @param project
      *            a project to set the PMD Nature
@@ -101,7 +93,7 @@ public class PMDNature implements IProjectNature {
     }
 
     /**
-     * Remove the PMD Nature from a project
+     * Remove the PMD Nature from a project.
      * 
      * @param project
      *            a project to remove the PMD Nature
@@ -133,7 +125,7 @@ public class PMDNature implements IProjectNature {
     }
 
     /**
-     * Check if PMD builder is already in command list
+     * Check if PMD builder is already in command list.
      * 
      * @param commands
      *            a command list

@@ -23,7 +23,7 @@ public class SyntaxData {
     public String stringEnd;
 
     /**
-     * Constructs a SyntaxData
+     * Constructs a SyntaxData.
      * 
      * @param extension
      *            the extension

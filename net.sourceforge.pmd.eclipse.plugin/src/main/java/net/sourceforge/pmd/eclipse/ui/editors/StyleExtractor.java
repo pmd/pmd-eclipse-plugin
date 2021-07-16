@@ -186,7 +186,7 @@ public class StyleExtractor {
                 sr.start += currentOffset;
             }
             styles.addAll(lineStyles);
-            currentOffset += (lineLength + separatorLength);
+            currentOffset += lineLength + separatorLength;
         }
 
         return styles;

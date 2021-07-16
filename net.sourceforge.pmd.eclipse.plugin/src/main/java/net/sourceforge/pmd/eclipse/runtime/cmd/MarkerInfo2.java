@@ -39,6 +39,7 @@ public class MarkerInfo2 {
         marker.setAttributes(data.keySet().toArray(new String[data.size()]), data.values().toArray());
     }
 
+    @Override
     public String toString() {
         return "MarkerInfo2: rule=" + data.get("rulename") + ", message=" + data.get(IMarker.MESSAGE) + ", line="
                 + data.get(IMarker.LINE_NUMBER);

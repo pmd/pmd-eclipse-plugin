@@ -17,6 +17,13 @@ This is a minor release.
 
 ### API Changes
 
+#### Deprecated for removal
+
+*   `net.sourceforge.pmd.eclipse.plugin.EclipseUtil`
+*   `net.sourceforge.pmd.eclipse.plugin.PMDPlugin.getPluginFolder()`
+*   `net.sourceforge.pmd.eclipse.runtime.cmd.BaseVisitor.isUseTaskMarker()`
+*   `net.sourceforge.pmd.eclipse.runtime.cmd.BaseVisitor.setUseTaskMarker(boolean)`
+
 ### External Contributions
 
 ## 26-June-2021: 4.25.0.v20210626-0908

@@ -47,10 +47,12 @@ public class FileChangeReviewer implements IResourceChangeListener {
             flags = theFlags;
         }
 
+        @Override
         public int hashCode() {
             return resourceDeltaType.hashCode() + 13 + file.hashCode() + flags;
         }
 
+        @Override
         public boolean equals(Object other) {
             if (other == null) {
                 return false;
@@ -66,6 +68,7 @@ public class FileChangeReviewer implements IResourceChangeListener {
         }
     }
 
+    @Override
     public void resourceChanged(IResourceChangeEvent event) {
         IWorkspaceDescription workspaceSettings = ResourcesPlugin.getWorkspace().getDescription();
         if (workspaceSettings.isAutoBuilding()) {
@@ -81,18 +84,8 @@ public class FileChangeReviewer implements IResourceChangeListener {
 
         Set<ResourceChange> itemsChanged = new HashSet<ResourceChange>();
 
-        switch (event.getType()) {
-        // case IResourceChangeEvent.PRE_DELETE:
-        // case IResourceChangeEvent.PRE_CLOSE:
-        // case IResourceChangeEvent.PRE_BUILD:
-        // case IResourceChangeEvent.POST_BUILD:
-        // case IResourceChangeEvent.PRE_REFRESH:
-
-        case IResourceChangeEvent.POST_CHANGE:
+        if (event.getType() == IResourceChangeEvent.POST_CHANGE) {
             changed(itemsChanged, event.getDelta(), new NullProgressMonitor());
-            break;
-        default:
-            //TODO
         }
 
         if (itemsChanged.isEmpty()) {
@@ -140,7 +133,7 @@ public class FileChangeReviewer implements IResourceChangeListener {
             // removed(itemsChanged, (IProject)rsc, delta.getFlags());
             // }
             if (rsc instanceof IFile) {
-                added(itemsChanged, (IFile) rsc, flags, true);
+                added(itemsChanged, (IFile) rsc, flags);
             }
             for (IResourceDelta grandkidDelta : delta.getAffectedChildren()) {
                 if (monitor.isCanceled()) {
@@ -154,7 +147,7 @@ public class FileChangeReviewer implements IResourceChangeListener {
             // changed(itemsChanged, (IProject)rsc, delta.getFlags());
             // }
             if (rsc instanceof IFile) {
-                changed(itemsChanged, (IFile) rsc, flags, true);
+                changed(itemsChanged, (IFile) rsc, flags);
             }
             for (IResourceDelta grandkidDelta : delta.getAffectedChildren()) {
                 if (monitor.isCanceled()) {
@@ -173,14 +166,14 @@ public class FileChangeReviewer implements IResourceChangeListener {
         }
     }
 
-    private void changed(Set<ResourceChange> itemsChanged, IFile rsc, int flags, boolean b) {
+    private void changed(Set<ResourceChange> itemsChanged, IFile rsc, int flags) {
 
         if ((flags & IResourceDelta.CONTENT) > 0) {
             itemsChanged.add(new ResourceChange(ChangeType.CHANGED, rsc, flags));
         }
     }
 
-    private void added(Set<ResourceChange> itemsChanged, IFile rsc, int flags, boolean b) {
+    private void added(Set<ResourceChange> itemsChanged, IFile rsc, int flags) {
         itemsChanged.add(new ResourceChange(ChangeType.ADDED, rsc, flags));
         // System.out.println("added: " + rsc);
     }

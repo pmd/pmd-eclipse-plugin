@@ -22,18 +22,12 @@ import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
 public class ShowDataflowAction implements IObjectActionDelegate {
     private IWorkbenchPage workbenchPage;
 
-    /*
-     * @see
-     * org.eclipse.ui.IObjectActionDelegate#setActivePart(org.eclipse.jface.
-     * action.IAction, org.eclipse.ui.IWorkbenchPart)
-     */
+    @Override
     public void setActivePart(IAction action, IWorkbenchPart targetPart) {
         this.workbenchPage = targetPart.getSite().getPage();
     }
 
-    /*
-     * @see org.eclipse.ui.IActionDelegate#run(org.eclipse.jface.action.IAction)
-     */
+    @Override
     public void run(IAction action) {
         if (this.workbenchPage != null) {
             try {
@@ -45,11 +39,7 @@ public class ShowDataflowAction implements IObjectActionDelegate {
         }
     }
 
-    /*
-     * @see
-     * org.eclipse.ui.IActionDelegate#selectionChanged(org.eclipse.jface.action.
-     * IAction, org.eclipse.jface.viewers.ISelection)
-     */
+    @Override
     public void selectionChanged(IAction action, ISelection selection) {
         action.setEnabled(true);
     }

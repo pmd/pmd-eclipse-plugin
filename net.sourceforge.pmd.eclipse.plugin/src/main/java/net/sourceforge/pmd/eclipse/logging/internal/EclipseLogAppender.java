@@ -16,9 +16,9 @@ public class EclipseLogAppender extends AppenderBase<ILoggingEvent> {
     private final ILog eclipseLog;
     private final String pluginId;
 
-    public EclipseLogAppender(String pluginId, ILog eclipseLog) {
-        this.pluginId = pluginId;
-        this.eclipseLog = eclipseLog;
+    public EclipseLogAppender(String thePluginId, ILog theEclipseLog) {
+        this.pluginId = thePluginId;
+        this.eclipseLog = theEclipseLog;
     }
 
     @Override

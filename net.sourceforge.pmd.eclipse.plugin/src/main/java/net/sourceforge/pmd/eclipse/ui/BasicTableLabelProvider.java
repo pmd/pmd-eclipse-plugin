@@ -21,23 +21,23 @@ public class BasicTableLabelProvider extends AbstractTableLabelProvider {
         columns = theColumns;
     }
 
+    @Override
     public boolean isLabelProperty(Object element, String property) {
         return false;
     }
 
+    @Override
     public Image getColumnImage(Object element, int columnIndex) {
-
         return columns[columnIndex].imageFor(element);
     }
 
+    @Override
     public String getColumnText(Object element, int columnIndex) {
-
         Object value = columns[columnIndex].textFor(element);
         return value == null ? null : value.toString();
     }
 
     public void addColumnsTo(Table table) {
-
         for (ItemColumnDescriptor desc : columns) {
             desc.buildTableColumn(table);
         }

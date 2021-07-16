@@ -16,18 +16,22 @@ public class ItemFieldAccessorAdapter<T extends Object, V extends Object> implem
         comparator = aComparator;
     }
 
+    @Override
     public Comparator<T> comparator() {
         return comparator;
     }
 
+    @Override
     public T valueFor(V item) {
         return null;
     }
 
+    @Override
     public Image imageFor(V item) {
         return null;
     }
 
+    @Override
     public String labelFor(V item) {
         return null;
     }

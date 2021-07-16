@@ -65,6 +65,7 @@ public class UISettings {
         RulePriority[] priorities = RulePriority.values();
 
         Arrays.sort(priorities, new Comparator<RulePriority>() {
+            @Override
             public int compare(RulePriority rpA, RulePriority rbB) {
                 return rpA.getPriority() - rbB.getPriority();
             }

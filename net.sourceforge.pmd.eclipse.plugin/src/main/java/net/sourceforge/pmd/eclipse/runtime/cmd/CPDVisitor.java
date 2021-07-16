@@ -79,6 +79,7 @@ public class CPDVisitor implements IResourceVisitor {
      * @see org.eclipse.core.resources.IResourceVisitor#visit(IResource) Add
      *      java files into the CPD object
      */
+    @Override
     public boolean visit(IResource resource) throws CoreException {
         LOG.debug("CPD Visiting " + resource.getName());
 
@@ -102,7 +103,7 @@ public class CPDVisitor implements IResourceVisitor {
     }
 
     /**
-     * Test if a file is in the PMD working set
+     * Test if a file is in the PMD working set.
      *
      * @param file
      * @return true if the file should be checked

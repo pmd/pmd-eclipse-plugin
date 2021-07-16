@@ -25,16 +25,14 @@ public abstract class AbstractUIAction implements IObjectActionDelegate {
     private IWorkbenchPart targetPart;
 
     protected AbstractUIAction() {
+        // only allow subclassing
     }
 
     protected IWorkbenchPart targetPart() {
         return targetPart;
     }
 
-    /**
-     * @see org.eclipse.ui.IObjectActionDelegate#setActivePart(org.eclipse.jface.action.IAction,
-     *      org.eclipse.ui.IWorkbenchPart)
-     */
+    @Override
     public void setActivePart(IAction action, IWorkbenchPart theTargetPart) {
         targetPart = theTargetPart;
     }

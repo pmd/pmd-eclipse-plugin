@@ -7,6 +7,7 @@ package net.sourceforge.pmd.eclipse.ui;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Vector;
 
 import org.eclipse.jface.viewers.ISelection;
@@ -18,8 +19,8 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
+import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
-import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.events.MouseMoveListener;
 import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
@@ -58,18 +59,20 @@ public class ShapePicker<T extends Object> extends Canvas implements ISelectionP
         itemWidth = theItemWidth;
 
         addPaintListener(new PaintListener() {
+            @Override
             public void paintControl(PaintEvent pe) {
                 doPaint(pe);
             }
         });
 
         addMouseMoveListener(new MouseMoveListener() {
+            @Override
             public void mouseMove(MouseEvent e) {
                 if (!getEnabled()) {
                     return;
                 }
-                T newItem = itemAt(e.x, e.y);
-                if (newItem != highlightItem) {
+                T newItem = itemAt(e.x);
+                if (!Objects.equals(newItem, highlightItem)) {
                     highlightItem = newItem;
                     setToolTipText(tooltipFor(newItem));
                     redraw();
@@ -77,20 +80,19 @@ public class ShapePicker<T extends Object> extends Canvas implements ISelectionP
             }
         });
 
-        this.addMouseListener(new MouseListener() {
-            public void mouseDoubleClick(MouseEvent e) {
-            }
-
+        this.addMouseListener(new MouseAdapter() {
+            @Override
             public void mouseDown(MouseEvent e) {
                 forceFocus();
             }
 
+            @Override
             public void mouseUp(MouseEvent e) {
                 if (!getEnabled()) {
                     return;
                 }
-                T newItem = itemAt(e.x, e.y);
-                if (newItem != selectedItem) {
+                T newItem = itemAt(e.x);
+                if (!Objects.equals(newItem, selectedItem)) {
                     selectedItem = newItem;
                     redraw();
                     selectionChanged();
@@ -99,10 +101,12 @@ public class ShapePicker<T extends Object> extends Canvas implements ISelectionP
         });
 
         addFocusListener(new FocusListener() {
+            @Override
             public void focusGained(FocusEvent e) {
                 redraw();
             }
 
+            @Override
             public void focusLost(FocusEvent e) {
                 redraw();
             }
@@ -112,7 +116,6 @@ public class ShapePicker<T extends Object> extends Canvas implements ISelectionP
     }
 
     private Color colourFor(int itemIndex) {
-
         ShapeDescriptor desc = shapeDescriptorsByItem.get(items[itemIndex]);
         if (desc == null) {
             return Display.getCurrent().getSystemColor(SWT.COLOR_BLACK);
@@ -154,6 +157,7 @@ public class ShapePicker<T extends Object> extends Canvas implements ISelectionP
         }
     }
 
+    @Override
     public boolean forceFocus() {
         boolean state = super.forceFocus();
         redraw();
@@ -165,7 +169,7 @@ public class ShapePicker<T extends Object> extends Canvas implements ISelectionP
         return desc == null ? Shape.circle : desc.shape;
     }
 
-    private T itemAt(int xIn, int yIn) {
+    private T itemAt(int xIn) {
 
         if (items == null) {
             return null;
@@ -181,7 +185,7 @@ public class ShapePicker<T extends Object> extends Canvas implements ISelectionP
 
             switch (SWT.LEFT) { // TODO take from style bits
             case SWT.CENTER:
-                xOffset = (width / 2) - (itemWidth / 2) - xBoundary + step;
+                xOffset = width / 2 - itemWidth / 2 - xBoundary + step;
                 break;
             case SWT.RIGHT:
                 xOffset = 0 - xBoundary;
@@ -219,14 +223,14 @@ public class ShapePicker<T extends Object> extends Canvas implements ISelectionP
         }
 
         for (int i = 0; i < items.length; i++) {
-            gc.setBackground(selectedItem == items[i] ? selectedItemFillColor : colourFor(i));
+            gc.setBackground(Objects.equals(selectedItem, items[i]) ? selectedItemFillColor : colourFor(i));
 
             int xOffset = 0;
             int step = (itemWidth + gap) * i;
 
             switch (SWT.LEFT) { // TODO take from style bits
             case SWT.CENTER:
-                xOffset = (width / 2) - (itemWidth / 2) - xBoundary + step;
+                xOffset = width / 2 - itemWidth / 2 - xBoundary + step;
                 break;
             case SWT.RIGHT:
                 xOffset = 0 - xBoundary;
@@ -245,11 +249,11 @@ public class ShapePicker<T extends Object> extends Canvas implements ISelectionP
     }
 
     private boolean showHighlightOn(T item) {
-        return isFocusControl() && highlightItem == item;
+        return isFocusControl() && Objects.equals(highlightItem, item);
     }
 
+    @Override
     public Point computeSize(int wHint, int hHint, boolean changed) {
-
         Point pt = getSize();
         // TODO adapt by shape count
         return new Point(pt.x, pt.y);
@@ -265,12 +269,13 @@ public class ShapePicker<T extends Object> extends Canvas implements ISelectionP
         tooltipProvider = provider;
     }
 
+    @Override
     public ISelection getSelection() {
         return new StructuredSelection(selectedItem);
     }
 
-    public void setGap(int inPixels) {
-        gap = inPixels;
+    public void setGap(int theGap) {
+        gap = theGap;
         redraw();
     }
 
@@ -285,11 +290,11 @@ public class ShapePicker<T extends Object> extends Canvas implements ISelectionP
     }
 
     public void setShapeMap(Map<T, ShapeDescriptor> theShapeMap) {
-
         shapeDescriptorsByItem = theShapeMap;
         redraw();
     }
 
+    @Override
     public void addSelectionChangedListener(ISelectionChangedListener listener) {
         if (listeners == null) {
             listeners = new Vector<ISelectionChangedListener>();
@@ -297,6 +302,7 @@ public class ShapePicker<T extends Object> extends Canvas implements ISelectionP
         listeners.add(listener);
     }
 
+    @Override
     public void removeSelectionChangedListener(ISelectionChangedListener listener) {
         if (listeners == null) {
             return;
@@ -304,6 +310,7 @@ public class ShapePicker<T extends Object> extends Canvas implements ISelectionP
         listeners.remove(listener);
     }
 
+    @Override
     public void setSelection(ISelection selection) {
         setSelection((T) ((StructuredSelection) selection).getFirstElement());
     }

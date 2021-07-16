@@ -36,9 +36,8 @@ import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSet;
-import net.sourceforge.pmd.RuleSetFactory;
-import net.sourceforge.pmd.RuleSetNotFoundException;
-import net.sourceforge.pmd.RulesetsFactoryUtils;
+import net.sourceforge.pmd.RuleSetLoadException;
+import net.sourceforge.pmd.RuleSetLoader;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.runtime.builder.PMDNature;
 import net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties;
@@ -56,9 +55,9 @@ import net.sourceforge.pmd.eclipse.ui.actions.internal.InternalRuleSetUtil;
 public class ProjectPropertiesManagerImpl implements IProjectPropertiesManager {
     private static final Logger LOG = LoggerFactory.getLogger(ProjectPropertiesManagerImpl.class);
 
-    private final ConcurrentMap<IProject, ProjectPropertiesTimestampTupel> projectsProperties = new ConcurrentHashMap<>();
-
     private static final JAXBContext JAXB_CONTEXT = initJaxbContext();
+
+    private final ConcurrentMap<IProject, ProjectPropertiesTimestampTupel> projectsProperties = new ConcurrentHashMap<>();
 
     private static JAXBContext initJaxbContext() {
         try {
@@ -69,7 +68,7 @@ public class ProjectPropertiesManagerImpl implements IProjectPropertiesManager {
     }
 
     /**
-     * Load a project properties
+     * Load a project properties.
      *
      * @param project
      *            a project
@@ -120,9 +119,6 @@ public class ProjectPropertiesManagerImpl implements IProjectPropertiesManager {
         }
     }
 
-    /**
-     * @see net.sourceforge.pmd.eclipse.runtime.properties.IProjectPropertiesManager#storeProjectProperties(net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties)
-     */
     @Override
     public void storeProjectProperties(IProjectProperties projectProperties) throws PropertiesException {
         LOG.debug("Storing project properties for project {}", projectProperties.getProject().getName());
@@ -149,21 +145,20 @@ public class ProjectPropertiesManagerImpl implements IProjectPropertiesManager {
     }
 
     /**
-     * Load the project rule set from the project ruleset
-     *
+     * Load the project rule set from the project ruleset.
      */
     private void loadRuleSetFromProject(IProjectProperties projectProperties) throws PropertiesException {
         if (projectProperties.isRuleSetFileExist() && projectProperties.isNeedRebuild()) {
             LOG.debug("Loading ruleset from project ruleset file: " + projectProperties.getRuleSetFile());
             try {
-                final RuleSetFactory factory = RulesetsFactoryUtils.defaultFactory();
+                final RuleSetLoader loader = InternalRuleSetUtil.getDefaultRuleSetLoader();
                 List<RuleSet> allRulesets = new ArrayList<>();
                 for (final File ruleSetFile : projectProperties.getResolvedRuleSetFiles()) {
-                    RuleSet ruleSet = factory.createRuleSet(ruleSetFile.getPath());
+                    RuleSet ruleSet = loader.loadFromResource(ruleSetFile.getPath());
                     allRulesets.add(ruleSet);
                 }
                 projectProperties.setProjectRuleSetList(allRulesets);
-            } catch (RuleSetNotFoundException e) {
+            } catch (RuleSetLoadException e) {
                 PMDPlugin.getDefault()
                         .logError("Project RuleSet cannot be loaded for project "
                                 + projectProperties.getProject().getName() + " using RuleSet file name "
@@ -184,7 +179,7 @@ public class ProjectPropertiesManagerImpl implements IProjectPropertiesManager {
     }
 
     /**
-     * Read a project properties from properties file
+     * Read a project properties from properties file.
      *
      * @param project
      *            a project
@@ -201,17 +196,13 @@ public class ProjectPropertiesManagerImpl implements IProjectPropertiesManager {
 
             return projectProperties;
 
-        } catch (IOException e) {
-            throw new PropertiesException("Error while reading project properties file for project " + project.getName(), e);
-        } catch (CoreException e) {
-            throw new PropertiesException("Error while reading project properties file for project " + project.getName(), e);
-        } catch (DataBindingException e) {
+        } catch (IOException | CoreException | DataBindingException e) {
             throw new PropertiesException("Error while reading project properties file for project " + project.getName(), e);
         }
     }
 
     /**
-     * Fill a properties information structure from a transfer object
+     * Fill a properties information structure from a transfer object.
      *
      * @param projectProperties
      *            a project properties data structure
@@ -246,7 +237,7 @@ public class ProjectPropertiesManagerImpl implements IProjectPropertiesManager {
     }
 
     /**
-     * Set the rule set from rule specs found in properties file
+     * Set the rule set from rule specs found in properties file.
      *
      * @param rules
      *            array of selected rules
@@ -306,7 +297,7 @@ public class ProjectPropertiesManagerImpl implements IProjectPropertiesManager {
     }
 
     /**
-     * Save project properties
+     * Save project properties.
      *
      * @param project
      *            a project
@@ -332,9 +323,7 @@ public class ProjectPropertiesManagerImpl implements IProjectPropertiesManager {
     }
 
     /**
-     * Fill in a transfer object from a project properties information structure
-     *
-     * @throws DAOException
+     * Fill in a transfer object from a project properties information structure.
      */
     private ProjectPropertiesTO fillTransferObject(IProjectProperties projectProperties) throws PropertiesException {
         final ProjectPropertiesTO bean = new ProjectPropertiesTO();
@@ -364,7 +353,7 @@ public class ProjectPropertiesManagerImpl implements IProjectPropertiesManager {
                 }
             }
 
-            bean.setRules(rules.toArray(new RuleSpecTO[rules.size()]));
+            bean.setRules(rules.toArray(new RuleSpecTO[0]));
             bean.setExcludePatterns(excludePatterns.toArray(new String[0]));
             bean.setIncludePatterns(includePatterns.toArray(new String[0]));
         }
@@ -372,7 +361,7 @@ public class ProjectPropertiesManagerImpl implements IProjectPropertiesManager {
     }
 
     /**
-     * Check the project ruleset against the plugin ruleset and synchronize if necessary
+     * Check the project ruleset against the plugin ruleset and synchronize if necessary.
      *
      * @return true if the project ruleset has changed.
      *

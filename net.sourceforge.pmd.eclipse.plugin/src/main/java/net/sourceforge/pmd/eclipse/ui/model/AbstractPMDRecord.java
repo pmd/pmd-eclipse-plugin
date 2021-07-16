@@ -196,7 +196,7 @@ public abstract class AbstractPMDRecord {
             markerList.addAll(Arrays.asList(childrenMarkers));
         }
 
-        return markerList.toArray(new IMarker[markerList.size()]);
+        return markerList.toArray(new IMarker[0]);
     }
 
     /**

@@ -19,18 +19,21 @@ import net.sourceforge.pmd.eclipse.util.Util;
 public interface FilterColumnUI {
 
     ItemFieldAccessor<String, FilterHolder> INCLUDE_ACCESSOR = new ItemFieldAccessorAdapter<String, FilterHolder>(null) {
+        @Override
         public Image imageFor(FilterHolder holder) {
             return FilterPreferencesPage.typeIconFor(holder);
         }
     };
 
     ItemFieldAccessor<String, FilterHolder> PMD_ACCESSOR = new ItemFieldAccessorAdapter<String, FilterHolder>(Util.COMP_STR) {
+        @Override
         public String valueFor(FilterHolder holder) {
             return holder.forPMD ? "Y" : "";
         }
     };
 
     ItemFieldAccessor<String, FilterHolder> CPD_ACCESSOR = new ItemFieldAccessorAdapter<String, FilterHolder>(Util.COMP_STR) {
+        @Override
         public String valueFor(FilterHolder holder) {
             return holder.forCPD ? "Y" : "";
         }
@@ -38,6 +41,7 @@ public interface FilterColumnUI {
 
     ItemFieldAccessor<String, FilterHolder> PATTERN_ACCESSOR = new ItemFieldAccessorAdapter<String, FilterHolder>(
             Util.COMP_STR) {
+        @Override
         public String valueFor(FilterHolder holder) {
             return holder.pattern;
         }

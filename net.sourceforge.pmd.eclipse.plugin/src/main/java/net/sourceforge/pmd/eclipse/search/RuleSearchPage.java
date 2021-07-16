@@ -52,11 +52,13 @@ public class RuleSearchPage extends DialogPage implements ISearchPage {
         super(title, image);
     }
 
+    @Override
     public boolean performAction() {
         // TODO Auto-generated method stub
         return false;
     }
 
+    @Override
     public void setContainer(ISearchPageContainer container) {
         if (container.getSelection() instanceof TextSelection) {
             selected = ((TextSelection) container.getSelection()).getText();
@@ -104,6 +106,7 @@ public class RuleSearchPage extends DialogPage implements ISearchPage {
         xpath.setText("XPaths");
     }
 
+    @Override
     public void createControl(Composite parent) {
 
         Composite panel = new Composite(parent, SWT.NONE);

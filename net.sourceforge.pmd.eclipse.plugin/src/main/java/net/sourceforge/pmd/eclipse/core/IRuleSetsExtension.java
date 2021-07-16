@@ -19,13 +19,13 @@ public interface IRuleSetsExtension {
 
     /**
      * Allows an extension to add more rules to to completely replace the sets of rulesets.
-     * @param registeredRuleSet the already registered rulesets (modifiable set)
+     * @param registeredRuleSets the already registered rulesets (modifiable set)
      */
     void registerRuleSets(Set<RuleSet> registeredRuleSets);
 
     /**
      * Allows an extension to specify rulesets that has to be loaded when no rulesets has been defined
-     * for the plugin (for instance, after creating a new workspace)
+     * for the plugin (for instance, after creating a new workspace).
      * @param defaultRuleSets the set of default rulesets (modifiable set)
      */
     void registerDefaultRuleSets(Set<RuleSet> defaultRuleSets);

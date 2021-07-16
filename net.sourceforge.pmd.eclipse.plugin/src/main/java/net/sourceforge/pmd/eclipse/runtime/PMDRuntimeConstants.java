@@ -69,8 +69,7 @@ public class PMDRuntimeConstants {
     public static final int PROPERTY_REVIEW = 1112;
 
     /**
-     * This class is not meant to be instantiated
-     *
+     * This class is not meant to be instantiated.
      */
     private PMDRuntimeConstants() {
         super();

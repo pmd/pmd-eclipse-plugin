@@ -48,18 +48,22 @@ public abstract class AbstractColumnDescriptor implements ColumnDescriptor {
         }
     }
 
+    @Override
     public String id() {
         return id;
     }
 
+    @Override
     public String label() {
         return label;
     }
 
+    @Override
     public String tooltip() {
         return tooltip;
     }
 
+    @Override
     public int defaultWidth() {
         return width;
     }

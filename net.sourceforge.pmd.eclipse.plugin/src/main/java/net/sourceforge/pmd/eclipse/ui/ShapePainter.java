@@ -55,10 +55,10 @@ public class ShapePainter {
 
     @Deprecated
     public static void disposeAll() {
+        // nothing to do
     }
 
     public static void drawShape(int width, int height, Shape shapeId, GC gc, int x, int y, String optionalText) {
-
         // TODO implement the following shapes: star, pentagon, hexagon,
         // octagon, doughnut
 
@@ -165,6 +165,7 @@ public class ShapePainter {
                 gc.fillPolygon(points);
                 gc.drawPolygon(points);
             }
+            break;
         }
         }
         if (optionalText != null) {

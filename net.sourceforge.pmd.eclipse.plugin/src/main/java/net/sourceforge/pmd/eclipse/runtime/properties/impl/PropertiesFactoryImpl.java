@@ -11,18 +11,14 @@ import net.sourceforge.pmd.eclipse.runtime.properties.IProjectPropertiesManager;
 import net.sourceforge.pmd.eclipse.runtime.properties.IPropertiesFactory;
 
 /**
- * Implements a factory for the objects of the properties package
+ * Implements a factory for the objects of the properties package.
  * 
  * @author Herlin
- *
  */
-
 public class PropertiesFactoryImpl implements IPropertiesFactory {
     private IProjectPropertiesManager projectPropertiesManager;
 
-    /**
-     * @see net.sourceforge.pmd.eclipse.runtime.properties.IPropertiesFactory#getProjectPropertiesManager()
-     */
+    @Override
     public IProjectPropertiesManager getProjectPropertiesManager() {
         if (this.projectPropertiesManager == null) {
             this.projectPropertiesManager = new ProjectPropertiesManagerImpl();
@@ -31,11 +27,9 @@ public class PropertiesFactoryImpl implements IPropertiesFactory {
         return this.projectPropertiesManager;
     }
 
-    /**
-     * @see net.sourceforge.pmd.eclipse.runtime.properties.IPropertiesFactory#newProjectProperties(org.eclipse.core.resources.IProject, net.sourceforge.pmd.eclipse.runtime.properties.IProjectPropertiesManager)
-     */
-    public IProjectProperties newProjectProperties(IProject project, IProjectPropertiesManager projectPropertiesManager) {
-        return new ProjectPropertiesImpl(project, projectPropertiesManager);
+    @Override
+    public IProjectProperties newProjectProperties(IProject project, IProjectPropertiesManager newProjectPropertiesManager) {
+        return new ProjectPropertiesImpl(project, newProjectPropertiesManager);
     }
 
 }

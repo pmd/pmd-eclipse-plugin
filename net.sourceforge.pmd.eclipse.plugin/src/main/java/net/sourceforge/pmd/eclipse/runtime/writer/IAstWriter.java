@@ -18,7 +18,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 public interface IAstWriter {
 
     /**
-     * Serialize an AST into an output stream
+     * Serialize an AST into an output stream.
      * 
      * @param outputStream
      *            the target output

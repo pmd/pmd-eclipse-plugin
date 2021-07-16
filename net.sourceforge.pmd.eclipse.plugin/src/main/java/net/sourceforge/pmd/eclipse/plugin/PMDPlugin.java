@@ -57,9 +57,8 @@ import org.slf4j.LoggerFactory;
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSet;
-import net.sourceforge.pmd.RuleSetFactory;
-import net.sourceforge.pmd.RuleSetNotFoundException;
-import net.sourceforge.pmd.RulesetsFactoryUtils;
+import net.sourceforge.pmd.RuleSetLoadException;
+import net.sourceforge.pmd.RuleSetLoader;
 import net.sourceforge.pmd.eclipse.core.IRuleSetManager;
 import net.sourceforge.pmd.eclipse.core.ext.RuleSetsExtensionProcessor;
 import net.sourceforge.pmd.eclipse.core.impl.RuleSetManagerImpl;
@@ -79,6 +78,7 @@ import net.sourceforge.pmd.eclipse.runtime.writer.IRuleSetWriter;
 import net.sourceforge.pmd.eclipse.runtime.writer.impl.WriterFactoryImpl;
 import net.sourceforge.pmd.eclipse.ui.RuleLabelDecorator;
 import net.sourceforge.pmd.eclipse.ui.actions.RuleSetUtil;
+import net.sourceforge.pmd.eclipse.ui.actions.internal.InternalRuleSetUtil;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
 import net.sourceforge.pmd.eclipse.ui.nls.StringTable;
 import net.sourceforge.pmd.eclipse.ui.priority.PriorityDescriptorCache;
@@ -90,12 +90,10 @@ import net.sourceforge.pmd.lang.java.JavaLanguageModule;
 import net.sourceforge.pmd.lang.rule.RuleReference;
 
 /**
- * The activator class controls the plug-in life cycle
+ * The activator class controls the plug-in life cycle.
  */
 public class PMDPlugin extends AbstractUIPlugin {
     private static final Logger LOG = LoggerFactory.getLogger(PMDPlugin.class);
-
-    private static File pluginFolder;
 
     private FileChangeReviewer changeReviewer;
 
@@ -130,7 +128,7 @@ public class PMDPlugin extends AbstractUIPlugin {
      * The constructor
      */
     public PMDPlugin() {
-        plugin = this;
+        plugin = this; //NOPMD
     }
 
     public Color colorFor(RGB rgb) {
@@ -214,26 +212,21 @@ public class PMDPlugin extends AbstractUIPlugin {
         }
     }
 
+    /**
+     * @deprecated will be removed since it is not needed
+     */
+    @Deprecated
     public static File getPluginFolder() {
-
-        if (pluginFolder == null) {
-            URL url = Platform.getBundle(PLUGIN_ID).getEntry("/");
-            try {
-                url = FileLocator.resolve(url);
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
-            pluginFolder = new File(url.getPath());
+        URL url = Platform.getBundle(PLUGIN_ID).getEntry("/");
+        try {
+            url = FileLocator.resolve(url);
+        } catch (IOException ex) {
+            ex.printStackTrace();
         }
-
-        return pluginFolder;
+        return new File(url.getPath());
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework. BundleContext )
-     */
+    @Override
     public void start(BundleContext context) throws Exception {
         super.start(context);
         logbackConfiguration.configureLogback();
@@ -250,6 +243,7 @@ public class PMDPlugin extends AbstractUIPlugin {
 
         // if a project is deleted, remove the cached project properties
         ResourcesPlugin.getWorkspace().addResourceChangeListener(new IResourceChangeListener() {
+            @Override
             public void resourceChanged(IResourceChangeEvent arg0) {
                 if (arg0.getType() == IResourceChangeEvent.PRE_DELETE && arg0.getResource() instanceof IProject) {
                     getPropertiesManager().removeProjectProperties((IProject) arg0.getResource());
@@ -266,9 +260,8 @@ public class PMDPlugin extends AbstractUIPlugin {
     }
 
     /**
-     * Get a list of all the files that are open in eclipse currently
+     * Get a list of all the files that are open in eclipse currently.
      * 
-     * @return
      * @deprecated will be removed since it is not needed
      */
     @Deprecated
@@ -371,11 +364,7 @@ public class PMDPlugin extends AbstractUIPlugin {
         });
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework. BundleContext )
-     */
+    @Override
     public void stop(BundleContext context) throws Exception {
         fileChangeListenerEnabled(false);
 
@@ -391,7 +380,7 @@ public class PMDPlugin extends AbstractUIPlugin {
     }
 
     /**
-     * Returns the shared instance
+     * Returns the shared instance.
      *
      * @return the shared instance
      */
@@ -411,7 +400,7 @@ public class PMDPlugin extends AbstractUIPlugin {
     }
 
     /**
-     * Get an image corresponding to the severity
+     * Get an image corresponding to the severity.
      */
     public Image getImage(String key, String iconPath) {
         ImageRegistry registry = getImageRegistry();
@@ -452,12 +441,12 @@ public class PMDPlugin extends AbstractUIPlugin {
     }
 
     /**
-     * Helper method to display error
+     * Helper method to display error.
      */
     public void showError(final String message, final Throwable t) {
         logError(message, t);
         Display.getDefault().syncExec(new Runnable() {
-
+            @Override
             public void run() {
                 String errTitle = getStringTable().getString(StringKeys.ERROR_TITLE);
                 MessageDialog.openError(Display.getCurrent().getActiveShell(), errTitle,
@@ -467,12 +456,12 @@ public class PMDPlugin extends AbstractUIPlugin {
     }
 
     /**
-     * Helper method to display a non-logged user error
+     * Helper method to display a non-logged user error.
      */
     public void showUserError(final String message) {
 
         Display.getDefault().syncExec(new Runnable() {
-
+            @Override
             public void run() {
                 String errTitle = getStringTable().getString(StringKeys.ERROR_TITLE);
                 MessageDialog.openError(Display.getCurrent().getActiveShell(), errTitle, message);
@@ -588,23 +577,21 @@ public class PMDPlugin extends AbstractUIPlugin {
     }
 
     /**
-     * Registering the standard rulesets
+     * Registering the standard rulesets.
      *
      */
     private void registerStandardRuleSets() {
+        RuleSetLoader loader = InternalRuleSetUtil.getDefaultRuleSetLoader();
 
-        final RuleSetFactory factory = RulesetsFactoryUtils.defaultFactory();
         try {
-            Iterator<RuleSet> iterator = factory.getRegisteredRuleSets();
             final IRuleSetManager manager = getRuleSetManager();
-            RuleSet ruleSet;
-            while (iterator.hasNext()) {
-                ruleSet = iterator.next();
-                ruleSet = removeDeprecatedRuleReferences(ruleSet);
-                manager.registerRuleSet(ruleSet);
-                manager.registerDefaultRuleSet(ruleSet);
+            for (RuleSet ruleset : loader.getStandardRuleSets()) {
+                RuleSet modifiedRuleSet = removeDeprecatedRuleReferences(ruleset);
+                manager.registerRuleSet(modifiedRuleSet);
+                manager.registerDefaultRuleSet(modifiedRuleSet);
+                
             }
-        } catch (RuleSetNotFoundException e) {
+        } catch (RuleSetLoadException e) {
             log(IStatus.WARNING, "Problem getting all registered PMD RuleSets", e);
         }
     }

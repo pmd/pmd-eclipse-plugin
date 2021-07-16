@@ -41,6 +41,7 @@ public final class SyntaxManager {
         codeField.addLineStyleListener(blsl);
 
         ModifyListener ml = new ModifyListener() {
+            @Override
             public void modifyText(ModifyEvent event) {
                 blsl.refreshMultilineComments(codeField.getText());
                 codeField.redraw();
@@ -52,7 +53,7 @@ public final class SyntaxManager {
     }
 
     /**
-     * Gets the syntax data for an extension
+     * Gets the syntax data for an extension.
      */
     public static synchronized SyntaxData getSyntaxData(String extension) {
         // Check in cache
@@ -68,7 +69,7 @@ public final class SyntaxManager {
     }
 
     /**
-     * Loads the syntax data for an extension
+     * Loads the syntax data for an extension.
      * 
      * @param extension
      *            the extension to load
@@ -103,7 +104,7 @@ public final class SyntaxManager {
                 sd.varnameReference = rb.getString("varnamedelimiter");
             }
 
-        } catch (MissingResourceException e) {
+        } catch (MissingResourceException ignored) {
             // Ignore
         }
         return sd;

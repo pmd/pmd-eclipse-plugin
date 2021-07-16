@@ -34,9 +34,7 @@ class FakeRuleViolation extends ParametricRuleViolation<Node> {
         super(theRule, DUMMY_CONTEXT, null, null);
     }
 
-    /**
-     * @see net.sourceforge.pmd.IRuleViolation#getDescription()
-     */
+    @Override
     public String getDescription() {
         return description;
     }

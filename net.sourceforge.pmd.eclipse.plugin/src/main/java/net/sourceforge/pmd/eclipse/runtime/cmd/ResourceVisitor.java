@@ -21,6 +21,7 @@ import org.slf4j.LoggerFactory;
 public class ResourceVisitor extends BaseVisitor implements IResourceVisitor {
     private static final Logger LOG = LoggerFactory.getLogger(ResourceVisitor.class);
 
+    @Override
     public boolean visit(final IResource resource) {
         LOG.debug("Visiting resource {}", resource.getName());
         boolean fVisitChildren = true;

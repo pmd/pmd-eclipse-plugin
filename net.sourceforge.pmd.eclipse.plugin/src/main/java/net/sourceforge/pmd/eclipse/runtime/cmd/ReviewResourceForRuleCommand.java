@@ -84,12 +84,6 @@ public class ReviewResourceForRuleCommand extends AbstractDefaultCommand {
         listenerList = new ArrayList<IPropertyListener>();
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * net.sourceforge.pmd.eclipse.runtime.cmd.AbstractDefaultCommand#execute()
-     */
     @Override
     public void execute() {
         // IProject project = resource.getProject();
@@ -112,14 +106,13 @@ public class ReviewResourceForRuleCommand extends AbstractDefaultCommand {
                     // input.close();
                     // } catch (CoreException e) {
                     // throw new CommandException(e);
-                } catch (PMDException e) {
-                    throw new RuntimeException(e);
-                } catch (CoreException e) {
+                } catch (PMDException | CoreException e) {
                     throw new RuntimeException(e);
                 }
 
                 // trigger event propertyChanged for all listeners
                 Display.getDefault().asyncExec(new Runnable() {
+                    @Override
                     public void run() {
                         for (IPropertyListener listener : listenerList) {
                             listener.propertyChanged(context.getReport().getViolations().iterator(),

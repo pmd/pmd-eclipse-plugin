@@ -203,6 +203,7 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
             if (!markersByFile.isEmpty()) {
                 // Appliquer les marqueurs
                 IWorkspaceRunnable action = new IWorkspaceRunnable() {
+                    @Override
                     public void run(IProgressMonitor monitor) throws CoreException {
                         applyMarkers();
                     }
@@ -556,9 +557,7 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
                         resource.getName(), targetCount, MAXIMUM_RESOURCE_COUNT);
             }
 
-        } catch (PropertiesException e) {
-            throw new RuntimeException(e);
-        } catch (CoreException e) {
+        } catch (PropertiesException | CoreException e) {
             throw new RuntimeException(e);
         }
     }
@@ -727,9 +726,7 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
                         + "This is more than {}. If you want to execute PMD, please check \"Full build enabled\" "
                         + "in the project settings.", resource.getName(), targetCount, MAXIMUM_RESOURCE_COUNT);
             }
-        } catch (PropertiesException e) {
-            throw new RuntimeException(e);
-        } catch (CoreException e) {
+        } catch (PropertiesException | CoreException e) {
             throw new RuntimeException(e);
         }
     }
@@ -841,6 +838,7 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
     private final class CountVisitor implements IResourceVisitor, IResourceDeltaVisitor {
         public int count = 0;
 
+        @Override
         public boolean visit(IResource resource) {
             if (resource instanceof IFile) {
                 count++;
@@ -848,6 +846,7 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
             return true;
         }
 
+        @Override
         public boolean visit(IResourceDelta delta) {
             IResource resource = delta.getResource();
             return visit(resource);

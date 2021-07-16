@@ -138,11 +138,8 @@ public class RenderReportsCmd extends AbstractProjectCommand {
                 LOG.debug("   Render the report");
                 render(report, folder, reportName, renderer);
             }
-        } catch (CoreException e) {
-            LOG.debug("Core Exception: " + e.getMessage(), e);
-            throw new RuntimeException(e);
-        } catch (IOException e) {
-            LOG.debug("Core Exception: " + e.getMessage(), e);
+        } catch (CoreException | IOException e) {
+            LOG.debug(e.toString(), e);
             throw new RuntimeException(e);
         } finally {
             LOG.debug("End of RenderReport command");
