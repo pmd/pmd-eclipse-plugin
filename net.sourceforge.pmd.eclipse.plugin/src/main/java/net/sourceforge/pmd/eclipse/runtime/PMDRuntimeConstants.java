@@ -13,7 +13,7 @@ import net.sourceforge.pmd.properties.IntegerProperty;
  * @author Philippe Herlin
  *
  */
-public class PMDRuntimeConstants {
+public final class PMDRuntimeConstants {
 
     /** This marker type is the super type for all PMD markers (for rules, task, and dfa). */
     public static final String PMD_MARKER = PMDPlugin.PLUGIN_ID + ".pmdMarker";

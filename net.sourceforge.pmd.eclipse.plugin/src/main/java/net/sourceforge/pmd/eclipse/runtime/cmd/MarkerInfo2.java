@@ -22,7 +22,7 @@ public class MarkerInfo2 {
 
     public MarkerInfo2(String theType, int expectedSize) {
         type = theType;
-        data = new HashMap<String, Object>(expectedSize);
+        data = new HashMap<>(expectedSize);
     }
 
     public void add(String name, Object value) {

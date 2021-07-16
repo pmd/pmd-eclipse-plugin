@@ -10,7 +10,6 @@ import org.eclipse.swt.widgets.TableItem;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RulePriority;
-import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 
 /**
  * Implements a cell modifier for rule properties editing in the rule table
@@ -19,6 +18,7 @@ import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
  * @author Philippe Herlin
  * @deprecated
  */
+@Deprecated
 public class RuleCellModifier implements ICellModifier {
     private TableViewer tableViewer;
 
@@ -29,17 +29,13 @@ public class RuleCellModifier implements ICellModifier {
         this.tableViewer = tableViewer;
     }
 
-    /**
-     * @see org.eclipse.jface.viewers.ICellModifier#canModify(Object, String)
-     */
+    @Override
     public boolean canModify(Object element, String property) {
         return property.equalsIgnoreCase(PMDPreferencePage.PROPERTY_PRIORITY)
             || property.equalsIgnoreCase(PMDPreferencePage.PROPERTY_DESCRIPTION);
     }
 
-    /**
-     * @see org.eclipse.jface.viewers.ICellModifier#getValue(Object, String)
-     */
+    @Override
     public Object getValue(Object element, String property) {
         Object result = null;
 
@@ -61,33 +57,23 @@ public class RuleCellModifier implements ICellModifier {
         return result;
     }
 
-    /**
-     * @see org.eclipse.jface.viewers.ICellModifier#modify(Object, String, Object)
-     */
+    @Override
     public void modify(Object element, String property, Object value) {
         TableItem item = (TableItem) element;
 
-        try {
-            if (item.getData() instanceof Rule) {
-                Rule rule = (Rule) item.getData();
-                if (property.equalsIgnoreCase(PMDPreferencePage.PROPERTY_PRIORITY)) {
-                    rule.setPriority(RulePriority.valueOf(((Integer) value).intValue() + 1));
-                    PMDPreferencePage.getActiveInstance().setModified(true);
-                    //tableViewer.update(rule, new String[] { "priority" });
-                    tableViewer.refresh();
-                } else if (property.equalsIgnoreCase(PMDPreferencePage.PROPERTY_DESCRIPTION)) {
-                    rule.setDescription((String) value);
-                    PMDPreferencePage.getActiveInstance().setModified(true);
-                    //tableViewer.update(rule, new String[] { "description" });
-                    tableViewer.refresh();
-                }
+        if (item.getData() instanceof Rule) {
+            Rule rule = (Rule) item.getData();
+            if (property.equalsIgnoreCase(PMDPreferencePage.PROPERTY_PRIORITY)) {
+                rule.setPriority(RulePriority.valueOf(((Integer) value).intValue() + 1));
+                PMDPreferencePage.getActiveInstance().setModified(true);
+                //tableViewer.update(rule, new String[] { "priority" });
+                tableViewer.refresh();
+            } else if (property.equalsIgnoreCase(PMDPreferencePage.PROPERTY_DESCRIPTION)) {
+                rule.setDescription((String) value);
+                PMDPreferencePage.getActiveInstance().setModified(true);
+                //tableViewer.update(rule, new String[] { "description" });
+                tableViewer.refresh();
             }
-        } catch (Throwable t) {
-            // Bug in JFace for Eclipse 2.0x
-            // Ignore exception
-            PMDPlugin.getDefault().logError(
-                "Exception when notifying a modification in a cell of the rule table in the preference page",
-                t);
         }
     }
 

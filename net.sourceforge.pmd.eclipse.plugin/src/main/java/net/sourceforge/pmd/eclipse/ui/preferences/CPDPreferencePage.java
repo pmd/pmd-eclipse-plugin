@@ -32,8 +32,8 @@ import net.sourceforge.pmd.eclipse.ui.preferences.br.AbstractPMDPreferencePage;
 public class CPDPreferencePage extends AbstractPMDPreferencePage {
 
     private Spinner minTileSizeSpinner;
-    private Label minTileLabel;
 
+    @Override
     protected String descriptionId() {
         return StringKeys.PREF_CPD_TITLE;
     }
@@ -43,6 +43,7 @@ public class CPDPreferencePage extends AbstractPMDPreferencePage {
      * 
      * @see PreferencePage#createContents
      */
+    @Override
     protected Control createContents(Composite parent) {
 
         // Create parent composite
@@ -62,6 +63,7 @@ public class CPDPreferencePage extends AbstractPMDPreferencePage {
         return composite;
     }
 
+    @Override
     public void createControl(Composite parent) {
         super.createControl(parent);
 
@@ -83,6 +85,7 @@ public class CPDPreferencePage extends AbstractPMDPreferencePage {
             @Override
             public void widgetSelected(SelectionEvent event) {
                 new Thread(new Runnable() {
+                    @Override
                     public void run() {
                         GUI.main(new String[] { "-noexitonclose" });
                     }
@@ -108,7 +111,7 @@ public class CPDPreferencePage extends AbstractPMDPreferencePage {
         group.setLayout(new GridLayout(2, false));
 
         // build the children
-        minTileLabel = new Label(group, SWT.NULL);
+        Label minTileLabel = new Label(group, SWT.NULL);
         minTileLabel.setText(getMessage(StringKeys.PREF_CPD_TILESIZE));
 
         minTileSizeSpinner = new Spinner(group, SWT.BORDER);
@@ -122,16 +125,12 @@ public class CPDPreferencePage extends AbstractPMDPreferencePage {
         return group;
     }
 
-    /**
-     * @see org.eclipse.jface.preference.PreferencePage#performDefaults()
-     */
+    @Override
     protected void performDefaults() {
         minTileSizeSpinner.setMinimum(IPreferences.MIN_TILE_SIZE_DEFAULT);
     }
 
-    /**
-     * @see org.eclipse.jface.preference.IPreferencePage#performOk()
-     */
+    @Override
     public boolean performOk() {
         preferences.setMinTileSize(Integer.valueOf(minTileSizeSpinner.getText()).intValue());
 

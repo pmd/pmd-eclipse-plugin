@@ -61,7 +61,7 @@ public class FolderRecord extends AbstractPMDRecord {
 
     @Override
     protected final AbstractPMDRecord[] createChildren() {
-        List<FileRecord> fileList = new ArrayList<FileRecord>();
+        List<FileRecord> fileList = new ArrayList<>();
         try {
             for (IResource member : folder.members()) {
                 if (member != null) {

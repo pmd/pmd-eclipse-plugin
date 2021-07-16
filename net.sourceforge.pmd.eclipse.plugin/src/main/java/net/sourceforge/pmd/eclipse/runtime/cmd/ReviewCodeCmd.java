@@ -72,9 +72,9 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
      */
     private static final int MAXIMUM_RESOURCE_COUNT = 5;
 
-    private final List<IResource> resources = new ArrayList<IResource>();
+    private final List<IResource> resources = new ArrayList<>();
     private IResourceDelta resourceDelta;
-    private Map<IFile, Set<MarkerInfo2>> markersByFile = new HashMap<IFile, Set<MarkerInfo2>>();
+    private Map<IFile, Set<MarkerInfo2>> markersByFile = new HashMap<>();
     private boolean taskMarker;
     private boolean openPmdPerspective;
     private boolean openPmdViolationsOverviewView;
@@ -132,7 +132,7 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
 
         RuleSet ruleSet = currentRules();
 
-        Map<Rule, String> faultsByRule = new HashMap<Rule, String>();
+        Map<Rule, String> faultsByRule = new HashMap<>();
         for (Rule rule : ruleSet.getRules()) {
             String fault = rule.dysfunctionReason();
             if (StringUtils.isNotEmpty(fault)) {
@@ -446,7 +446,7 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
     @Override
     public void reset() {
         resources.clear();
-        markersByFile = new HashMap<IFile, Set<MarkerInfo2>>();
+        markersByFile = new HashMap<>();
         setTerminated(false);
         openPmdPerspective = false;
         openPmdViolationsOverviewView = false;
@@ -563,13 +563,13 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
     }
 
     private Set<String> determineFileExtensions(List<RuleSet> ruleSets) {
-        Set<Language> languages = new HashSet<Language>();
+        Set<Language> languages = new HashSet<>();
         for (RuleSet ruleset : ruleSets) {
             for (Rule rule : ruleset.getRules()) {
                 languages.add(rule.getLanguage());
             }
         }
-        Set<String> fileExtensions = new HashSet<String>();
+        Set<String> fileExtensions = new HashSet<>();
         for (Language language : languages) {
             for (String extension : language.getExtensions()) {
                 fileExtensions.add(extension.toLowerCase(Locale.ROOT));
@@ -651,7 +651,7 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
             RuleSet filteredRuleSet = RuleSetUtil.newCopyOf(ruleSet);
             if (preferences.getGlobalRuleManagement()) {
                 // TODO: active rules are not language aware... filter by rule name...
-                List<Rule> rulesToKeep = new ArrayList<Rule>();
+                List<Rule> rulesToKeep = new ArrayList<>();
                 for (Rule rule : filteredRuleSet.getRules()) {
                     if (onlyActiveRuleNames.contains(rule.getName())) {
                         rulesToKeep.add(rule);

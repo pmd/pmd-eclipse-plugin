@@ -45,7 +45,6 @@ import net.sourceforge.pmd.eclipse.runtime.PMDRuntimeConstants;
 import net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties;
 import net.sourceforge.pmd.eclipse.runtime.properties.PropertiesException;
 import net.sourceforge.pmd.eclipse.ui.actions.internal.InternalRuleSetUtil;
-import net.sourceforge.pmd.eclipse.util.IOUtil;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.LanguageVersionDiscoverer;
@@ -283,7 +282,6 @@ public class BaseVisitor {
             }
         }
 
-        Reader input = null;
         try {
             boolean included = isIncluded(file);
             LOG.debug("Derived files included: " + projectProperties.isIncludeDerivedFiles());
@@ -318,21 +316,26 @@ public class BaseVisitor {
 
                 long start = System.currentTimeMillis();
 
-                input = new InputStreamReader(file.getContents(), file.getCharset());
-                // getPmdEngine().processFile(input, getRuleSet(), context);
-                // getPmdEngine().processFile(sourceCodeFile, getRuleSet(),
-                // context);
+                Report collectingReport = null;
 
-                DataSource dataSource = new ReaderDataSource(input, file.getRawLocation().toFile().getPath());
-                // need to disable multi threading, as the ruleset is
-                // not recreated and shared between threads...
-                // but as we anyway have only one file to process, it won't hurt
-                // here.
-                configuration().setThreads(0);
-                LOG.debug("PMD running on file {}", file.getName());
-                final Report collectingReport = PMD.processFiles(configuration(), ruleSets, Arrays.asList(dataSource),
-                        Collections.<Renderer>emptyList());
-                LOG.debug("PMD run finished.");
+                try (Reader input = new InputStreamReader(file.getContents(), file.getCharset());
+                     DataSource dataSource = new ReaderDataSource(input, file.getRawLocation().toFile().getPath());) {
+                    
+                    // getPmdEngine().processFile(input, getRuleSet(), context);
+                    // getPmdEngine().processFile(sourceCodeFile, getRuleSet(),
+                    // context);
+                    
+                    
+                    // need to disable multi threading, as the ruleset is
+                    // not recreated and shared between threads...
+                    // but as we anyway have only one file to process, it won't hurt
+                    // here.
+                    configuration().setThreads(0);
+                    LOG.debug("PMD running on file {}", file.getName());
+                    collectingReport = PMD.processFiles(configuration(), ruleSets, Arrays.asList(dataSource),
+                            Collections.<Renderer>emptyList());
+                    LOG.debug("PMD run finished.");
+                }
 
                 pmdDuration += System.currentTimeMillis() - start;
 
@@ -378,14 +381,12 @@ public class BaseVisitor {
             LOG.error("Properties exception visiting " + file.getName(), e);
         } catch (IllegalArgumentException e) {
             LOG.error("Illegal argument: {}", e.toString(), e);
-        } finally {
-            IOUtil.closeQuietly(input);
         }
 
     }
 
     /**
-     * Test if a file is in the PMD working set
+     * Test if a file is in the PMD working set.
      *
      * @param file
      * @return true if the file should be checked
@@ -430,7 +431,7 @@ public class BaseVisitor {
             throws CoreException, PropertiesException {
 
         Map<IFile, Set<MarkerInfo2>> accumulator = getAccumulator();
-        Set<MarkerInfo2> markerSet = new HashSet<MarkerInfo2>();
+        Set<MarkerInfo2> markerSet = new HashSet<>();
         List<Review> reviewsList = findReviewedViolations(file);
         Review review = new Review();
         // final IPreferences preferences =
@@ -476,14 +477,12 @@ public class BaseVisitor {
      * @param file
      */
     private List<Review> findReviewedViolations(final IFile file) {
-        final List<Review> reviews = new ArrayList<Review>();
-        BufferedReader reader = null;
-        try {
-            int lineNumber = 0;
-            boolean findLine = false;
-            boolean comment = false;
-            final Stack<String> pendingReviews = new Stack<String>();
-            reader = new BufferedReader(new InputStreamReader(file.getContents()));
+        final List<Review> reviews = new ArrayList<>();
+        int lineNumber = 0;
+        boolean findLine = false;
+        boolean comment = false;
+        final Stack<String> pendingReviews = new Stack<>();
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(file.getContents()))) {
             while (reader.ready()) {
                 String line = reader.readLine();
                 if (line != null) {
@@ -524,8 +523,6 @@ public class BaseVisitor {
             PMDPlugin.getDefault().logError("Core Exception when searching reviewed violations", e);
         } catch (IOException e) {
             PMDPlugin.getDefault().logError("IO Exception when searching reviewed violations", e);
-        } finally {
-            IOUtil.closeQuietly(reader);
         }
 
         return reviews;

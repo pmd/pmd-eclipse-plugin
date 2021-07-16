@@ -27,7 +27,7 @@ import net.sourceforge.pmd.eclipse.ui.priority.PriorityDescriptor;
 
 class PreferencesImpl implements IPreferences {
 
-    private Map<String, Boolean> booleansById = new HashMap<String, Boolean>();
+    private Map<String, Boolean> booleansById = new HashMap<>();
 
     private IPreferencesManager preferencesManager;
     private boolean projectBuildPathEnabled;
@@ -44,13 +44,12 @@ class PreferencesImpl implements IPreferences {
     private String logFileName;
     private String logLevel;
     private boolean globalRuleManagement;
-    private Set<String> activeRuleNames = new HashSet<String>();
-    private Set<String> activeRendererNames = new HashSet<String>();
-    private Set<String> activeExclusionPatterns = new HashSet<String>();
-    private Set<String> activeInclusionPatterns = new HashSet<String>();
+    private Set<String> activeRuleNames = new HashSet<>();
+    private Set<String> activeRendererNames = new HashSet<>();
+    private Set<String> activeExclusionPatterns = new HashSet<>();
+    private Set<String> activeInclusionPatterns = new HashSet<>();
 
-    private Map<RulePriority, PriorityDescriptor> uiDescriptorsByPriority = new HashMap<RulePriority, PriorityDescriptor>(
-            5);
+    private Map<RulePriority, PriorityDescriptor> uiDescriptorsByPriority = new HashMap<>(5);
 
     private int tableFraction;
     private Set<String> hiddenColumnIds;

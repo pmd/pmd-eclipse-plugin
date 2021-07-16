@@ -23,7 +23,7 @@ public final class SyntaxManager {
     
     private SyntaxManager() { }
 
-    private static Map<String, SyntaxData> syntaxByExtension = new Hashtable<String, SyntaxData>();
+    private static Map<String, SyntaxData> syntaxByExtension = new Hashtable<>();
 
     public static ModifyListener adapt(final StyledText codeField, String languageCode, ModifyListener oldListener) {
 
@@ -87,7 +87,7 @@ public final class SyntaxManager {
             sd.setMultiLineCommentEnd(rb.getString("multilinecommentend"));
 
             // Load the keywords
-            Collection<String> keywords = new HashSet<String>();
+            Collection<String> keywords = new HashSet<>();
             for (StringTokenizer st = new StringTokenizer(rb.getString("keywords"), " "); st.hasMoreTokens();) {
                 keywords.add(st.nextToken());
             }

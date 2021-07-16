@@ -48,7 +48,7 @@ public class RenderReportsCmd extends AbstractProjectCommand {
     /**
      * Table containing the renderers indexed by the file name.
      */
-    private Map<String, Renderer> renderers = new HashMap<String, Renderer>();
+    private Map<String, Renderer> renderers = new HashMap<>();
 
     /**
      * Default Constructor
@@ -150,7 +150,7 @@ public class RenderReportsCmd extends AbstractProjectCommand {
     @Override
     public void reset() {
         setProject(null);
-        renderers = new HashMap<String, Renderer>();
+        renderers = new HashMap<>();
         setTerminated(false);
     }
 
@@ -170,7 +170,7 @@ public class RenderReportsCmd extends AbstractProjectCommand {
     }
 
     /**
-     * Create a Report object from the markers of a project
+     * Create a Report object from the markers of a project.
      * 
      * @param project
      * @return

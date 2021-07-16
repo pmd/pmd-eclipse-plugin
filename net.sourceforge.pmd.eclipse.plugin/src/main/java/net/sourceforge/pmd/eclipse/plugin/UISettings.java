@@ -35,18 +35,18 @@ import net.sourceforge.pmd.eclipse.util.FontBuilder;
  * 
  * @author Brian Remedios
  */
-public class UISettings {
+public final class UISettings {
+
+    public static final FontBuilder CODE_FONT_BUILDER = new FontBuilder("Courier", 11, SWT.NORMAL);
+
+    private static Map<RulePriority, String> labelsByPriority = new HashMap<>();
+
+    private static IPreferencesManager preferencesManager = PMDPlugin.getDefault().getPreferencesManager();
+
     private UISettings() {
         // utility class
     }
 
-    private static String[] priorityLabels;
-
-    private static Map<RulePriority, String> labelsByPriority = new HashMap<RulePriority, String>();
-
-    private static IPreferencesManager preferencesManager = PMDPlugin.getDefault().getPreferencesManager();
-
-    public static final FontBuilder CODE_FONT_BUILDER = new FontBuilder("Courier", 11, SWT.NORMAL);
 
     @Deprecated
     public static void reloadPriorities() {
@@ -75,7 +75,7 @@ public class UISettings {
 
     public static Map<Shape, ShapeDescriptor> shapeSet(RGB color, int size) {
 
-        Map<Shape, ShapeDescriptor> shapes = new HashMap<Shape, ShapeDescriptor>();
+        Map<Shape, ShapeDescriptor> shapes = new HashMap<>();
 
         for (Shape shape : EnumSet.allOf(Shape.class)) {
             shapes.put(shape, new ShapeDescriptor(shape, color, size));
@@ -116,7 +116,7 @@ public class UISettings {
     @Deprecated
     public static Map<Integer, ImageDescriptor> markerImgDescriptorsByPriority() {
         RulePriority[] priorities = currentPriorities(true);
-        Map<Integer, ImageDescriptor> overlaysByPriority = new HashMap<Integer, ImageDescriptor>(priorities.length);
+        Map<Integer, ImageDescriptor> overlaysByPriority = new HashMap<>(priorities.length);
         for (RulePriority priority : priorities) {
             overlaysByPriority.put(priority.getPriority(), markerDescriptorFor(priority));
         }
@@ -186,7 +186,7 @@ public class UISettings {
     }
 
     public static Map<Object, ShapeDescriptor> shapesByPriority() {
-        Map<Object, ShapeDescriptor> shapesByPriority = new HashMap<Object, ShapeDescriptor>(RulePriority.values().length);
+        Map<Object, ShapeDescriptor> shapesByPriority = new HashMap<>(RulePriority.values().length);
         for (RulePriority priority : RulePriority.values()) {
             shapesByPriority.put(priority, PriorityDescriptorCache.INSTANCE.descriptorFor(priority).shape);
         }
@@ -208,22 +208,17 @@ public class UISettings {
      */
     @Deprecated
     public static String[] getPriorityLabels() {
-        if (priorityLabels == null) {
-            final StringTable stringTable = PMDPlugin.getDefault().getStringTable();
-            priorityLabels = new String[] { stringTable.getString(StringKeys.PRIORITY_ERROR_HIGH),
-                stringTable.getString(StringKeys.PRIORITY_ERROR),
-                stringTable.getString(StringKeys.PRIORITY_WARNING_HIGH),
-                stringTable.getString(StringKeys.PRIORITY_WARNING),
-                stringTable.getString(StringKeys.PRIORITY_INFORMATION),
-            };
-        }
-
-        return priorityLabels; // NOPMD by Herlin on 11/10/06 00:22
+        final StringTable stringTable = PMDPlugin.getDefault().getStringTable();
+        return new String[] { stringTable.getString(StringKeys.PRIORITY_ERROR_HIGH),
+            stringTable.getString(StringKeys.PRIORITY_ERROR),
+            stringTable.getString(StringKeys.PRIORITY_WARNING_HIGH),
+            stringTable.getString(StringKeys.PRIORITY_WARNING),
+            stringTable.getString(StringKeys.PRIORITY_INFORMATION),
+        };
     }
 
     public static List<Integer> getPriorityIntValues() {
-
-        List<Integer> values = new ArrayList<Integer>();
+        List<Integer> values = new ArrayList<>();
         for (RulePriority priority : RulePriority.values()) {
             values.add(priority.getPriority());
         }

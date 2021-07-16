@@ -156,7 +156,7 @@ public abstract class AbstractPMDRecord {
      * @return an Array of Markers or null, if no Markers were found
      */
     public IMarker[] findMarkers() {
-        final List<IMarker> markerList = new ArrayList<IMarker>();
+        final List<IMarker> markerList = new ArrayList<>();
         final AbstractPMDRecord[] children = getChildren();
 
         for (AbstractPMDRecord element : children) {
@@ -185,7 +185,7 @@ public abstract class AbstractPMDRecord {
      *         null, if no Markers were found
      */
     public IMarker[] findMarkersByAttribute(String attributeName, Object value) {
-        final List<IMarker> markerList = new ArrayList<IMarker>();
+        final List<IMarker> markerList = new ArrayList<>();
         final AbstractPMDRecord[] children = getChildren();
 
         for (AbstractPMDRecord element : children) {
@@ -276,7 +276,7 @@ public abstract class AbstractPMDRecord {
      * @return all resources that match the name and type
      */
     public List<AbstractPMDRecord> findResourcesByName(String name, int type) {
-        final List<AbstractPMDRecord> records = new ArrayList<AbstractPMDRecord>();
+        final List<AbstractPMDRecord> records = new ArrayList<>();
         final List<AbstractPMDRecord> thisChildren = getChildrenAsList();
 
         for (AbstractPMDRecord thisChild : thisChildren) {

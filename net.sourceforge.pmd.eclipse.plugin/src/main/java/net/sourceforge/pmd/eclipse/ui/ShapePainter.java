@@ -17,7 +17,7 @@ import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
  * @author br
  *
  */
-public class ShapePainter {
+public final class ShapePainter {
     private static final RGB RGB_BLACK = new RGB(0, 0, 0);
 
     private ShapePainter() {

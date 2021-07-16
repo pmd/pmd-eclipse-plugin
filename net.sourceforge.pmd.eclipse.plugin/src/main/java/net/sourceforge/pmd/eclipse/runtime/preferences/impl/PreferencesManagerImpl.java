@@ -5,10 +5,10 @@
 package net.sourceforge.pmd.eclipse.runtime.preferences.impl;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -97,9 +97,8 @@ class PreferencesManagerImpl implements IPreferencesManager {
 
     private static final String PREFERENCE_RULESET_FILE = "/ruleset.xml";
 
-    private static final Map<RulePriority, PriorityDescriptor> DEFAULT_DESCRIPTORS_BY_PRIORITY = new HashMap<RulePriority, PriorityDescriptor>(
-            5);
-    private static final Map<RulePriority, String> STORE_KEYS_BY_PRIORITY = new HashMap<RulePriority, String>(5);
+    private static final Map<RulePriority, PriorityDescriptor> DEFAULT_DESCRIPTORS_BY_PRIORITY = new HashMap<>(5);
+    private static final Map<RulePriority, String> STORE_KEYS_BY_PRIORITY = new HashMap<>(5);
 
     static {
         DEFAULT_DESCRIPTORS_BY_PRIORITY.put(RulePriority.HIGH,
@@ -222,7 +221,7 @@ class PreferencesManagerImpl implements IPreferencesManager {
             // only retrieve old style preferences if new file doesn't exist
             try {
                 Properties props = new Properties();
-                try (FileInputStream in = new FileInputStream(oldPrefs)) {
+                try (InputStream in = Files.newInputStream(oldPrefs.toPath())) {
                     props.load(in);
                 }
                 loadPreferencesStore = new PreferenceStore();
@@ -446,7 +445,7 @@ class PreferencesManagerImpl implements IPreferencesManager {
 
     private static Set<String> asStringSet(String delimitedString, String delimiter) {
         String[] values = delimitedString.split(delimiter);
-        Set<String> valueSet = new HashSet<String>(values.length);
+        Set<String> valueSet = new HashSet<>(values.length);
         for (int i = 0; i < values.length; i++) {
             String name = values[i].trim();
             if (StringUtils.isBlank(name)) {
@@ -628,7 +627,7 @@ class PreferencesManagerImpl implements IPreferencesManager {
      * Find if rules has been added.
      */
     private Collection<Rule> getNewRules(RuleSet newRuleSet) {
-        List<Rule> addedRules = new ArrayList<Rule>();
+        List<Rule> addedRules = new ArrayList<>();
         for (Rule rule : newRuleSet.getRules()) {
             if (this.ruleSet.getRuleByName(rule.getName()) == null) {
                 addedRules.add(rule);
@@ -687,7 +686,7 @@ class PreferencesManagerImpl implements IPreferencesManager {
         PMDPlugin plugin = PMDPlugin.getDefault();
 
         IPath ruleSetLocation = plugin.getStateLocation().append(PREFERENCE_RULESET_FILE);
-        try (OutputStream out = new FileOutputStream(ruleSetLocation.toOSString())) {
+        try (OutputStream out = Files.newOutputStream(ruleSetLocation.toFile().toPath())) {
             IRuleSetWriter writer = plugin.getRuleSetWriter();
             writer.write(out, ruleSet);
             ruleSetModificationTimestamp = getRuleSetModificationTimestamp();

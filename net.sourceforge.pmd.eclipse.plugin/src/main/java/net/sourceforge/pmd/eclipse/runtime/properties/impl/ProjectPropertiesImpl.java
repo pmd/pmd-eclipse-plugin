@@ -67,8 +67,8 @@ public class ProjectPropertiesImpl implements IProjectProperties {
     private boolean includeDerivedFiles;
     private boolean violationsAsErrors = true;
     private boolean fullBuildEnabled = true; // default in case didn't come from properties
-    private Set<String> buildPathExcludePatterns = new HashSet<String>();
-    private Set<String> buildPathIncludePatterns = new HashSet<String>();
+    private Set<String> buildPathExcludePatterns = new HashSet<>();
+    private Set<String> buildPathIncludePatterns = new HashSet<>();
     private JavaProjectClassLoader auxclasspath;
 
     /**
@@ -303,7 +303,7 @@ public class ProjectPropertiesImpl implements IProjectProperties {
     @Override
     public List<File> getResolvedRuleSetFiles() {
         // Check as project-relative path
-        List<File> files = new ArrayList<File>();
+        List<File> files = new ArrayList<>();
         for (String ruleSetFile : getRuleSetFile().split(",")) {
             IFile file = project.getFile(ruleSetFile);
             File f = getExistingFileOrNull(file);

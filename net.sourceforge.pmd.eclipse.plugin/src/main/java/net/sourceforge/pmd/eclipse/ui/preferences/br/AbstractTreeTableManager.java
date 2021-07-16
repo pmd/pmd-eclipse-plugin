@@ -8,6 +8,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import org.eclipse.jface.viewers.CheckboxTreeViewer;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -63,7 +64,7 @@ public abstract class AbstractTreeTableManager<T extends Object> extends Abstrac
 
     private ChangeRecord<T> changes;
 
-    private Map<Integer, List<Listener>> paintListeners = new HashMap<Integer, List<Listener>>();
+    private Map<Integer, List<Listener>> paintListeners = new HashMap<>();
 
     public AbstractTreeTableManager(String theWidgetId, IPreferences thePreferences, ColumnDescriptor[] theColumns) {
         super(theWidgetId, thePreferences, theColumns);
@@ -71,22 +72,27 @@ public abstract class AbstractTreeTableManager<T extends Object> extends Abstrac
 
     protected static ColumnWidthAdapter adapterFor(final TreeColumn column) {
         return new ColumnWidthAdapter() {
+            @Override
             public int width() {
                 return column.getWidth();
             }
 
+            @Override
             public void width(int newWidth) {
                 column.setWidth(newWidth);
             }
 
+            @Override
             public Display display() {
                 return column.getDisplay();
             }
 
+            @Override
             public void setData(String key, Object value) {
                 column.setData(key, value);
             }
 
+            @Override
             public Object getData(String key) {
                 return column.getData(key);
             }
@@ -97,14 +103,14 @@ public abstract class AbstractTreeTableManager<T extends Object> extends Abstrac
         return treeViewer.getTree();
     }
 
+    @Override
     protected String idFor(Object column) {
         return ((TreeColumn) column).getToolTipText();
     }
 
     protected void removed(Collection<T> items) {
-
         if (changes == null) {
-            changes = new ChangeRecord<T>();
+            changes = new ChangeRecord<>();
         }
         changes.removed(items);
         updateCheckControls();
@@ -112,7 +118,7 @@ public abstract class AbstractTreeTableManager<T extends Object> extends Abstrac
 
     protected void added(T item) {
         if (changes == null) {
-            changes = new ChangeRecord<T>();
+            changes = new ChangeRecord<>();
         }
         changes.added(item);
         updateCheckControls();
@@ -138,6 +144,7 @@ public abstract class AbstractTreeTableManager<T extends Object> extends Abstrac
         tc.pack();
 
         tc.addListener(SWT.Selection, new Listener() {
+            @Override
             public void handleEvent(Event e) {
                 sortByCheckedItems();
             }
@@ -155,7 +162,7 @@ public abstract class AbstractTreeTableManager<T extends Object> extends Abstrac
         Tree tree = treeViewer.getTree();
 
         tree.clearAll(true);
-        for (; tree.getColumns().length > 0;) {
+        while (tree.getColumns().length > 0) {
             // TODO also dispose any heading icons?
             tree.getColumns()[0].dispose();
         }
@@ -175,6 +182,7 @@ public abstract class AbstractTreeTableManager<T extends Object> extends Abstrac
 
     protected abstract boolean isQualifiedItem(Object item);
 
+    @Override
     protected abstract void saveItemSelections();
 
     public int activeItemCount() {
@@ -219,6 +227,7 @@ public abstract class AbstractTreeTableManager<T extends Object> extends Abstrac
         Button button = newImageButton(parent, PMDUiConstants.ICON_BUTTON_CHECK_ALL,
                 StringKeys.PREF_RULESET_BUTTON_CHECK_ALL);
         button.addSelectionListener(new SelectionAdapter() {
+            @Override
             public void widgetSelected(SelectionEvent event) {
                 setAllItemsActive();
             }
@@ -238,6 +247,7 @@ public abstract class AbstractTreeTableManager<T extends Object> extends Abstrac
         Button button = newImageButton(parent, PMDUiConstants.ICON_BUTTON_UNCHECK_ALL,
                 StringKeys.PREF_RULESET_BUTTON_UNCHECK_ALL);
         button.addSelectionListener(new SelectionAdapter() {
+            @Override
             public void widgetSelected(SelectionEvent event) {
                 preferences.getActiveRuleNames().clear();
                 treeViewer().setCheckedElements(new Object[0]);
@@ -302,6 +312,7 @@ public abstract class AbstractTreeTableManager<T extends Object> extends Abstrac
         tree.setHeaderVisible(true);
 
         treeViewer.addSelectionChangedListener(new ISelectionChangedListener() {
+            @Override
             public void selectionChanged(SelectionChangedEvent event) {
                 IStructuredSelection selection = (IStructuredSelection) event.getSelection();
                 selectedItems(selection.toArray());
@@ -311,6 +322,7 @@ public abstract class AbstractTreeTableManager<T extends Object> extends Abstrac
         addDeleteListener(tree);
 
         tree.addKeyListener(new KeyAdapter() {
+            @Override
             public void keyPressed(KeyEvent ev) {
                 if (ev.character == ' ') {
                     toggleSelectedItems();
@@ -319,6 +331,7 @@ public abstract class AbstractTreeTableManager<T extends Object> extends Abstrac
         });
 
         tree.addListener(SWT.Selection, new Listener() {
+            @Override
             public void handleEvent(Event event) {
                 if (event.detail == SWT.CHECK) {
                     TreeItem item = (TreeItem) event.item;
@@ -332,6 +345,7 @@ public abstract class AbstractTreeTableManager<T extends Object> extends Abstrac
         });
 
         tree.addListener(SWT.MouseMove, new Listener() {
+            @Override
             public void handleEvent(Event event) {
                 Point point = new Point(event.x, event.y);
                 TreeItem item = tree.getItem(point);
@@ -345,14 +359,17 @@ public abstract class AbstractTreeTableManager<T extends Object> extends Abstrac
         setupMenusFor(tree);
     }
 
+    @Override
     protected int headerHeightFor(Control control) {
         return ((Tree) control).getHeaderHeight();
     }
 
+    @Override
     protected void setMenu(Control control, Menu menu) {
         ((Tree) control).setMenu(menu);
     }
 
+    @Override
     protected Rectangle clientAreaFor(Control control) {
         return ((Tree) control).getClientArea();
     }
@@ -448,6 +465,7 @@ public abstract class AbstractTreeTableManager<T extends Object> extends Abstrac
         unSelectAllButton = buildUnselectAllButton(parent);
     }
 
+    @Override
     protected ColumnWidthAdapter columnAdapterFor(ColumnDescriptor desc) {
         TreeColumn column = columnFor(desc);
         return adapterFor(column);
@@ -457,8 +475,8 @@ public abstract class AbstractTreeTableManager<T extends Object> extends Abstrac
         redrawTable("-", -1);
     }
 
+    @Override
     protected void redrawTable(String sortColumnLabel, int sortDir) {
-
         TreeColumn sortColumn = columnFor(sortColumnLabel);
         treeViewer().getTree().setSortColumn(sortColumn);
         treeViewer().getTree().setSortDirection(sortDir);
@@ -475,7 +493,7 @@ public abstract class AbstractTreeTableManager<T extends Object> extends Abstrac
 
     private TreeColumn columnFor(ColumnDescriptor desc) {
         for (TreeColumn column : treeViewer().getTree().getColumns()) {
-            if ((column.getData(AbstractColumnDescriptor.DESCRIPTOR_KEY)) == desc) {
+            if (Objects.equals(column.getData(AbstractColumnDescriptor.DESCRIPTOR_KEY), desc)) {
                 return column;
             }
         }

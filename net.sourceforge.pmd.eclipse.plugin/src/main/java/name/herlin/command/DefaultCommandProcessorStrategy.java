@@ -37,7 +37,7 @@ import java.util.ResourceBundle;
 @Deprecated
 public class DefaultCommandProcessorStrategy implements CommandProcessorStrategy {
     private static final CommandProcessor DEFAULT_COMMAND_PROCESSOR = new DefaultCommandProcessor();
-    private final Map<String, String> registeredCommandProcessors = new Hashtable<String, String>();
+    private final Map<String, String> registeredCommandProcessors = new Hashtable<>();
 
     /**
      * Default constructor. Load registered command from bundle.

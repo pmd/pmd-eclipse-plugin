@@ -39,6 +39,8 @@ import org.eclipse.swt.widgets.Display;
  */
 public class ShapePicker<T extends Object> extends Canvas implements ISelectionProvider {
 
+    private static Map<RGB, Color> coloursByRGB = new HashMap<>();
+
     private T[] items;
     private int itemWidth;
     private int gap = 6;
@@ -50,8 +52,6 @@ public class ShapePicker<T extends Object> extends Canvas implements ISelectionP
     // private Map<T, String> tooltipsByItem;
 
     private List<ISelectionChangedListener> listeners;
-
-    private static Map<RGB, Color> coloursByRGB = new HashMap<RGB, Color>();
 
     public ShapePicker(Composite parent, int style, int theItemWidth) {
         super(parent, style);
@@ -297,7 +297,7 @@ public class ShapePicker<T extends Object> extends Canvas implements ISelectionP
     @Override
     public void addSelectionChangedListener(ISelectionChangedListener listener) {
         if (listeners == null) {
-            listeners = new Vector<ISelectionChangedListener>();
+            listeners = new Vector<>();
         }
         listeners.add(listener);
     }

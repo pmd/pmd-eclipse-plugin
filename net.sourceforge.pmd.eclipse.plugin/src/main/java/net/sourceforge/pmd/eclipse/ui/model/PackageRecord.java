@@ -83,7 +83,7 @@ public class PackageRecord extends AbstractPMDRecord {
 
     @Override
     protected final AbstractPMDRecord[] createChildren() {
-        List<FileRecord> fileList = new ArrayList<FileRecord>();
+        List<FileRecord> fileList = new ArrayList<>();
         try {
             ICompilationUnit[] javaUnits = packageFragment.getCompilationUnits();
             for (ICompilationUnit javaUnit : javaUnits) {

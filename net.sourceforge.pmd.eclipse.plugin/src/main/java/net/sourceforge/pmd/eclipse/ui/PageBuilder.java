@@ -46,9 +46,9 @@ public class PageBuilder {
         }
     };
 
-    private List<int[]> headingSpans = new ArrayList<int[]>();
-    private List<int[]> codeSpans = new ArrayList<int[]>();
-    private Map<int[], String> linksBySpan = new HashMap<int[], String>();
+    private List<int[]> headingSpans = new ArrayList<>();
+    private List<int[]> codeSpans = new ArrayList<>();
+    private Map<int[], String> linksBySpan = new HashMap<>();
 
     private StringBuilder buffer;
 
@@ -172,7 +172,7 @@ public class PageBuilder {
 
         widget.setText(text);
 
-        List<StyleRange> ranges = new ArrayList<StyleRange>();
+        List<StyleRange> ranges = new ArrayList<>();
 
         int[] span;
 

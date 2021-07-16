@@ -34,7 +34,7 @@ public class MarkerRecord extends AbstractPMDRecord {
         this.parent = parent;
         this.ruleName = ruleName;
         this.priority = priority;
-        this.markers = new ArrayList<IMarker>();
+        this.markers = new ArrayList<>();
         this.children = EMPTY_RECORDS;
     }
 
@@ -57,7 +57,7 @@ public class MarkerRecord extends AbstractPMDRecord {
 
     @Override
     public final AbstractPMDRecord[] createChildren() {
-        final List<AbstractPMDRecord> children = new ArrayList<AbstractPMDRecord>();
+        final List<AbstractPMDRecord> children = new ArrayList<>();
 
         final List<AbstractPMDRecord> markers = parent.getParent().findResourcesByName(this.ruleName, TYPE_MARKER);
         final Iterator<AbstractPMDRecord> markerIterator = markers.iterator();

@@ -296,14 +296,17 @@ public class NewPropertyDialog extends TitleAreaDialog implements SizeChangeList
         List<int[]> positions = Util.referencedNamePositionsIn(xpath, '$');
         List<String> names = Util.fragmentsWithin(xpath, positions);
 
+        nameField.setText("");
+
         for (String name : names) {
             if (ruleHasPropertyName(name)) {
                 continue;
+            } else if (nameField.getText().isEmpty()) {
+                nameField.setText(name);
+            } else {
+                break;
             }
-            nameField.setText(name);
-            return;
         }
-        nameField.setText("");
     }
 
     private void setInitialType() {

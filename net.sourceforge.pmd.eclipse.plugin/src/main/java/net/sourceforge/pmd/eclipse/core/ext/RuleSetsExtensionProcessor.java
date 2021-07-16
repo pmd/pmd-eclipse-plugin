@@ -54,12 +54,12 @@ public class RuleSetsExtensionProcessor {
         if (object instanceof IRuleSetsExtension) {
             final IRuleSetsExtension extension = (IRuleSetsExtension) object;
 
-            LinkedHashSet<RuleSet> registeredRulesets = new LinkedHashSet<RuleSet>(ruleSetManager.getRegisteredRuleSets());
+            LinkedHashSet<RuleSet> registeredRulesets = new LinkedHashSet<>(ruleSetManager.getRegisteredRuleSets());
             extension.registerRuleSets(registeredRulesets);
             ruleSetManager.getRegisteredRuleSets().clear();
             ruleSetManager.getRegisteredRuleSets().addAll(registeredRulesets);
 
-            LinkedHashSet<RuleSet> defaultRegisteredRulesets = new LinkedHashSet<RuleSet>(ruleSetManager.getDefaultRuleSets());
+            LinkedHashSet<RuleSet> defaultRegisteredRulesets = new LinkedHashSet<>(ruleSetManager.getDefaultRuleSets());
             extension.registerDefaultRuleSets(defaultRegisteredRulesets);
             ruleSetManager.getDefaultRuleSets().clear();
             ruleSetManager.getDefaultRuleSets().addAll(defaultRegisteredRulesets);

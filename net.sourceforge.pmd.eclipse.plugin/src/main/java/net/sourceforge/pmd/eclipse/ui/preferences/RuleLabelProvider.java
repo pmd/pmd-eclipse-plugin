@@ -16,10 +16,7 @@ import net.sourceforge.pmd.eclipse.ui.preferences.br.RuleUIUtil;
  */
 public class RuleLabelProvider extends AbstractTableLabelProvider {
 
-    /**
-     * @see org.eclipse.jface.viewers.ITableLabelProvider#getColumnText(Object,
-     *      int)
-     */
+    @Override
     public String getColumnText(Object element, int columnIndex) {
         String result = "";
         if (element instanceof Rule) {

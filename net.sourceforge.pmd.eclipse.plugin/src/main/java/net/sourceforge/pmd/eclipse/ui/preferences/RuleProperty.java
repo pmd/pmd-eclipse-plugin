@@ -7,20 +7,19 @@ package net.sourceforge.pmd.eclipse.ui.preferences;
 import net.sourceforge.pmd.Rule;
 
 /**
- * Helper class to display rule properties in a table
+ * Helper class to display rule properties in a table.
  * 
  * @author Philippe Herlin
  * @deprecated
  */
+@Deprecated
 public class RuleProperty {
-    private Rule rule;
     private String property;
-    
+
     /**
-     * Constructor with a Rule object and a key
+     * Constructor with a Rule object and a key.
      */
-    public RuleProperty(Rule rule, String key) {
-        this.rule = rule;
+    public RuleProperty(Rule rule, String key) { // NOPMD rule is unused...
         property = key;
     }
     

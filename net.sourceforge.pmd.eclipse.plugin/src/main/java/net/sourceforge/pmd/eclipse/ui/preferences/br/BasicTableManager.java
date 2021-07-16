@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.eclipse.ui.preferences.br;
 
 import java.util.Comparator;
+import java.util.Objects;
 
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -73,10 +74,12 @@ public class BasicTableManager<T extends Object> extends AbstractTableManager<T>
     //
     // }
 
+    @Override
     protected String idFor(Object column) {
         return ((TableColumn) column).getToolTipText();
     }
 
+    @Override
     protected ColumnWidthAdapter columnAdapterFor(ColumnDescriptor desc) {
         TableColumn column = columnFor(desc);
         return adapterFor(column);
@@ -84,7 +87,7 @@ public class BasicTableManager<T extends Object> extends AbstractTableManager<T>
 
     private TableColumn columnFor(ColumnDescriptor desc) {
         for (TableColumn column : tableViewer.getTable().getColumns()) {
-            if ((column.getData(AbstractColumnDescriptor.DESCRIPTOR_KEY)) == desc) {
+            if (Objects.equals(column.getData(AbstractColumnDescriptor.DESCRIPTOR_KEY), desc)) {
                 return column;
             }
         }
@@ -103,7 +106,7 @@ public class BasicTableManager<T extends Object> extends AbstractTableManager<T>
     private ViewerSorter createSorter() {
 
         return new ViewerSorter() {
-
+            @Override
             public int compare(Viewer viewer, Object e1, Object e2) {
 
                 ItemFieldAccessor<?, T> acc = (ItemFieldAccessor<?, T>) columnSorter;
@@ -129,6 +132,7 @@ public class BasicTableManager<T extends Object> extends AbstractTableManager<T>
         };
     }
 
+    @Override
     protected void redrawTable(String sortColumnLabel, int sortDir) {
 
         Table table = tableViewer.getTable();
@@ -154,6 +158,7 @@ public class BasicTableManager<T extends Object> extends AbstractTableManager<T>
         table.setHeaderVisible(true);
 
         tableViewer.addSelectionChangedListener(new ISelectionChangedListener() {
+            @Override
             public void selectionChanged(SelectionChangedEvent event) {
                 IStructuredSelection selection = (IStructuredSelection) event.getSelection();
                 selectedItems(selection.toArray());
@@ -163,6 +168,7 @@ public class BasicTableManager<T extends Object> extends AbstractTableManager<T>
         addDeleteListener(table);
 
         table.addListener(SWT.MouseMove, new Listener() {
+            @Override
             public void handleEvent(Event event) {
                 Point point = new Point(event.x, event.y);
                 TableItem item = table.getItem(point);
@@ -202,7 +208,7 @@ public class BasicTableManager<T extends Object> extends AbstractTableManager<T>
     }
 
     protected void updateTooltipFor(TableItem item, int columnIndex) {
-
+        // TODO
     }
 
     protected void selectedItems(Object[] items) {
@@ -214,14 +220,17 @@ public class BasicTableManager<T extends Object> extends AbstractTableManager<T>
         // TODO Auto-generated method stub
     }
 
+    @Override
     protected int headerHeightFor(Control control) {
         return ((Table) control).getHeaderHeight();
     }
 
+    @Override
     protected void setMenu(Control control, Menu menu) {
         ((Table) control).setMenu(menu);
     }
 
+    @Override
     protected Rectangle clientAreaFor(Control control) {
         return ((Table) control).getClientArea();
     }
@@ -231,5 +240,4 @@ public class BasicTableManager<T extends Object> extends AbstractTableManager<T>
         // TODO Auto-generated method stub
 
     }
-
 }

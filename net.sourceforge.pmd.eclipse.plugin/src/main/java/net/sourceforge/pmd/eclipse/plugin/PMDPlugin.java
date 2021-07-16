@@ -95,28 +95,29 @@ import net.sourceforge.pmd.lang.rule.RuleReference;
 public class PMDPlugin extends AbstractUIPlugin {
     private static final Logger LOG = LoggerFactory.getLogger(PMDPlugin.class);
 
-    private FileChangeReviewer changeReviewer;
+    private static Map<IProject, IJavaProject> javaProjectsByIProject = new HashMap<>();
 
-    private Map<RGB, Color> coloursByRGB = new HashMap<RGB, Color>();
+    // The shared instance
+    private static PMDPlugin plugin;
+
+    private static final Integer[] PRIORITY_VALUES = new Integer[] { Integer.valueOf(1), Integer.valueOf(2),
+        Integer.valueOf(3), Integer.valueOf(4), Integer.valueOf(5), };
+
+    @Deprecated
+    public static final String ROOT_LOG_ID = LogbackConfiguration.ROOT_LOG_ID;
 
     public static final String PLUGIN_ID = "net.sourceforge.pmd.eclipse.plugin";
     public static final String VIOLATIONS_OVERVIEW_ID = "net.sourceforge.pmd.eclipse.ui.views.violationOverview"; 
     public static final String VIOLATIONS_OUTLINE_ID = "net.sourceforge.pmd.eclipse.ui.views.violationOutline"; 
 
-    private static Map<IProject, IJavaProject> javaProjectsByIProject = new HashMap<IProject, IJavaProject>();
-
-    // The shared instance
-    private static PMDPlugin plugin;
-
     public static String version = "unknown";
 
-    private static final Integer[] PRIORITY_VALUES = new Integer[] { Integer.valueOf(1), Integer.valueOf(2),
-        Integer.valueOf(3), Integer.valueOf(4), Integer.valueOf(5), };
+    private FileChangeReviewer changeReviewer;
+
+    private Map<RGB, Color> coloursByRgb = new HashMap<>();
 
     private StringTable stringTable; // NOPMD by Herlin on 11/10/06 00:22
 
-    @Deprecated
-    public static final String ROOT_LOG_ID = LogbackConfiguration.ROOT_LOG_ID;
     private IPreferencesFactory preferencesFactory = new PreferencesFactoryImpl();
     private IPropertiesFactory propertiesFactory = new PropertiesFactoryImpl();
 
@@ -124,22 +125,19 @@ public class PMDPlugin extends AbstractUIPlugin {
 
     private final LogbackConfiguration logbackConfiguration = new LogbackConfiguration();
 
-    /**
-     * The constructor
-     */
     public PMDPlugin() {
         plugin = this; //NOPMD
     }
 
     public Color colorFor(RGB rgb) {
 
-        Color color = coloursByRGB.get(rgb);
+        Color color = coloursByRgb.get(rgb);
         if (color != null) {
             return color;
         }
 
         color = new Color(null, rgb.red, rgb.green, rgb.blue);
-        coloursByRGB.put(rgb, color);
+        coloursByRgb.put(rgb, color);
 
         return color;
     }
@@ -203,7 +201,7 @@ public class PMDPlugin extends AbstractUIPlugin {
 
     private void disposeResources() {
 
-        disposeAll(coloursByRGB.values());
+        disposeAll(coloursByRgb.values());
     }
 
     public static void disposeAll(Collection<Color> colors) {
@@ -266,7 +264,7 @@ public class PMDPlugin extends AbstractUIPlugin {
      */
     @Deprecated
     public Set<IFile> getOpenFiles() {
-        Set<IFile> files = new HashSet<IFile>();
+        Set<IFile> files = new HashSet<>();
         IEditorReference[] refs = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
                 .getEditorReferences();
         if (refs.length > 0) {
@@ -637,7 +635,7 @@ public class PMDPlugin extends AbstractUIPlugin {
             return;
         }
 
-        Collection<IResource> withParents = new HashSet<IResource>(changedFiles.size() * 2);
+        Collection<IResource> withParents = new HashSet<>(changedFiles.size() * 2);
         withParents.addAll(changedFiles);
         for (IFile file : changedFiles) {
             IResource parent = file.getParent();
@@ -709,7 +707,7 @@ public class PMDPlugin extends AbstractUIPlugin {
             return;
         }
 
-        Collection<IResource> changes = new ArrayList<IResource>();
+        Collection<IResource> changes = new ArrayList<>();
 
         addFilesTo(resource, changes);
 

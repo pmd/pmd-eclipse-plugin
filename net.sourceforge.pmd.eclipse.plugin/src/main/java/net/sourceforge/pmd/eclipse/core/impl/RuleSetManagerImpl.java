@@ -19,8 +19,8 @@ import net.sourceforge.pmd.eclipse.core.IRuleSetManager;
  */
 public class RuleSetManagerImpl implements IRuleSetManager {
     
-    private final List<RuleSet> ruleSets = new ArrayList<RuleSet>();
-    private final List<RuleSet> defaultRuleSets = new ArrayList<RuleSet>();
+    private final List<RuleSet> ruleSets = new ArrayList<>();
+    private final List<RuleSet> defaultRuleSets = new ArrayList<>();
 
     @Override
     public Collection<RuleSet> getRegisteredRuleSets() {

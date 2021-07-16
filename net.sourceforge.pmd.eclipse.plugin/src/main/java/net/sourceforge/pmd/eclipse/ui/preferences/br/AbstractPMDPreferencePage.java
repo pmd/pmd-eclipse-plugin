@@ -58,15 +58,13 @@ public abstract class AbstractPMDPreferencePage extends PreferencePage implement
      * 
      * @see PreferencePage#init
      */
-
+    @Override
     public void init(IWorkbench workbench) {
         // setDescription(getMessage(descriptionId()));
         preferences = PMDPlugin.getDefault().loadPreferences();
     }
 
-    /**
-     * @see org.eclipse.jface.preference.IPreferencePage#performOk()
-     */
+    @Override
     public boolean performOk() {
 
         preferences.sync();
@@ -94,6 +92,7 @@ public abstract class AbstractPMDPreferencePage extends PreferencePage implement
             try {
                 ProgressMonitorDialog monitorDialog = new ProgressMonitorDialog(getShell());
                 monitorDialog.run(true, true, new IRunnableWithProgress() {
+                    @Override
                     public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
                         try {
                             ResourcesPlugin.getWorkspace().build(IncrementalProjectBuilder.FULL_BUILD, monitor);

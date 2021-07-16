@@ -48,10 +48,10 @@ public final class InternalRuleSetUtil {
 
     public static RuleSet addExcludePatterns(RuleSet ruleSet, Collection<Pattern> activeExclusionPatterns,
             Collection<Pattern> buildPathExcludePatterns) {
-        Set<Pattern> newExcludePatterns = new HashSet<Pattern>(ruleSet.getFileExclusions());
+        Set<Pattern> newExcludePatterns = new HashSet<>(ruleSet.getFileExclusions());
         newExcludePatterns.addAll(activeExclusionPatterns);
         newExcludePatterns.addAll(buildPathExcludePatterns);
-        Set<Pattern> newIncludePatterns = new HashSet<Pattern>(ruleSet.getFileInclusions());
+        Set<Pattern> newIncludePatterns = new HashSet<>(ruleSet.getFileInclusions());
 
         RuleSetFactory factory = RulesetsFactoryUtils.defaultFactory();
         return factory.createNewRuleSet(ruleSet.getName(), ruleSet.getDescription(), ruleSet.getFileName(),
@@ -62,8 +62,8 @@ public final class InternalRuleSetUtil {
 
     public static RuleSet addIncludePatterns(RuleSet ruleSet, Collection<Pattern> activeInclusionPatterns,
             Collection<Pattern> buildPathIncludePatterns) {
-        Set<Pattern> newExcludePatterns = new HashSet<Pattern>(ruleSet.getFileExclusions());
-        Set<Pattern> newIncludePatterns = new HashSet<Pattern>(ruleSet.getFileInclusions());
+        Set<Pattern> newExcludePatterns = new HashSet<>(ruleSet.getFileExclusions());
+        Set<Pattern> newIncludePatterns = new HashSet<>(ruleSet.getFileInclusions());
         newIncludePatterns.addAll(activeInclusionPatterns);
         newIncludePatterns.addAll(buildPathIncludePatterns);
 
@@ -75,7 +75,7 @@ public final class InternalRuleSetUtil {
     }
 
     public static Collection<String> convert(Collection<Pattern> patterns) {
-        Collection<String> result = new HashSet<String>();
+        Collection<String> result = new HashSet<>();
         for (Pattern p : patterns) {
             result.add(p.pattern());
         }
@@ -83,7 +83,7 @@ public final class InternalRuleSetUtil {
     }
 
     public static Collection<Pattern> convertStringPatterns(Collection<String> patterns) {
-        Collection<Pattern> result = new HashSet<Pattern>();
+        Collection<Pattern> result = new HashSet<>();
         for (String p : patterns) {
             result.add(Pattern.compile(p));
         }

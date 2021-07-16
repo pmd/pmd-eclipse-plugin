@@ -82,7 +82,7 @@ public class FileChangeReviewer implements IResourceChangeListener {
         // reset this flag, so the next time, the log shows again.
         autoBuildingHintLogged = false;
 
-        Set<ResourceChange> itemsChanged = new HashSet<ResourceChange>();
+        Set<ResourceChange> itemsChanged = new HashSet<>();
 
         if (event.getType() == IResourceChangeEvent.POST_CHANGE) {
             changed(itemsChanged, event.getDelta(), new NullProgressMonitor());

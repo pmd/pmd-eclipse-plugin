@@ -16,23 +16,16 @@ import org.eclipse.swt.widgets.TableItem;
 public class RuleSetExcludeIncludePatternCellModifier implements ICellModifier {
     private final TableViewer tableViewer;
 
-    /**
-     * Constructor
-     */
     public RuleSetExcludeIncludePatternCellModifier(TableViewer tableViewer) {
         this.tableViewer = tableViewer;
     }
 
-    /**
-     * @see org.eclipse.jface.viewers.ICellModifier#canModify(Object, String)
-     */
+    @Override
     public boolean canModify(Object element, String property) {
         return property.equalsIgnoreCase(PMDPreferencePage.PROPERTY_PATTERN);
     }
 
-    /**
-     * @see org.eclipse.jface.viewers.ICellModifier#getValue(Object, String)
-     */
+    @Override
     public Object getValue(Object element, String property) {
         Object result = null;
         if (element instanceof RuleSetExcludeIncludePattern) {
@@ -44,10 +37,7 @@ public class RuleSetExcludeIncludePatternCellModifier implements ICellModifier {
         return result;
     }
 
-    /**
-     * @see org.eclipse.jface.viewers.ICellModifier#modify(Object, String,
-     *      Object)
-     */
+    @Override
     public void modify(Object element, String property, Object value) {
         TableItem item = (TableItem) element;
 

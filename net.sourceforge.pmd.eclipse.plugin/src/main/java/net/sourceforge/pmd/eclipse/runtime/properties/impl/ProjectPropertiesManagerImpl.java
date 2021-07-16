@@ -258,7 +258,7 @@ public class ProjectPropertiesManagerImpl implements IProjectPropertiesManager {
             }
         }
 
-        List<Rule> rulesToAdd = new ArrayList<Rule>();
+        List<Rule> rulesToAdd = new ArrayList<>();
         for (String ruleName : ruleNamesToAdd) {
             Rule rule = pluginRuleSet.getRuleByName(ruleName);
             if (rule != null) {
@@ -337,7 +337,7 @@ public class ProjectPropertiesManagerImpl implements IProjectPropertiesManager {
 
         if (!projectProperties.isRuleSetStoredInProject()) {
             final List<RuleSet> ruleSets = projectProperties.getProjectRuleSetList();
-            final List<RuleSpecTO> rules = new ArrayList<RuleSpecTO>();
+            final List<RuleSpecTO> rules = new ArrayList<>();
             List<String> excludePatterns = new ArrayList<>();
             List<String> includePatterns = new ArrayList<>();
 
@@ -374,7 +374,7 @@ public class ProjectPropertiesManagerImpl implements IProjectPropertiesManager {
 
         // Note: projectRuleSets.getAllRules() doesn't preserve the order...
         // that's why we need to collect the rules ourselves.
-        List<Rule> projectRules = new ArrayList<Rule>();
+        List<Rule> projectRules = new ArrayList<>();
         for (RuleSet ruleset : projectRuleSets) {
             projectRules.addAll(ruleset.getRules());
         }
@@ -387,8 +387,8 @@ public class ProjectPropertiesManagerImpl implements IProjectPropertiesManager {
             // 2-For all other rules, replace the current one by the plugin one
             RuleSet ruleset = projectRuleSets.get(0);
             RuleSet newRuleSet = RuleSetUtil.newEmpty(ruleset.getName(), ruleset.getDescription());
-            List<Rule> newRules = new ArrayList<Rule>();
-            List<Rule> haystack = new ArrayList<Rule>(pluginRuleSet.getRules());
+            List<Rule> newRules = new ArrayList<>();
+            List<Rule> haystack = new ArrayList<>(pluginRuleSet.getRules());
             for (RuleSet projectRuleSet : projectRuleSets) {
                 for (Rule projectRule : projectRuleSet.getRules()) {
                     final Rule pluginRule = RuleSetUtil.findSameRule(haystack, projectRule);

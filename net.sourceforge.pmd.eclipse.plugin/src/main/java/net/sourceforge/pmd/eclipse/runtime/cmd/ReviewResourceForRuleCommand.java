@@ -45,7 +45,7 @@ public class ReviewResourceForRuleCommand extends AbstractDefaultCommand {
         setOutputProperties(true);
         setReadOnly(true);
         setTerminated(false);
-        listenerList = new ArrayList<IPropertyListener>();
+        listenerList = new ArrayList<>();
     }
 
     public void setResource(IResource resource) {
@@ -71,17 +71,11 @@ public class ReviewResourceForRuleCommand extends AbstractDefaultCommand {
         return resource != null && rule != null;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * net.sourceforge.pmd.eclipse.runtime.cmd.AbstractDefaultCommand#reset()
-     */
     @Override
     public void reset() {
         setResource(null);
         setRule(null);
-        listenerList = new ArrayList<IPropertyListener>();
+        listenerList = new ArrayList<>();
     }
 
     @Override

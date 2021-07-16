@@ -15,7 +15,7 @@ import net.sourceforge.pmd.eclipse.runtime.preferences.IPreferences;
  *
  * @author Brian Remedios
  */
-public class PreferenceUIStore {
+public final class PreferenceUIStore {
 
     public static final PreferenceUIStore INSTANCE = new PreferenceUIStore();
 

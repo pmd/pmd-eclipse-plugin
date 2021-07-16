@@ -64,17 +64,15 @@ public class FilterPreferencesPage extends AbstractPMDPreferencePage
         implements ValueChangeListener, SizeChangeListener {
 
     private TableViewer tableViewer;
-    private Button addButton;
-    private Button removeButton;
 
+    private Button removeButton;
     private Button excludeButt;
     private Button includeButt;
     // private Button cpdButt;
     // private Button pmdButt;
     private Text patternField;
 
-    private BasicTableManager<FilterHolder> reportTableMgr;
-    private Collection<Control> editorWidgets = new ArrayList<Control>();
+    private Collection<Control> editorWidgets = new ArrayList<>();
 
     private static Image includeIcon = plugin.getImage("include", "icons/ok.gif");
     private static Image excludeIcon = plugin.getImage("exclude", "icons/forbidden.png");
@@ -143,7 +141,7 @@ public class FilterPreferencesPage extends AbstractPMDPreferencePage
 
     private FilterHolder[] currentFilters() {
 
-        List<FilterHolder> holders = new ArrayList<FilterHolder>();
+        List<FilterHolder> holders = new ArrayList<>();
 
         RuleSet ruleSet = plugin.getPreferencesManager().getRuleSet();
 
@@ -165,7 +163,7 @@ public class FilterPreferencesPage extends AbstractPMDPreferencePage
 
     private List<Pattern> tableFilters(boolean isInclude) {
 
-        List<Pattern> filters = new ArrayList<Pattern>();
+        List<Pattern> filters = new ArrayList<>();
 
         for (TableItem ti : tableViewer.getTable().getItems()) {
             FilterHolder fh = (FilterHolder) ti.getData();
@@ -210,7 +208,7 @@ public class FilterPreferencesPage extends AbstractPMDPreferencePage
         };
         BasicTableLabelProvider labelProvider = new BasicTableLabelProvider(FilterColumnUI.VISIBLE_COLUMNS);
 
-        reportTableMgr = new BasicTableManager<FilterHolder>("renderers", null, FilterColumnUI.VISIBLE_COLUMNS);
+        BasicTableManager<FilterHolder> reportTableMgr = new BasicTableManager<>("renderers", null, FilterColumnUI.VISIBLE_COLUMNS);
         tableViewer = reportTableMgr.buildTableViewer(parent,
                 SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL | SWT.MULTI | SWT.FULL_SELECTION | SWT.CHECK);
         reportTableMgr.setupColumns(FilterColumnUI.VISIBLE_COLUMNS);
@@ -397,7 +395,7 @@ public class FilterPreferencesPage extends AbstractPMDPreferencePage
         gridLayout.verticalSpacing = 3;
         composite.setLayout(gridLayout);
 
-        addButton = buildAddButton(composite);
+        Button addButton = buildAddButton(composite);
         removeButton = buildRemoveButton(composite);
 
         GridData data = new GridData();
@@ -426,7 +424,7 @@ public class FilterPreferencesPage extends AbstractPMDPreferencePage
      */
     private Set<FilterHolder> currentCheckedFilters() {
 
-        Set<FilterHolder> holders = new HashSet<FilterHolder>();
+        Set<FilterHolder> holders = new HashSet<>();
         for (Object holder : checkedItems(tableViewer.getTable())) {
             holders.add((FilterHolder) holder);
         }
@@ -439,7 +437,7 @@ public class FilterPreferencesPage extends AbstractPMDPreferencePage
      */
     private Set<FilterHolder> selectedFilters() {
 
-        Set<FilterHolder> holders = new HashSet<FilterHolder>();
+        Set<FilterHolder> holders = new HashSet<>();
         for (Object tItem : tableViewer.getTable().getSelection()) {
             holders.add((FilterHolder) (((TableItem) tItem).getData()));
         }
@@ -452,7 +450,7 @@ public class FilterPreferencesPage extends AbstractPMDPreferencePage
      */
     private static Collection<FilterHolder> filtersIn(List<?> tableItems) {
 
-        Set<FilterHolder> holders = new HashSet<FilterHolder>();
+        Set<FilterHolder> holders = new HashSet<>();
         for (Object tItem : tableItems) {
             holders.add((FilterHolder) tItem);
         }
@@ -468,7 +466,7 @@ public class FilterPreferencesPage extends AbstractPMDPreferencePage
      */
     private static Set<Object> checkedItems(Table table) {
 
-        Set<Object> checkedItems = new HashSet<Object>();
+        Set<Object> checkedItems = new HashSet<>();
 
         for (TableItem ti : table.getItems()) {
             if (ti.getChecked()) {
@@ -483,7 +481,7 @@ public class FilterPreferencesPage extends AbstractPMDPreferencePage
      * @param item
      *            Object
      */
-    private void checked(Object item) {
+    private void checked(Object item) { //NOPMD unused formal parameter
 
         // FIXME
         boolean matches = currentCheckedFilters().equals(preferences.activeExclusionPatterns());
@@ -509,7 +507,7 @@ public class FilterPreferencesPage extends AbstractPMDPreferencePage
             return Collections.emptySet();
         }
 
-        Set<String> patterns = new HashSet<String>();
+        Set<String> patterns = new HashSet<>();
         for (FilterHolder holder : holders) {
             if (holder.isInclude == getInclusions) {
                 patterns.add(holder.pattern);

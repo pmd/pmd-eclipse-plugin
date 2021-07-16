@@ -15,18 +15,18 @@ import net.sourceforge.pmd.Rule;
  */
 public class BasicRuleFieldAccessor implements RuleFieldAccessor {
 
-    public BasicRuleFieldAccessor() {
-    }
-
+    @Override
     public String labelFor(Rule rule) {
         Comparable<?> value = valueFor(rule);
         return value == null ? "" : value.toString();
     }
 
+    @Override
     public Comparable<?> valueFor(Rule rule) {
         throw new RuntimeException("unimplemented method");
     }
 
+    @Override
     public Comparable<?> valueFor(RuleCollection collection) {
         Comparable<?> aspect = RuleUtil.commonAspect(collection, this);
         if (aspect != null) {
@@ -35,6 +35,7 @@ public class BasicRuleFieldAccessor implements RuleFieldAccessor {
         return asString(RuleUtil.uniqueAspects(collection, this));
     }
 
+    @Override
     public Set<Comparable<?>> uniqueValuesFor(RuleCollection collection) {
         return RuleUtil.uniqueAspects(collection, this);
     }

@@ -35,7 +35,7 @@ import net.sourceforge.pmd.eclipse.ui.ColumnDescriptor;
  */
 public abstract class AbstractTableManager<T extends Object> implements SortListener {
 
-    private final String widgetId; // for saving preference values
+    private final String widgetId; // NOPMD unused // for saving preference values
     protected boolean sortDescending;
     protected TableColumn sortColumn;
     protected Object columnSorter; // cast to concrete type in subclass
@@ -46,7 +46,7 @@ public abstract class AbstractTableManager<T extends Object> implements SortList
     // columns shown in the rule treetable in the desired order
     protected final ColumnDescriptor[] availableColumns; 
 
-    private final Set<ColumnDescriptor> hiddenColumns = new HashSet<ColumnDescriptor>();
+    private final Set<ColumnDescriptor> hiddenColumns = new HashSet<>();
 
     protected static PMDPlugin plugin = PMDPlugin.getDefault();
 
@@ -74,6 +74,7 @@ public abstract class AbstractTableManager<T extends Object> implements SortList
 
         protected void setWidth(final int width) {
             column.display().syncExec(new Runnable() {
+                @Override
                 public void run() {
                     // delay(10);
                     column.width(width);
@@ -81,6 +82,7 @@ public abstract class AbstractTableManager<T extends Object> implements SortList
             });
         }
 
+        @Override
         public void run() {
             if (endWidth > startWidth) {
                 for (int i = startWidth; i <= endWidth; i++) {
@@ -110,22 +112,27 @@ public abstract class AbstractTableManager<T extends Object> implements SortList
 
     protected static ColumnWidthAdapter adapterFor(final TableColumn column) {
         return new ColumnWidthAdapter() {
+            @Override
             public int width() {
                 return column.getWidth();
             }
 
+            @Override
             public void width(int newWidth) {
                 column.setWidth(newWidth);
             }
 
+            @Override
             public Display display() {
                 return column.getDisplay();
             }
 
+            @Override
             public void setData(String key, Object value) {
                 column.setData(key, value);
             }
 
+            @Override
             public Object getData(String key) {
                 return column.getData(key);
             }
@@ -142,6 +149,7 @@ public abstract class AbstractTableManager<T extends Object> implements SortList
         setupMenus(shell);
 
         control.addListener(SWT.MenuDetect, new Listener() {
+            @Override
             public void handleEvent(Event event) {
                 Point pt = display.map(null, control, new Point(event.x, event.y));
                 Rectangle clientArea = clientAreaFor(control);
@@ -184,6 +192,7 @@ public abstract class AbstractTableManager<T extends Object> implements SortList
     protected void addDeleteListener(Control control) {
 
         control.addKeyListener(new KeyAdapter() {
+            @Override
             public void keyPressed(KeyEvent ev) {
                 if (ev.character == SWT.DEL) {
                     removeSelectedItems();
@@ -200,6 +209,7 @@ public abstract class AbstractTableManager<T extends Object> implements SortList
             columnItem.setText(desc.label());
             final ColumnDescriptor columnDesc = desc;
             columnItem.addSelectionListener(new SelectionAdapter() {
+                @Override
                 public void widgetSelected(SelectionEvent e) {
                     toggleColumnVisiblity(columnDesc);
                 }
@@ -220,6 +230,7 @@ public abstract class AbstractTableManager<T extends Object> implements SortList
     protected void addDisposeListener(Control control) {
 
         control.addListener(SWT.Dispose, new Listener() {
+            @Override
             public void handleEvent(Event event) {
                 headerMenu.dispose();
                 tableMenu.dispose();
@@ -281,8 +292,9 @@ public abstract class AbstractTableManager<T extends Object> implements SortList
         // redrawTable();
     }
 
+    @SuppressWarnings("PMD.CompareObjectsWithEquals")
+    @Override
     public void sortBy(Object accessor, Object context) {
-
         if (columnSorter == accessor) {
             sortDescending = !sortDescending;
         } else {
@@ -311,8 +323,7 @@ public abstract class AbstractTableManager<T extends Object> implements SortList
     protected abstract void redrawTable(String columnId, int sortDirection);
 
     private void storeHiddenColumns() {
-
-        Set<String> columnIds = new HashSet<String>(hiddenColumns.size());
+        Set<String> columnIds = new HashSet<>(hiddenColumns.size());
         for (ColumnDescriptor desc : hiddenColumns) {
             columnIds.add(desc.id());
         }

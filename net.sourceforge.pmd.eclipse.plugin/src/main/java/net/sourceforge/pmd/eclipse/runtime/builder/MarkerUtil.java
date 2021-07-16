@@ -37,7 +37,7 @@ import net.sourceforge.pmd.eclipse.ui.model.RootRecord;
  * 
  * @author Brian Remedios
  */
-public class MarkerUtil {
+public final class MarkerUtil {
 
     public static final IMarker[] EMPTY_MARKERS = new IMarker[0];
 
@@ -51,7 +51,7 @@ public class MarkerUtil {
         final boolean[] foundOne = new boolean[] { false };
 
         IResourceVisitor ruleMarkerFinder = new IResourceVisitor() {
-
+            @Override
             public boolean visit(IResource resource) {
 
                 if (foundOne[0]) {
@@ -64,7 +64,7 @@ public class MarkerUtil {
                         IMarker[] ruleMarkers = null;
                         try {
                             ruleMarkers = resource.findMarkers(markerType, true, IResource.DEPTH_INFINITE);
-                        } catch (CoreException ex) {
+                        } catch (CoreException ignored) {
                             // what do to?
                         }
                         if (ruleMarkers != null && ruleMarkers.length > 0) {
@@ -101,7 +101,7 @@ public class MarkerUtil {
 
     public static Set<IProject> commonProjectsOf(IMarker[] markers) {
 
-        Set<IProject> projects = new HashSet<IProject>();
+        Set<IProject> projects = new HashSet<>();
 
         for (IMarker marker : markers) {
             IProject project = projectFor(marker.getResource());
@@ -150,7 +150,7 @@ public class MarkerUtil {
                 return 0;
             }
 
-            List<IMarker> matches = new ArrayList<IMarker>(markers.length);
+            List<IMarker> matches = new ArrayList<>(markers.length);
 
             for (IMarker marker : markers) {
                 String name = ruleNameFor(marker);
@@ -171,7 +171,7 @@ public class MarkerUtil {
 
     public static List<IMarkerDelta> markerDeltasIn(IResourceChangeEvent event) {
 
-        List<IMarkerDelta> deltas = new ArrayList<IMarkerDelta>();
+        List<IMarkerDelta> deltas = new ArrayList<>();
         for (String markerType : PMDRuntimeConstants.RULE_MARKER_TYPES) {
             IMarkerDelta[] deltaArray = event.findMarkerDeltas(markerType, true);
             for (IMarkerDelta delta : deltaArray) {
@@ -184,7 +184,7 @@ public class MarkerUtil {
 
     public static List<Rule> rulesFor(IMarker[] markers) {
 
-        List<Rule> rules = new ArrayList<Rule>(markers.length);
+        List<Rule> rules = new ArrayList<>(markers.length);
         RuleSet ruleset = PMDPlugin.getDefault().getPreferencesManager().getRuleSet();
 
         for (IMarker marker : markers) {
@@ -247,7 +247,7 @@ public class MarkerUtil {
 
     public static IMarker[] findMarkers(IResource resource, String[] markerTypes) throws CoreException {
 
-        List<IMarker> markerList = new ArrayList<IMarker>();
+        List<IMarker> markerList = new ArrayList<>();
 
         for (String markerType : markerTypes) {
             for (IMarker marker : resource.findMarkers(markerType, true, IResource.DEPTH_INFINITE)) {
@@ -262,7 +262,7 @@ public class MarkerUtil {
     public static Set<Integer> priorityRangeOf(IResource resource, String[] markerTypes, int sizeLimit)
             throws CoreException {
 
-        Set<Integer> priorityLevels = new HashSet<Integer>(sizeLimit);
+        Set<Integer> priorityLevels = new HashSet<>(sizeLimit);
 
         for (String markerType : markerTypes) {
             for (IMarker marker : resource.findMarkers(markerType, true, IResource.DEPTH_INFINITE)) {
@@ -283,7 +283,7 @@ public class MarkerUtil {
 
     private static void gatherRuleNames() {
 
-        rulesByName = new HashMap<String, Rule>();
+        rulesByName = new HashMap<>();
         Collection<RuleSet> ruleSets = PMDPlugin.getDefault().getRuleSetManager().getRegisteredRuleSets();
         for (RuleSet rs : ruleSets) {
             for (Rule rule : rs.getRules()) {
@@ -304,7 +304,7 @@ public class MarkerUtil {
 
         gatherRuleNames();
 
-        Set<IFile> files = new HashSet<IFile>();
+        Set<IFile> files = new HashSet<>();
 
         for (AbstractPMDRecord projectRecord : root.getChildren()) {
             for (AbstractPMDRecord packageRecord : projectRecord.getChildren()) {
@@ -318,7 +318,6 @@ public class MarkerUtil {
                                 continue;
                             }
                             files.add((IFile) fileRecord.getResource());
-                            break;
                         }
                     }
                 }

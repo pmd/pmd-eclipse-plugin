@@ -63,7 +63,7 @@ public class DetectCutAndPasteCmd extends AbstractProjectCommand {
         setOutputProperties(true);
         setReadOnly(false);
         setTerminated(false);
-        listeners = new ArrayList<IPropertyListener>();
+        listeners = new ArrayList<>();
     }
 
     private void notifyListeners(final CPD cpd) {
@@ -123,7 +123,7 @@ public class DetectCutAndPasteCmd extends AbstractProjectCommand {
         setMinTileSize(PMDPlugin.getDefault().loadPreferences().getMinTileSize());
         setCreateReport(false);
         addPropertyListener(null);
-        listeners = new ArrayList<IPropertyListener>();
+        listeners = new ArrayList<>();
     }
 
     /**

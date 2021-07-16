@@ -90,7 +90,7 @@ public class ProjectRecord extends AbstractPMDRecord {
 
     @Override
     protected final AbstractPMDRecord[] createChildren() {
-        final Set<AbstractPMDRecord> packages = new HashSet<AbstractPMDRecord>();
+        final Set<AbstractPMDRecord> packages = new HashSet<>();
         try {
             // search for Packages
             project.accept(new IResourceVisitor() {
@@ -162,7 +162,7 @@ public class ProjectRecord extends AbstractPMDRecord {
      * @return
      */
     protected final Set<PackageRecord> createPackagesFromFragmentRoot(IPackageFragmentRoot root) {
-        final Set<PackageRecord> packages = new HashSet<PackageRecord>();
+        final Set<PackageRecord> packages = new HashSet<>();
         IJavaElement[] fragments = null;
         try {
             // search for all children
@@ -182,7 +182,7 @@ public class ProjectRecord extends AbstractPMDRecord {
     }
 
     protected final Set<FolderRecord> createPackagesFromFolderRoot(IFolder rootFolder) {
-        final Set<FolderRecord> folder = new HashSet<FolderRecord>();
+        final Set<FolderRecord> folder = new HashSet<>();
 
         try {
             for (IResource resource : rootFolder.members()) {

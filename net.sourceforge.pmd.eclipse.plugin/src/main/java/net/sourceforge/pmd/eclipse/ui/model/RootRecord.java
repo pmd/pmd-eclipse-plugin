@@ -57,7 +57,7 @@ public class RootRecord extends AbstractPMDRecord {
     protected final AbstractPMDRecord[] createChildren() {
         // get the projects
         final IProject[] projects = this.workspaceRoot.getProjects();
-        final List<AbstractPMDRecord> projectList = new ArrayList<AbstractPMDRecord>();
+        final List<AbstractPMDRecord> projectList = new ArrayList<>();
 
         // ... and create Records for them
         for (IProject project : projects) {

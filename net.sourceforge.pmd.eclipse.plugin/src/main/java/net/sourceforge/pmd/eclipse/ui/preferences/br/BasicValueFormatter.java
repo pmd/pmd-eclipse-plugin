@@ -17,8 +17,9 @@ public class BasicValueFormatter implements ValueFormatter {
     }
 
     /**
-     * Override in subclasses
+     * Override in subclasses.
      */
+    @Override
     public String format(Object value) {
         StringBuilder sb = new StringBuilder();
         format(value, sb);
@@ -26,8 +27,9 @@ public class BasicValueFormatter implements ValueFormatter {
     }
 
     /**
-     * Override in subclasses
+     * Override in subclasses.
      */
+    @Override
     public void format(Object value, StringBuilder target) {
         target.append(value);
     }

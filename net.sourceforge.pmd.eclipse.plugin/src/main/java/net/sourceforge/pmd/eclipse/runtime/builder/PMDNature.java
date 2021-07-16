@@ -112,7 +112,7 @@ public class PMDNature implements IProjectNature {
             final String[] natureIds = description.getNatureIds();
             String[] newNatureIds = new String[natureIds.length - 1];
             for (int i = 0, j = 0; i < natureIds.length; i++) {
-                if (!natureIds[i].equals(PMD_NATURE)) {
+                if (!PMD_NATURE.equals(natureIds[i])) {
                     newNatureIds[j++] = natureIds[i];
                 }
             }

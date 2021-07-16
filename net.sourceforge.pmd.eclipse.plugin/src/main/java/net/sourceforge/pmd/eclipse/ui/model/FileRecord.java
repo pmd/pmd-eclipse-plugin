@@ -5,9 +5,8 @@
 package net.sourceforge.pmd.eclipse.ui.model;
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -16,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
@@ -157,7 +157,7 @@ public class FileRecord extends AbstractPMDRecord {
             final Iterator<IMarker> markerIterator = markers.iterator();
 
             // put all markers in a map with key = rulename
-            final Map<String, MarkerRecord> allMarkerMap = new HashMap<String, MarkerRecord>();
+            final Map<String, MarkerRecord> allMarkerMap = new HashMap<>();
             while (markerIterator.hasNext()) {
                 final IMarker marker = markerIterator.next();
 
@@ -243,7 +243,7 @@ public class FileRecord extends AbstractPMDRecord {
     @Override
     public IMarker[] findMarkersByAttribute(String attributeName, Object value) {
         final IMarker[] markers = findMarkers();
-        final List<IMarker> attributeMarkers = new ArrayList<IMarker>();
+        final List<IMarker> attributeMarkers = new ArrayList<>();
         try {
             // we get all Markers and catch the ones that matches our criteria
             for (IMarker marker : markers) {
@@ -332,15 +332,15 @@ public class FileRecord extends AbstractPMDRecord {
      */
     protected String resourceToString(IResource resource) {
         final StringBuilder fileContents = new StringBuilder();
-        // we create a FileReader
-        try (BufferedReader bReader = new BufferedReader(new FileReader(resource.getRawLocation().toFile()))) {
+        IFile file = (IFile) resource.getAdapter(IFile.class);
+        try (BufferedReader bReader = new BufferedReader(new InputStreamReader(file.getContents(), file.getCharset()))) {
             // ... and read the File line by line
             while (bReader.ready()) {
                 fileContents.append(bReader.readLine()).append('\n');
             }
-        } catch (FileNotFoundException fnfe) {
+        } catch (CoreException e) {
             PMDPlugin.getDefault()
-                    .logError(StringKeys.ERROR_FILE_NOT_FOUND + resource.toString() + " in " + this.toString(), fnfe);
+                .logError(StringKeys.ERROR_FILE_NOT_FOUND + resource.toString() + " in " + this.toString(), e);
         } catch (IOException ioe) {
             PMDPlugin.getDefault().logError(StringKeys.ERROR_IO_EXCEPTION + this.toString(), ioe);
         }
@@ -356,7 +356,7 @@ public class FileRecord extends AbstractPMDRecord {
 
             // we need to change the Resource into a Java-File
             final IJavaElement element = JavaCore.create(resource);
-            final List<Object> methods = new ArrayList<Object>();
+            final List<Object> methods = new ArrayList<>();
 
             if (element instanceof ICompilationUnit) {
                 try {

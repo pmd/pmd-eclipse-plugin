@@ -70,7 +70,7 @@ class FilterHolder {
     }
 
     public static Boolean boolValueOf(Collection<FilterHolder> holders, Accessor boolAccessor) {
-        Set<Boolean> values = new HashSet<Boolean>();
+        Set<Boolean> values = new HashSet<>();
         for (FilterHolder fh : holders) {
             values.add(boolAccessor.boolValueFor(fh));
         }
@@ -79,7 +79,7 @@ class FilterHolder {
     }
 
     public static String textValueOf(Collection<FilterHolder> holders, Accessor textAccessor) {
-        Set<String> values = new HashSet<String>();
+        Set<String> values = new HashSet<>();
         for (FilterHolder fh : holders) {
             values.add(textAccessor.textValueFor(fh));
         }
