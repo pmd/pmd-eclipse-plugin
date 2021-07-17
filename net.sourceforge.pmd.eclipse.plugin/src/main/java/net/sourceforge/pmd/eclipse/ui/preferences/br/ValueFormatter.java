@@ -23,16 +23,19 @@ import net.sourceforge.pmd.util.ClassUtil;
 public interface ValueFormatter {
 
     ValueFormatter STRING_FORMATTER = new BasicValueFormatter(null) {
+        @Override
         public void format(Object value, StringBuilder target) {
             target.append(value == null ? "" : value);
         }
 
+        @Override
         public String format(Object value) {
             return value == null ? "" : value.toString();
         }
     };
 
     ValueFormatter MULTI_STRING_FORMATTER = new BasicValueFormatter(null) {
+        @Override
         public void format(Object value, StringBuilder target) {
             target.append('[');
             Util.asString((Object[]) value, ", ", target);
@@ -41,24 +44,28 @@ public interface ValueFormatter {
     };
 
     ValueFormatter NUMBER_FORMATTER = new BasicValueFormatter(null) {
+        @Override
         public void format(Object value, StringBuilder target) {
             target.append(value == null ? "?" : value);
         }
     };
 
     ValueFormatter BOOLEAN_FORMATTER = new BasicValueFormatter(null) {
+        @Override
         public void format(Object value, StringBuilder target) {
             target.append(value == null ? "?" : value);
         }
     };
 
     ValueFormatter TYPE_FORMATTER = new BasicValueFormatter(null) {
+        @Override
         public void format(Object value, StringBuilder target) {
             target.append(value == null ? "" : ClassUtil.asShortestName((Class<?>) value));
         }
     };
 
     ValueFormatter MULTI_TYPE_FORMATTER = new BasicValueFormatter(null) {
+        @Override
         public void format(Object value, StringBuilder target) {
             target.append('[');
             Util.asString(MultiTypeEditorFactory.shortNamesFor((Class<?>[]) value), ", ", target);
@@ -67,6 +74,7 @@ public interface ValueFormatter {
     };
 
     ValueFormatter METHOD_FORMATTER = new BasicValueFormatter(null) {
+        @Override
         public void format(Object value, StringBuilder target) {
             if (value == null) {
                 return;
@@ -76,9 +84,10 @@ public interface ValueFormatter {
     };
 
     ValueFormatter MULTI_METHOD_FORMATTER = new BasicValueFormatter(null) {
+        @Override
         public void format(Object value, StringBuilder target) {
             target.append('[');
-            Object[] methods = ((Object[]) value);
+            Object[] methods = (Object[]) value;
             if (methods == null || methods.length == 0) {
                 target.append(']');
                 return;
@@ -93,12 +102,14 @@ public interface ValueFormatter {
     };
 
     ValueFormatter OBJECT_FORMATTER = new BasicValueFormatter(null) {
+        @Override
         public void format(Object value, StringBuilder target) {
             target.append(value == null ? "" : value);
         }
     };
 
     ValueFormatter OBJECT_ARRAY_FORMATTER = new BasicValueFormatter(null) {
+        @Override
         public void format(Object value, StringBuilder target) {
             target.append('[');
             Util.asString((Object[]) value, ", ", target);
@@ -109,30 +120,35 @@ public interface ValueFormatter {
     // =================================================================
 
     ValueFormatter PRIORITY_FORMATTER = new BasicValueFormatter(null) {
+        @Override
         public String format(Object value) {
             return UISettings.labelFor((RulePriority) value);
         }
     };
 
     ValueFormatter LANGUAGE_FORMATTER = new BasicValueFormatter(null) {
+        @Override
         public String format(Object value) {
             return ((Language) value).getName();
         }
     };
 
     ValueFormatter LANGUAGE_VERSION_FORMATTER = new BasicValueFormatter(null) {
+        @Override
         public String format(Object value) {
             return ((LanguageVersion) value).getName();
         }
     };
 
     ValueFormatter DATE_FROM_LONG_FORMATTER = new BasicValueFormatter("Date") {
+        @Override
         public String format(Object value) {
             return new Date((Long) value).toString();
         }
     };
 
     ValueFormatter TIME_FROM_LONG_FORMATTER = new BasicValueFormatter("Time") {
+        @Override
         public String format(Object value) {
             return new Date((Long) value).toString();
         }

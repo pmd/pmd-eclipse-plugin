@@ -23,6 +23,7 @@ This is a minor release.
 *   `net.sourceforge.pmd.eclipse.plugin.PMDPlugin.getPluginFolder()`
 *   `net.sourceforge.pmd.eclipse.runtime.cmd.BaseVisitor.isUseTaskMarker()`
 *   `net.sourceforge.pmd.eclipse.runtime.cmd.BaseVisitor.setUseTaskMarker(boolean)`
+*   `net.sourceforge.pmd.eclipse.ui.preferences.br.FilterManager`
 
 ### External Contributions
 

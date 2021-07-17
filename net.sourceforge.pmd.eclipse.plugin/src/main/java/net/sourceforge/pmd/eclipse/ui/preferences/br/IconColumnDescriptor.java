@@ -59,29 +59,32 @@ public class IconColumnDescriptor extends AbstractRuleColumnDescriptor {
 
     private static Map<Object, Image> iconsFor(Map<Object, String> imageNamesByValue) {
 
-        Map<Object, Image> imagesByValue = new HashMap<Object, Image>(imageNamesByValue.size());
+        Map<Object, Image> imagesByValue = new HashMap<>(imageNamesByValue.size());
         for (Map.Entry<Object, String> entry : imageNamesByValue.entrySet()) {
             imagesByValue.put(entry.getKey(), ResourceManager.imageFor(entry.getValue()));
         }
         return imagesByValue;
     }
 
+    @Override
     public Image imageFor(Rule rule) {
         Object value = valueFor(rule);
         return iconsByValue.get(value);
     }
 
+    @Override
     public Image imageFor(RuleCollection collection) {
         Object value = valueFor(collection);
         return iconsByValue.get(value);
     }
 
+    @Override
     public TreeColumn newTreeColumnFor(Tree parent, int columnIndex, SortListener sortListener,
             Map<Integer, List<Listener>> paintListeners) {
-        TreeColumn tc = buildTreeColumn(parent, sortListener);
-        return tc;
+        return buildTreeColumn(parent, sortListener);
     }
 
+    @Override
     public String stringValueFor(Rule rule) {
         return null;
     }

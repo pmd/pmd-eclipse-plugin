@@ -36,72 +36,85 @@ public interface RuleFieldAccessor {
     String[] RULE_TYPE_TYPERESOLUTION = new String[] { "T", "Type resolving" };
 
     RuleFieldAccessor SINCE = new BasicRuleFieldAccessor() {
+        @Override
         public Comparable<String> valueFor(Rule rule) {
             return rule.getSince();
         }
     };
 
     RuleFieldAccessor PRIORITY = new BasicRuleFieldAccessor() {
+        @Override
         public Comparable<?> valueFor(Rule rule) {
             return rule.getPriority();
         }
 
+        @Override
         public String labelFor(Rule rule) {
             return UISettings.labelFor(rule.getPriority());
         }
 
+        @Override
         public Comparable<?> valueFor(RuleCollection collection) {
             return RuleUtil.commonPriority(collection);
         }
     };
 
     RuleFieldAccessor PRIORITY_NAME = new BasicRuleFieldAccessor() {
+        @Override
         public Comparable<String> valueFor(Rule rule) {
             return UISettings.labelFor(rule.getPriority());
         }
     };
 
     RuleFieldAccessor FIX_COUNT = new BasicRuleFieldAccessor() {
+        @Override
         public Comparable<Integer> valueFor(Rule rule) {
             return PMDResolutionGenerator.fixCountFor(rule);
         }
     };
 
     RuleFieldAccessor NAME = new BasicRuleFieldAccessor() {
+        @Override
         public Comparable<String> valueFor(Rule rule) {
             return rule.getName();
         }
     };
 
     RuleFieldAccessor DESCRIPTION = new BasicRuleFieldAccessor() {
+        @Override
         public Comparable<String> valueFor(Rule rule) {
             return rule.getDescription();
         }
     };
 
     RuleFieldAccessor USES_DFA = new BasicRuleFieldAccessor() {
+        @Override
         public Comparable<Boolean> valueFor(Rule rule) {
             return rule.isDfa();
         }
 
+        @Override
         public Comparable<?> valueFor(RuleCollection collection) {
             return RuleUtil.allUseDfa(collection);
         }
     };
 
     RuleFieldAccessor MESSAGE = new BasicRuleFieldAccessor() {
+        @Override
         public Comparable<String> valueFor(Rule rule) {
             return rule.getMessage();
         }
     };
 
     RuleFieldAccessor URL = new BasicRuleFieldAccessor() {
+        @Override
         public Comparable<String> valueFor(Rule rule) {
             return rule.getExternalInfoUrl();
         }
     };
 
     RuleFieldAccessor EXAMPLE_COUNT = new BasicRuleFieldAccessor() {
+        @Override
         public Comparable<?> valueFor(Rule rule) {
             int count = rule.getExamples().size();
             return count > 0 ? Integer.toString(count) : "";
@@ -109,6 +122,7 @@ public interface RuleFieldAccessor {
     };
 
     RuleFieldAccessor RULE_TYPE = new BasicRuleFieldAccessor() {
+        @Override
         public Comparable<String> valueFor(Rule rule) {
             StringBuilder sb = new StringBuilder(3);
             if (RuleUtil.isXPathRule(rule)) {
@@ -126,10 +140,10 @@ public interface RuleFieldAccessor {
             return sb.toString();
         }
 
-        final int labelTypeIdx = 0; // just show the letter codes
-
+        @Override
         public String labelFor(Rule rule) {
-            List<String> types = new ArrayList<String>(3);
+            final int labelTypeIdx = 0; // just show the letter codes
+            List<String> types = new ArrayList<>(3);
             if (RuleUtil.isXPathRule(rule)) {
                 types.add(RULE_TYPE_XPATH[labelTypeIdx]);
             }
@@ -148,50 +162,52 @@ public interface RuleFieldAccessor {
     };
 
     RuleFieldAccessor LANGUAGE = new BasicRuleFieldAccessor() {
+        @Override
         public Comparable<Language> valueFor(Rule rule) {
             return rule.getLanguage();
         }
 
+        @Override
         public String labelFor(Rule rule) {
             return rule.getLanguage().getName();
         }
     };
 
     RuleFieldAccessor MIN_LANGUAGE_VERSION = new BasicRuleFieldAccessor() {
+        @Override
         public Comparable<LanguageVersion> valueFor(Rule rule) {
             return rule.getMinimumLanguageVersion();
         }
     };
 
     RuleFieldAccessor MAX_LANGUAGE_VERSION = new BasicRuleFieldAccessor() {
+        @Override
         public Comparable<LanguageVersion> valueFor(Rule rule) {
             return rule.getMaximumLanguageVersion();
         }
     };
 
     RuleFieldAccessor VIOLATION_REGEX = new BasicRuleFieldAccessor() {
+        @Override
         public Comparable<String> valueFor(Rule rule) {
             return rule.getProperty(Rule.VIOLATION_SUPPRESS_REGEX_DESCRIPTOR);
         }
     };
 
     RuleFieldAccessor VIOLATION_XPATH = new BasicRuleFieldAccessor() {
+        @Override
         public Comparable<String> valueFor(Rule rule) {
             return rule.getProperty(Rule.VIOLATION_SUPPRESS_XPATH_DESCRIPTOR);
         }
     };
 
     RuleFieldAccessor NON_DEFAULT_PROPERTY_COUNT = new BasicRuleFieldAccessor() {
+        @Override
         public Comparable<Integer> valueFor(Rule rule) {
             return RuleUtil.modifiedPropertiesIn(rule).size();
         }
     };
 
-    /**
-     * @param rule
-     *            Rule
-     * @return Comparable
-     */
     Comparable<?> valueFor(Rule rule);
 
     Comparable<?> valueFor(RuleCollection collection);

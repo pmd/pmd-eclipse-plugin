@@ -10,7 +10,7 @@ import net.sourceforge.pmd.RuleSet;
  * A value and label extractor interface for anything implementing the RuleSet
  * interface and may be real fields or values held as properties.
  *
- * Value returned are typed as comparable to facilitate sorting. Never return
+ * <p>Value returned are typed as comparable to facilitate sorting. Never return
  * null, return an empty string instead.
  *
  * @author Brian Remedios
@@ -18,36 +18,42 @@ import net.sourceforge.pmd.RuleSet;
 public interface RuleSetFieldAccessor {
 
     RuleSetFieldAccessor NAME = new BasicRuleSetFieldAccessor() {
+        @Override
         public Comparable<String> valueFor(RuleSet ruleSet) {
             return ruleSet.getName();
         }
     };
 
     RuleSetFieldAccessor FILE_NAME = new BasicRuleSetFieldAccessor() {
+        @Override
         public Comparable<String> valueFor(RuleSet ruleSet) {
             return ruleSet.getFileName();
         }
     };
 
     RuleSetFieldAccessor DESCRIPTION = new BasicRuleSetFieldAccessor() {
+        @Override
         public Comparable<String> valueFor(RuleSet ruleSet) {
             return ruleSet.getDescription();
         }
     };
 
     RuleSetFieldAccessor SIZE = new BasicRuleSetFieldAccessor() {
+        @Override
         public Comparable<Integer> valueFor(RuleSet ruleSet) {
             return ruleSet.size();
         }
     };
 
     RuleSetFieldAccessor INCLUDE_PATTERN_COUNT = new BasicRuleSetFieldAccessor() {
+        @Override
         public Comparable<Integer> valueFor(RuleSet ruleSet) {
             return ruleSet.getFileInclusions().size();
         }
     };
 
     RuleSetFieldAccessor EXCLUDE_PATTERN_COUNT = new BasicRuleSetFieldAccessor() {
+        @Override
         public Comparable<Integer> valueFor(RuleSet ruleSet) {
             return ruleSet.getFileExclusions().size();
         }
