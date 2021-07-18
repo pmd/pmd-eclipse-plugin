@@ -55,14 +55,6 @@ public class DataflowGraphTable extends Composite implements PaintListener {
     protected static final int DEFAULT_ROW_HEIGHT = 20;
     protected static final int DEFAULT_COL_WIDTH = 100;
 
-    /**
-     * Constructor
-     *
-     * @param parent,
-     *            the parent Composite
-     * @param style,
-     *            the SWT-Style
-     */
     public DataflowGraphTable(Composite parent, int style) {
         super(parent, style);
         // first set default Values for avoiding Errors
@@ -102,7 +94,7 @@ public class DataflowGraphTable extends Composite implements PaintListener {
     }
 
     /**
-     * Builds the TableHeader (made of Buttons)
+     * Builds the TableHeader (made of Buttons).
      *
      * @param parent
      * @return the Composite representing the Table's Header
@@ -124,7 +116,7 @@ public class DataflowGraphTable extends Composite implements PaintListener {
     /**
      * Builds the Table Body, creates two areas, one that carries the real
      * Table, another one that is the table "Background" or "Frame" and fills
-     * the empty space when the viewing area is larger than the table
+     * the empty space when the viewing area is larger than the table.
      *
      * @param parent
      * @return a Composite-Array with the Table Frame [0] and the Table's Body
@@ -169,7 +161,7 @@ public class DataflowGraphTable extends Composite implements PaintListener {
     /**
      * Inits the Columns, thereby gives the Header something to show (the
      * Widths- and Titles-Field should be the same size, so that every Column
-     * has a real Width and Title)
+     * has a real Width and Title).
      *
      * @param widths,
      *            int-Field with the Widths of Columns
@@ -225,7 +217,7 @@ public class DataflowGraphTable extends Composite implements PaintListener {
 
     /**
      * Checks, if the header titles are correct, if there are fewer titles than
-     * columns, it adds empty Strings
+     * columns, it adds empty Strings.
      *
      * @param givenTitles
      * @return the corrected String-Array of Titles
@@ -256,7 +248,7 @@ public class DataflowGraphTable extends Composite implements PaintListener {
     }
 
     /**
-     * Sets the Number of Rows and the Height of each Row of this Table
+     * Sets the Number of Rows and the Height of each Row of this Table.
      *
      * @param count
      * @param height
@@ -269,7 +261,7 @@ public class DataflowGraphTable extends Composite implements PaintListener {
     }
 
     /**
-     * Set the Table's Foreground-, Background- and Line-Color
+     * Set the Table's Foreground-, Background- and Line-Color.
      *
      * @param foreGround
      * @param backGround
@@ -287,7 +279,7 @@ public class DataflowGraphTable extends Composite implements PaintListener {
     }
 
     /**
-     * Gives the Table real Data to show
+     * Gives the Table real Data to show.
      *
      * @param data
      */
@@ -298,7 +290,7 @@ public class DataflowGraphTable extends Composite implements PaintListener {
     }
 
     /**
-     * Returns the Composite-Area, the Graph should be built in
+     * Returns the Composite-Area, the Graph should be built in.
      *
      * @return the DataflowGraph-Composite
      */
@@ -307,7 +299,7 @@ public class DataflowGraphTable extends Composite implements PaintListener {
     }
 
     /**
-     * Redraws this Table
+     * Redraws this Table.
      */
     @Override
     public void redraw() {
@@ -326,7 +318,7 @@ public class DataflowGraphTable extends Composite implements PaintListener {
     }
 
     /**
-     * Initializes the ScrollBars for the Table
+     * Initializes the ScrollBars for the Table.
      *
      * @param parent
      */
@@ -348,7 +340,7 @@ public class DataflowGraphTable extends Composite implements PaintListener {
     }
 
     /**
-     * Synchronizes the ScrollBars when the Source-View is resized
+     * Synchronizes the ScrollBars when the Source-View is resized.
      *
      * @param source
      */
@@ -392,7 +384,7 @@ public class DataflowGraphTable extends Composite implements PaintListener {
 
     /**
      * Synchronizes the Frame's and Source's (the TableBody's) Position when
-     * scrolled
+     * scrolled.
      *
      * @param source
      */
@@ -413,7 +405,7 @@ public class DataflowGraphTable extends Composite implements PaintListener {
 
     /**
      * Synchronizes the Header with the TableBody when scrolled so the Header
-     * won't stay on its Position while the Body is scrolled
+     * won't stay on its Position while the Body is scrolled.
      */
     protected void syncHeader() {
         Control[] buttons = header.getChildren();
@@ -431,7 +423,7 @@ public class DataflowGraphTable extends Composite implements PaintListener {
     }
 
     /**
-     * Scrolls the horizontal Bar horizontally
+     * Scrolls the horizontal Bar horizontally.
      *
      * @param bar
      */
@@ -445,7 +437,7 @@ public class DataflowGraphTable extends Composite implements PaintListener {
     }
 
     /**
-     * Scrolls the vertical Bar vertically
+     * Scrolls the vertical Bar vertically.
      *
      * @param bar
      */
@@ -456,11 +448,7 @@ public class DataflowGraphTable extends Composite implements PaintListener {
         tablePosition.y = -y;
     }
 
-    /*
-     * @see
-     * org.eclipse.swt.events.PaintListener#paintControl(org.eclipse.swt.events.
-     * PaintEvent)
-     */
+    @Override
     public void paintControl(PaintEvent e) {
         Composite source = (Composite) e.getSource();
 
@@ -481,7 +469,7 @@ public class DataflowGraphTable extends Composite implements PaintListener {
     }
 
     /**
-     * Clears the Area of the DataflowGraph
+     * Clears the Area of the DataflowGraph.
      *
      * @param g
      */
@@ -499,8 +487,6 @@ public class DataflowGraphTable extends Composite implements PaintListener {
         int width = colWidths[graphColumn].intValue();
         int height = numRows * rowHeight.intValue();
 
-        Color formerColor = g.getBackground();
-
         if (bgColor == null) {
             bgColor = DEFAULT_BG_COLOR;
         }
@@ -511,7 +497,7 @@ public class DataflowGraphTable extends Composite implements PaintListener {
     }
 
     /**
-     * Builds Lines for the TableBody
+     * Builds Lines for the TableBody.
      *
      * @param g
      */
@@ -548,7 +534,7 @@ public class DataflowGraphTable extends Composite implements PaintListener {
     /**
      * Build Lines, that are visible, when the Table's Size is smaller than the
      * Viewers Size; then, - like other Eclipse Views - the Rest is filled with
-     * Lines till the End of the View
+     * Lines till the End of the View.
      *
      * @param g
      */
@@ -602,7 +588,7 @@ public class DataflowGraphTable extends Composite implements PaintListener {
     }
 
     /**
-     * Build labels showing the TableData
+     * Build labels showing the TableData.
      *
      * @param table
      * @param tableData
@@ -639,8 +625,7 @@ public class DataflowGraphTable extends Composite implements PaintListener {
                 // create the GraphColumn on the given Column
                 if (j == graphColumn) {
                     if (i == 0) {
-                        graphArea = createGraphArea(table, bgColor, fgColor, new Point(xPos, i * rowHeight.intValue()),
-                                new Point(width, numRows * height));
+                        graphArea = createGraphArea(table, new Point(width, numRows * height));
                     } else {
                         xPos += colWidths[j].intValue();
                     }
@@ -659,7 +644,7 @@ public class DataflowGraphTable extends Composite implements PaintListener {
     }
 
     /**
-     * Creates a Label that shows the given Text
+     * Creates a Label that shows the given Text.
      *
      * @param parent
      * @param style
@@ -688,7 +673,7 @@ public class DataflowGraphTable extends Composite implements PaintListener {
 
     /**
      * Creates a Composite, where the graph should be shown it spans over all
-     * Rows of the Table
+     * Rows of the Table.
      *
      * @param parent
      * @param bgColor
@@ -697,7 +682,7 @@ public class DataflowGraphTable extends Composite implements PaintListener {
      * @param size
      * @return the Graph's Area
      */
-    private Composite createGraphArea(Composite parent, Color bgColor, Color fgColor, Point coord, Point size) {
+    private Composite createGraphArea(Composite parent, Point size) {
         Composite graphCanvas = new Composite(parent, SWT.NONE);
 
         GridData data = new GridData(GridData.FILL_VERTICAL);

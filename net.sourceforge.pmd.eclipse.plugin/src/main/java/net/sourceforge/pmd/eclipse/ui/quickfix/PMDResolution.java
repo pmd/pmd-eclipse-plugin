@@ -7,7 +7,6 @@ package net.sourceforge.pmd.eclipse.ui.quickfix;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -41,24 +40,20 @@ public class PMDResolution implements IMarkerResolution, IRunnableWithProgress {
     private int lineNumber;
 
     /**
-     * PMDResolution adapts a Fix
+     * PMDResolution adapts a Fix.
      * 
-     * @param fix
+     * @param theFix
      */
-    public PMDResolution(Fix fix) {
-        this.fix = fix;
+    public PMDResolution(Fix theFix) {
+        this.fix = theFix;
     }
 
-    /**
-     * @see org.eclipse.ui.IMarkerResolution#getLabel()
-     */
+    @Override
     public String getLabel() {
         return fix.getLabel();
     }
 
-    /**
-     * @see org.eclipse.ui.IMarkerResolution#run(org.eclipse.core.resources.IMarker)
-     */
+    @Override
     public void run(IMarker marker) {
         LOG.debug("fixing...");
         IResource resource = marker.getResource();
@@ -79,27 +74,24 @@ public class PMDResolution implements IMarkerResolution, IRunnableWithProgress {
 
     }
 
-    /**
-     * @see org.eclipse.jface.operation.IRunnableWithProgress#run(org.eclipse.core.runtime.IProgressMonitor)
-     */
+    @Override
     public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
         try {
             monitor.beginTask("", 2);
             monitor.subTask(this.file.getName());
 
-            InputStream in = this.file.getContents();
-            BufferedReader br = new BufferedReader(new InputStreamReader(in));
             StringWriter sw = new StringWriter();
-            PrintWriter pw = new PrintWriter(sw);
-            while (br.ready()) {
-                String line = br.readLine();
-                pw.println(line);
+            try (BufferedReader br = new BufferedReader(new InputStreamReader(this.file.getContents(), this.file.getCharset()))) {
+                PrintWriter pw = new PrintWriter(sw);
+                while (br.ready()) {
+                    String line = br.readLine();
+                    pw.println(line);
+                }
             }
 
             monitor.worked(1);
 
             String fixCode = this.fix.fix(sw.toString(), this.lineNumber);
-
             file.setContents(new ByteArrayInputStream(fixCode.getBytes()), false, true, monitor);
 
             monitor.worked(1);

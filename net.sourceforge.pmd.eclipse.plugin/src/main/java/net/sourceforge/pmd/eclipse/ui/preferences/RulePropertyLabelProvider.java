@@ -17,10 +17,7 @@ import org.slf4j.LoggerFactory;
 public class RulePropertyLabelProvider extends AbstractTableLabelProvider {
     private static final Logger LOG = LoggerFactory.getLogger(RulePropertyLabelProvider.class);
 
-    /**
-     * @see org.eclipse.jface.viewers.ITableLabelProvider#getColumnText(Object,
-     *      int)
-     */
+    @Override
     public String getColumnText(Object element, int columnIndex) {
         String result = "";
         if (element instanceof RuleProperty) {

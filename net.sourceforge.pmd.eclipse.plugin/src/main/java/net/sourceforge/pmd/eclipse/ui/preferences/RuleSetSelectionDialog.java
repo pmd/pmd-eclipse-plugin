@@ -18,8 +18,6 @@ import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.viewers.CheckStateChangedEvent;
 import org.eclipse.jface.viewers.CheckboxTableViewer;
 import org.eclipse.jface.viewers.ICheckStateListener;
-import org.eclipse.jface.viewers.IStructuredContentProvider;
-import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -49,7 +47,7 @@ import net.sourceforge.pmd.eclipse.ui.preferences.br.RuleColumnDescriptor;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.RuleLabelProvider;
 
 /**
- * Implements a dialog for the user to select a rule set to import
+ * Implements a dialog for the user to select a rule set to import.
  *
  * @author Philippe Herlin
  * @author Brian Remedios
@@ -58,7 +56,6 @@ import net.sourceforge.pmd.eclipse.ui.preferences.br.RuleLabelProvider;
 public class RuleSetSelectionDialog extends Dialog {
 
     private Combo inputCombo;
-    private Button copyButton;
     private String importedRuleSetName;
     private RuleSet selectedRuleSet;
     private boolean importByReference;
@@ -90,7 +87,8 @@ public class RuleSetSelectionDialog extends Dialog {
         setShellStyle(getShellStyle() | SWT.RESIZE);
 
         Collection<RuleSet> registeredRuleSets = PMDPlugin.getDefault().getRuleSetManager().getRegisteredRuleSets();
-        SortedSet<RuleSet> sortedRuleSets = new TreeSet<RuleSet>(new Comparator<RuleSet>() {
+        SortedSet<RuleSet> sortedRuleSets = new TreeSet<>(new Comparator<RuleSet>() {
+            @Override
             public int compare(RuleSet ruleSet1, RuleSet ruleSet2) {
                 return labelFor(ruleSet1).compareToIgnoreCase(labelFor(ruleSet2));
             }
@@ -118,19 +116,18 @@ public class RuleSetSelectionDialog extends Dialog {
         return lang + " - " + rs.getName() + "  (" + rules.size() + ")";
     }
 
+    @Override
     protected void configureShell(Shell shell) {
         super.configureShell(shell);
 
         shell.setSize(500, 400);
     }
 
+    @Override
     protected boolean isResizable() {
         return true;
     }
 
-    /**
-     * @see org.eclipse.jface.dialogs.Dialog#createDialogArea(Composite)
-     */
     @Override
     protected Control createDialogArea(Composite parent) {
 
@@ -159,7 +156,7 @@ public class RuleSetSelectionDialog extends Dialog {
 
         buildReferenceButton(dlgArea);
 
-        copyButton = buildCopyButton(dlgArea);
+        Button copyButton = buildCopyButton(dlgArea);
         data = new GridData();
         data.horizontalAlignment = GridData.FILL;
         data.horizontalSpan = 2;
@@ -204,21 +201,16 @@ public class RuleSetSelectionDialog extends Dialog {
         tbl.setLinesVisible(true);
         tbl.setHeaderVisible(true);
 
-        ruleTable.setContentProvider(new IStructuredContentProvider() {
-
+        ruleTable.setContentProvider(new AbstractStructuredContentProvider() {
+            @Override
             public Object[] getElements(Object inputElement) {
                 RuleSet rs = selectedRuleset();
                 return rs == null ? new Object[0] : rs.getRules().toArray();
             }
-
-            public void dispose() {
-            }
-
-            public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-            }
         });
 
         ruleTable.addCheckStateListener(new ICheckStateListener() {
+            @Override
             public void checkStateChanged(CheckStateChangedEvent event) {
                 ruleChecked();
             }
@@ -235,7 +227,7 @@ public class RuleSetSelectionDialog extends Dialog {
 
     private void checkNonDupes() {
 
-        List<Rule> nonDupes = new ArrayList<Rule>();
+        List<Rule> nonDupes = new ArrayList<>();
 
         for (TableItem item : ruleTable.getTable().getItems()) {
             Rule rule = (Rule) item.getData();
@@ -248,13 +240,14 @@ public class RuleSetSelectionDialog extends Dialog {
         ruleTable.setCheckedElements(nonDupes.toArray());
     }
 
+    @Override
     public void create() {
         super.create();
         updateControls();
     }
 
     /**
-     * Build the labels
+     * Build the labels.
      */
     private Label buildLabel(Composite parent, String text) {
         Label label = new Label(parent, SWT.NONE);
@@ -263,7 +256,7 @@ public class RuleSetSelectionDialog extends Dialog {
     }
 
     /**
-     * Build the input combo box
+     * Build the input combo box.
      */
     private Combo buildInputCombo(Composite parent) {
         Combo combo = new Combo(parent, SWT.NONE);
@@ -271,6 +264,7 @@ public class RuleSetSelectionDialog extends Dialog {
         combo.setText("");
         combo.setToolTipText(getMessage(StringKeys.PREF_RULESETSELECTION_TOOLTIP_RULESET));
         combo.addSelectionListener(new SelectionAdapter() {
+            @Override
             public void widgetSelected(SelectionEvent event) {
                 ruleSetChanged();
             }
@@ -279,13 +273,14 @@ public class RuleSetSelectionDialog extends Dialog {
     }
 
     /**
-     * Build the browse push button
+     * Build the browse push button.
      */
     private Button buildBrowseButton(Composite parent) {
         Button button = new Button(parent, SWT.PUSH);
         button.setText(getMessage(StringKeys.PREF_RULESETSELECTION_BUTTON_BROWSE));
         button.setEnabled(true);
         button.addSelectionListener(new SelectionAdapter() {
+            @Override
             public void widgetSelected(SelectionEvent event) {
                 FileDialog dialog = new FileDialog(getShell(), SWT.OPEN);
                 String fileName = dialog.open();
@@ -299,7 +294,7 @@ public class RuleSetSelectionDialog extends Dialog {
     }
 
     /**
-     * Build the reference button
+     * Build the reference button.
      */
     private Button buildReferenceButton(Composite parent) {
         final Button button = new Button(parent, SWT.RADIO);
@@ -307,6 +302,7 @@ public class RuleSetSelectionDialog extends Dialog {
         button.setSelection(true);
         importByReference = true;
         button.addSelectionListener(new SelectionAdapter() {
+            @Override
             public void widgetSelected(SelectionEvent event) {
                 importByReference = true;
             }
@@ -316,13 +312,14 @@ public class RuleSetSelectionDialog extends Dialog {
     }
 
     /**
-     * Build the copy button
+     * Build the copy button.
      */
     private Button buildCopyButton(Composite parent) {
         final Button button = new Button(parent, SWT.RADIO);
         button.setText(getMessage(StringKeys.PREF_RULESETSELECTION_BUTTON_COPY));
         button.setSelection(false);
         button.addSelectionListener(new SelectionAdapter() {
+            @Override
             public void widgetSelected(SelectionEvent event) {
                 importByReference = false;
             }
@@ -362,7 +359,7 @@ public class RuleSetSelectionDialog extends Dialog {
         rs = InternalRuleSetUtil.addFileExclusions(rs, selectedRuleSet.getFileExclusions());
         rs = InternalRuleSetUtil.addFileInclusions(rs, selectedRuleSet.getFileInclusions());
 
-        Collection<Rule> rules = new ArrayList<Rule>();
+        Collection<Rule> rules = new ArrayList<>();
         for (Object rul : ruleTable.getCheckedElements()) {
             rules.add((Rule) rul);
         }

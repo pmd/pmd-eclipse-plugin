@@ -12,7 +12,7 @@ import java.nio.file.attribute.FileTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class FileModificationUtil {
+public final class FileModificationUtil {
     private static final Logger LOG = LoggerFactory.getLogger(FileModificationUtil.class);
 
     private FileModificationUtil() {

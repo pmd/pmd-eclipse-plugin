@@ -24,20 +24,15 @@ public class RuleGroup<T extends Comparable<T>> implements RuleCollection, Compa
     private T id;
     private String label;
     private String description;
-    private List<Rule> rules = new ArrayList<Rule>();
+    private List<Rule> rules = new ArrayList<>();
 
-    /**
-     * @param theId
-     *            Object
-     * @param theDescription
-     *            String
-     */
     public RuleGroup(T theId, String theLabel, String theDescription) {
         id = theId;
         label = theLabel;
         description = theDescription;
     }
 
+    @Override
     public boolean isEmpty() {
         return rules == null || rules.isEmpty();
     }
@@ -48,12 +43,13 @@ public class RuleGroup<T extends Comparable<T>> implements RuleCollection, Compa
      *
      * @return Rule
      */
+    @Override
     public Rule soleRule() {
         return rules.size() == 1 ? rules.get(0) : null;
     }
 
+    @Override
     public boolean rulesDo(RuleVisitor visitor) {
-
         for (Rule rule : rules) {
             if (!visitor.accept(rule)) {
                 return false;
@@ -70,16 +66,10 @@ public class RuleGroup<T extends Comparable<T>> implements RuleCollection, Compa
         return id;
     }
 
-    /**
-     * @return String
-     */
     public String description() {
         return description;
     }
 
-    /**
-     * @return String
-     */
     public String label() {
 
         if (label != null) {
@@ -96,26 +86,16 @@ public class RuleGroup<T extends Comparable<T>> implements RuleCollection, Compa
         Collections.sort(rules, ruleComparator);
     }
 
-    /**
-     * @return int
-     */
     public int ruleCount() {
         return rules.size();
     }
 
-    /**
-     * @param ref
-     *            Rule
-     */
     public void add(Rule ref) {
         rules.add(ref);
     }
 
-    /**
-     * @return Rule[]
-     */
     public Rule[] rules() {
-        return rules.toArray(new Rule[rules.size()]);
+        return rules.toArray(new Rule[0]);
     }
 
     /**
@@ -146,12 +126,13 @@ public class RuleGroup<T extends Comparable<T>> implements RuleCollection, Compa
         return !rules.isEmpty();
     }
 
+    @Override
     public String toString() {
         return label() + " rules: " + ruleCount();
     }
 
+    @Override
     public int compareTo(RuleGroup<T> otherGroup) {
-
         if (id == null) {
             return -1;
         }
@@ -161,5 +142,4 @@ public class RuleGroup<T extends Comparable<T>> implements RuleCollection, Compa
 
         return id.compareTo(otherGroup.id());
     }
-
 }

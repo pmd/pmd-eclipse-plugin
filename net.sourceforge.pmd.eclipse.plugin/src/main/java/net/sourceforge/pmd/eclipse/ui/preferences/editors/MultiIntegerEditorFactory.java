@@ -34,14 +34,13 @@ import net.sourceforge.pmd.util.CollectionUtil;
  *
  * @author Brian Remedios
  */
-public class MultiIntegerEditorFactory extends AbstractMultiValueEditorFactory<Integer> {
+public final class MultiIntegerEditorFactory extends AbstractMultiValueEditorFactory<Integer> {
 
     public static final MultiIntegerEditorFactory INSTANCE = new MultiIntegerEditorFactory();
 
-
     private MultiIntegerEditorFactory() { }
 
-
+    @Override
     public PropertyDescriptor<List<Integer>> createDescriptor(String name, String optionalDescription,
                                                               Control[] otherData) {
         return PropertyFactory.intListProperty(name).desc(optionalDescription)
@@ -49,50 +48,49 @@ public class MultiIntegerEditorFactory extends AbstractMultiValueEditorFactory<I
             .defaultValues(0).build();
     }
 
-
+    @Override
     protected List<Integer> valueFrom(Control valueControl) {
         return currentIntegers((Text) valueControl);
     }
 
-
     private List<Integer> currentIntegers(Text textWidget) {
-
         List<String> numberStrings = textWidgetValues(textWidget);
         if (numberStrings.isEmpty()) {
             return Collections.emptyList();
         }
 
-        List<Integer> ints = new ArrayList<Integer>(numberStrings.size());
+        List<Integer> ints = new ArrayList<>(numberStrings.size());
 
         for (String numString : numberStrings) {
             try {
                 Integer integer = Integer.parseInt(numString);
                 ints.add(integer);
-            } catch (Exception e) {
+            } catch (Exception ignored) {
                 // just eat it for now
             }
         }
         return ints;
     }
 
-
+    @Override
     protected Control addWidget(Composite parent, Integer value, PropertyDescriptor<List<Integer>> desc,
                                 PropertySource source) {
         return IntegerEditorFactory.newSpinner(parent, desc, value);
     }
 
-
+    @Override
     protected void setValue(Control widget, Integer valueIn) {
         Spinner spinner = (Spinner) widget;
         int value = valueIn == null ? spinner.getMinimum() : valueIn;
         spinner.setSelection(value);
     }
 
-
+    @Override
     protected void configure(final Text textWidget, final PropertyDescriptor<List<Integer>> desc,
                              final PropertySource source, final ValueChangeListener listener) {
 
         textWidget.addListener(SWT.FocusOut, new Listener() {
+            @Override
             public void handleEvent(Event event) {
                 List<Integer> newValue = currentIntegers(textWidget);
                 List<Integer> existingValue = valueFor(source, desc);
@@ -107,7 +105,7 @@ public class MultiIntegerEditorFactory extends AbstractMultiValueEditorFactory<I
         });
     }
 
-
+    @Override
     protected void update(PropertySource source, PropertyDescriptor<List<Integer>> desc, List<Integer> newValues) {
         source.setProperty(desc, newValues);
     }

@@ -51,10 +51,7 @@ public class RuleLabelProvider extends AbstractTableLabelProvider {
         return "??";
     }
 
-    /**
-     * @see org.eclipse.jface.viewers.ITableLabelProvider#getColumnText(Object,
-     *      int)
-     */
+    @Override
     public String getColumnText(Object element, int columnIndex) {
 
         if (columnIndex <= 0) {
@@ -79,10 +76,7 @@ public class RuleLabelProvider extends AbstractTableLabelProvider {
         return "??";
     }
 
-    /**
-     * @see org.eclipse.jface.viewers.ITableLabelProvider#getColumnImage(Object,
-     *      int)
-     */
+    @Override
     public Image getColumnImage(Object element, int columnIndex) {
 
         if (columnIndex <= 0) {
@@ -100,13 +94,6 @@ public class RuleLabelProvider extends AbstractTableLabelProvider {
         return null; // should never get here
     }
 
-    /**
-     * @param rawLabel
-     *            String
-     * @param count
-     *            int
-     * @return String
-     */
     private String standardized(String rawLabel, int count) {
 
         int rulesPos = rawLabel.indexOf(" Rules");
@@ -114,5 +101,4 @@ public class RuleLabelProvider extends AbstractTableLabelProvider {
 
         return filteredLabel + "  (" + count + ")";
     }
-
 }

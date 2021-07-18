@@ -20,7 +20,7 @@ import net.sourceforge.pmd.properties.PropertySource;
 /**
  * @author Brian Remedios
  */
-public class BooleanEditorFactory extends AbstractEditorFactory<Boolean> {
+public final class BooleanEditorFactory extends AbstractEditorFactory<Boolean> {
 
     public static final BooleanEditorFactory INSTANCE = new BooleanEditorFactory();
 
@@ -28,18 +28,21 @@ public class BooleanEditorFactory extends AbstractEditorFactory<Boolean> {
     private BooleanEditorFactory() { }
 
 
+    @Override
     public PropertyDescriptor<Boolean> createDescriptor(String name, String description, Control[] otherData) {
         return PropertyFactory.booleanProperty(name).desc(description)
-            .defaultValue(otherData == null ? false : valueFrom(otherData[1]))
+            .defaultValue(otherData != null && valueFrom(otherData[1]))
             .build();
     }
 
 
+    @Override
     protected Boolean valueFrom(Control valueControl) {
         return ((Button) valueControl).getSelection();
     }
 
 
+    @Override
     public Control newEditorOn(Composite parent, final PropertyDescriptor<Boolean> desc, final PropertySource source,
                                final ValueChangeListener listener, SizeChangeListener sizeListener) {
 
@@ -50,6 +53,7 @@ public class BooleanEditorFactory extends AbstractEditorFactory<Boolean> {
         butt.setSelection(set);
 
         SelectionAdapter sa = new SelectionAdapter() {
+            @Override
             public void widgetSelected(SelectionEvent event) {
                 boolean selected = butt.getSelection();
                 if (selected == valueFor(source, desc)) {

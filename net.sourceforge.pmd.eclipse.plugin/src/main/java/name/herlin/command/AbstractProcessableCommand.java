@@ -57,6 +57,7 @@ public abstract class AbstractProcessableCommand implements Command {
      * of concrete command cannot override this method. They are expected to
      * implement the execute method instead.
      */
+    @Override
     public final void performExecute() throws CommandException {
         if (!isReadyToExecute()) {
             throw new UnsetInputPropertiesException();
@@ -69,6 +70,7 @@ public abstract class AbstractProcessableCommand implements Command {
     /**
      * @see Command#join()
      */
+    @Override
     public final void join() throws CommandException {
         getCommandProcessor().waitCommandToFinish(this);
     }
@@ -86,26 +88,31 @@ public abstract class AbstractProcessableCommand implements Command {
     /**
      * @see name.herlin.command.Command#getDescription()
      */
+    @Override
     public abstract String getDescription();
 
     /**
      * @see name.herlin.command.Command#getName()
      */
+    @Override
     public abstract String getName();
 
     /**
      * @see name.herlin.command.Command#isReadOnly()
      */
+    @Override
     public abstract boolean isReadOnly();
 
     /**
      * @see name.herlin.command.Command#isReadyToExecute()
      */
+    @Override
     public abstract boolean isReadyToExecute();
 
     /**
      * @return Returns the terminated.
      */
+    @Override
     public final boolean isTerminated() {
         return terminated;
     }
@@ -120,6 +127,7 @@ public abstract class AbstractProcessableCommand implements Command {
     /**
      * @see name.herlin.command.Command#reset()
      */
+    @Override
     public abstract void reset();
 
     /**
@@ -140,16 +148,7 @@ public abstract class AbstractProcessableCommand implements Command {
 
             strategy = (CommandProcessorStrategy) strategyClass.newInstance();
 
-        } catch (ClassNotFoundException e) {
-            // @PMD:REVIEWED:EmptyCatchBlock: by Herlin on 01/05/05 19:00
-            // ignored
-        } catch (InstantiationException e) {
-            // @PMD:REVIEWED:EmptyCatchBlock: by Herlin on 01/05/05 19:00
-            // ignored
-        } catch (IllegalAccessException e) {
-            // @PMD:REVIEWED:EmptyCatchBlock: by Herlin on 01/05/05 19:00
-            // ignored
-        } catch (MissingResourceException e) {
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | MissingResourceException ignored) {
             // @PMD:REVIEWED:EmptyCatchBlock: by Herlin on 01/05/05 19:00
             // ignored
         } finally {

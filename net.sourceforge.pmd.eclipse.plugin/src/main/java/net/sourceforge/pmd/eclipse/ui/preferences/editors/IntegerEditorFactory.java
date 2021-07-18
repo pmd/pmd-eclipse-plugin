@@ -20,7 +20,7 @@ import net.sourceforge.pmd.properties.constraints.NumericConstraints;
 /**
  * @author Brian Remedios
  */
-public class IntegerEditorFactory extends AbstractNumericEditorFactory<Integer> {
+public final class IntegerEditorFactory extends AbstractNumericEditorFactory<Integer> {
 
     public static final IntegerEditorFactory INSTANCE = new IntegerEditorFactory();
 
@@ -28,25 +28,26 @@ public class IntegerEditorFactory extends AbstractNumericEditorFactory<Integer> 
     private IntegerEditorFactory() { }
 
 
+    @Override
     public PropertyDescriptor<Integer> createDescriptor(String name, String description, Control[] otherData) {
-
         return PropertyFactory.intProperty(name).desc(description)
             .require(NumericConstraints.inRange(minimumIn(otherData).intValue(), maximumIn(otherData).intValue()))
             .defaultValue(defaultIn(otherData).intValue()).build();
     }
 
-
+    @Override
     protected Integer valueFrom(Control valueControl) {
         return ((Spinner) valueControl).getSelection();
     }
 
-
+    @Override
     public Control newEditorOn(Composite parent, final PropertyDescriptor<Integer> desc, final PropertySource source,
                                final ValueChangeListener listener, SizeChangeListener sizeListener) {
 
         final Spinner spinner = newSpinner(parent, desc, valueFor(source, desc));
 
         spinner.addModifyListener(new ModifyListener() {
+            @Override
             public void modifyText(ModifyEvent event) {
                 Integer newValue = spinner.getSelection();
                 if (newValue.equals(valueFor(source, desc))) {

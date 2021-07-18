@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.eclipse.ui.preferences.editors;
 
 import java.lang.reflect.Method;
+import java.util.Objects;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -26,7 +27,7 @@ import net.sourceforge.pmd.util.ClassUtil;
  * @deprecated unsupported in PMD
  */
 @Deprecated
-public class MethodEditorFactory extends AbstractEditorFactory<Method> {
+public final class MethodEditorFactory extends AbstractEditorFactory<Method> {
 
     public static final MethodEditorFactory INSTANCE = new MethodEditorFactory();
     public static final String[] UNWANTED_PREFIXES = new String[] {
@@ -40,18 +41,18 @@ public class MethodEditorFactory extends AbstractEditorFactory<Method> {
 
     private MethodEditorFactory() { }
 
-
+    @Override
     public PropertyDescriptor<Method> createDescriptor(String name, String optionalDescription, Control[] otherData) {
         return new MethodProperty(name, "Method value " + name, STRING_LENGTH, new String[] {"java.lang"}, 0.0f);
     }
 
-
+    @Override
     protected Method valueFrom(Control valueControl) {
 
         return ((MethodPicker) valueControl).getMethod();
     }
 
-
+    @Override
     public Control newEditorOn(Composite parent, final PropertyDescriptor<Method> desc, final PropertySource source,
                                final ValueChangeListener listener, SizeChangeListener sizeListener) {
 
@@ -61,6 +62,7 @@ public class MethodEditorFactory extends AbstractEditorFactory<Method> {
         fillWidget(picker, desc, source);
 
         picker.addSelectionListener(new SelectionAdapter() {
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 Method newValue = picker.getMethod();
                 if (newValue == null) {
@@ -68,7 +70,7 @@ public class MethodEditorFactory extends AbstractEditorFactory<Method> {
                 }
 
                 Method existingValue = valueFor(source, desc);
-                if (existingValue == newValue) {
+                if (Objects.equals(existingValue, newValue)) {
                     return;
                 }
 
@@ -83,7 +85,6 @@ public class MethodEditorFactory extends AbstractEditorFactory<Method> {
 
 
     protected void fillWidget(MethodPicker widget, PropertyDescriptor<Method> desc, PropertySource source) {
-
         Method method = valueFor(source, desc);
         widget.setMethod(method);
         adjustRendering(source, desc, widget);

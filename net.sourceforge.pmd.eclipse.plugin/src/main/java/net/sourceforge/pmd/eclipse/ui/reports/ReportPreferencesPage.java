@@ -15,7 +15,6 @@ import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TableViewer;
-import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.FocusEvent;
@@ -36,6 +35,7 @@ import org.eclipse.swt.widgets.TableItem;
 
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.ui.BasicTableLabelProvider;
+import net.sourceforge.pmd.eclipse.ui.preferences.AbstractStructuredContentProvider;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.AbstractPMDPreferencePage;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.BasicTableManager;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.RuleSelection;
@@ -58,10 +58,8 @@ public class ReportPreferencesPage extends AbstractPMDPreferencePage
     private TableViewer tableViewer;
     private FormArranger formArranger;
 
-    private BasicTableManager reportTableMgr;
-
     /**
-     * Create and initialize the controls of the page
+     * Create and initialize the controls of the page.
      *
      * 
      * @param parent
@@ -90,7 +88,7 @@ public class ReportPreferencesPage extends AbstractPMDPreferencePage
     }
 
     /**
-     * Build the group of renderer property preferences
+     * Build the group of renderer property preferences.
      * 
      * @param parent
      *            the parent composite
@@ -110,7 +108,7 @@ public class ReportPreferencesPage extends AbstractPMDPreferencePage
     }
 
     /**
-     * Build the group of priority preferences
+     * Build the group of priority preferences.
      * 
      * @param parent
      *            the parent composite
@@ -118,25 +116,19 @@ public class ReportPreferencesPage extends AbstractPMDPreferencePage
      * @return the group widget
      */
     private Composite buildReportGroup(Composite parent) {
-
         Composite group = new Composite(parent, SWT.NONE);
         // group.setText("Formats");
         group.setLayout(new GridLayout(2, false));
 
-        IStructuredContentProvider contentProvider = new IStructuredContentProvider() {
-            public void dispose() {
-            }
-
-            public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-            }
-
+        IStructuredContentProvider contentProvider = new AbstractStructuredContentProvider() {
+            @Override
             public Object[] getElements(Object inputElement) {
                 return (Renderer[]) inputElement;
             }
         };
         BasicTableLabelProvider labelProvider = new BasicTableLabelProvider(ReportColumnUI.VISIBLE_COLUMNS);
 
-        reportTableMgr = new BasicTableManager("renderers", null, ReportColumnUI.VISIBLE_COLUMNS);
+        BasicTableManager reportTableMgr = new BasicTableManager("renderers", null, ReportColumnUI.VISIBLE_COLUMNS);
         tableViewer = reportTableMgr.buildTableViewer(group,
                 SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL | SWT.MULTI | SWT.FULL_SELECTION | SWT.CHECK);
         reportTableMgr.setupColumns(ReportColumnUI.VISIBLE_COLUMNS);
@@ -180,6 +172,7 @@ public class ReportPreferencesPage extends AbstractPMDPreferencePage
         descValue.setLayoutData(new GridData(GridData.FILL, GridData.CENTER, true, true, 3, 1));
 
         tableViewer.addSelectionChangedListener(new ISelectionChangedListener() {
+            @Override
             public void selectionChanged(SelectionChangedEvent event) {
                 IStructuredSelection selection = (IStructuredSelection) event.getSelection();
                 List items = selection.toList();
@@ -193,9 +186,10 @@ public class ReportPreferencesPage extends AbstractPMDPreferencePage
         });
 
         tableViewer.getTable().addListener(SWT.Selection, new Listener() {
+            @Override
             public void handleEvent(Event event) {
                 if (event.detail == SWT.CHECK) {
-                    checked(event.item);
+                    checked(); // TODO: event.item ??
                 }
             }
         });
@@ -203,7 +197,7 @@ public class ReportPreferencesPage extends AbstractPMDPreferencePage
         suppressed.addSelectionListener(new SelectionAdapter() {
             @Override
             public void widgetSelected(SelectionEvent event) {
-
+                // TODO
             }
         });
 
@@ -221,7 +215,6 @@ public class ReportPreferencesPage extends AbstractPMDPreferencePage
      * Check the renderers as noted from the preferences.
      */
     private void selectCheckedRenderers() {
-
         Set<String> activeNames = preferences.activeReportRenderers();
 
         for (TableItem item : tableViewer.getTable().getItems()) {
@@ -230,29 +223,16 @@ public class ReportPreferencesPage extends AbstractPMDPreferencePage
         }
     }
 
-    /**
-     *
-     * @return Set<String>
-     */
     private Set<String> currentCheckedRenderers() {
-
-        Set<String> names = new HashSet<String>();
+        Set<String> names = new HashSet<>();
         for (Object renderer : checkedItems(tableViewer.getTable())) {
             names.add(((Renderer) renderer).getName());
         }
         return names;
     }
 
-    /**
-     * Method checkedItems.
-     * 
-     * @param table
-     *            Table
-     * @return Set<Object>
-     */
     private static Set<Object> checkedItems(Table table) {
-
-        Set<Object> checkedItems = new HashSet<Object>();
+        Set<Object> checkedItems = new HashSet<>();
 
         for (TableItem ti : table.getItems()) {
             if (ti.getChecked()) {
@@ -262,41 +242,23 @@ public class ReportPreferencesPage extends AbstractPMDPreferencePage
         return checkedItems;
     }
 
-    /**
-     *
-     * @param item
-     *            Object
-     */
-    private void checked(Object item) {
-
+    private void checked() {
         boolean matches = currentCheckedRenderers().equals(preferences.activeReportRenderers());
-
         setModified(!matches);
     }
 
-    /**
-     *
-     * @param newName
-     *            String
-     */
     private void setName(String newName) {
-
         if (StringUtils.isBlank(newName)) {
             return;
         }
 
-        for (Renderer ren : selectedRenderers()) {
-            // ren.label = newName;
+        for (Renderer ren : selectedRenderers()) { // NOPMD: TODO ren is unused
+            //ren.label = newName;
         }
         tableViewer.refresh();
     }
 
-    /**
-     *
-     * @return Renderer[]
-     */
     private Renderer[] selectedRenderers() {
-
         Object[] items = ((IStructuredSelection) tableViewer.getSelection()).toArray();
         Renderer[] renderers = new Renderer[items.length];
         for (int i = 0; i < renderers.length; i++) {
@@ -305,19 +267,7 @@ public class ReportPreferencesPage extends AbstractPMDPreferencePage
         return renderers;
     }
 
-    /**
-     *
-     * @param items
-     *            List<Renderer>
-     * @param nameField
-     *            Label
-     * @param descField
-     *            Label
-     * @param suppressed
-     *            Button
-     */
     private static void selectedRenderers(List<Renderer> items, Label nameField, Label descField, Button suppressed) {
-
         if (items.size() != 1) {
             nameField.setText("");
             return;
@@ -330,13 +280,9 @@ public class ReportPreferencesPage extends AbstractPMDPreferencePage
         suppressed.setSelection(renderer.isShowSuppressedViolations());
     }
 
-    /**
-     * 
-     * @see org.eclipse.jface.preference.PreferencePage#performDefaults()
-     */
     @Override
     protected void performDefaults() {
-
+        // TODO
     }
 
     /**
@@ -352,11 +298,6 @@ public class ReportPreferencesPage extends AbstractPMDPreferencePage
         return true;
     }
 
-    /**
-     * 
-     * @return boolean
-     * @see org.eclipse.jface.preference.IPreferencePage#performOk()
-     */
     @Override
     public boolean performOk() {
 
@@ -370,26 +311,25 @@ public class ReportPreferencesPage extends AbstractPMDPreferencePage
         return true;
     }
 
-    /**
-     * Method descriptionId.
-     * 
-     * @return String
-     */
     @Override
     protected String descriptionId() {
         return "???"; // TODO
     }
 
+    @Override
     public void changed(PropertySource source, PropertyDescriptor<?> desc, Object newValue) {
         // TODO enable/disable save/cancel buttons
     }
 
     // ignore these
 
+    @Override
     public void addedRows(int newRowCount) {
+        // nothing to do
     }
 
+    @Override
     public void changed(RuleSelection rule, PropertyDescriptor<?> desc, Object newValue) {
+        // nothing to do
     }
-
 }

@@ -32,10 +32,12 @@ public class DeleteMarkersCommand extends AbstractDefaultCommand {
         markers = theMarkers;
     }
 
+    @Override
     public boolean isReadyToExecute() {
         return markers != null;
     }
 
+    @Override
     public void execute() {
         try {
             beginTask("Deleting single markers", markers.length);
@@ -49,9 +51,7 @@ public class DeleteMarkersCommand extends AbstractDefaultCommand {
         }
     }
 
-    /* (non-Javadoc)
-     * @see net.sourceforge.pmd.eclipse.runtime.cmd.AbstractDefaultCommand#reset()
-     */
+    @Override
     public void reset() {
         setMarkers(null);
     }

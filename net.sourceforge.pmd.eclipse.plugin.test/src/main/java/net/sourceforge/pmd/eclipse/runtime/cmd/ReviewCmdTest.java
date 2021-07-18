@@ -54,10 +54,10 @@ public class ReviewCmdTest {
                 this.testProject != null && this.testProject.exists() && this.testProject.isAccessible());
 
         // 2. Create a test source file inside that project
-        final IFile testFile = EclipseUtils.createTestSourceFile(this.testProject);
-        final InputStream is = EclipseUtils.getResourceStream(this.testProject, "/src/Test.java");
-        Assert.assertNotNull("Cannot find the test source file", is);
-        is.close();
+        EclipseUtils.createTestSourceFile(this.testProject);
+        try (InputStream is = EclipseUtils.getResourceStream(this.testProject, "/src/Test.java")) {
+            Assert.assertNotNull("Cannot find the test source file", is);
+        }
 
         // 3. Enable PMD for the test project
         IProjectProperties properties = PMDPlugin.getDefault().getPropertiesManager()
@@ -93,7 +93,7 @@ public class ReviewCmdTest {
 
         // We do not test PMD, only a non-empty report is enough
         Assert.assertNotNull(markers);
-        Assert.assertTrue("Report size = " + markers.size(), markers.size() > 0);
+        Assert.assertFalse("Report is empty", markers.isEmpty());
 
         // test the marker types - they should be problem markers...
         final IFile sourceFile = this.testProject.getFile("/src/Test.java");

@@ -36,9 +36,9 @@ public class PMDCheckActionTest {
 
         // 2. Create a test source file inside that project
         EclipseUtils.createTestSourceFile(this.testProject);
-        final InputStream is = EclipseUtils.getResourceStream(this.testProject, "/src/Test.java");
-        Assert.assertNotNull("Cannot find the test source file", is);
-        is.close();
+        try (InputStream is = EclipseUtils.getResourceStream(this.testProject, "/src/Test.java")) {
+            Assert.assertNotNull("Cannot find the test source file", is);
+        }
 
         // 3. Enable PMD for the test project
         IProjectProperties properties = PMDPlugin.getDefault().getPropertiesManager()

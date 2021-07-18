@@ -45,11 +45,11 @@ public class PMDRemoveMarkersAction extends AbstractUIAction implements IViewAct
     public void run(IAction action) {
         LOG.info("Remove Markers action requested");
         try {
-            if (action.getId().equals(VIEW_ACTION)) {
+            if (VIEW_ACTION.equals(action.getId())) {
                 final IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
                 MarkerUtil.deleteAllMarkersIn(root);
                 LOG.debug("Remove markers over the whole workspace");
-            } else if (action.getId().equals(OBJECT_ACTION)) {
+            } else if (OBJECT_ACTION.equals(action.getId())) {
                 processResource();
             } else { // else action id not supported
                 LOG.warn("Cannot remove markers, action ID is not supported");

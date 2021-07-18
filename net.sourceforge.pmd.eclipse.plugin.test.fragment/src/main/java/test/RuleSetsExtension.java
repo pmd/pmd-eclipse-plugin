@@ -31,6 +31,7 @@ public class RuleSetsExtension implements IRuleSetsExtension {
      * Replace the core plugin fragment with our own rulesets
      * @see net.sourceforge.pmd.eclipse.core.IRuleSetsExtension#registerRuleSets(java.util.Set)
      */
+    @Override
     public void registerRuleSets(Set<RuleSet> registeredRuleSets) {
         try {
             RuleSet ruleSet1 = getRuleSet1();
@@ -49,6 +50,7 @@ public class RuleSetsExtension implements IRuleSetsExtension {
      * (for instance when creating a new workspace)
      * @see net.sourceforge.pmd.eclipse.core.IRuleSetsExtension#registerDefaultRuleSets(java.util.Set)
      */
+    @Override
     public void registerDefaultRuleSets(Set<RuleSet> defaultRuleSets) {
         try {
             RuleSet ruleSet1 = getRuleSet1();

@@ -47,7 +47,7 @@ public class StringArranger {
             return Collections.emptyList();
         }
 
-        List<String> lineSet = new ArrayList<String>(lines.length);
+        List<String> lineSet = new ArrayList<>(lines.length);
 
         int startLine = 0;
         while (startLine < lines.length && StringUtils.isBlank(lines[startLine])) {

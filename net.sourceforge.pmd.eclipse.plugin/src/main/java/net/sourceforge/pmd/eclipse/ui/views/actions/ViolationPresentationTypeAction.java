@@ -43,13 +43,15 @@ public class ViolationPresentationTypeAction extends Action {
         }
     }
 
+    @Override
     public int getStyle() {
         return AS_RADIO_BUTTON;
     }
 
     /**
-     * Executes the Action
+     * Executes the Action.
      */
+    @Override
     public void run() {
         this.overview.setShowType(this.type);
         this.overview.refresh();

@@ -16,37 +16,28 @@ import org.eclipse.swt.graphics.Image;
  */
 public abstract class AbstractTableLabelProvider implements ITableLabelProvider {
 
-    /**
-     * @see org.eclipse.jface.viewers.ITableLabelProvider#getColumnImage(Object,
-     *      int)
-     */
+    @Override
     public Image getColumnImage(Object element, int columnIndex) {
         return null;
     }
 
-    /**
-     * @see org.eclipse.jface.viewers.IBaseLabelProvider#addListener(ILabelProviderListener)
-     */
+    @Override
     public void addListener(ILabelProviderListener listener) {
+        // ignored
     }
 
-    /**
-     * @see org.eclipse.jface.viewers.IBaseLabelProvider#dispose()
-     */
+    @Override
     public void dispose() {
+        // to be overridden
     }
 
-    /**
-     * @see org.eclipse.jface.viewers.IBaseLabelProvider#isLabelProperty(Object,
-     *      String)
-     */
+    @Override
     public boolean isLabelProperty(Object element, String property) {
         return true;
     }
 
-    /**
-     * @see org.eclipse.jface.viewers.IBaseLabelProvider#removeListener(ILabelProviderListener)
-     */
+    @Override
     public void removeListener(ILabelProviderListener listener) {
+        // ignored
     }
 }

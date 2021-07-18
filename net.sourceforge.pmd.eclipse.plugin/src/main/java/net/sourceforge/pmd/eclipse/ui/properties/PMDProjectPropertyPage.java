@@ -75,16 +75,13 @@ public class PMDProjectPropertyPage extends PropertyPage {
     private SummaryPanelManager ruleDescriptionField;
     private Control ruleDescriptionPanel;
 
-    private Collection<Control> activeControls = new ArrayList<Control>();
+    private Collection<Control> activeControls = new ArrayList<>();
 
     private final RuleTableViewerSorter availableRuleTableViewerSorter = new RuleTableViewerSorter(
             RuleTableViewerSorter.RULE_DEFAULT_COMPARATOR);
 
     private static final Logger LOG = LoggerFactory.getLogger(PMDProjectPropertyPage.class);
 
-    /**
-     * @see PropertyPage#createContents(Composite)
-     */
     @Override
     protected Control createContents(final Composite parent) {
         LOG.info("PMD properties editing requested");
@@ -248,7 +245,7 @@ public class PMDProjectPropertyPage extends PropertyPage {
     }
 
     /**
-     * Create the enable PMD checkbox
+     * Create the enable PMD checkbox.
      * 
      * @param parent
      *            the parent composite
@@ -259,6 +256,7 @@ public class PMDProjectPropertyPage extends PropertyPage {
         button.setSelection(model.isPmdEnabled());
 
         button.addSelectionListener(new SelectionAdapter() {
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 adjustControls();
             }
@@ -268,7 +266,7 @@ public class PMDProjectPropertyPage extends PropertyPage {
     }
 
     /**
-     * Create the include derived files checkbox
+     * Create the include derived files checkbox.
      * 
      * @param parent
      *            the parent composite
@@ -280,7 +278,7 @@ public class PMDProjectPropertyPage extends PropertyPage {
     }
 
     /**
-     * Create the violations as errors checkbox
+     * Create the violations as errors checkbox.
      * 
      * @param parent
      *            the parent composite
@@ -292,7 +290,7 @@ public class PMDProjectPropertyPage extends PropertyPage {
     }
 
     /**
-     * Create the Run At Full Build
+     * Create the Run At Full Build.
      * 
      * @param parent
      *            the parent composite
@@ -304,7 +302,7 @@ public class PMDProjectPropertyPage extends PropertyPage {
     }
 
     /**
-     * Create the radio button for storing configuration in a project file
+     * Create the radio button for storing configuration in a project file.
      * 
      * @param parent
      *            the parent composite
@@ -315,6 +313,7 @@ public class PMDProjectPropertyPage extends PropertyPage {
         button.setSelection(model.isRuleSetStoredInProject());
 
         button.addSelectionListener(new SelectionAdapter() {
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 adjustControls();
             }
@@ -323,25 +322,25 @@ public class PMDProjectPropertyPage extends PropertyPage {
         return button;
     }
 
-    /**
-     * Create the radio button for storing configuration in a project file
-     * 
-     * @param parent
-     *            the parent composite
-     */
-    private Button buildLocalRulesButton(final Composite parent) {
-        Button button = newRadioButton(parent, "Use local rules");
-
-        button.setSelection(!model.isRuleSetStoredInProject());
-
-        button.addSelectionListener(new SelectionAdapter() {
-            public void widgetSelected(SelectionEvent e) {
-                adjustControls();
-            }
-        });
-
-        return button;
-    }
+    //    /**
+    //     * Create the radio button for storing configuration in a project file
+    //     * 
+    //     * @param parent
+    //     *            the parent composite
+    //     */
+    //    private Button buildLocalRulesButton(final Composite parent) {
+    //        Button button = newRadioButton(parent, "Use local rules");
+    //
+    //        button.setSelection(!model.isRuleSetStoredInProject());
+    //
+    //        button.addSelectionListener(new SelectionAdapter() {
+    //            public void widgetSelected(SelectionEvent e) {
+    //                adjustControls();
+    //            }
+    //        });
+    //
+    //        return button;
+    //    }
 
     /**
      * Create the the rule set file name text.
@@ -442,6 +441,7 @@ public class PMDProjectPropertyPage extends PropertyPage {
         });
 
         availableRulesTableViewer.addSelectionChangedListener(new ISelectionChangedListener() {
+            @Override
             public void selectionChanged(SelectionChangedEvent event) {
                 updateDescriptionField();
             }
@@ -460,7 +460,7 @@ public class PMDProjectPropertyPage extends PropertyPage {
     }
 
     /**
-     * Helper method to add new table columns
+     * Helper method to add new table columns.
      */
     private void addColumnTo(Table table, int alignment, boolean resizable, String textKey, int width,
             final Comparator<Rule> comparator) {
@@ -488,7 +488,7 @@ public class PMDProjectPropertyPage extends PropertyPage {
     }
 
     /**
-     * Build the working set selection button
+     * Build the working set selection button.
      * 
      * @param parent
      */
@@ -503,7 +503,7 @@ public class PMDProjectPropertyPage extends PropertyPage {
     }
 
     /**
-     * Build the working set deselect button
+     * Build the working set deselect button.
      * 
      * @param parent
      */
@@ -520,7 +520,7 @@ public class PMDProjectPropertyPage extends PropertyPage {
     }
 
     /**
-     * Populate the rule table
+     * Populate the rule table.
      */
     private void populateAvailableRulesTable() {
         availableRulesTableViewer.setInput(controller.getAvailableRules());
@@ -539,7 +539,7 @@ public class PMDProjectPropertyPage extends PropertyPage {
     }
 
     /**
-     * User press OK Button
+     * User press OK Button.
      */
     @Override
     public boolean performOk() {
@@ -556,9 +556,6 @@ public class PMDProjectPropertyPage extends PropertyPage {
         return controller.performOk();
     }
 
-    /**
-     * @see org.eclipse.jface.preference.IPreferencePage#performCancel()
-     */
     @Override
     public boolean performCancel() {
         LOG.info("Properties editing canceled");
@@ -591,8 +588,7 @@ public class PMDProjectPropertyPage extends PropertyPage {
     }
 
     /**
-     * Help user to select a working set for PMD
-     *
+     * Help user to select a working set for PMD.
      */
     protected void selectWorkingSet() {
         LOG.info("Select working set");
@@ -600,8 +596,7 @@ public class PMDProjectPropertyPage extends PropertyPage {
     }
 
     /**
-     * Help user to deselect a working set for PMD
-     *
+     * Help user to deselect a working set for PMD.
      */
     protected void deselectWorkingSet() {
         LOG.info("Deselect working set");
@@ -609,7 +604,7 @@ public class PMDProjectPropertyPage extends PropertyPage {
     }
 
     /**
-     * Process the change of the selected working set
+     * Process the change of the selected working set.
      * 
      * @param a
      *            newly selected working set
@@ -622,7 +617,7 @@ public class PMDProjectPropertyPage extends PropertyPage {
     }
 
     /**
-     * Helper method to shorten message access
+     * Helper method to shorten message access.
      * 
      * @param key
      *            a message key
@@ -633,7 +628,7 @@ public class PMDProjectPropertyPage extends PropertyPage {
     }
 
     /**
-     * Refresh the list
+     * Refresh the list.
      */
     protected void refresh() {
         try {
@@ -661,7 +656,7 @@ public class PMDProjectPropertyPage extends PropertyPage {
     }
 
     /**
-     * Refresh based up whether using rule set in project or not
+     * Refresh based up whether using rule set in project or not.
      */
     protected void refreshRuleSetInProject() {
         Table ruleTable = availableRulesTableViewer.getTable();

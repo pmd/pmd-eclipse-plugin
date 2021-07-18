@@ -25,7 +25,7 @@ import net.sourceforge.pmd.util.CollectionUtil;
  * Behaviour: Provide a set of widgets that allows the user to select any number of items from a fixed set of choices.
  * Each item can only appear once.
  *
- * Provide a combo box for each value selected while ensuring that their choices only contain unselected values. If the
+ * <p>Provide a combo box for each value selected while ensuring that their choices only contain unselected values. If the
  * last combo box holds the only remaining choice then ensure it gets disabled, the user can only delete it or the
  * previous ones. If the user deletes a previous one then re-enable the last one and add the deleted value to its set of
  * choices.
@@ -34,7 +34,7 @@ import net.sourceforge.pmd.util.CollectionUtil;
  *
  *         ! PLACEHOLDER ONLY - NOT FINISHED YET !
  */
-public class MultiEnumerationEditorFactory extends AbstractMultiValueEditorFactory<Object> {
+public final class MultiEnumerationEditorFactory extends AbstractMultiValueEditorFactory<Object> {
 
     public static final MultiEnumerationEditorFactory INSTANCE = new MultiEnumerationEditorFactory();
 
@@ -59,7 +59,7 @@ public class MultiEnumerationEditorFactory extends AbstractMultiValueEditorFacto
 
 
     /**
-     * Only add a new widget row if there are any remaining choices to make
+     * Only add a new widget row if there are any remaining choices to make.
      */
     @Override
     protected boolean canAddNewRowFor(PropertyDescriptor<List<Object>> desc, PropertySource source) {
@@ -111,6 +111,7 @@ public class MultiEnumerationEditorFactory extends AbstractMultiValueEditorFacto
     }
 
 
+    @Override
     public PropertyDescriptor<List<Object>> createDescriptor(String name, String description, Control[] otherData) {
         return null;
     }
@@ -120,6 +121,4 @@ public class MultiEnumerationEditorFactory extends AbstractMultiValueEditorFacto
     protected void configure(Text text, PropertyDescriptor<List<Object>> desc, PropertySource source, ValueChangeListener listener) {
         text.setEditable(false);
     }
-
-
 }

@@ -40,8 +40,8 @@ public class ChangeEvaluator {
 
         // first we get a List of changes to Files and Projects so we won't be
         // updating everything
-        List<IResource> changedFiles = new ArrayList<IResource>();
-        List<IProject> changedProjects = new ArrayList<IProject>();
+        List<IResource> changedFiles = new ArrayList<>();
+        List<IProject> changedProjects = new ArrayList<>();
         for (IMarkerDelta markerDelta : markerDeltas) {
             IResource resource = markerDelta.getResource();
             IProject project = resource.getProject();
@@ -61,7 +61,7 @@ public class ChangeEvaluator {
         // we can add, change, or remove Resources
         // all the changes are given to the viewer later
 
-        ChangeRecord<AbstractPMDRecord> changeRec = new ChangeRecord<AbstractPMDRecord>();
+        ChangeRecord<AbstractPMDRecord> changeRec = new ChangeRecord<>();
 
         // we go through the changed Projects
         for (IProject project : changedProjects) {
@@ -111,11 +111,10 @@ public class ChangeEvaluator {
      *         changes [2] (Array-Position in Brackets)
      */
     private List<AbstractPMDRecord>[] updateFiles(IProject project, List<IResource> changedFiles) {
-
         // TODO use ChangeRecord
-        List<AbstractPMDRecord> additions = new ArrayList<AbstractPMDRecord>();
-        List<AbstractPMDRecord> removals = new ArrayList<AbstractPMDRecord>();
-        List<AbstractPMDRecord> changes = new ArrayList<AbstractPMDRecord>();
+        List<AbstractPMDRecord> additions = new ArrayList<>();
+        List<AbstractPMDRecord> removals = new ArrayList<>();
+        List<AbstractPMDRecord> changes = new ArrayList<>();
         List<AbstractPMDRecord>[] updatedFiles = new List[] { additions, removals, changes };
 
         // we search for the ProjectRecord to the Project
@@ -153,9 +152,9 @@ public class ChangeEvaluator {
             List<IResource> changedFiles) {
 
         // TODO use ChangeRecord
-        List<AbstractPMDRecord> additions = new ArrayList<AbstractPMDRecord>();
-        List<AbstractPMDRecord> removals = new ArrayList<AbstractPMDRecord>();
-        List<AbstractPMDRecord> changes = new ArrayList<AbstractPMDRecord>();
+        List<AbstractPMDRecord> additions = new ArrayList<>();
+        List<AbstractPMDRecord> removals = new ArrayList<>();
+        List<AbstractPMDRecord> changes = new ArrayList<>();
         IProject project = (IProject) projectRec.getResource();
 
         // LOG.debug("Analyses project " + project.getName());

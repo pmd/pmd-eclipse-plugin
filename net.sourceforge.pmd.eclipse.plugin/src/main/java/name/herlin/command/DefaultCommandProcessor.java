@@ -45,6 +45,7 @@ public class DefaultCommandProcessor implements CommandProcessor {
      * @throws CommandException
      *             if an unexpected condition occurred.
      */
+    @Override
     public void processCommand(final AbstractProcessableCommand aCommand) throws CommandException {
         LOG.debug("Beginning command " + aCommand.getName());
         if (aCommand.isReadyToExecute()) {
@@ -63,6 +64,7 @@ public class DefaultCommandProcessor implements CommandProcessor {
      * @see name.herlin.command.CommandProcessor#waitCommandToFinish(name.herlin.command.AbstractProcessableCommand)
      */
     // @PMD:REVIEWED:UnusedFormalParameter: by Herlin on 10/05/05 23:30
+    @Override
     public void waitCommandToFinish(final AbstractProcessableCommand aCommand) throws CommandException {
         // Do nothing because a default command executes synchronously
         // So when this method is executed the command has already terminated

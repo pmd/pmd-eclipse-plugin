@@ -27,18 +27,17 @@ public class ReviewResourceAction extends AbstractPMDAction {
     private IProgressMonitor monitor;
     private IResource resource;
 
-    /**
-     * Constructor
-     */
     public ReviewResourceAction(IResource resource) {
         super();
         this.resource = resource;
     }
 
+    @Override
     protected String imageId() {
         return PMDUiConstants.ICON_BUTTON_REFRESH;
     }
 
+    @Override
     protected String tooltipMsgId() {
         return StringKeys.VIEW_TOOLTIP_REFRESH;
     }
@@ -47,13 +46,12 @@ public class ReviewResourceAction extends AbstractPMDAction {
         this.resource = resource;
     }
 
-    /**
-     * @see org.eclipse.jface.action.IAction#run()
-     */
+    @Override
     public void run() {
         try {
             ProgressMonitorDialog dialog = new ProgressMonitorDialog(Display.getCurrent().getActiveShell());
             dialog.run(false, false, new IRunnableWithProgress() {
+                @Override
                 public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
                     setMonitor(monitor);
                     monitor.beginTask(getString(StringKeys.MONITOR_REVIEW), 5);
@@ -77,22 +75,11 @@ public class ReviewResourceAction extends AbstractPMDAction {
         }
     }
 
-    /**
-     * Get the monitor
-     * 
-     * @return
-     */
     protected IProgressMonitor getMonitor() {
         return monitor;
     }
 
-    /**
-     * Set the monitor
-     * 
-     * @param monitor
-     */
     protected void setMonitor(IProgressMonitor monitor) {
         this.monitor = monitor;
     }
-
 }

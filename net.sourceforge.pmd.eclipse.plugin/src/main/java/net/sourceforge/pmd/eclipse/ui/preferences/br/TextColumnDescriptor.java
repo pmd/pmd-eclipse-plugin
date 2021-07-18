@@ -30,12 +30,14 @@ import net.sourceforge.pmd.eclipse.util.Util;
 public class TextColumnDescriptor extends SimpleColumnDescriptor {
 
     public static final RuleFieldAccessor RULE_SET_NAME_ACCESSOR = new BasicRuleFieldAccessor() {
+        @Override
         public Comparable<?> valueFor(Rule rule) {
             return RuleUIUtil.ruleSetNameFrom(rule);
         }
     };
 
     public static final RuleFieldAccessor PROPERTIES_ACCESSOR = new BasicRuleFieldAccessor() {
+        @Override
         public Comparable<?> valueFor(Rule rule) {
             return RuleUIUtil.propertyStringFrom(rule, "*");
         }
@@ -43,22 +45,6 @@ public class TextColumnDescriptor extends SimpleColumnDescriptor {
 
     private static final int IMG_OFFSET = 14;
 
-    /**
-     * @param theId
-     *            String
-     * @param theLabel
-     *            String
-     * @param theAlignment
-     *            int
-     * @param theWidth
-     *            int
-     * @param theAccessor
-     *            RuleFieldAccessor
-     * @param resizableFlag
-     *            boolean
-     * @param theImagePath
-     *            String
-     */
     public TextColumnDescriptor(String theId, String theLabel, int theAlignment, int theWidth,
             RuleFieldAccessor theAccessor, boolean resizableFlag, String theImagePath) {
         super(theId, theLabel, theAlignment, theWidth, theAccessor, resizableFlag, theImagePath);
@@ -68,14 +54,7 @@ public class TextColumnDescriptor extends SimpleColumnDescriptor {
         return (tree.getStyle() | SWT.CHECK) > 0;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see net.sourceforge.pmd.eclipse.ui.preferences.br.IRuleColumnDescriptor#
-     * newTreeColumnFor(org.eclipse.swt.widgets.Tree, int,
-     * net.sourceforge.pmd.eclipse.ui.preferences.br.RuleSortListener,
-     * java.util.Map)
-     */
+    @Override
     public TreeColumn newTreeColumnFor(Tree parent, int columnIndex, SortListener sortListener,
             Map<Integer, List<Listener>> paintListeners) {
 
@@ -89,16 +68,18 @@ public class TextColumnDescriptor extends SimpleColumnDescriptor {
         return tc;
     }
 
+    @Override
     public String stringValueFor(Rule rule) {
         return ""; // we draw it ourselves
     }
 
+    @Override
     public String stringValueFor(RuleCollection collection) {
         return ""; // we draw it ourselves
     }
 
+    @Override
     public Image imageFor(Rule rule) {
-
         boolean hasIssues = rule.dysfunctionReason() != null;
 
         return hasIssues ? ResourceManager.imageFor(PMDUiConstants.ICON_WARN) : null;
@@ -108,11 +89,12 @@ public class TextColumnDescriptor extends SimpleColumnDescriptor {
             Map<Integer, List<Listener>> thePaintListeners) {
 
         CellPainterBuilder cpl = new AbstractCellPainterBuilder() {
-
+            @Override
             public void addPainterFor(final Tree tree, final int columnIndex, final RuleFieldAccessor getter,
                     Map<Integer, List<Listener>> paintListeners) {
 
                 Listener paintListener = new Listener() {
+                    @Override
                     public void handleEvent(Event event) {
 
                         if (event.index != columnIndex) {
@@ -140,6 +122,7 @@ public class TextColumnDescriptor extends SimpleColumnDescriptor {
                 };
 
                 Listener measureListener = new Listener() {
+                    @Override
                     public void handleEvent(Event event) {
                         if (event.index != columnIndex) {
                             return;

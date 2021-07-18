@@ -24,7 +24,7 @@ import net.sourceforge.pmd.lang.rule.XPathRule;
  * 
  * @author Brian Remedios
  */
-public class XPathEvaluator {
+public final class XPathEvaluator {
 
     public static final XPathEvaluator INSTANCE = new XPathEvaluator();
 
@@ -62,12 +62,12 @@ public class XPathEvaluator {
      * @throws ParseException
      */
     public List<Node> evaluate(String source, String xpathQuery, String xpathVersion) throws ParseException {
-
         Node c = getCompilationUnit(source);
 
-        final List<Node> results = new ArrayList<Node>();
+        final List<Node> results = new ArrayList<>();
 
         XPathRule xpathRule = new XPathRule() {
+            @Override
             public void addViolation(Object data, Node node, String arg) {
                 results.add(node);
             }
@@ -83,7 +83,7 @@ public class XPathEvaluator {
         RuleContext ruleContext = new RuleContext();
         ruleContext.setLanguageVersion(getLanguageVersion());
 
-        List<Node> nodes = new ArrayList<Node>(1);
+        List<Node> nodes = new ArrayList<>(1);
         nodes.add(c);
 
         ruleSet.apply(nodes, ruleContext);

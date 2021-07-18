@@ -28,8 +28,8 @@ public class IndexedString implements Comparable<IndexedString> {
         indexSpans = theSpans;
     }
 
+    @Override
     public int compareTo(IndexedString other) {
-
         int deltaLength = other.string.length() - string.length();
 
         return deltaLength == 0 ? other.string.compareTo(string) : deltaLength;

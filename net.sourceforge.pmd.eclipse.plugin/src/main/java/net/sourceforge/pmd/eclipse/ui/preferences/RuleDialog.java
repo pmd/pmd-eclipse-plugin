@@ -46,6 +46,7 @@ import net.sourceforge.pmd.util.StringUtil;
  * @author Philippe Herlin
  * @deprecated
  */
+@Deprecated
 public class RuleDialog extends Dialog {
     private static final int MODE_ADD = 1;
     private static final int MODE_EDIT = 2;
@@ -55,11 +56,8 @@ public class RuleDialog extends Dialog {
     private int mode = MODE_ADD;
     private Rule editedRule;
     private Rule rule;
-    private Text ruleSetNameText;
-    private Button ruleReferenceButton;
     // private Text sinceText;
     private Text nameText;
-    private Button xpathRuleButton;
     private Text messageText;
     private Combo priorityCombo;
     protected Button usesTypeResolutionButton;
@@ -121,14 +119,14 @@ public class RuleDialog extends Dialog {
         data.horizontalSpan = 1;
         ruleSetNameLabel.setLayoutData(data);
 
-        ruleSetNameText = buildRuleSetNameText(dlgArea);
+        Text ruleSetNameText = buildRuleSetNameText(dlgArea);
         data = new GridData();
         data.horizontalAlignment = GridData.FILL;
         data.horizontalSpan = 2;
         data.grabExcessHorizontalSpace = true;
         ruleSetNameText.setLayoutData(data);
 
-        ruleReferenceButton = buildRuleReferenceButton(dlgArea);
+        buildRuleReferenceButton(dlgArea);
 
         // Label sinceLabel = buildLabel(dlgArea,
         // StringKeys.MSGKEY_PREF_RULEEDIT_LABEL_SINCE);
@@ -154,7 +152,7 @@ public class RuleDialog extends Dialog {
         data.grabExcessHorizontalSpace = true;
         nameText.setLayoutData(data);
 
-        xpathRuleButton = buildXPathRuleButton(dlgArea);
+        buildXPathRuleButton(dlgArea);
 
         Label implementationClassLabel = buildLabel(dlgArea, StringKeys.PREF_RULEEDIT_LABEL_IMPLEMENTATION_CLASS);
         data = new GridData();
@@ -575,10 +573,7 @@ public class RuleDialog extends Dialog {
                     try {
                         IWebBrowser browser = PlatformUI.getWorkbench().getBrowserSupport().getExternalBrowser();
                         browser.openURL(new URL(url));
-                    } catch (PartInitException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
-                    } catch (MalformedURLException e) {
+                    } catch (PartInitException | MalformedURLException e) {
                         // TODO Auto-generated catch block
                         e.printStackTrace();
                     }
@@ -802,11 +797,7 @@ public class RuleDialog extends Dialog {
                 } else {
                     flClassError = true;
                 }
-            } catch (ClassNotFoundException e) {
-                flClassError = true;
-            } catch (InstantiationException e) {
-                flClassError = true;
-            } catch (IllegalAccessException e) {
+            } catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
                 flClassError = true;
             }
         } else {

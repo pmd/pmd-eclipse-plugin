@@ -16,9 +16,9 @@ import net.sourceforge.pmd.lang.LanguageVersion;
  * 
  * @author Brian Remedios
  */
-public class FormatManager {
+public final class FormatManager {
 
-    private static final Map<Class<?>, ValueFormatter> FORMATTERS_BY_TYPE = new HashMap<Class<?>, ValueFormatter>();
+    private static final Map<Class<?>, ValueFormatter> FORMATTERS_BY_TYPE = new HashMap<>();
 
     private FormatManager() {
     }

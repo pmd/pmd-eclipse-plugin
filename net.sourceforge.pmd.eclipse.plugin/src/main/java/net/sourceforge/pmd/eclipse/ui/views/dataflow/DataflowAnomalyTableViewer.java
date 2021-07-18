@@ -24,7 +24,7 @@ import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
 import net.sourceforge.pmd.eclipse.ui.views.TableColumnSorter;
 
 /**
- * Shows Dataflow anomalies
+ * Shows Dataflow anomalies.
  * 
  * @author SebastianRaffel ( 06.06.2005 )
  */
@@ -83,7 +83,7 @@ public class DataflowAnomalyTableViewer extends TableViewer {
     }
 
     /**
-     * Creates Adapter for sorting and resizing the Columns
+     * Creates Adapter for sorting and resizing the Columns.
      * 
      * @param table
      */
@@ -95,6 +95,7 @@ public class DataflowAnomalyTableViewer extends TableViewer {
             columnWidths[k] = Integer.valueOf(columns[k].getWidth());
             final int i = k;
             columns[k].addSelectionListener(new SelectionAdapter() {
+                @Override
                 public void widgetSelected(SelectionEvent e) {
                     currentSortedColumn = i;
                     columnSortOrder[currentSortedColumn] *= -1;
@@ -102,6 +103,7 @@ public class DataflowAnomalyTableViewer extends TableViewer {
                 }
             });
             columns[k].addControlListener(new ControlAdapter() {
+                @Override
                 public void controlResized(ControlEvent e) {
                     columnWidths[i] = Integer.valueOf(getTable().getColumn(i).getWidth());
                 }
@@ -110,7 +112,7 @@ public class DataflowAnomalyTableViewer extends TableViewer {
     }
 
     /**
-     * Returns the ViewerSorter for Column with the given Number
+     * Returns the ViewerSorter for Column with the given Number.
      * 
      * @param columnNr
      * @return the ViewerSorter for a Column
@@ -124,6 +126,7 @@ public class DataflowAnomalyTableViewer extends TableViewer {
         // sort by Anomaly-Type-Name
         case 0:
             sorter = new TableColumnSorter(column, sortOrder) {
+                @Override
                 public int compare(Viewer viewer, Object e1, Object e2) {
                     int result = 0;
                     if (e1 instanceof RuleViolation && e2 instanceof RuleViolation) {
@@ -138,8 +141,8 @@ public class DataflowAnomalyTableViewer extends TableViewer {
                             final int m2_l1 = violation1.getEndLine();
                             final int m2_l2 = violation2.getEndLine();
 
-                            final Integer line1 = Integer.valueOf((m1_l1 < m1_l2) ? (m1_l1) : (m1_l2));
-                            final Integer line2 = Integer.valueOf((m2_l1 < m2_l2) ? (m2_l1) : (m2_l2));
+                            final Integer line1 = Integer.valueOf(m1_l1 < m1_l2 ? m1_l1 : m1_l2);
+                            final Integer line2 = Integer.valueOf(m2_l1 < m2_l2 ? m2_l1 : m2_l2);
 
                             result = line1.compareTo(line2) * sortOrder;
                         } else {
@@ -154,6 +157,7 @@ public class DataflowAnomalyTableViewer extends TableViewer {
         case 1:
             // sort by the Line(s) where the anomaly occurs
             sorter = new TableColumnSorter(column, sortOrder) {
+                @Override
                 public int compare(Viewer viewer, Object e1, Object e2) {
                     int result = 0;
                     if (e1 instanceof RuleViolation && e2 instanceof RuleViolation) {
@@ -165,8 +169,8 @@ public class DataflowAnomalyTableViewer extends TableViewer {
                         final int m2_l1 = violation1.getEndLine();
                         final int m2_l2 = violation2.getEndLine();
 
-                        final Integer line1 = Integer.valueOf((m1_l1 < m1_l2) ? (m1_l1) : (m1_l2));
-                        final Integer line2 = Integer.valueOf((m2_l1 < m2_l2) ? (m2_l1) : (m2_l2));
+                        final Integer line1 = Integer.valueOf(m1_l1 < m1_l2 ? m1_l1 : m1_l2);
+                        final Integer line2 = Integer.valueOf(m2_l1 < m2_l2 ? m2_l1 : m2_l2);
                         result = line1.compareTo(line2) * sortOrder;
                     }
                     return result;
@@ -177,6 +181,7 @@ public class DataflowAnomalyTableViewer extends TableViewer {
         case 2:
             // sort by the variable Name
             sorter = new TableColumnSorter(column, sortOrder) {
+                @Override
                 public int compare(Viewer viewer, Object e1, Object e2) {
                     int result = 0;
                     if (e1 instanceof RuleViolation && e2 instanceof RuleViolation) {
@@ -200,7 +205,7 @@ public class DataflowAnomalyTableViewer extends TableViewer {
     }
 
     /**
-     * Shows or hides the Table
+     * Shows or hides the Table.
      * 
      * @param visible
      */
@@ -210,7 +215,7 @@ public class DataflowAnomalyTableViewer extends TableViewer {
     }
 
     /**
-     * Helper method to return an NLS string from its key
+     * Helper method to return an NLS string from its key.
      */
     private String getString(String key) {
         return PMDPlugin.getDefault().getStringTable().getString(key);

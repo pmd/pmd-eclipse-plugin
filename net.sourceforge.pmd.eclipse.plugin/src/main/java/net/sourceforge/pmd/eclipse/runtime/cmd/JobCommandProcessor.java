@@ -33,7 +33,7 @@ public class JobCommandProcessor {
     private final Map<AbstractDefaultCommand, Job> jobs = Collections
             .synchronizedMap(new HashMap<AbstractDefaultCommand, Job>());
 
-    private static ConcurrentLinkedQueue<Job> outstanding = new ConcurrentLinkedQueue<Job>();
+    private static ConcurrentLinkedQueue<Job> outstanding = new ConcurrentLinkedQueue<>();
     private static AtomicInteger count = new AtomicInteger();
     
     private static final JobCommandProcessor INSTANCE = new JobCommandProcessor();

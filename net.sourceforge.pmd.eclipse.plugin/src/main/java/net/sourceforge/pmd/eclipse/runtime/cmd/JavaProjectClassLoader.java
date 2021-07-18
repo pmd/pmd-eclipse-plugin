@@ -34,7 +34,7 @@ public class JavaProjectClassLoader extends URLClassLoader {
     private final IJavaProject javaProject;
     private final long lastModTimestamp;
     private final IWorkspace workspace;
-    private Set<IJavaProject> javaProjects = new HashSet<IJavaProject>();
+    private Set<IJavaProject> javaProjects = new HashSet<>();
 
 
     public JavaProjectClassLoader(ClassLoader parent, IProject project) {

@@ -142,19 +142,18 @@ public class EclipseUtils {
             throws JavaModelException, CoreException, IOException {
 
         // 1. Locate the test java source template
-        final InputStream is = EclipseUtils.class.getResourceAsStream("/test.template");
-
-        // 2. Copy the template inside the source directory
-        final IFile sourceFile = project.getFile("/src/Test.java");
-        if (sourceFile.exists() && sourceFile.isAccessible()) {
-            sourceFile.setContents(is, true, false, null);
-        } else {
-            sourceFile.create(is, true, null);
+        try (InputStream is = EclipseUtils.class.getResourceAsStream("/test.template")) {
+            // 2. Copy the template inside the source directory
+            final IFile sourceFile = project.getFile("/src/Test.java");
+            if (sourceFile.exists() && sourceFile.isAccessible()) {
+                sourceFile.setContents(is, true, false, null);
+            } else {
+                sourceFile.create(is, true, null);
+            }
+            project.refreshLocal(IResource.DEPTH_INFINITE, null);
+            
+            return sourceFile;
         }
-        is.close();
-        project.refreshLocal(IResource.DEPTH_INFINITE, null);
-
-        return sourceFile;
     }
 
     /**
@@ -192,7 +191,7 @@ public class EclipseUtils {
             final String[] natureIds = description.getNatureIds();
             final String[] newNatureIds = new String[natureIds.length - 1];
             for (int i = 0, j = 0; i < natureIds.length; i++) {
-                if (!natureIds[i].equals(PMDNature.PMD_NATURE)) {
+                if (!PMDNature.PMD_NATURE.equals(natureIds[i])) {
                     newNatureIds[j++] = natureIds[i];
                 }
             }
@@ -265,7 +264,7 @@ public class EclipseUtils {
         // simple equals doesn't work for RegexProperties whose value type is java.util.regex.Pattern...
         //return ruleAProperties.equals(ruleBProperties);
 
-        if (ruleAProperties == ruleBProperties) {
+        if (ruleAProperties == ruleBProperties) { // NOPMD: CompareObjectsWithEquals is needed here
             return true;
         }
 

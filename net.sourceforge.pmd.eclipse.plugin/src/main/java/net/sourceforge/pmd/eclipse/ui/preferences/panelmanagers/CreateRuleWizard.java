@@ -27,10 +27,6 @@ public class CreateRuleWizard extends Wizard implements ValueChangeListener, Rul
     private Rule rule;
     private WizardDialog dialog;
 
-    public CreateRuleWizard() {
-        super();
-    }
-
     public void dialog(WizardDialog theDialog) {
         dialog = theDialog;
     }
@@ -39,11 +35,13 @@ public class CreateRuleWizard extends Wizard implements ValueChangeListener, Rul
         return rule;
     }
 
+    @Override
     public void rule(Rule theRule) {
         rule = theRule;
         dialog.updateButtons();
     }
 
+    @Override
     public void addPages() {
         addPage(new RulePanelManager("rule", EditorUsageMode.CreateNew, this, this));
         addPage(new DescriptionPanelManager("description", EditorUsageMode.CreateNew, this));
@@ -55,6 +53,7 @@ public class CreateRuleWizard extends Wizard implements ValueChangeListener, Rul
         addPage(new ExamplePanelManager("examples", EditorUsageMode.CreateNew, this));
     }
 
+    @Override
     public boolean performFinish() {
         return true;
     }
@@ -63,21 +62,21 @@ public class CreateRuleWizard extends Wizard implements ValueChangeListener, Rul
         return RuleUtil.isXPathRule(rule);
     }
 
+    @Override
     public boolean performCancel() {
         System.out.println("Perform Cancel called");
         return true;
     }
 
     private IWizardPage getAndPrepare(String pageId) {
-
         AbstractRulePanelManager rulePanel = (AbstractRulePanelManager) getPage(pageId);
         RuleSelection rs = new RuleSelection(rule);
         rulePanel.manage(rs);
         return rulePanel;
     }
 
+    @Override
     public IWizardPage getNextPage(IWizardPage currentPage) {
-
         if (rule == null) {
             return null;
         }
@@ -104,13 +103,13 @@ public class CreateRuleWizard extends Wizard implements ValueChangeListener, Rul
         return null;
     }
 
+    @Override
     public void changed(RuleSelection rule, PropertyDescriptor<?> desc, Object newValue) {
         // TODO Auto-generated method stub
-
     }
 
+    @Override
     public void changed(PropertySource source, PropertyDescriptor<?> desc, Object newValue) {
         // TODO Auto-generated method stub
-
     }
 }

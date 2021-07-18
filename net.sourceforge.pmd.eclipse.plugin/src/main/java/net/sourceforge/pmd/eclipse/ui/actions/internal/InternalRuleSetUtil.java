@@ -14,13 +14,15 @@ import java.util.Set;
 import java.util.regex.Pattern;
 
 import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;
+import net.sourceforge.pmd.RuleSetLoader;
 import net.sourceforge.pmd.RuleSetNotFoundException;
 import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.RulesetsFactoryUtils;
 
-public class InternalRuleSetUtil {
+public final class InternalRuleSetUtil {
     private InternalRuleSetUtil() {}
 
     public static RuleSet setFileExclusions(RuleSet ruleSet, Collection<Pattern> excludePatterns) {
@@ -46,10 +48,10 @@ public class InternalRuleSetUtil {
 
     public static RuleSet addExcludePatterns(RuleSet ruleSet, Collection<Pattern> activeExclusionPatterns,
             Collection<Pattern> buildPathExcludePatterns) {
-        Set<Pattern> newExcludePatterns = new HashSet<Pattern>(ruleSet.getFileExclusions());
+        Set<Pattern> newExcludePatterns = new HashSet<>(ruleSet.getFileExclusions());
         newExcludePatterns.addAll(activeExclusionPatterns);
         newExcludePatterns.addAll(buildPathExcludePatterns);
-        Set<Pattern> newIncludePatterns = new HashSet<Pattern>(ruleSet.getFileInclusions());
+        Set<Pattern> newIncludePatterns = new HashSet<>(ruleSet.getFileInclusions());
 
         RuleSetFactory factory = RulesetsFactoryUtils.defaultFactory();
         return factory.createNewRuleSet(ruleSet.getName(), ruleSet.getDescription(), ruleSet.getFileName(),
@@ -60,8 +62,8 @@ public class InternalRuleSetUtil {
 
     public static RuleSet addIncludePatterns(RuleSet ruleSet, Collection<Pattern> activeInclusionPatterns,
             Collection<Pattern> buildPathIncludePatterns) {
-        Set<Pattern> newExcludePatterns = new HashSet<Pattern>(ruleSet.getFileExclusions());
-        Set<Pattern> newIncludePatterns = new HashSet<Pattern>(ruleSet.getFileInclusions());
+        Set<Pattern> newExcludePatterns = new HashSet<>(ruleSet.getFileExclusions());
+        Set<Pattern> newIncludePatterns = new HashSet<>(ruleSet.getFileInclusions());
         newIncludePatterns.addAll(activeInclusionPatterns);
         newIncludePatterns.addAll(buildPathIncludePatterns);
 
@@ -73,7 +75,7 @@ public class InternalRuleSetUtil {
     }
 
     public static Collection<String> convert(Collection<Pattern> patterns) {
-        Collection<String> result = new HashSet<String>();
+        Collection<String> result = new HashSet<>();
         for (Pattern p : patterns) {
             result.add(p.pattern());
         }
@@ -81,7 +83,7 @@ public class InternalRuleSetUtil {
     }
 
     public static Collection<Pattern> convertStringPatterns(Collection<String> patterns) {
-        Collection<Pattern> result = new HashSet<Pattern>();
+        Collection<Pattern> result = new HashSet<>();
         for (String p : patterns) {
             result.add(Pattern.compile(p));
         }
@@ -128,5 +130,12 @@ public class InternalRuleSetUtil {
                 return toRuleSets(rulesets);
             }
         };
+    }
+
+    public static RuleSetLoader getDefaultRuleSetLoader() {
+        return new RuleSetLoader()
+                .enableCompatibility(true)
+                .warnDeprecated(false)
+                .filterAbovePriority(RulePriority.LOW);
     }
 }

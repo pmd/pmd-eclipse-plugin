@@ -13,20 +13,15 @@ import net.sourceforge.pmd.eclipse.runtime.writer.IWriterFactory;
  * This class is the abstract base class for writer factories.
  * 
  * @author Philippe Herlin
- *
  */
 public class WriterFactoryImpl implements IWriterFactory {
 
-    /**
-     * @see net.sourceforge.pmd.eclipse.runtime.writer.IWriterFactory#getRuleSetWriter()
-     */
+    @Override
     public IRuleSetWriter getRuleSetWriter() {
         return new RuleSetWriterImpl();
     }
 
-    /**
-     * @see net.sourceforge.pmd.eclipse.runtime.writer.IWriterFactory#getAstWriter()
-     */
+    @Override
     public IAstWriter getAstWriter() {
         return new AstWriterImpl();
     }

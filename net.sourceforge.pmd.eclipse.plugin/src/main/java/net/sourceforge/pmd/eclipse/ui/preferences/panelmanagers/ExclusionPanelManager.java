@@ -40,16 +40,10 @@ public class ExclusionPanelManager extends AbstractRulePanelManager {
     private Composite xPathColour;
     private ColourManager colourManager;
     private boolean showColourBoxes;
-    private List<Control> miscControls = new ArrayList<Control>(); // hide-show as req'd
+    private List<Control> miscControls = new ArrayList<>(); // hide-show as req'd
 
     public static final String ID = "exclusion";
 
-    /**
-     * Constructor for ExclusionPanelManager.
-     * 
-     * @param listener
-     *            ValueChangeListener
-     */
     public ExclusionPanelManager(String theTitle, EditorUsageMode theMode, ValueChangeListener theListener,
             boolean showColourBoxesFlag) {
         super(ID, theTitle, theMode, theListener);
@@ -57,31 +51,34 @@ public class ExclusionPanelManager extends AbstractRulePanelManager {
         showColourBoxes = showColourBoxesFlag;
     }
 
+    @Override
     protected boolean canManageMultipleRules() {
         return true;
     }
 
+    @Override
     protected void clearControls() {
         excludeWidget.setText("");
         xpathWidget.setText("");
     }
 
+    @Override
     public void showControls(boolean flag) {
-
         for (Control control : miscControls) {
             control.setVisible(flag);
         }
     }
 
+    @Override
     protected List<String> fieldErrors() {
         return Collections.emptyList();
     }
 
     private void addListeners(final Text control, final StringProperty desc, final Control colourWindow) {
-
         addTextListeners(control, desc);
 
         control.addModifyListener(new ModifyListener() {
+            @Override
             public void modifyText(ModifyEvent e) {
                 String newText = control.getText();
                 if (colourWindow != null) {
@@ -93,10 +90,10 @@ public class ExclusionPanelManager extends AbstractRulePanelManager {
     }
 
     private void addListeners(final StyledText control, final StringProperty desc, final Control colourWindow) {
-
         addTextListeners(control, desc);
 
         control.addModifyListener(new ModifyListener() {
+            @Override
             public void modifyText(ModifyEvent e) {
                 String newText = control.getText();
                 if (colourWindow != null) {
@@ -108,7 +105,6 @@ public class ExclusionPanelManager extends AbstractRulePanelManager {
     }
 
     private Composite newColourPanel(Composite parent, String label) {
-
         Composite panel = new Composite(parent, SWT.None);
 
         GridLayout layout = new GridLayout(2, false);
@@ -135,17 +131,8 @@ public class ExclusionPanelManager extends AbstractRulePanelManager {
         return clrPanel;
     }
 
-    /**
-     * @param parent
-     *            Composite
-     * @param regexExclusionLabel
-     *            String
-     * @param xpathExclusionLabel
-     *            String
-     * @return Control
-     */
+    @Override
     public Control setupOn(Composite parent) {
-
         String regexExclusionLabel = SWTUtil.stringFor(StringKeys.LABEL_EXCLUSION_REGEX);
         String xpathExclusionLabel = SWTUtil.stringFor(StringKeys.LABEL_XPATH_EXCLUSION);
         String colourBoxLabel = SWTUtil.stringFor(StringKeys.LABEL_COLOUR_CODE);
@@ -210,8 +197,8 @@ public class ExclusionPanelManager extends AbstractRulePanelManager {
         return panel;
     }
 
+    @Override
     protected void adapt() {
-
         if (rules == null) {
             shutdown(excludeWidget);
             shutdown(xpathWidget);

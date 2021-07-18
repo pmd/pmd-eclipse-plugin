@@ -10,13 +10,13 @@ import org.eclipse.ui.IPerspectiveFactory;
 import net.sourceforge.pmd.eclipse.ui.PMDUiConstants;
 
 /**
- * Creates the PMD Perspective
+ * Creates the PMD Perspective.
  * 
  * @author SebastianRaffel ( 08.05.2005 )
  */
 public class PMDPerspective implements IPerspectiveFactory {
 
-    /* @see org.eclipse.ui.IPerspectiveFactory#createInitialLayout(org.eclipse.ui.IPageLayout) */
+    @Override
     public void createInitialLayout(IPageLayout layout) {
         String editorAreaId = layout.getEditorArea();
         String explorerAreaId = "org.eclipse.jdt.ui.PackageExplorer";

@@ -23,7 +23,7 @@ import net.sourceforge.pmd.util.ClassUtil;
  * the text represents a recognized class then it is re-rendered with its full package name. If it isn't recognized or
  * is a disallowed primitive then the entry is cleared.
  *
- * TODO - add a grey prompt within the field when it is empty, remove when user starts typing
+ * <p>TODO - add a grey prompt within the field when it is empty, remove when user starts typing
  *
  * @author Brian Remedios
  */
@@ -32,7 +32,7 @@ public class TypeText extends Composite {
     private Text text;
     private boolean acceptPrimitives;
 
-    public TypeText(Composite parent, int style, boolean primitivesOK, String thePromptText) {
+    public TypeText(Composite parent, int style, boolean primitivesOK, String thePromptText) { // NOPMD: thePromptText is unused TODO
         super(parent, SWT.None);
 
         GridLayout layout = new GridLayout(1, false);
@@ -46,6 +46,7 @@ public class TypeText extends Composite {
         text.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
         text.addModifyListener(new ModifyListener() {
+            @Override
             public void modifyText(ModifyEvent e) {
                 // adjust to remove prompt text if necessary
                 // TODO
@@ -55,6 +56,7 @@ public class TypeText extends Composite {
         acceptPrimitives = primitivesOK;
     }
 
+    @Override
     public void addListener(int eventType, Listener listener) {
         super.addListener(eventType, listener);
         if (text == null) {
@@ -63,16 +65,17 @@ public class TypeText extends Composite {
         text.addListener(eventType, listener);
     }
 
+    @Override
     public void removeListener(int eventType, Listener listener) {
         text.removeListener(eventType, listener);
     }
 
+    @Override
     public Point computeSize(int wHint, int hHint, boolean changed) {
         return text.computeSize(wHint, hHint, changed);
     }
 
     public void setType(Class<?> cls) {
-
         if (cls == null) {
             text.setText("");
             return;
@@ -86,10 +89,12 @@ public class TypeText extends Composite {
         text.setText(cls.getName());
     }
 
+    @Override
     public void setBackground(Color clr) {
         text.setBackground(clr);
     }
 
+    @Override
     public void setEnabled(boolean flag) {
         super.setEnabled(flag);
         text.setEnabled(flag);

@@ -91,7 +91,7 @@ public class DataflowGraph extends Composite {
 
             // set location and size of the Label
             setLocation(coordinates);
-            setSize((2 * radius) + 1, (2 * radius) + 1); // +1 to avoid cropping on right & bottom
+            setSize(2 * radius + 1, 2 * radius + 1); // +1 to avoid cropping on right & bottom
             setBackground(bgColor);
 
             // we have our own Paint Listener
@@ -116,7 +116,7 @@ public class DataflowGraph extends Composite {
 
         /**
          * Returns the Text-Line of the Node, different Nodes can have the same
-         * Line
+         * Line.
          *
          * @return line
          */
@@ -125,7 +125,7 @@ public class DataflowGraph extends Composite {
         }
 
         /**
-         * Gets the Dataflow-Index of the Node
+         * Gets the Dataflow-Index of the Node.
          *
          * @return index
          */
@@ -134,7 +134,7 @@ public class DataflowGraph extends Composite {
         }
 
         /**
-         * Checks, if this Node contains a variable of the given name
+         * Checks, if this Node contains a variable of the given name.
          *
          * @param varName
          * @return true, if the Name of the Variable is found, false otherwise
@@ -161,7 +161,7 @@ public class DataflowGraph extends Composite {
         }
 
         /**
-         * Checks, if this Node has been marked during painting a Path
+         * Checks, if this Node has been marked during painting a Path.
          *
          * @return true if the Node has been marked, false otherwise
          */
@@ -169,11 +169,7 @@ public class DataflowGraph extends Composite {
             return marked;
         }
 
-        /*
-         * @see
-         * org.eclipse.swt.events.PaintListener#paintControl(org.eclipse.swt.
-         * events.PaintEvent)
-         */
+        @Override
         public void paintControl(PaintEvent e) {
             // when we want to mark the Node,
             // we change the Drawing-Background
@@ -195,7 +191,7 @@ public class DataflowGraph extends Composite {
 
         /**
          * Sets a Node as being marked and paints is in a different - marking -
-         * Color
+         * Color.
          *
          * @param isMarked
          * @param color
@@ -209,7 +205,7 @@ public class DataflowGraph extends Composite {
 
     /**
      * Inner class for creating Paths, we don't create our own labels here,
-     * because SWT doesn't support transparency, so we can't overlay paths
+     * because SWT doesn't support transparency, so we can't overlay paths.
      *
      * @author SebastianRaffel ( 08.06.2005 )
      */
@@ -346,11 +342,7 @@ public class DataflowGraph extends Composite {
             return new Rectangle(newX1, newY1, newX2, newY2);
         }
 
-        /*
-         * @see
-         * org.eclipse.swt.events.PaintListener#paintControl(org.eclipse.swt.
-         * events.PaintEvent)
-         */
+        @Override
         public void paintControl(PaintEvent e) {
             // change Back- and Foreground
             // because the line in drawn with the FG-Color,
@@ -412,14 +404,6 @@ public class DataflowGraph extends Composite {
         }
     }
 
-    /**
-     * Constructor
-     *
-     * @param parent
-     * @param node
-     * @param radius
-     * @param length
-     */
     public DataflowGraph(Composite parent, Node node, int radius, int length, int height) {
         super(parent, SWT.NONE);
 
@@ -431,8 +415,8 @@ public class DataflowGraph extends Composite {
         lineLength = length;
         rowHeight = height;
 
-        nodes = new ArrayList<NodeCanvas>();
-        paths = new ArrayList<PathCanvas>();
+        nodes = new ArrayList<>();
+        paths = new ArrayList<>();
 
         Display display = parent.getDisplay();
         // Default Colors
@@ -566,7 +550,7 @@ public class DataflowGraph extends Composite {
     }
 
     /**
-     * Un-marks a path, sets all colours to normal
+     * Un-marks a path, sets all colours to normal.
      */
     public void demark() {
         for (NodeCanvas node : nodes) {
@@ -616,7 +600,7 @@ public class DataflowGraph extends Composite {
 
         // an Anomaly can have multiple starting points
         // but - so we say here - only one ending point
-        List<DataFlowNode> startNodes = new ArrayList<DataFlowNode>();
+        List<DataFlowNode> startNodes = new ArrayList<>();
         DataFlowNode endNode = null;
 
         for (NodeCanvas node : nodes) { // first we clear all nodes not needed
@@ -647,7 +631,7 @@ public class DataflowGraph extends Composite {
         }
 
         // ... to mark some of them again
-        List<PathCanvas> pathsToMark = new ArrayList<PathCanvas>();
+        List<PathCanvas> pathsToMark = new ArrayList<>();
         for (DataFlowNode start : startNodes) {
 
             // from every starting Node we search for a Path to the ending node
@@ -691,7 +675,7 @@ public class DataflowGraph extends Composite {
      * Recursively finds a Path from the starting Node to the ending Node, the
      * visited-List contains Paths, that already have been visited, so the
      * Function does not produce Loops, the List should be a new ArrayList()
-     * when calling this Function
+     * when calling this Function.
      *
      * @param start
      * @param end
@@ -705,7 +689,7 @@ public class DataflowGraph extends Composite {
         // if the Node's direct children contain the ending Node
         // we return the Path from the current Node to the End
         if (start.getChildren().contains(end)) {
-            List<PathCanvas> found = new ArrayList<PathCanvas>();
+            List<PathCanvas> found = new ArrayList<>();
             PathCanvas path = getPath(start.getIndex(), end.getIndex());
             if (path != null) {
                 found.add(path);

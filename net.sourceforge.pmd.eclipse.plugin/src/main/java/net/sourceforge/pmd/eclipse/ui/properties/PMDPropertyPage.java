@@ -67,7 +67,7 @@ public class PMDPropertyPage extends PropertyPage {
     protected Text ruleSetFileText;
     protected Button ruleSetBrowseButton;
 
-    private Collection<Control> activeControls = new ArrayList<Control>();
+    private Collection<Control> activeControls = new ArrayList<>();
 
     private final RuleTableViewerSorter availableRuleTableViewerSorter = new RuleTableViewerSorter(
             RuleTableViewerSorter.RULE_DEFAULT_COMPARATOR);
@@ -195,7 +195,7 @@ public class PMDPropertyPage extends PropertyPage {
     }
 
     /**
-     * Create the enable PMD checkbox
+     * Create the enable PMD checkbox.
      * 
      * @param parent
      *            the parent composite
@@ -206,6 +206,7 @@ public class PMDPropertyPage extends PropertyPage {
         button.setSelection(model.isPmdEnabled());
 
         button.addSelectionListener(new SelectionAdapter() {
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 adjustControls();
             }
@@ -215,7 +216,7 @@ public class PMDPropertyPage extends PropertyPage {
     }
 
     /**
-     * Create the include derived files checkbox
+     * Create the include derived files checkbox.
      * 
      * @param parent
      *            the parent composite
@@ -227,7 +228,7 @@ public class PMDPropertyPage extends PropertyPage {
     }
 
     /**
-     * Create the violations as errors checkbox
+     * Create the violations as errors checkbox.
      * 
      * @param parent
      *            the parent composite
@@ -239,7 +240,7 @@ public class PMDPropertyPage extends PropertyPage {
     }
 
     /**
-     * Create the Run At Full Build
+     * Create the Run At Full Build.
      * 
      * @param parent
      *            the parent composite
@@ -251,7 +252,7 @@ public class PMDPropertyPage extends PropertyPage {
     }
 
     /**
-     * Create the checkbox for storing configuration in a project file
+     * Create the checkbox for storing configuration in a project file.
      * 
      * @param parent
      *            the parent composite
@@ -311,7 +312,7 @@ public class PMDPropertyPage extends PropertyPage {
     }
 
     /**
-     * Build a label
+     * Build a label.
      */
     private Label buildLabel(final Composite parent, final String msgKey) {
         final Label label = new Label(parent, SWT.NONE);
@@ -321,7 +322,7 @@ public class PMDPropertyPage extends PropertyPage {
     }
 
     /**
-     * Build a label
+     * Build a label.
      */
     private Label buildSelectedWorkingSetLabel(final Composite parent) {
         selectedWorkingSet = model.getProjectWorkingSet();
@@ -334,7 +335,7 @@ public class PMDPropertyPage extends PropertyPage {
     }
 
     /**
-     * Build rule table viewer
+     * Build rule table viewer.
      */
     private Table buildAvailableRulesTableViewer(final Composite parent) {
         final int tableStyle = SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL | SWT.SINGLE | SWT.FULL_SELECTION | SWT.CHECK;
@@ -373,7 +374,7 @@ public class PMDPropertyPage extends PropertyPage {
     }
 
     /**
-     * Helper method to add new table columns
+     * Helper method to add new table columns.
      */
     private void addColumnTo(Table table, int alignment, boolean resizable, String textKey, int width,
             final Comparator<Rule> comparator) {

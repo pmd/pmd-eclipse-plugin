@@ -59,9 +59,7 @@ public class ViolationOverviewContentProvider
         treeViewer = view.getViewer();
     }
 
-    /**
-     * @see org.eclipse.jface.viewers.IContentProvider#dispose()
-     */
+    @Override
     public void dispose() {
         if (root != null) {
             IWorkspaceRoot workspaceRoot = (IWorkspaceRoot) root.getResource();
@@ -69,18 +67,13 @@ public class ViolationOverviewContentProvider
         }
     }
 
-    /**
-     * @see org.eclipse.jface.viewers.IStructuredContentProvider#getElements(java.lang.Object)
-     */
+    @Override
     public Object[] getElements(Object inputElement) {
         return getChildren(inputElement);
     }
 
-    /**
-     * @see org.eclipse.jface.viewers.ITreeContentProvider#getChildren(java.lang.Object)
-     */
+    @Override
     public Object[] getChildren(Object parentElement) {
-
         if (parentElement instanceof IWorkspaceRoot || parentElement instanceof RootRecord) {
             return getChildrenOfRoot();
         } else if (parentElement instanceof PackageRecord) {
@@ -136,7 +129,7 @@ public class ViolationOverviewContentProvider
 
     private Object[] getChildrenOfPackageOrFolder(AbstractPMDRecord record) {
         if (violationView.getShowType() == ViolationOverview.SHOW_MARKERS_FILES) {
-            Map<String, AbstractPMDRecord> markers = new HashMap<String, AbstractPMDRecord>();
+            Map<String, AbstractPMDRecord> markers = new HashMap<>();
             List<AbstractPMDRecord> files = record.getChildrenAsList();
             for (AbstractPMDRecord fileRec : files) {
                 List<AbstractPMDRecord> newMarkers = fileRec.getChildrenAsList();
@@ -157,14 +150,13 @@ public class ViolationOverviewContentProvider
      * @return children
      */
     private Object[] getChildrenOfRoot() {
-
         // ... we care about its Project's
         List<AbstractPMDRecord> projects = root.getChildrenAsList();
         ProjectRecord[] projectArray = new ProjectRecord[projects.size()];
         projects.toArray(projectArray);
 
         // we make a List of all Packages
-        List<AbstractPMDRecord> packages = new ArrayList<AbstractPMDRecord>();
+        List<AbstractPMDRecord> packages = new ArrayList<>();
         for (ProjectRecord element : projectArray) {
             if (element.isProjectOpen()) {
                 packages.addAll(element.getChildrenAsList());
@@ -179,7 +171,7 @@ public class ViolationOverviewContentProvider
 
         case ViolationOverview.SHOW_FILES_MARKERS:
             // show files
-            List<AbstractPMDRecord> files = new ArrayList<AbstractPMDRecord>();
+            List<AbstractPMDRecord> files = new ArrayList<>();
             for (AbstractPMDRecord packageRec : packages) {
                 files.addAll(packageRec.getChildrenAsList());
             }
@@ -192,9 +184,7 @@ public class ViolationOverviewContentProvider
         return Util.EMPTY_ARRAY;
     }
 
-    /**
-     * @see org.eclipse.jface.viewers.ITreeContentProvider#getParent(java.lang.Object)
-     */
+    @Override
     public Object getParent(Object element) {
         Object parent = null;
         AbstractPMDRecord record = (AbstractPMDRecord) element;
@@ -232,9 +222,7 @@ public class ViolationOverviewContentProvider
         return parent;
     }
 
-    /**
-     * @see org.eclipse.jface.viewers.ITreeContentProvider#hasChildren(java.lang.Object)
-     */
+    @Override
     public boolean hasChildren(Object element) {
         boolean hasChildren = true;
 
@@ -257,10 +245,7 @@ public class ViolationOverviewContentProvider
         return hasChildren;
     }
 
-    /**
-     * @see org.eclipse.jface.viewers.IContentProvider#inputChanged(org.eclipse.jface.viewers.Viewer, java.lang.Object,
-     *      java.lang.Object)
-     */
+    @Override
     public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
         LOG.debug("ViolationOverview inputChanged");
         treeViewer = (TreeViewer) viewer;
@@ -295,15 +280,13 @@ public class ViolationOverviewContentProvider
         changeEvaluator = new ChangeEvaluator(root);
     }
 
-    /**
-     * @see org.eclipse.core.resources.IResourceChangeListener#resourceChanged(org.eclipse.core.resources.IResourceChangeEvent)
-     */
+    @Override
     public void resourceChanged(IResourceChangeEvent event) {
-
         final ChangeRecord<AbstractPMDRecord> changes = changeEvaluator.changeRecordFor(event);
 
         // the additions, removals and changes are given to the viewer so that it can update itself
         treeViewer.getControl().getDisplay().asyncExec(new Runnable() {
+            @Override
             public void run() {
                 updateViewer(changes);
             }

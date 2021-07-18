@@ -14,7 +14,7 @@ import org.eclipse.team.core.history.IFileRevision;
  * 
  * @author Brian Remedios
  */
-public class RepositoryUtil {
+public final class RepositoryUtil {
 
     private static Boolean hasRepositoryAccess;
 

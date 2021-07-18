@@ -38,10 +38,12 @@ public class TextAsColourShapeBuilder extends AbstractCellPainterBuilder {
         return StringUtils.isBlank(text) ? null : text;
     }
 
+    @Override
     public void addPainterFor(final Tree tree, final int columnIndex, final RuleFieldAccessor getter,
             Map<Integer, List<Listener>> listenersByEventCode) {
 
         Listener paintListener = new Listener() {
+            @Override
             public void handleEvent(Event event) {
                 if (event.index != columnIndex) {
                     return;
@@ -64,6 +66,7 @@ public class TextAsColourShapeBuilder extends AbstractCellPainterBuilder {
         };
 
         Listener measureListener = new Listener() {
+            @Override
             public void handleEvent(Event e) {
                 if (e.index != columnIndex) {
                     return;
@@ -76,5 +79,4 @@ public class TextAsColourShapeBuilder extends AbstractCellPainterBuilder {
         addListener(tree, SWT.PaintItem, paintListener, listenersByEventCode);
         addListener(tree, SWT.MeasureItem, measureListener, listenersByEventCode);
     }
-
 }

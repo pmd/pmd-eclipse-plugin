@@ -13,7 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * A PMD visitor for processing resource deltas
+ * A PMD visitor for processing resource deltas.
  * 
  * @author Philippe Herlin
  *
@@ -22,24 +22,19 @@ public class DeltaVisitor extends BaseVisitor implements IResourceDeltaVisitor {
 
     private static final Logger LOG = LoggerFactory.getLogger(DeltaVisitor.class);
 
-    /**
-     * Default constructor
-     */
     public DeltaVisitor() {
         super();
     }
 
     /**
-     * Constructor with monitor
+     * Constructor with monitor.
      */
     public DeltaVisitor(IProgressMonitor monitor) {
         super();
         setMonitor(monitor);
     }
 
-    /**
-     * @see org.eclipse.core.resources.IResourceDeltaVisitor#visit(IResourceDelta)
-     */
+    @Override
     public boolean visit(IResourceDelta delta) throws CoreException {
 
         if (isCanceled()) {
@@ -59,6 +54,7 @@ public class DeltaVisitor extends BaseVisitor implements IResourceDeltaVisitor {
         }
         default: { // other kinds are not visited
             LOG.debug("Resource " + delta.getResource().getName() + " not visited.");
+            break;
         }
         }
 
@@ -66,7 +62,7 @@ public class DeltaVisitor extends BaseVisitor implements IResourceDeltaVisitor {
     }
 
     /**
-     * Visit added resource
+     * Visit added resource.
      * 
      * @param resource
      *            a new resource
@@ -76,7 +72,7 @@ public class DeltaVisitor extends BaseVisitor implements IResourceDeltaVisitor {
     }
 
     /**
-     * Visit changed resource
+     * Visit changed resource.
      * 
      * @param resource
      *            a changed resource

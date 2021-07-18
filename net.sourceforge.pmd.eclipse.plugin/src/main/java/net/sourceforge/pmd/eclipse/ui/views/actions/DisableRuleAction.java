@@ -53,20 +53,22 @@ public class DisableRuleAction extends AbstractViolationSelectionAction {
         System.out.println("Violations deleted: " + deletions);
     }
 
+    @Override
     protected String textId() {
         return StringKeys.VIEW_ACTION_DISABLE_RULE;
     }
 
+    @Override
     protected String imageId() {
         return PMDUiConstants.ICON_BUTTON_DISABLE;
     }
 
+    @Override
     protected String tooltipMsgId() {
         return StringKeys.VIEW_TOOLTIP_DISABLE;
     }
 
     public boolean hasActiveRules() {
-
         final IMarker[] markers = getSelectedViolations();
         if (markers == null) {
             return false;
@@ -82,11 +84,8 @@ public class DisableRuleAction extends AbstractViolationSelectionAction {
         return false;
     }
 
-    /**
-     * @see org.eclipse.jface.action.IAction#run()
-     */
+    @Override
     public void run() {
-
         final IMarker[] markers = getSelectedViolations();
         if (markers == null) {
             return;
@@ -101,6 +100,7 @@ public class DisableRuleAction extends AbstractViolationSelectionAction {
         try {
             IWorkspace workspace = ResourcesPlugin.getWorkspace();
             workspace.run(new IWorkspaceRunnable() {
+                @Override
                 public void run(IProgressMonitor monitor) throws CoreException {
                     Collection<Rule> rules = MarkerUtil.rulesFor(markers);
                     disableRulesFor(rules, preferences);
@@ -112,6 +112,5 @@ public class DisableRuleAction extends AbstractViolationSelectionAction {
         } catch (CoreException ce) {
             logErrorByKey(StringKeys.ERROR_CORE_EXCEPTION, ce);
         }
-
     }
 }

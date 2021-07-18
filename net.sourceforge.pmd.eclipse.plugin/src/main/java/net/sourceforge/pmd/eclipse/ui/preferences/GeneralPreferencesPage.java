@@ -24,7 +24,6 @@ import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TableViewer;
-import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.FocusEvent;
@@ -95,7 +94,6 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
     private Text logFileNameText;
     private Scale logLevelScale;
     private Label logLevelValueLabel;
-    private Button browseButton;
     private TableViewer tableViewer;
     private IPreferences preferences;
     private BasicTableManager priorityTableMgr;
@@ -104,20 +102,22 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
     private Control[] nameFields;
 
     /**
-     * Initialize the page
+     * Initialize the page.
      *
      * @see PreferencePage#init
      */
+    @Override
     public void init(IWorkbench arg0) {
         // setDescription(getMessage(StringKeys.MSGKEY_PREF_GENERAL_TITLE));
         preferences = PMDPlugin.getDefault().loadPreferences();
     }
 
     /**
-     * Create and initialize the controls of the page
+     * Create and initialize the controls of the page.
      *
      * @see PreferencePage#createContents
      */
+    @Override
     protected Control createContents(Composite parent) {
 
         // Create parent composite
@@ -201,6 +201,7 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
         Link link = new Link(parent, SWT.None);
         link.setText(label);
         link.addSelectionListener(new SelectionAdapter() {
+            @Override
             public void widgetSelected(SelectionEvent se) {
                 PreferenceDialog pref = PreferencesUtil.createPreferenceDialogOn(getShell(), prefPageId,
                         new String[] {}, null);
@@ -225,7 +226,7 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
     }
 
     /**
-     * Build the group of priority preferences
+     * Build the group of priority preferences.
      * 
      * @param parent
      *            the parent composite
@@ -245,13 +246,8 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
         useCustomPriorityNames = buildUseCustomPriorityNamesButton(group);
         useCustomPriorityNames.setLayoutData(new GridData(GridData.END, GridData.CENTER, false, false, 1, 1));
 
-        IStructuredContentProvider contentProvider = new IStructuredContentProvider() {
-            public void dispose() {
-            }
-
-            public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-            }
-
+        IStructuredContentProvider contentProvider = new AbstractStructuredContentProvider() {
+            @Override
             public Object[] getElements(Object inputElement) {
                 return (RulePriority[]) inputElement;
             }
@@ -282,7 +278,7 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
         shapeLabel.setLayoutData(new GridData());
         shapeLabel.setText("Shape and Color:");
 
-        final ShapePicker<Shape> ssc = new ShapePicker<Shape>(editorPanel, SWT.None, 14);
+        final ShapePicker<Shape> ssc = new ShapePicker<>(editorPanel, SWT.None, 14);
         ssc.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false, 1, 1));
         ssc.setSize(280, 30);
         ssc.setShapeMap(UISettings.shapeSet(SHAPE_COLOR, 10));
@@ -313,6 +309,7 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
         // GridData.CENTER, true, true, 5, 1) );
 
         tableViewer.addSelectionChangedListener(new ISelectionChangedListener() {
+            @Override
             public void selectionChanged(SelectionChangedEvent event) {
                 IStructuredSelection selection = (IStructuredSelection) event.getSelection();
                 selectedPriorities(selection.toList(), ssc, colorPicker, priorityName, iconSelector);
@@ -320,6 +317,7 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
         });
 
         ssc.addSelectionChangedListener(new ISelectionChangedListener() {
+            @Override
             public void selectionChanged(SelectionChangedEvent event) {
                 IStructuredSelection selection = (IStructuredSelection) event.getSelection();
                 if (!selection.isEmpty()) {
@@ -344,12 +342,14 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
         });
 
         colorPicker.addListener(new IPropertyChangeListener() {
+            @Override
             public void propertyChange(PropertyChangeEvent event) {
                 setColor((RGB) event.getNewValue());
             }
         });
 
         priorityName.addFocusListener(new FocusAdapter() {
+            @Override
             public void focusLost(FocusEvent e) {
                 setName(priorityName.getText());
             }
@@ -509,13 +509,15 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
         logFileNameText.setToolTipText(getMessage(StringKeys.PREF_GENERAL_TOOLTIP_LOG_FILE_NAME));
         logFileNameText.setLayoutData(gridData1);
 
-        browseButton = new Button(loggingGroup, SWT.NONE);
+        Button browseButton = new Button(loggingGroup, SWT.NONE);
         browseButton.setText(getMessage(StringKeys.PREF_GENERAL_BUTTON_BROWSE));
         browseButton.addSelectionListener(new SelectionListener() {
+            @Override
             public void widgetSelected(SelectionEvent event) {
                 browseLogFile();
             }
 
+            @Override
             public void widgetDefaultSelected(SelectionEvent event) {
                 // do nothing
             }
@@ -536,10 +538,12 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
         logLevelScale.setPageIncrement(1);
         logLevelScale.setLayoutData(gridData3);
         logLevelScale.addSelectionListener(new SelectionListener() {
+            @Override
             public void widgetSelected(SelectionEvent event) {
                 updateLogLevelValueLabel();
             }
 
+            @Override
             public void widgetDefaultSelected(SelectionEvent event) {
                 updateLogLevelValueLabel();
             }
@@ -579,7 +583,7 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
     }
 
     /**
-     * Build a label
+     * Build a label.
      */
     private Label buildLabel(Composite parent, String msgKey) {
         Label label = new Label(parent, SWT.NONE);
@@ -588,11 +592,10 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
     }
 
     /**
-     * Build the sample
+     * Build the sample.
      */
     private Label buildSampleLabel(Composite parent) {
-        Label label = new Label(parent, SWT.WRAP);
-        return label;
+        return new Label(parent, SWT.WRAP);
     }
 
     /**
@@ -607,6 +610,7 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
         text.setToolTipText(getMessage(StringKeys.PREF_GENERAL_TOOLTIP_ADDCOMMENT));
 
         text.addModifyListener(new ModifyListener() {
+            @Override
             public void modifyText(ModifyEvent e) {
                 updateSampleLabel();
             }
@@ -628,6 +632,7 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
         button.setText("Use custom names");
         button.setSelection(preferences.useCustomPriorityNames());
         button.addSelectionListener(new SelectionAdapter() {
+            @Override
             public void widgetSelected(SelectionEvent se) {
                 useCustomPriorityNames(((Button) se.getSource()).getSelection());
             }
@@ -636,7 +641,7 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
     }
 
     /**
-     * Build the check box for showing the PMD perspective
+     * Build the check box for showing the PMD perspective.
      * 
      * @param viewGroup
      *            the parent composite
@@ -650,7 +655,7 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
     }
 
     /**
-     * Build the check box for showing the PMD perspective
+     * Build the check box for showing the PMD perspective.
      * 
      * @param viewGroup
      *            the parent composite
@@ -690,7 +695,7 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
     }
 
     /**
-     * Build the check box for enabling using Project Build Path
+     * Build the check box for enabling using Project Build Path.
      * 
      * @param viewGroup
      *            the parent composite
@@ -710,7 +715,7 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
     }
 
     /**
-     * Build the check box for enabling PMD review style
+     * Build the check box for enabling PMD review style.
      * 
      * @param viewGroup
      *            the parent composite
@@ -738,9 +743,7 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
         field.setText(txt);
     }
 
-    /**
-     * @see org.eclipse.jface.preference.PreferencePage#performDefaults()
-     */
+    @Override
     protected void performDefaults() {
         for (RulePriority priority : RulePriority.values()) {
             PriorityDescriptor defaultDescriptor = PMDPlugin.getDefault().getPreferencesManager().defaultDescriptorFor(priority);
@@ -772,7 +775,7 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
     }
 
     /**
-     * Update the sample label when the additional comment text is modified
+     * Update the sample label when the additional comment text is modified.
      */
     protected void updateSampleLabel() {
         String pattern = additionalCommentText.getText();
@@ -791,7 +794,7 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
     }
 
     /**
-     * Update the label of the log level to reflect the log level selected
+     * Update the label of the log level to reflect the log level selected.
      *
      */
     protected void updateLogLevelValueLabel() {
@@ -800,7 +803,7 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
 
     /**
      * Display a file selection dialog in order to let the user select a log
-     * file
+     * file.
      *
      */
     protected void browseLogFile() {
@@ -838,15 +841,14 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
         }
     }
 
+    @Override
     public boolean performCancel() {
         // clear out any changes for next possible usage
         PriorityDescriptorCache.INSTANCE.loadFromPreferences();
         return true;
     }
 
-    /**
-     * @see org.eclipse.jface.preference.IPreferencePage#performOk()
-     */
+    @Override
     public boolean performOk() {
 
         updateMarkerIcons();

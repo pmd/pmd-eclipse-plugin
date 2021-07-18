@@ -36,10 +36,19 @@ import net.sourceforge.pmd.lang.Language;
  * @author Brian Remedios
  */
 public class PageBuilder {
+    private static final char CR = '\n';
+    private static final Color BACKGROUND = Display.getCurrent().getSystemColor(SWT.COLOR_WHITE);
+    
+    private static final Comparator<StyleRange> STYLE_COMPARATOR = new Comparator<StyleRange>() {
+        @Override
+        public int compare(StyleRange sr1, StyleRange sr2) {
+            return sr1.start - sr2.start;
+        }
+    };
 
-    private List<int[]> headingSpans = new ArrayList<int[]>();
-    private List<int[]> codeSpans = new ArrayList<int[]>();
-    private Map<int[], String> linksBySpan = new HashMap<int[], String>();
+    private List<int[]> headingSpans = new ArrayList<>();
+    private List<int[]> codeSpans = new ArrayList<>();
+    private Map<int[], String> linksBySpan = new HashMap<>();
 
     private StringBuilder buffer;
 
@@ -48,14 +57,6 @@ public class PageBuilder {
     private TextStyle codeStyle;
     private StyleExtractor codeStyleExtractor;
 
-    private static final char CR = '\n';
-    private static final Color BACKGROUND = Display.getCurrent().getSystemColor(SWT.COLOR_WHITE);
-
-    private static final Comparator<StyleRange> STYLE_COMPARATOR = new Comparator<StyleRange>() {
-        public int compare(StyleRange sr1, StyleRange sr2) {
-            return sr1.start - sr2.start;
-        }
-    };
 
     public PageBuilder(int textIndent, int headingColorIndex, FontBuilder codeFontBuilder) {
         buffer = new StringBuilder(500);
@@ -70,8 +71,7 @@ public class PageBuilder {
     }
 
     public static StyleRange[] sort(List<StyleRange> ranges) {
-
-        StyleRange[] styles = ranges.toArray(new StyleRange[ranges.size()]);
+        StyleRange[] styles = ranges.toArray(new StyleRange[0]);
         Arrays.sort(styles, STYLE_COMPARATOR);
         return styles;
     }
@@ -172,7 +172,7 @@ public class PageBuilder {
 
         widget.setText(text);
 
-        List<StyleRange> ranges = new ArrayList<StyleRange>();
+        List<StyleRange> ranges = new ArrayList<>();
 
         int[] span;
 
@@ -210,6 +210,7 @@ public class PageBuilder {
     public void addLinkHandler(final StyledText widget) {
 
         widget.addListener(SWT.MouseDown, new Listener() {
+            @Override
             public void handleEvent(Event event) {
                 // It is up to the application to determine when and how a link
                 // should be activated.
@@ -222,8 +223,7 @@ public class PageBuilder {
                     if (link != null) {
                         launchBrowser(link);
                     }
-
-                } catch (IllegalArgumentException e) {
+                } catch (IllegalArgumentException ignored) {
                     // no character under event.x, event.y
                 }
 

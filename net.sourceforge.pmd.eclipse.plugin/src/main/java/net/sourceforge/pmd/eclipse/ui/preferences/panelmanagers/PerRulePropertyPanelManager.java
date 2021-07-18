@@ -77,10 +77,12 @@ public class PerRulePropertyPanelManager extends AbstractRulePanelManager implem
         super(ID, theTitle, theMode, theListener);
     }
 
+    @Override
     protected boolean canManageMultipleRules() {
         return false;
     }
 
+    @Override
     protected boolean canWorkWith(Rule rule) {
         if (RuleUtil.isXPathRule(rule)) {
             return true;
@@ -89,16 +91,18 @@ public class PerRulePropertyPanelManager extends AbstractRulePanelManager implem
         return !Configuration.filteredPropertiesOf(rule).isEmpty();
     }
 
+    @Override
     protected void clearControls() {
         formArranger.clearChildren();
     }
 
+    @Override
     public void loadValues() {
         formArranger.loadValues();
     }
 
+    @Override
     public void showControls(boolean flag) {
-
         clearControls();
     }
 
@@ -107,13 +111,13 @@ public class PerRulePropertyPanelManager extends AbstractRulePanelManager implem
      * we pass it on..
      */
     private ValueChangeListener chainedListener() {
-
         return FormArranger.chain(changeListener, new ValueChangeListener() {
-
+            @Override
             public void changed(RuleSelection rule, PropertyDescriptor<?> desc, Object newValue) {
                 updateUI();
             }
 
+            @Override
             public void changed(PropertySource source, PropertyDescriptor<?> desc, Object newValue) {
                 updateUI();
             }
@@ -121,8 +125,8 @@ public class PerRulePropertyPanelManager extends AbstractRulePanelManager implem
         });
     }
 
+    @Override
     public Control setupOn(Composite parent) {
-
         sComposite = new ScrolledComposite(parent, SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
         composite = new Composite(sComposite, SWT.NONE);
 
@@ -135,6 +139,7 @@ public class PerRulePropertyPanelManager extends AbstractRulePanelManager implem
         return sComposite;
     }
 
+    @Override
     public void addedRows(int rowCountDelta) {
         widgetRowCount += rowCountDelta;
         adjustMinimumHeight();
@@ -144,8 +149,8 @@ public class PerRulePropertyPanelManager extends AbstractRulePanelManager implem
         sComposite.setMinSize(composite.computeSize(500, widgetRowCount * MAX_WIDGET_HEIGHT));
     }
 
+    @Override
     protected void adapt() {
-
         widgetRowCount = formArranger.arrangeFor(soleRule());
         validate();
 
@@ -156,6 +161,7 @@ public class PerRulePropertyPanelManager extends AbstractRulePanelManager implem
         adjustMinimumHeight();
     }
 
+    @Override
     public boolean validate() {
         if (!super.validate()) {
             return false;
@@ -167,9 +173,9 @@ public class PerRulePropertyPanelManager extends AbstractRulePanelManager implem
         return true;
     }
 
+    @Override
     protected List<String> fieldWarnings() {
-
-        List<String> warnings = new ArrayList<String>(2);
+        List<String> warnings = new ArrayList<>(2);
 
         if (rules != null && !canManageMultipleRules()) { // TODO can do better
             Rule soleRule = soleRule();

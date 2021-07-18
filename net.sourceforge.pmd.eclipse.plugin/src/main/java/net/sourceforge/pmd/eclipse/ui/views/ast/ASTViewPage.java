@@ -8,11 +8,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.custom.StyledText;
@@ -41,6 +41,7 @@ import org.jaxen.XPathSyntaxException;
 import net.sourceforge.pmd.eclipse.ui.BasicTableLabelProvider;
 import net.sourceforge.pmd.eclipse.ui.editors.SyntaxManager;
 import net.sourceforge.pmd.eclipse.ui.model.FileRecord;
+import net.sourceforge.pmd.eclipse.ui.preferences.AbstractStructuredContentProvider;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.BasicTableManager;
 import net.sourceforge.pmd.eclipse.ui.views.AbstractStructureInspectorPage;
 import net.sourceforge.pmd.lang.ast.AbstractNode;
@@ -49,7 +50,6 @@ import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.rule.xpath.XPathRuleQuery;
-import net.sourceforge.pmd.util.StringUtil;
 
 /**
  * A combined abstract syntax tree viewer for a whole class or selected methods
@@ -79,12 +79,6 @@ public class ASTViewPage extends AbstractStructureInspectorPage {
         hiddenNodeTypes.add(ASTImportDeclaration.class);
     }
 
-    /**
-     *
-     * @param part
-     * @param record
-     *            the FileRecord
-     */
     public ASTViewPage(IWorkbenchPart part, FileRecord record) {
         super(part, record);
     }
@@ -107,8 +101,8 @@ public class ASTViewPage extends AbstractStructureInspectorPage {
      * TODO use an adjustable Sash to separate the two sections TODO add an
      * XPath version combo widget
      */
+    @Override
     public void createControl(Composite parent) {
-
         sashForm = new SashForm(parent, SWT.HORIZONTAL);
 
         Composite astPanel = new Composite(sashForm, SWT.NONE);
@@ -127,6 +121,7 @@ public class ASTViewPage extends AbstractStructureInspectorPage {
         final Button classBtn = new Button(titleArea, SWT.RADIO);
         classBtn.setText("Class");
         classBtn.addSelectionListener(new SelectionAdapter() {
+            @Override
             public void widgetSelected(SelectionEvent se) {
                 if (classBtn.getSelection()) {
                     showClass();
@@ -138,6 +133,7 @@ public class ASTViewPage extends AbstractStructureInspectorPage {
         methodBtn.setText("Method");
         methodBtn.setSelection(true);
         methodBtn.addSelectionListener(new SelectionAdapter() {
+            @Override
             public void widgetSelected(SelectionEvent se) {
                 enableMethodSelector(methodBtn.getSelection());
                 methodPicked();
@@ -182,6 +178,7 @@ public class ASTViewPage extends AbstractStructureInspectorPage {
         gridData.horizontalSpan = 1;
         goButton.setLayoutData(gridData);
         goButton.addSelectionListener(new SelectionAdapter() {
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 evaluateXPath();
             }
@@ -199,13 +196,8 @@ public class ASTViewPage extends AbstractStructureInspectorPage {
         resultsViewer = tableMgr.buildTableViewer(xpathTestPanel);
         tableMgr.setupColumns(NodeColumnUI.VISIBLE_COLUMNS);
 
-        IStructuredContentProvider contentProvider = new IStructuredContentProvider() {
-            public void dispose() {
-            }
-
-            public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-            }
-
+        IStructuredContentProvider contentProvider = new AbstractStructuredContentProvider() {
+            @Override
             public Object[] getElements(Object inputElement) {
                 return (Node[]) inputElement;
             }
@@ -224,8 +216,8 @@ public class ASTViewPage extends AbstractStructureInspectorPage {
     }
 
     private void addXPathValidator() {
-
         ModifyListener ml = new ModifyListener() {
+            @Override
             public void modifyText(ModifyEvent event) {
                 validateXPath(xpathField.getText());
             }
@@ -235,7 +227,6 @@ public class ASTViewPage extends AbstractStructureInspectorPage {
     }
 
     private void validateXPath(String xpathString) {
-
         try {
             new BaseXPath(xpathString, null);
         } catch (XPathSyntaxException ex) {
@@ -252,7 +243,6 @@ public class ASTViewPage extends AbstractStructureInspectorPage {
     }
 
     private void evaluateXPath() {
-
         if (!setupTest()) {
             return;
         }
@@ -263,7 +253,7 @@ public class ASTViewPage extends AbstractStructureInspectorPage {
                     XPathRuleQuery.XPATH_1_0 // TODO derive from future combo widget
             );
         } catch (ParseException pe) {
-            showError(pe.fillInStackTrace().getMessage());
+            // TODO showError(pe.fillInStackTrace().getMessage());
             return;
         }
 
@@ -271,24 +261,14 @@ public class ASTViewPage extends AbstractStructureInspectorPage {
     }
 
     private boolean setupTest() {
-
         // outputField.setText("");
         resultsViewer.getTable().clearAll();
 
-        if (StringUtil.isEmpty(xpathField.getText())) {
-            // outputField.setText("XPath query field is empty.");
-            return false;
-        }
-
-        return true;
-    }
-
-    private void showError(String message) {
-        // outputField.setText(message);
+        // TODO outputField.setText("XPath query field is empty.");
+        return !StringUtils.isBlank(xpathField.getText());
     }
 
     private void show(List<Node> results) {
-
         if (results.isEmpty()) {
             // outputField.setText("No matching nodes found");
             return;
@@ -301,14 +281,14 @@ public class ASTViewPage extends AbstractStructureInspectorPage {
         // }
         // outputField.setText( sb.toString() );
 
-        resultsViewer.setInput(results.toArray(new Node[results.size()]));
+        resultsViewer.setInput(results.toArray(new Node[0]));
     }
 
     private void setupListeners(Tree tree) {
-
         helper = new ASTPainterHelper(tree.getDisplay());
 
         tree.addListener(SWT.PaintItem, new Listener() {
+            @Override
             public void handleEvent(Event event) {
                 TextLayout layout = helper.layoutFor((TreeItem) event.item);
                 layout.draw(event.gc, event.x + 5, event.y);
@@ -318,6 +298,7 @@ public class ASTViewPage extends AbstractStructureInspectorPage {
         });
 
         tree.addListener(SWT.MeasureItem, new Listener() {
+            @Override
             public void handleEvent(Event e) {
                 Rectangle textLayoutBounds = helper.layoutFor((TreeItem) e.item).getBounds();
                 e.width = textLayoutBounds.width + 2;
@@ -326,6 +307,7 @@ public class ASTViewPage extends AbstractStructureInspectorPage {
         });
 
         tree.addSelectionListener(new SelectionAdapter() {
+            @Override
             public void widgetSelected(SelectionEvent se) {
                 highlightItem(se.item.getData());
             }
@@ -333,23 +315,23 @@ public class ASTViewPage extends AbstractStructureInspectorPage {
     }
 
     private void highlightItem(Object item) {
-
         AbstractNode node = (AbstractNode) item;
         highlight(node.getBeginLine() - 1, node.getBeginColumn() - 1, node.getEndLine() - 1, node.getEndColumn());
     }
 
+    @Override
     public void dispose() {
         super.dispose();
 
         helper.dispose();
     }
 
+    @Override
     public Control getControl() {
         return sashForm;
     }
 
     protected void showClass() {
-
         if (classNode == null) {
             String source = getDocument().get();
             classNode = XPathEvaluator.INSTANCE.getCompilationUnit(source);
@@ -359,8 +341,8 @@ public class ASTViewPage extends AbstractStructureInspectorPage {
         astViewer.expandAll();
     }
 
+    @Override
     protected void showMethod(ASTMethodDeclaration pmdMethod) {
-
         if (pmdMethod == null) {
             return;
         }
@@ -416,8 +398,8 @@ public class ASTViewPage extends AbstractStructureInspectorPage {
      * @param newResource
      *            new resource for the page
      */
+    @Override
     public void refresh(IResource newResource) {
-
         super.refresh(newResource);
 
         classNode = null;
@@ -430,5 +412,4 @@ public class ASTViewPage extends AbstractStructureInspectorPage {
 
         refreshMethodSelector();
     }
-
 }

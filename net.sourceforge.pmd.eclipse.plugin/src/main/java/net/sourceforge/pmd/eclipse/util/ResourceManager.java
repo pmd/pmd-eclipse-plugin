@@ -16,9 +16,9 @@ import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
  * 
  * @author Brian Remedios
  */
-public class ResourceManager {
+public final class ResourceManager {
 
-    private Map<String, Image> imagesByCode = new HashMap<String, Image>();
+    private Map<String, Image> imagesByCode = new HashMap<>();
 
     private static ResourceManager instance = new ResourceManager();
 

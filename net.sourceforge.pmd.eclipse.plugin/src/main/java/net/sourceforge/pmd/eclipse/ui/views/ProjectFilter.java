@@ -16,26 +16,18 @@ import net.sourceforge.pmd.eclipse.ui.model.MarkerRecord;
 import net.sourceforge.pmd.eclipse.ui.model.PackageRecord;
 
 /**
- * Allows to filter Projects in the Violation Overview
+ * Allows to filter Projects in the Violation Overview.
  *
  * @author SebastianRaffel ( 17.05.2005 )
  */
 public class ProjectFilter extends ViewerFilter {
     private List<AbstractPMDRecord> projectFilterList;
 
-    /**
-     * Constructor
-     */
     public ProjectFilter() {
         super();
-        projectFilterList = new ArrayList<AbstractPMDRecord>();
+        projectFilterList = new ArrayList<>();
     }
 
-    /*
-     * @see
-     * org.eclipse.jface.viewers.ViewerFilter#select(org.eclipse.jface.viewers.
-     * Viewer, java.lang.Object, java.lang.Object)
-     */
     @Override
     public boolean select(Viewer viewer, Object parentElement, Object element) {
         boolean select = true;
@@ -59,7 +51,7 @@ public class ProjectFilter extends ViewerFilter {
     }
 
     /**
-     * Sets the List of projects to filter
+     * Sets the List of projects to filter.
      *
      * @param newList
      */
@@ -75,7 +67,7 @@ public class ProjectFilter extends ViewerFilter {
     }
 
     /**
-     * Adds a Project to the FilterList
+     * Adds a Project to the FilterList.
      *
      * @param project
      */
@@ -84,7 +76,7 @@ public class ProjectFilter extends ViewerFilter {
     }
 
     /**
-     * Removes a Project From the filterList
+     * Removes a Project From the filterList.
      *
      * @param project
      */

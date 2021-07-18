@@ -30,20 +30,19 @@ import net.sourceforge.pmd.util.CollectionUtil;
  * @deprecated Unsupported in PMD
  */
 @Deprecated
-public class MultiMethodEditorFactory extends AbstractMultiValueEditorFactory<Method> {
+public final class MultiMethodEditorFactory extends AbstractMultiValueEditorFactory<Method> {
 
     public static final MultiMethodEditorFactory INSTANCE = new MultiMethodEditorFactory();
 
-
     private MultiMethodEditorFactory() { }
 
-
+    @Override
     public PropertyDescriptor<List<Method>> createDescriptor(String name, String optionalDescription, Control[] otherData) {
         return new MethodMultiProperty(name, "Method value "
             + name, new Method[] {MethodEditorFactory.STRING_LENGTH}, new String[] {"java.lang"}, 0.0f);
     }
 
-
+    @Override
     protected void fillWidget(Text textWidget, PropertyDescriptor<List<Method>> desc, PropertySource source) {
 
         List<Method> values = valueFor(source, desc);
@@ -60,7 +59,6 @@ public class MultiMethodEditorFactory extends AbstractMultiValueEditorFactory<Me
 
 
     private static String asString(Map<String, List<Method>> methodGroups) {
-
         if (methodGroups.isEmpty()) {
             return "";
         }
@@ -85,7 +83,6 @@ public class MultiMethodEditorFactory extends AbstractMultiValueEditorFactory<Me
 
 
     private static void allSignaturesOn(StringBuilder sb, List<Method> methods, String delimiter) {
-
         sb.append(
             Util.signatureFor(methods.get(0), MethodEditorFactory.UNWANTED_PREFIXES)
         );
@@ -139,7 +136,7 @@ public class MultiMethodEditorFactory extends AbstractMultiValueEditorFactory<Me
         return nAdded == 0 ? null : newValue;
     }
 
-
+    @Override
     protected List<Method> valueFrom(Control valueControl) {    // not necessary for this type
         return null;
     }

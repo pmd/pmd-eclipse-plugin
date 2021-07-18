@@ -19,18 +19,21 @@ import net.sourceforge.pmd.eclipse.util.Util;
 public interface FilterColumnUI {
 
     ItemFieldAccessor<String, FilterHolder> INCLUDE_ACCESSOR = new ItemFieldAccessorAdapter<String, FilterHolder>(null) {
+        @Override
         public Image imageFor(FilterHolder holder) {
             return FilterPreferencesPage.typeIconFor(holder);
         }
     };
 
     ItemFieldAccessor<String, FilterHolder> PMD_ACCESSOR = new ItemFieldAccessorAdapter<String, FilterHolder>(Util.COMP_STR) {
+        @Override
         public String valueFor(FilterHolder holder) {
             return holder.forPMD ? "Y" : "";
         }
     };
 
     ItemFieldAccessor<String, FilterHolder> CPD_ACCESSOR = new ItemFieldAccessorAdapter<String, FilterHolder>(Util.COMP_STR) {
+        @Override
         public String valueFor(FilterHolder holder) {
             return holder.forCPD ? "Y" : "";
         }
@@ -38,18 +41,19 @@ public interface FilterColumnUI {
 
     ItemFieldAccessor<String, FilterHolder> PATTERN_ACCESSOR = new ItemFieldAccessorAdapter<String, FilterHolder>(
             Util.COMP_STR) {
+        @Override
         public String valueFor(FilterHolder holder) {
             return holder.pattern;
         }
     };
 
-    ItemColumnDescriptor<String, FilterHolder> INCLUDE_DESCRIPTOR = new ItemColumnDescriptor<String, FilterHolder>("", "   Type",
+    ItemColumnDescriptor<String, FilterHolder> INCLUDE_DESCRIPTOR = new ItemColumnDescriptor<>("", "   Type",
             SWT.LEFT, 85, false, INCLUDE_ACCESSOR);
-    ItemColumnDescriptor<String, FilterHolder> PMD_DESCRIPTOR = new ItemColumnDescriptor<String, FilterHolder>("", "PMD",
+    ItemColumnDescriptor<String, FilterHolder> PMD_DESCRIPTOR = new ItemColumnDescriptor<>("", "PMD",
             SWT.CENTER, 55, false, PMD_ACCESSOR);
-    ItemColumnDescriptor<String, FilterHolder> CPD_DESCRIPTOR = new ItemColumnDescriptor<String, FilterHolder>("", "CPD",
+    ItemColumnDescriptor<String, FilterHolder> CPD_DESCRIPTOR = new ItemColumnDescriptor<>("", "CPD",
             SWT.CENTER, 55, false, CPD_ACCESSOR);
-    ItemColumnDescriptor<String, FilterHolder> PATTERN_DESCRIPTOR = new ItemColumnDescriptor<String, FilterHolder>("", "Pattern",
+    ItemColumnDescriptor<String, FilterHolder> PATTERN_DESCRIPTOR = new ItemColumnDescriptor<>("", "Pattern",
             SWT.LEFT, 55, true, PATTERN_ACCESSOR);
 
     @SuppressWarnings("rawtypes")

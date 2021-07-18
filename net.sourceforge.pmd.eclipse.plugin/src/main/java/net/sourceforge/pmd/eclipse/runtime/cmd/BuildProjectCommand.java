@@ -28,15 +28,14 @@ public class BuildProjectCommand extends AbstractProjectCommand {
         setTerminated(false);
     }
 
+    @Override
     public void execute() {
         try {
             project().build(IncrementalProjectBuilder.FULL_BUILD, this.getMonitor());
 
             LOG.debug("Build for Project {} triggered, setting needRebuild=false", project().getName());
             projectProperties().setNeedRebuild(false);
-        } catch (CoreException e) {
-            throw new RuntimeException(e);
-        } catch (PropertiesException e) {
+        } catch (CoreException | PropertiesException e) {
             throw new RuntimeException(e);
         } finally {
             this.setTerminated(true);

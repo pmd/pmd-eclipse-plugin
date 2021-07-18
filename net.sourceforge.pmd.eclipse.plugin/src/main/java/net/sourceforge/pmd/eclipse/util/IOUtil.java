@@ -10,8 +10,10 @@ import java.io.IOException;
 /**
  * 
  * @author Brian Remedios
+ * @deprecated use try-with-resources instead
  */
-public class IOUtil {
+@Deprecated
+public final class IOUtil {
 
     private IOUtil() {
     }
@@ -22,7 +24,7 @@ public class IOUtil {
         }
         try {
             closeable.close();
-        } catch (IOException ex) {
+        } catch (IOException ignored) {
             // ignore
         }
     }

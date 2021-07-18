@@ -40,13 +40,7 @@ public class CPDViewDoubleClickEventListener implements IDoubleClickListener {
         this.view = view;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.eclipse.jface.viewers.IDoubleClickListener#doubleClick(org.eclipse.
-     * jface.viewers.DoubleClickEvent)
-     */
+    @Override
     public void doubleClick(DoubleClickEvent event) {
         final IStructuredSelection selection = (IStructuredSelection) event.getSelection();
         final Object object = selection.getFirstElement();
@@ -91,15 +85,13 @@ public class CPDViewDoubleClickEventListener implements IDoubleClickListener {
                 final int length = document.getLineOffset(entry.getBeginLine() - 1 + match.getLineCount()) - offset - 1;
                 textEditor.selectAndReveal(offset, length);
             }
-        } catch (PartInitException pie) {
+        } catch (PartInitException | BadLocationException pie) {
             PMDPlugin.getDefault().logError(getString(StringKeys.ERROR_VIEW_EXCEPTION), pie);
-        } catch (BadLocationException ble) {
-            PMDPlugin.getDefault().logError(getString(StringKeys.ERROR_VIEW_EXCEPTION), ble);
         }
     }
 
     /**
-     * Helper method to return an NLS string from its key
+     * Helper method to return an NLS string from its key.
      */
     private String getString(String key) {
         return PMDPlugin.getDefault().getStringTable().getString(key);

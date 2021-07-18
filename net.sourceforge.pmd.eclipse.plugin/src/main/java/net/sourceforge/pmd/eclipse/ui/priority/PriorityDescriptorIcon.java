@@ -11,7 +11,7 @@ import org.eclipse.swt.graphics.Image;
 
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 
-public class PriorityDescriptorIcon {
+public final class PriorityDescriptorIcon {
     private final String iconId;
     private final String imagePath;
 

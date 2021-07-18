@@ -25,22 +25,23 @@ public class RegexEditorFactory extends AbstractEditorFactory<Pattern> {
 
     public static final RegexEditorFactory INSTANCE = new RegexEditorFactory();
 
+    protected RegexEditorFactory() {
+        // protected constructor for subclassing
+    }
 
-    protected RegexEditorFactory() { }
-
-
+    @Override
     public PropertyDescriptor<Pattern> createDescriptor(String name, String description, Control[] otherData) {
         return PropertyFactory.regexProperty(name).desc(description)
             .defaultValue(valueFrom(otherData[1]))
             .build();
     }
 
-
+    @Override
     protected Pattern valueFrom(Control valueControl) {
         return Pattern.compile(((Text) valueControl).getText());
     }
 
-
+    @Override
     public Control newEditorOn(Composite parent, final PropertyDescriptor<Pattern> desc, final PropertySource source,
                                final ValueChangeListener listener, SizeChangeListener sizeListener) {
 
@@ -50,6 +51,7 @@ public class RegexEditorFactory extends AbstractEditorFactory<Pattern> {
         fillWidget(text, desc, source);
 
         text.addListener(SWT.FocusOut, new Listener() {
+            @Override
             public void handleEvent(Event event) {
                 String newValue = text.getText().trim();
                 String existingValue = valueFor(source, desc).pattern();
@@ -75,7 +77,6 @@ public class RegexEditorFactory extends AbstractEditorFactory<Pattern> {
 
 
     private void setValue(PropertySource source, PropertyDescriptor<Pattern> desc, Pattern value) {
-
         if (!source.hasDescriptor(desc)) {
             return;
         }

@@ -39,7 +39,7 @@ import net.sourceforge.pmd.eclipse.runtime.cmd.AbstractDefaultCommand;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
 
 /**
- * Implements the clear reviews action
+ * Implements the clear reviews action.
  *
  * @author Philippe Herlin
  *
@@ -75,7 +75,7 @@ public class ClearReviewsAction extends AbstractUIAction implements IResourceVis
     }
 
     /**
-     * Get the monitor
+     * Get the monitor.
      *
      * @return
      */

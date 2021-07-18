@@ -25,7 +25,7 @@ import net.sourceforge.pmd.eclipse.ui.views.ViolationOutline;
 import net.sourceforge.pmd.eclipse.ui.views.ViolationOverview;
 
 /**
- * Filters elements by the Marker priorities
+ * Filters elements by the Marker priorities.
  * 
  * @author SebastianRaffel ( 22.05.2005 )
  * @author bremedios (15.9.2010)
@@ -45,7 +45,7 @@ public class PriorityFilterAction extends Action implements PriorityFilterChange
     }
 
     /**
-     * Constructor, used for Violations Outline only
+     * Constructor, used for Violations Outline only.
      * 
      * @param prio the Priority to filter
      * @param view the ViolationOutline
@@ -56,7 +56,7 @@ public class PriorityFilterAction extends Action implements PriorityFilterChange
     }
 
     /**
-     * Constructor, used for Violations Overview only
+     * Constructor, used for Violations Overview only.
      * 
      * @param prio the Priority to filter
      * @param view the violations Overview
@@ -67,7 +67,6 @@ public class PriorityFilterAction extends Action implements PriorityFilterChange
     }
 
     private void setFilterFrom(ViewerFilter[] filters) {
-
         for (Object filter : filters) {
             if (filter instanceof PriorityFilter) {
                 priorityFilter = (PriorityFilter) filter;
@@ -77,7 +76,7 @@ public class PriorityFilterAction extends Action implements PriorityFilterChange
     }
 
     /**
-     * Setup the Actions Look by giving the right Image, Text and ToolTip-Text to it, depending on its Priority
+     * Setup the Actions Look by giving the right Image, Text and ToolTip-Text to it, depending on its Priority.
      */
     private void setupActionLook() {
         PriorityDescriptor desc = PriorityDescriptorCache.INSTANCE.descriptorFor(priority);
@@ -90,13 +89,15 @@ public class PriorityFilterAction extends Action implements PriorityFilterChange
     /**
      * @return the Style, in which the Button is displayed
      */
+    @Override
     public int getStyle() {
         return AS_CHECK_BOX;
     }
 
     /**
-     * Executes the Action
+     * Executes the Action.
      */
+    @Override
     public void run() {
         // we add or remove an Integer with the Priority to a List
         // of Priorities, the Filter does the Rest

@@ -20,7 +20,7 @@ import net.sourceforge.pmd.properties.constraints.NumericConstraints;
 /**
  * @author Brian Remedios
  */
-public class DoubleEditorFactory extends AbstractRealNumberEditor<Double> {
+public final class DoubleEditorFactory extends AbstractRealNumberEditor<Double> {
 
     public static final DoubleEditorFactory INSTANCE = new DoubleEditorFactory();
 
@@ -28,6 +28,7 @@ public class DoubleEditorFactory extends AbstractRealNumberEditor<Double> {
     private DoubleEditorFactory() { }
 
 
+    @Override
     public PropertyDescriptor<Double> createDescriptor(String name, String description, Control[] otherData) {
         return PropertyFactory.doubleProperty(name).desc(description)
             .defaultValue(defaultIn(otherData).doubleValue())
@@ -36,18 +37,20 @@ public class DoubleEditorFactory extends AbstractRealNumberEditor<Double> {
     }
 
 
+    @Override
     protected Double valueFrom(Control valueControl) {
-
         return ((Spinner) valueControl).getSelection() / SCALE;
     }
 
 
+    @Override
     public Control newEditorOn(Composite parent, final PropertyDescriptor<Double> desc, final PropertySource source,
                                final ValueChangeListener listener, SizeChangeListener sizeListener) {
 
         final Spinner spinner = newSpinnerFor(parent, source, desc);
 
         spinner.addModifyListener(new ModifyListener() {
+            @Override
             public void modifyText(ModifyEvent event) {
                 Double newValue = spinner.getSelection() / SCALE;
                 if (newValue.equals(valueFor(source, desc))) {

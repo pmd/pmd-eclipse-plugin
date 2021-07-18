@@ -81,13 +81,14 @@ public class ViolationOutlinePageBR extends Page implements IPage, ISelectionCha
         }
     }
 
+    @Override
     public TableViewer tableViewer() {
         return tableViewer;
     }
 
+    @Override
     public void createControl(Composite parent) {
-
-        tableManager = new BasicTableManager<IMarker>("rscViolations", PMDPlugin.getDefault().loadPreferences(),
+        tableManager = new BasicTableManager<>("rscViolations", PMDPlugin.getDefault().loadPreferences(),
                 initialColumns);
         tableViewer = tableManager.buildTableViewer(parent);
 
@@ -130,7 +131,7 @@ public class ViolationOutlinePageBR extends Page implements IPage, ISelectionCha
     }
 
     /**
-     * Creates the ActionBars
+     * Creates the ActionBars.
      */
     private void createActionBars() {
         IToolBarManager manager = getSite().getActionBars().getToolBarManager();
@@ -147,12 +148,12 @@ public class ViolationOutlinePageBR extends Page implements IPage, ISelectionCha
         return tableViewer;
     }
 
-    /* @see org.eclipse.ui.part.IPage#getControl() */
+    @Override
     public Control getControl() {
         return tableViewer.getControl();
     }
 
-    /* @see org.eclipse.ui.part.IPage#setFocus() */
+    @Override
     public void setFocus() {
         tableViewer.getTable().setFocus();
     }
@@ -165,8 +166,9 @@ public class ViolationOutlinePageBR extends Page implements IPage, ISelectionCha
     }
 
     /**
-     * Refreshes the View
+     * Refreshes the View.
      */
+    @Override
     public void refresh() {
         if (!tableViewer.getControl().isDisposed()) {
             tableViewer.getControl().setRedraw(false);
@@ -176,13 +178,8 @@ public class ViolationOutlinePageBR extends Page implements IPage, ISelectionCha
 
     }
 
-    /*
-     * @see
-     * org.eclipse.jface.viewers.ISelectionChangedListener#selectionChanged(org.
-     * eclipse.jface.viewers.SelectionChangedEvent)
-     */
+    @Override
     public void selectionChanged(SelectionChangedEvent event) {
-
         IStructuredSelection selection = (IStructuredSelection) event.getSelection();
         IMarker marker = (IMarker) selection.getFirstElement();
         if (marker == null) {
@@ -215,7 +212,7 @@ public class ViolationOutlinePageBR extends Page implements IPage, ISelectionCha
             return;
         }
 
-        columnWidths = widths.toArray(new Integer[widths.size()]);
+        columnWidths = widths.toArray(new Integer[0]);
         TableColumn[] columns = tableViewer.getTable().getColumns();
         for (int i = 0; i < columns.length && i < widths.size() && i < initialColumns.length; i++) {
             int width = initialColumns[i].defaultWidth();
@@ -243,7 +240,7 @@ public class ViolationOutlinePageBR extends Page implements IPage, ISelectionCha
             return;
         }
 
-        sorterProperties = sorterProps.toArray(new Integer[sorterProps.size()]);
+        sorterProperties = sorterProps.toArray(new Integer[0]);
         TableColumn sortColumn = null;
         int direction = SWT.NONE;
         if (sorterProps.size() == 2) {

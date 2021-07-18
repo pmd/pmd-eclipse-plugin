@@ -15,7 +15,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
-import net.sourceforge.pmd.eclipse.util.IOUtil;
 
 /**
  * This class implements a string table. This let the UI loads all displayed
@@ -44,32 +43,27 @@ public class StringTable {
     }
 
     /**
-     * Lazy load the string table
+     * Lazy load the string table.
      * 
      * @return the string table
      */
     private Properties getTable() {
-
         if (table != null) {
             return table;
         }
 
-        InputStream is = null;
-        try {
-            table = new Properties();
-            final URL messageTableUrl = FileLocator.find(PMDPlugin.getDefault().getBundle(),
-                    new Path("$nl$/messages.properties"), null);
-            if (messageTableUrl != null) {
-                is = messageTableUrl.openStream();
-                table.load(is);
+        Properties newTable = new Properties();
+        final URL messageTableUrl = FileLocator.find(PMDPlugin.getDefault().getBundle(),
+                new Path("$nl$/messages.properties"), null);
+        if (messageTableUrl != null) {
+            try (InputStream is = messageTableUrl.openStream()) {
+                newTable.load(is);
+            } catch (IOException e) {
+                LOG.error("IO Exception when loading string table", e);
             }
-        } catch (IOException e) {
-            LOG.error("IO Exception when loading string table", e);
-        } finally {
-            IOUtil.closeQuietly(is);
         }
-
-        return table;
+        table = newTable;
+        return newTable;
     }
 
 }

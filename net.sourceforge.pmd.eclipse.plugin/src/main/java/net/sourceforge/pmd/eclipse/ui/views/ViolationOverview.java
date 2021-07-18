@@ -82,9 +82,6 @@ public class ViolationOverview extends ViewPart implements ISelectionProvider, I
     // Shows markers -> files without packages
     public static final int SHOW_MARKERS_FILES = 3;
 
-    /**
-     * @see org.eclipse.ui.ViewPart#init(org.eclipse.ui.IViewSite)
-     */
     @Override
     public void init(IViewSite site) throws PartInitException {
         super.init(site);
@@ -108,9 +105,6 @@ public class ViolationOverview extends ViewPart implements ISelectionProvider, I
         }
     }
 
-    /**
-     * @see org.eclipse.ui.IWorkbenchPart#createPartControl(org.eclipse.swt.widgets.Composite)
-     */
     @Override
     public void createPartControl(Composite parent) {
         treeViewer = new TreeViewer(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
@@ -143,16 +137,13 @@ public class ViolationOverview extends ViewPart implements ISelectionProvider, I
         }
     }
 
-    /**
-     * @see org.eclipse.ui.IWorkbenchPart#dispose()
-     */
     @Override
     public void dispose() {
         // on Dispose of the View we save its State into a Memento
 
         // we save the filtered Projects
         List<AbstractPMDRecord> projects = projectFilter.getProjectFilterList();
-        List<String> projectNames = new ArrayList<String>();
+        List<String> projectNames = new ArrayList<>();
         for (int k = 0; k < projects.size(); k++) {
             AbstractPMDRecord project = projects.get(k);
             projectNames.add(project.getName());
@@ -181,7 +172,7 @@ public class ViolationOverview extends ViewPart implements ISelectionProvider, I
 
     /**
      * Creates the initial Input In General this is a RootRecord for the
-     * WorkspaceRoot
+     * WorkspaceRoot.
      *
      * @return an Input-Object
      */
@@ -190,7 +181,7 @@ public class ViolationOverview extends ViewPart implements ISelectionProvider, I
     }
 
     /**
-     * Creates the Table's Columns
+     * Creates the Table's Columns.
      *
      * @param tree
      */
@@ -226,7 +217,7 @@ public class ViolationOverview extends ViewPart implements ISelectionProvider, I
     }
 
     /**
-     * Creates Adapter for sorting and resizing the Columns
+     * Creates Adapter for sorting and resizing the Columns.
      *
      * @param tree
      */
@@ -247,7 +238,7 @@ public class ViolationOverview extends ViewPart implements ISelectionProvider, I
     }
 
     /**
-     * Return the ViewerSorter for a Column
+     * Return the ViewerSorter for a Column.
      *
      * @param column,
      *            the Number of the Column in the Table
@@ -349,7 +340,7 @@ public class ViolationOverview extends ViewPart implements ISelectionProvider, I
     }
 
     /**
-     * Sets the Widths of the Columns
+     * Sets the Widths of the Columns.
      */
     public void setColumnWidths() {
         if (!treeViewer.getTree().isDisposed()) {
@@ -364,7 +355,7 @@ public class ViolationOverview extends ViewPart implements ISelectionProvider, I
     }
 
     /**
-     * Sets the Properties for Sorting
+     * Sets the Properties for Sorting.
      *
      * @param properties,
      *            an Array with Properties, the First Value is the Number of the
@@ -378,17 +369,11 @@ public class ViolationOverview extends ViewPart implements ISelectionProvider, I
         }
     }
 
-    /**
-     * @see org.eclipse.ui.IWorkbenchPart#setFocus()
-     */
     @Override
     public void setFocus() {
         treeViewer.getTree().setFocus();
     }
 
-    /**
-     * @return the viewer
-     */
     public TreeViewer getViewer() {
         return treeViewer;
     }
@@ -402,7 +387,7 @@ public class ViolationOverview extends ViewPart implements ISelectionProvider, I
     }
 
     /**
-     * Refresh the View (and its Elements)
+     * Refresh the View (and its Elements).
      */
     public void refresh() {
         if (!treeViewer.getControl().isDisposed()) {
@@ -418,36 +403,28 @@ public class ViolationOverview extends ViewPart implements ISelectionProvider, I
         // note: the context menu doesn't need to be refreshed
     }
 
-    /**
-     * @see org.eclipse.jface.viewers.ISelectionProvider#addSelectionChangedListener(org.eclipse.jface.viewers.ISelectionChangedListener)
-     */
+    @Override
     public void addSelectionChangedListener(ISelectionChangedListener listener) {
         treeViewer.addSelectionChangedListener(listener);
     }
 
-    /**
-     * @see org.eclipse.jface.viewers.ISelectionProvider#getSelection()
-     */
+    @Override
     public ISelection getSelection() {
         return treeViewer.getSelection();
     }
 
-    /**
-     * @see org.eclipse.jface.viewers.ISelectionProvider#removeSelectionChangedListener(org.eclipse.jface.viewers.ISelectionChangedListener)
-     */
+    @Override
     public void removeSelectionChangedListener(ISelectionChangedListener listener) {
         treeViewer.removeSelectionChangedListener(listener);
     }
 
-    /**
-     * @see org.eclipse.jface.viewers.ISelectionProvider#setSelection(org.eclipse.jface.viewers.ISelection)
-     */
+    @Override
     public void setSelection(ISelection selection) {
         treeViewer.setSelection(selection);
     }
 
     /**
-     * Helper method to return an NLS string from its key
+     * Helper method to return an NLS string from its key.
      */
     private String getString(String key) {
         return PMDPlugin.getDefault().getStringTable().getString(key);
@@ -462,7 +439,7 @@ public class ViolationOverview extends ViewPart implements ISelectionProvider, I
         // Provide the Filters with their last State
         List<String> projectNames = memento.getStringList(PROJECT_LIST);
         if (!projectNames.isEmpty()) {
-            List<AbstractPMDRecord> projectList = new ArrayList<AbstractPMDRecord>();
+            List<AbstractPMDRecord> projectList = new ArrayList<>();
             for (int k = 0; k < projectNames.size(); k++) {
                 AbstractPMDRecord project = root.findResourceByName(projectNames.get(k),
                         AbstractPMDRecord.TYPE_PROJECT);
@@ -650,18 +627,15 @@ public class ViolationOverview extends ViewPart implements ISelectionProvider, I
         };
     }
 
-    /**
-     * @see org.eclipse.jface.viewers.ITreeViewerListener#treeCollapsed(org.eclipse.jface.viewers.TreeExpansionEvent)
-     */
+    @Override
     public void treeCollapsed(TreeExpansionEvent event) {
         // do nothing
     }
 
     /**
      * Calculates the LOC of the expanded file record.
-     *
-     * @see org.eclipse.jface.viewers.ITreeViewerListener#treeExpanded(org.eclipse.jface.viewers.TreeExpansionEvent)
      */
+    @Override
     public void treeExpanded(TreeExpansionEvent event) {
         Object object = event.getElement();
         if (object instanceof PackageRecord) {
@@ -678,6 +652,7 @@ public class ViolationOverview extends ViewPart implements ISelectionProvider, I
 
         // refresh the labels in the table
         Display.getDefault().asyncExec(new Runnable() {
+            @Override
             public void run() {
                 getViewer().refresh();
             }

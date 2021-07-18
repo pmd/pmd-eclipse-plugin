@@ -16,9 +16,7 @@ import net.sourceforge.pmd.eclipse.util.Util;
  */
 public class RuleSetContentProvider extends AbstractStructuredContentProvider {
 
-    /**
-     * @see org.eclipse.jface.viewers.IStructuredContentProvider#getElements(Object)
-     */
+    @Override
     public Object[] getElements(Object inputElement) {
         
         if (inputElement instanceof RuleSet) {

@@ -19,13 +19,12 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 
 import net.sourceforge.pmd.eclipse.util.Util;
-import net.sourceforge.pmd.util.StringUtil;
 
 /**
  * A general purpose selection widget that deals with methods. Once the user types in a valid type in the left-most text
  * field, all methods that are part of it are listed in the combobox on the right.
  *
- * Note: Uses the default class loader to lookup the class, we'll probably want to supply an external one in the future?
+ * <p>Note: Uses the default class loader to lookup the class, we'll probably want to supply an external one in the future?
  *
  * @author Brian Remedios
  */
@@ -39,7 +38,7 @@ public class MethodPicker extends Composite {
     public MethodPicker(Composite parent, int style, String[] theUnwantedPrefixes) {
         super(parent, SWT.None);
 
-        unwantedPrefixes = theUnwantedPrefixes == null ? StringUtil.getEmptyStrings() : theUnwantedPrefixes;
+        unwantedPrefixes = theUnwantedPrefixes == null ? new String[0] : theUnwantedPrefixes;
 
         GridLayout layout = new GridLayout(2, true);
         layout.verticalSpacing = 0;
@@ -51,12 +50,14 @@ public class MethodPicker extends Composite {
         typeText = new TypeText(this, style, false, "Enter a type name"); // TODO i18l
         typeText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
         typeText.addListener(SWT.FocusOut, new Listener() {
+            @Override
             public void handleEvent(Event event) {
                 reviseMethodListFor(typeText.getType(true));
             }
         });
 
         typeText.addListener(SWT.Modify, new Listener() {
+            @Override
             public void handleEvent(Event event) {
                 // no cleanup, avoid event loop & overflow
                 reviseMethodListFor(typeText.getType(false));
@@ -87,11 +88,13 @@ public class MethodPicker extends Composite {
         methodList.select(0);
     }
 
+    @Override
     public void setBackground(Color clr) {
         typeText.setBackground(clr);
         methodList.setBackground(clr);
     }
 
+    @Override
     public Point computeSize(int wHint, int hHint, boolean changed) {
         Point pt = typeText.computeSize(wHint, hHint, changed);
         pt.x *= 2;
@@ -103,6 +106,7 @@ public class MethodPicker extends Composite {
         typeText.setType(cls);
     }
 
+    @Override
     public void setEnabled(boolean flag) {
         super.setEnabled(flag);
         typeText.setEnabled(flag);

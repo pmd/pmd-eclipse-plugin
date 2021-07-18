@@ -19,9 +19,7 @@ public class DeleteLineFix extends AbstractFix {
         super("Delete the line");
     }
 
-    /**
-     * @see net.sourceforge.pmd.eclipse.Fix#fix(java.lang.String, int)
-     */
+    @Override
     public String fix(String sourceCode, int lineNumber) {
         final Document document = new Document(sourceCode);
         try {
@@ -34,5 +32,4 @@ public class DeleteLineFix extends AbstractFix {
 
         return document.get();
     }
-
 }

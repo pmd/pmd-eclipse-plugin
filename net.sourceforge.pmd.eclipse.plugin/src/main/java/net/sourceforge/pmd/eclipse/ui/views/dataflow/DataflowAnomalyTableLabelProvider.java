@@ -21,7 +21,7 @@ public class DataflowAnomalyTableLabelProvider extends LabelProvider implements 
 
     private static final String KEY_IMAGE_DFA = "error_dfa";
 
-    /* @see org.eclipse.jface.viewers.ITableLabelProvider#getColumnImage(java.lang.Object, int) */
+    @Override
     public Image getColumnImage(Object element, int columnIndex) {
         // set the Image for the anomaly
         Image image = null;
@@ -31,9 +31,8 @@ public class DataflowAnomalyTableLabelProvider extends LabelProvider implements 
         return image;
     }
 
-    /* @see org.eclipse.jface.viewers.ITableLabelProvider#getColumnText(java.lang.Object, int) */
+    @Override
     public String getColumnText(Object element, int columnIndex) {
-
         if (element instanceof RuleViolation) {
             final RuleViolation violation = (RuleViolation) element;
             switch (columnIndex) {
@@ -47,7 +46,7 @@ public class DataflowAnomalyTableLabelProvider extends LabelProvider implements 
                 int line2 = violation.getEndLine();
 
                 // show only one Line if they are equal
-                if ((line1 == line2) || (line2 == 0)) {
+                if (line1 == line2 || line2 == 0) {
                     return String.valueOf(line1);
                 } else {
                     // ... or twist them if needed and show something like "11, 12"

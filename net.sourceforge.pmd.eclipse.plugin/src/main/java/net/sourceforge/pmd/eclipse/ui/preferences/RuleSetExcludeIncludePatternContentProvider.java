@@ -8,22 +8,20 @@ import net.sourceforge.pmd.RuleSet;
 
 /**
  * This class implements a content provider for the ruleset exclude/include
- * pattern tables of the PMD Preference page
+ * pattern tables of the PMD Preference page.
  *
  */
 public class RuleSetExcludeIncludePatternContentProvider extends AbstractStructuredContentProvider {
 
-    private final boolean exclude;
-
     private static final RuleSetExcludeIncludePattern[] EMPTY_RULE_SET_PATTERN = new RuleSetExcludeIncludePattern[0];
+
+    private final boolean exclude;
 
     public RuleSetExcludeIncludePatternContentProvider(boolean exclude) {
         this.exclude = exclude;
     }
 
-    /**
-     * @see org.eclipse.jface.viewers.IStructuredContentProvider#getElements(Object)
-     */
+    @Override
     public RuleSetExcludeIncludePattern[] getElements(Object inputElement) {
 
         if (inputElement instanceof RuleSet) {

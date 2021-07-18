@@ -10,6 +10,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
@@ -61,7 +62,6 @@ public class RulePanelManager extends AbstractRulePanelManager {
     private TypeText implementationClassField;
     private Combo ruleSetNameField;
 
-    private Button ruleReferenceButton;
     private Combo languageCombo;
     private Combo priorityCombo;
     private ShapePicker priorityDisplay;
@@ -84,7 +84,7 @@ public class RulePanelManager extends AbstractRulePanelManager {
 
     // TODO move to RuleSet class
     public static final Comparator<RuleSet> BY_NAME_COMPARATOR = new Comparator<RuleSet>() {
-
+        @Override
         public int compare(RuleSet rsA, RuleSet rsB) {
             return rsA.getName().compareTo(rsB.getName());
         }
@@ -102,6 +102,7 @@ public class RulePanelManager extends AbstractRulePanelManager {
         target = theRuleSource;
     }
 
+    @Override
     public void showControls(boolean flag) {
         nameField.setVisible(flag);
         implementationTypeCombo.setVisible(flag);
@@ -139,7 +140,6 @@ public class RulePanelManager extends AbstractRulePanelManager {
     }
 
     private void showLanguageVersionFields(Language language) {
-
         int versionCount = language == null ? 0 : language.getVersions().size();
 
         boolean hasVersions = versionCount > 1;
@@ -150,7 +150,7 @@ public class RulePanelManager extends AbstractRulePanelManager {
         maxLanguageVersionCombo.setVisible(hasVersions);
 
         if (hasVersions && language != null) {
-            List<LanguageVersion> versions = new ArrayList<LanguageVersion>();
+            List<LanguageVersion> versions = new ArrayList<>();
             versions.add(null); // allow no selection
             versions.addAll(language.getVersions());
             populate(minLanguageVersionCombo, versions);
@@ -202,18 +202,15 @@ public class RulePanelManager extends AbstractRulePanelManager {
     }
 
     private boolean allRulesUseTypeResolution() {
-
         return rules != null && RuleUtil.allUseTypeResolution(rules);
     }
 
     private boolean allRulesUseDfa() {
-
         return rules != null && RuleUtil.allUseDfa(rules);
     }
 
     @Override
     protected void adapt() {
-
         show(ruleSetNameField, RuleUtil.commonRuleset(rules));
 
         Language language = RuleUtil.commonLanguage(rules);
@@ -256,10 +253,9 @@ public class RulePanelManager extends AbstractRulePanelManager {
 
     @Override
     public Control setupOn(Composite parent) {
-
         inSetup = true;
 
-        labels = new ArrayList<Label>();
+        labels = new ArrayList<>();
 
         Composite dlgArea = new Composite(parent, SWT.NONE);
 
@@ -379,17 +375,6 @@ public class RulePanelManager extends AbstractRulePanelManager {
         return dlgArea;
     }
 
-    /**
-     * Build the rule reference button
-     */
-    private Button buildRuleReferenceButton(Composite parent) {
-        final Button button = new Button(parent, SWT.CHECK);
-        button.setText(SWTUtil.stringFor(StringKeys.PREF_RULEEDIT_BUTTON_RULE_REFERENCE));
-        button.setEnabled(false);
-        // button.setSelection(rule() instanceof RuleReference);
-        return button;
-    }
-
     private Label buildLabel(Composite parent, String msgKey) {
         Label label = new Label(parent, SWT.NONE);
         label.setText(msgKey == null ? "" : SWTUtil.stringFor(msgKey));
@@ -398,12 +383,12 @@ public class RulePanelManager extends AbstractRulePanelManager {
     }
 
     private Text buildNameText(Composite parent) {
-
         int style = creatingNewRule() ? SWT.SINGLE | SWT.BORDER : SWT.READ_ONLY | SWT.BORDER;
         final Text nameField = new Text(parent, style);
         nameField.setFocus();
 
         Listener validateListener = new Listener() {
+            @Override
             public void handleEvent(Event event) {
                 validateRuleParams();
             }
@@ -416,18 +401,18 @@ public class RulePanelManager extends AbstractRulePanelManager {
     }
 
     private Combo buildRuleSetNameField(Composite parent) {
-
         int style = creatingNewRule() ? SWT.BORDER : SWT.READ_ONLY;
         Combo field = new Combo(parent, style);
 
         Collection<RuleSet> rs = PMDPlugin.getDefault().getRuleSetManager().getRegisteredRuleSets();
-        RuleSet[] ruleSets = rs.toArray(new RuleSet[rs.size()]);
+        RuleSet[] ruleSets = rs.toArray(new RuleSet[0]);
         Arrays.sort(ruleSets, BY_NAME_COMPARATOR);
         for (RuleSet ruleSet : ruleSets) {
             field.add(ruleSet.getName().trim());
         }
 
         Listener validateListener = new Listener() {
+            @Override
             public void handleEvent(Event event) {
                 validateRuleParams();
             }
@@ -440,7 +425,6 @@ public class RulePanelManager extends AbstractRulePanelManager {
     }
 
     private void implementationType(ImplementationType type) {
-
         switch (type) {
         case XPath: {
             implementationClassField.setEnabled(false);
@@ -480,7 +464,6 @@ public class RulePanelManager extends AbstractRulePanelManager {
     }
 
     private Combo buildImplementationTypeCombo(Composite parent) {
-
         final Combo combo = new Combo(parent, SWT.READ_ONLY);
         combo.add("XPath script");
         combo.add("Java class");
@@ -514,7 +497,6 @@ public class RulePanelManager extends AbstractRulePanelManager {
     }
 
     private Combo buildLanguageCombo(Composite parent) {
-
         final List<Language> languages = LanguageRegistry.findWithRuleSupport();
 
         final Combo combo = new Combo(parent, SWT.READ_ONLY);
@@ -523,12 +505,13 @@ public class RulePanelManager extends AbstractRulePanelManager {
         int selectionIndex = -1;
 
         for (int i = 0; i < languages.size(); i++) {
-            if (languages.get(i) == deflt) {
+            if (Objects.equals(languages.get(i), deflt)) {
                 selectionIndex = i;
             }
             combo.add(languages.get(i).getName());
         }
         combo.addSelectionListener(new SelectionAdapter() {
+            @Override
             public void widgetSelected(SelectionEvent event) {
                 if (rules == null) {
                     return;
@@ -546,7 +529,6 @@ public class RulePanelManager extends AbstractRulePanelManager {
     }
 
     private void updateLanguageVersionComboSelections(Language language) {
-
         List<LanguageVersion> versions = language.getVersions();
 
         if (versions.size() > 1) {
@@ -575,11 +557,11 @@ public class RulePanelManager extends AbstractRulePanelManager {
     }
 
     private Combo buildLanguageVersionCombo(Composite parent, final boolean isMinVersion) {
-
         int style = creatingNewRule() ? SWT.SINGLE | SWT.BORDER : SWT.READ_ONLY | SWT.BORDER;
         final Combo combo = new Combo(parent, style);
 
         combo.addSelectionListener(new SelectionAdapter() {
+            @Override
             public void widgetSelected(SelectionEvent event) {
                 if (rules == null) {
                     return;
@@ -589,6 +571,7 @@ public class RulePanelManager extends AbstractRulePanelManager {
                 final LanguageVersion version = selIdx == 0 ? null : selectedLanguage().getVersions().get(selIdx - 1);
 
                 RuleVisitor visitor = new RuleVisitor() {
+                    @Override
                     public boolean accept(Rule rule) {
                         if (isMinVersion) {
                             rule.setMinimumLanguageVersion(version);
@@ -609,7 +592,6 @@ public class RulePanelManager extends AbstractRulePanelManager {
     }
 
     private Combo buildPriorityCombo(Composite parent) {
-
         final Combo combo = new Combo(parent, SWT.READ_ONLY | SWT.BORDER);
         // combo.setEditable(false);
         final RulePriority[] priorities = RulePriority.values();
@@ -625,6 +607,7 @@ public class RulePanelManager extends AbstractRulePanelManager {
         }
 
         combo.addSelectionListener(new SelectionAdapter() {
+            @Override
             public void widgetSelected(SelectionEvent event) {
                 setPriority(priorities[combo.getSelectionIndex()]);
                 validateRuleParams();
@@ -645,21 +628,18 @@ public class RulePanelManager extends AbstractRulePanelManager {
     }
 
     private Button buildUsesTypeResolutionButton(Composite parent) {
-
         final Button button = new Button(parent, SWT.CHECK);
         button.setText(SWTUtil.stringFor(StringKeys.PREF_RULEEDIT_BUTTON_USES_TYPE_RESOLUTION));
         return button;
     }
 
     private Button buildUsesDfaButton(Composite parent) {
-
         final Button button = new Button(parent, SWT.CHECK);
         button.setText(SWTUtil.stringFor(StringKeys.PREF_RULEEDIT_BUTTON_USES_DFA));
         return button;
     }
 
     private boolean hasValidRuleType() {
-
         if (!implementationClassField.isEnabled()) {
             return true;
         }
@@ -673,7 +653,6 @@ public class RulePanelManager extends AbstractRulePanelManager {
     }
 
     private void buildPriorityControls(Composite parent) {
-
         Label priorityLabel = buildLabel(parent, StringKeys.PREF_RULEEDIT_LABEL_PRIORITY);
         GridData data = new GridData();
         data.horizontalSpan = 1;
@@ -685,6 +664,7 @@ public class RulePanelManager extends AbstractRulePanelManager {
         priorityDisplay.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false, 4, 1));
         priorityDisplay.setShapeMap(UISettings.shapesByPriority());
         priorityDisplay.tooltipProvider(new LabelProvider() {
+            @Override
             public String labelFor(Object item) {
                 return UISettings.labelFor((RulePriority) item);
             }
@@ -693,7 +673,6 @@ public class RulePanelManager extends AbstractRulePanelManager {
     }
 
     private boolean hasValidRuleName() {
-
         if (creatingNewRule() && !isValidRuleName(nameFieldValue())) {
             return false;
         }
@@ -722,7 +701,6 @@ public class RulePanelManager extends AbstractRulePanelManager {
     }
 
     private boolean hasValidChoice(Combo combo) {
-
         if (creatingNewRule() && hasNoSelection(combo)) {
             return false;
         }
@@ -732,9 +710,9 @@ public class RulePanelManager extends AbstractRulePanelManager {
         return priorityCombo.getSelectionIndex() >= 0;
     }
 
+    @Override
     protected List<String> fieldErrors() {
-
-        List<String> errors = new ArrayList<String>();
+        List<String> errors = new ArrayList<>();
 
         if (!hasValidRuleType()) {
             errors.add("Invalid rule class");
@@ -759,7 +737,6 @@ public class RulePanelManager extends AbstractRulePanelManager {
     }
 
     private void validateRuleParams() {
-
         boolean isOk = validate();
 
         if (isOk && creatingNewRule()) {
@@ -776,7 +753,6 @@ public class RulePanelManager extends AbstractRulePanelManager {
     }
 
     private void copyLocalValuesTo(Rule rule) {
-
         rule.setName(nameFieldValue());
         rule.setRuleSetName(ruleSetNameField.getText());
 
@@ -796,7 +772,6 @@ public class RulePanelManager extends AbstractRulePanelManager {
     }
 
     private void populateRuleInstance() {
-
         Class<Rule> ruleType = (Class<Rule>) implementationClassField.getType(true);
 
         try {
@@ -812,21 +787,19 @@ public class RulePanelManager extends AbstractRulePanelManager {
 
             copyLocalValuesTo(rules.soleRule());
 
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
+        } catch (InstantiationException | IllegalAccessException e) {
             e.printStackTrace();
         }
     }
 
     private TypeText buildImplementationClassField(Composite parent) {
-
         int style = creatingNewRule() ? SWT.SINGLE | SWT.BORDER : SWT.READ_ONLY | SWT.BORDER;
         final TypeText classField = new TypeText(parent, style, true, "");
 
         classField.setEnabled(false);
 
         Listener validateListener = new Listener() {
+            @Override
             public void handleEvent(Event event) {
                 validateRuleParams();
             }
@@ -839,22 +812,12 @@ public class RulePanelManager extends AbstractRulePanelManager {
     }
 
     private static boolean isValidRuleName(String candidateName) {
-
-        if (StringUtils.isBlank(candidateName)) {
-            return false;
-        }
         // TODO
-
-        return true;
+        return !StringUtils.isBlank(candidateName);
     }
 
     private static boolean isValidRulesetName(String candidateName) {
-
-        if (StringUtils.isBlank(candidateName)) {
-            return false;
-        }
         // TODO
-
-        return true;
+        return !StringUtils.isBlank(candidateName);
     }
 }

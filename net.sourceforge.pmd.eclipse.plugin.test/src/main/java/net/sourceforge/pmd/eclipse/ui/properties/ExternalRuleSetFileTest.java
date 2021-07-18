@@ -64,17 +64,14 @@ public class ExternalRuleSetFileTest {
     @Test
     public void changedExternalRulesetShouldBeReloaded() throws Exception {
         setUpProject("ExternalRulesetTest");
-        InputStream ruleset1 = ExternalRuleSetFileTest.class.getResourceAsStream("ruleset1.xml");
-
         // create the ruleset file in the project
         IFile ruleSetFile = this.testProject.getFile(PROJECT_RULESET_FILENAME);
         if (ruleSetFile.exists()) {
             Assert.fail("File " + PROJECT_RULESET_FILENAME + " already exists!");
         }
-        try {
+
+        try (InputStream ruleset1 = ExternalRuleSetFileTest.class.getResourceAsStream("ruleset1.xml")) {
             ruleSetFile.create(ruleset1, true, null);
-        } finally {
-            ruleset1.close();
         }
 
         // configure the project to use this
@@ -82,7 +79,7 @@ public class ExternalRuleSetFileTest {
         cmd.setPmdEnabled(true);
         cmd.setProject(this.testProject);
         cmd.setProjectWorkingSet(null);
-        cmd.setProjectRuleSetList(Collections.singletonList((RuleSetUtil.newEmpty("empty", "empty"))));
+        cmd.setProjectRuleSetList(Collections.singletonList(RuleSetUtil.newEmpty("empty", "empty")));
         cmd.setRuleSetStoredInProject(true);
         cmd.setRuleSetFile(PROJECT_RULESET_FILENAME);
         cmd.execute();

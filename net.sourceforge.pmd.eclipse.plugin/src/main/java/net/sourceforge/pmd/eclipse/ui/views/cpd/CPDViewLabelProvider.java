@@ -25,12 +25,9 @@ import net.sourceforge.pmd.cpd.TokenEntry;
  * @author Sven
  *
  */
-
 public class CPDViewLabelProvider extends LabelProvider implements ITableLabelProvider {
 
-    /*
-     * @see org.eclipse.jface.viewers.ITableLabelProvider#getColumnImage(java.lang.Object, int)
-     */
+    @Override
     public Image getColumnImage(Object element, int columnIndex) {
         Image image = null;
         
@@ -39,26 +36,20 @@ public class CPDViewLabelProvider extends LabelProvider implements ITableLabelPr
         
         // the second Column gets an Image depending on,
         // if the Element is a Match or TokenEntry
-        switch (columnIndex) {
-        case 1:
+        if (columnIndex == 1) {
             if (value instanceof Match) {
                 image = PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJS_ERROR_TSK);
             } else if (value instanceof TokenEntry) {
                 image = PlatformUI.getWorkbench().getSharedImages().getImage(SharedImages.IMG_OPEN_MARKER);
             }
-            break;
-
-        default:
-            // let the image null.
-
         }
+        // otherwise
+        // let the image null.
 
         return image;
     }
 
-    /*
-     * @see org.eclipse.jface.viewers.ITableLabelProvider#getColumnText(java.lang.Object, int)
-     */
+    @Override
     public String getColumnText(Object element, int columnIndex) {
         final TreeNode node = (TreeNode) element;
         final Object value = node.getValue();

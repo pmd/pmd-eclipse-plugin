@@ -7,7 +7,7 @@ package net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers;
 import net.sourceforge.pmd.Rule;
 
 /**
- * Specifies an intended rule recipient
+ * Specifies an intended rule recipient.
  * 
  * @author Brian Remedios
  */

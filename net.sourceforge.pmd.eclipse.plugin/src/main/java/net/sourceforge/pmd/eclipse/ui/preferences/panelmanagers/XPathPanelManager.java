@@ -50,17 +50,19 @@ public class XPathPanelManager extends AbstractRulePanelManager {
         super(ID, theTitle, theMode, theListener);
     }
 
+    @Override
     protected boolean canManageMultipleRules() {
         return false;
     }
 
+    @Override
     protected boolean canWorkWith(Rule rule) {
         return RuleSelection.implementationType(rule) == ImplementationType.XPath;
     }
 
+    @Override
     protected List<String> fieldErrors() {
-
-        List<String> errors = new ArrayList<String>(2);
+        List<String> errors = new ArrayList<>(2);
 
         if (StringUtils.isBlank(xpathField.getText())) {
             errors.add("Missing XPATH code");
@@ -75,19 +77,20 @@ public class XPathPanelManager extends AbstractRulePanelManager {
         return errors;
     }
 
+    @Override
     protected void clearControls() {
         xpathField.setText("");
     }
 
+    @Override
     public void showControls(boolean flag) {
-
         xpathField.setVisible(flag);
         xpathVersionField.setVisible(flag);
         versionLabel.setVisible(flag);
     }
 
+    @Override
     protected void updateOverridenFields() {
-
         Rule rule = soleRule();
 
         if (rule instanceof RuleReference) {
@@ -97,8 +100,8 @@ public class XPathPanelManager extends AbstractRulePanelManager {
         }
     }
 
+    @Override
     public Control setupOn(Composite parent) {
-
         GridData gridData;
 
         Composite panel = new Composite(parent, 0);
@@ -113,6 +116,7 @@ public class XPathPanelManager extends AbstractRulePanelManager {
         xpathField.setLayoutData(gridData);
 
         xpathField.addModifyListener(new ModifyListener() {
+            @Override
             public void modifyText(ModifyEvent event) {
 
                 if (!isActive()) {
@@ -155,6 +159,7 @@ public class XPathPanelManager extends AbstractRulePanelManager {
         xpathVersionField.setItems(SWTUtil.labelsIn(EnumerationEditorFactory.choices(ep), 0));
 
         xpathVersionField.addSelectionListener(new SelectionAdapter() {
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 Rule rule = soleRule();
                 int selectionIdx = xpathVersionField.getSelectionIndex();
@@ -172,7 +177,6 @@ public class XPathPanelManager extends AbstractRulePanelManager {
     }
 
     private void configureVersionFieldFor(Rule rule) {
-
         Object value = rule.getProperty(XPathRule.VERSION_DESCRIPTOR);
         int selectionIdx = EnumerationEditorFactory.indexOf(value,
                 EnumerationEditorFactory.choices(XPathRule.VERSION_DESCRIPTOR));
@@ -211,8 +215,8 @@ public class XPathPanelManager extends AbstractRulePanelManager {
     // }
     // }
 
+    @Override
     public void adapt() {
-
         Rule soleRule = soleRule();
 
         if (soleRule == null) {
@@ -225,5 +229,4 @@ public class XPathPanelManager extends AbstractRulePanelManager {
 
         validate();
     }
-
 }

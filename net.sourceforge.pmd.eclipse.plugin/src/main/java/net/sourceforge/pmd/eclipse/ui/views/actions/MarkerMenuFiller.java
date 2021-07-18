@@ -43,7 +43,7 @@ public class MarkerMenuFiller extends ContributionItem {
     }
 
     private List<IMarker> getMarkers() {
-        List<IMarker> clickedOnMarkers = new ArrayList<IMarker>();
+        List<IMarker> clickedOnMarkers = new ArrayList<>();
         for (IMarker marker : getAllMarkers()) {
             if (markerHasBeenClicked(marker)) {
                 clickedOnMarkers.add(marker);
@@ -56,7 +56,7 @@ public class MarkerMenuFiller extends ContributionItem {
     // Determine whether the marker has been clicked using the ruler's mouse
     // listener
     private boolean markerHasBeenClicked(IMarker marker) {
-        return marker.getAttribute(IMarker.LINE_NUMBER, 0) == (rulerInfo.getLineOfLastMouseButtonActivity() + 1);
+        return marker.getAttribute(IMarker.LINE_NUMBER, 0) == rulerInfo.getLineOfLastMouseButtonActivity() + 1;
     }
 
     // Get all My Markers for this source file
@@ -89,6 +89,7 @@ public class MarkerMenuFiller extends ContributionItem {
 
     private static SelectionAdapter createDynamicSelectionListener(final IMarker marker) {
         return new SelectionAdapter() {
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 disableRules(marker, true);
             }
@@ -96,7 +97,6 @@ public class MarkerMenuFiller extends ContributionItem {
     }
 
     private static void disableRules(IMarker marker, boolean removeViolations) {
-
         DisableRuleAction.runWith(new IMarker[] { marker }, PMDPlugin.getDefault().loadPreferences(), removeViolations);
     }
 }

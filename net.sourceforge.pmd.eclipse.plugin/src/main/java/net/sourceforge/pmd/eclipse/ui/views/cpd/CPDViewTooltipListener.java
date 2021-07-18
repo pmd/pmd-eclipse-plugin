@@ -34,12 +34,6 @@ public class CPDViewTooltipListener implements Listener {
     private Shell tip;
     private TreeItem shownItem;
 
-    /**
-     * Constructor.
-     * 
-     * @param view
-     *            Tree of the CPD View.
-     */
     public CPDViewTooltipListener(final CPDView view) {
         this.view = view;
     }
@@ -49,6 +43,7 @@ public class CPDViewTooltipListener implements Listener {
      */
     public void initialize() {
         this.labelListener = new Listener() {
+            @Override
             public void handleEvent(Event event) {
                 final Label label = (Label) event.widget;
                 final Shell shell = label.getShell();
@@ -75,11 +70,7 @@ public class CPDViewTooltipListener implements Listener {
         };
     }
 
-    /*
-     * @see
-     * org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.
-     * Event)
-     */
+    @Override
     public void handleEvent(Event event) {
         final Tree tree = view.getTreeViewer().getTree();
         final TreeItem item = tree.getItem(new Point(event.x, event.y));

@@ -10,7 +10,7 @@ import net.sourceforge.pmd.eclipse.ui.PMDUiConstants;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
 
 /**
- * Collapses the Violation Overview Tree
+ * Collapses the Violation Overview Tree.
  * 
  * @author SebastianRaffel ( 22.05.2005 ), Philippe Herlin, Sven Jacob
  *
@@ -24,14 +24,17 @@ public class CollapseAllAction extends AbstractPMDAction {
         treeViewer = theViewer;
     }
 
+    @Override
     protected String imageId() {
         return PMDUiConstants.ICON_BUTTON_COLLAPSE;
     }
 
+    @Override
     protected String tooltipMsgId() {
         return StringKeys.VIEW_TOOLTIP_COLLAPSE_ALL;
     }
 
+    @Override
     public void run() {
         treeViewer.collapseAll();
     }

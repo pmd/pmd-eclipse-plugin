@@ -76,8 +76,8 @@ public abstract class AbstractRulePanelManager extends WizardPage implements Rul
     /**
      * For use by wizards only..
      */
+    @Override
     public void createControl(Composite panel) {
-
         Control childPanel = setupOn(panel);
 
         setControl(childPanel);
@@ -89,11 +89,13 @@ public abstract class AbstractRulePanelManager extends WizardPage implements Rul
         return usageMode == EditorUsageMode.CreateNew;
     }
 
+    @Override
     public void tab(TabItem theTab) {
         tab = theTab;
         tabText = theTab.getText();
     }
 
+    @Override
     public boolean isActive() {
         return isActive;
     }
@@ -105,12 +107,12 @@ public abstract class AbstractRulePanelManager extends WizardPage implements Rul
         return original.trim();
     }
 
+    @Override
     public void manage(RuleSelection theRules) {
-
         rules = theRules;
 
-        isActive = (rules.hasOneRule() && canWorkWith(rules.soleRule()))
-                || (rules.hasMultipleRules() && canManageMultipleRules());
+        isActive = rules.hasOneRule() && canWorkWith(rules.soleRule())
+                || rules.hasMultipleRules() && canManageMultipleRules();
 
         showControls(isActive);
         if (tab != null) {
@@ -142,11 +144,11 @@ public abstract class AbstractRulePanelManager extends WizardPage implements Rul
     }
 
     protected void updateOverridenFields() {
-
+        // override as necessary
     }
 
     protected void disableIrrelevantFields() {
-
+        // override as necessary
     }
 
     protected boolean canWorkWith(Rule rule) {
@@ -161,8 +163,8 @@ public abstract class AbstractRulePanelManager extends WizardPage implements Rul
         return Collections.emptyList();
     }
 
+    @Override
     public boolean validate() {
-
         List<String> warnings = fieldWarnings();
         List<String> errors = fieldErrors();
 
@@ -219,8 +221,8 @@ public abstract class AbstractRulePanelManager extends WizardPage implements Rul
     }
 
     protected void addTextListeners(final Text control, final StringProperty desc) {
-
         control.addListener(SWT.FocusOut, new Listener() {
+            @Override
             public void handleEvent(Event event) {
                 changed(desc, control.getText());
             }
@@ -228,20 +230,20 @@ public abstract class AbstractRulePanelManager extends WizardPage implements Rul
     }
 
     protected void addTextListeners(final StyledText control, final StringProperty desc) {
-
         control.addListener(SWT.FocusOut, new Listener() {
+            @Override
             public void handleEvent(Event event) {
                 changed(desc, control.getText());
             }
         });
     }
 
+    @Override
     public void loadValues() {
         // subclasses to re-implement
     }
 
     protected void initializeOn(Composite parent) {
-
         if (errorColour != null) {
             return;
         }
@@ -257,14 +259,7 @@ public abstract class AbstractRulePanelManager extends WizardPage implements Rul
     // changeListener.changed(rules, null, "");
     // }
 
-    /**
-     * @param property
-     *            StringProperty
-     * @param newValue
-     *            String
-     */
     protected void changed(StringProperty property, String newValue) {
-
         if (rules == null) {
             return;
         }
@@ -316,7 +311,6 @@ public abstract class AbstractRulePanelManager extends WizardPage implements Rul
     }
 
     protected void show(Combo control, String value) {
-
         // control.setEnabled(usageMode == EditorUsageMode.CreateNew);
 
         if (StringUtils.isBlank(value)) {
@@ -342,7 +336,6 @@ public abstract class AbstractRulePanelManager extends WizardPage implements Rul
     }
 
     protected void show(CCombo control, String value) {
-
         // control.setEnabled(usageMode == EditorUsageMode.CreateNew);
 
         if (StringUtils.isBlank(value)) {
@@ -372,22 +365,11 @@ public abstract class AbstractRulePanelManager extends WizardPage implements Rul
         // control.setEnabled(true);
     }
 
-    /**
-     * Method newTextField.
-     * 
-     * @param parent
-     *            Composite
-     * @return Text
-     */
     protected Text newTextField(Composite parent) {
-
         return new Text(parent, SWT.BORDER | SWT.WRAP | SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
     }
 
     protected StyledText newCodeField(Composite parent) {
-
-        StyledText st = new StyledText(parent, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
-        return st;
+        return new StyledText(parent, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
     }
-
 }

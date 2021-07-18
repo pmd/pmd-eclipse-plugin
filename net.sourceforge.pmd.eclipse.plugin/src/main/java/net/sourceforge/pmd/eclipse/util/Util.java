@@ -32,47 +32,55 @@ import net.sourceforge.pmd.eclipse.ui.preferences.br.CellPainterBuilder;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.RuleFieldAccessor;
 import net.sourceforge.pmd.util.ClassUtil;
 
-public class Util {
+public final class Util {
 
     public static final Object[] EMPTY_ARRAY = new Object[0];
 
     public static final Comparator<Method> METHOD_NAME_COMPARATOR = new Comparator<Method>() {
+        @Override
         public int compare(Method a, Method b) {
             return a.getName().compareTo(b.getName());
         }
     };
 
     public static final Comparator<String> COMP_STR = new Comparator<String>() {
+        @Override
         public int compare(String a, String b) {
             return a.compareTo(b);
         }
     };
     public static final Comparator<Integer> COMP_INT = new Comparator<Integer>() {
+        @Override
         public int compare(Integer a, Integer b) {
             return a.compareTo(b);
         }
     };
     public static final Comparator<Long> COMP_LONG = new Comparator<Long>() {
+        @Override
         public int compare(Long a, Long b) {
             return a.compareTo(b);
         }
     };
     public static final Comparator<Float> COMP_FLOAT = new Comparator<Float>() {
+        @Override
         public int compare(Float a, Float b) {
             return a.compareTo(b);
         }
     };
     public static final Comparator<Boolean> COMP_BOOL = new Comparator<Boolean>() {
+        @Override
         public int compare(Boolean a, Boolean b) {
             return a.compareTo(b);
         }
     };
     public static final Comparator<Date> COMP_DATE = new Comparator<Date>() {
+        @Override
         public int compare(Date a, Date b) {
             return a.compareTo(b);
         }
     };
     public static final Comparator<Character> COMP_CHR = new Comparator<Character>() {
+        @Override
         public int compare(Character a, Character b) {
             return a.compareTo(b);
         }
@@ -92,8 +100,7 @@ public class Util {
      * @return List<int[]>
      */
     public static List<int[]> referencedNamePositionsIn(String source, char prefix) {
-
-        List<int[]> namePositions = new ArrayList<int[]>();
+        List<int[]> namePositions = new ArrayList<>();
         if (StringUtils.isBlank(source)) {
             return namePositions;
         }
@@ -128,8 +135,7 @@ public class Util {
      * @return List<String>
      */
     public static List<String> fragmentsWithin(String source, List<int[]> positions) {
-
-        List<String> fragments = new ArrayList<String>(positions.size());
+        List<String> fragments = new ArrayList<>(positions.size());
         for (int[] position : positions) {
             fragments.add(source.substring(position[0], position[0] + position[1]));
         }
@@ -137,10 +143,9 @@ public class Util {
     }
 
     public static String signatureFor(Method method, String[] unwantedPrefixes) {
-
         StringBuilder sb = new StringBuilder();
         Class<?> returnType = method.getReturnType();
-        if (returnType.getName().equals("void")) { // TODO is there a better way?
+        if ("void".equals(returnType.getName())) { // TODO is there a better way?
             sb.append("void ");
         } else {
             signatureFor(returnType, unwantedPrefixes, sb);
@@ -173,14 +178,12 @@ public class Util {
     }
 
     public static String signatureFor(Class<?> type, String[] unwantedPrefixes) {
-
         StringBuilder sb = new StringBuilder();
         signatureFor(type, unwantedPrefixes, sb);
         return sb.toString();
     }
 
     private static void signatureFor(Class<?> type, String[] unwantedPrefixes, StringBuilder sb) {
-
         String typeName = ClassUtil.asShortestName(type.isArray() ? type.getComponentType() : type);
         typeName = filteredPrefixFrom(typeName, unwantedPrefixes);
 
@@ -191,13 +194,12 @@ public class Util {
     }
 
     public static Comparator<Rule> comparatorFrom(final RuleFieldAccessor accessor, final boolean inverted) {
-
         if (accessor == null) {
             throw new IllegalArgumentException("Accessor is required");
         }
 
         return new Comparator<Rule>() {
-
+            @Override
             public int compare(Rule a, Rule b) {
                 Comparable ca = accessor.valueFor(a);
                 Comparable cb = accessor.valueFor(b);
@@ -239,7 +241,6 @@ public class Util {
             final int horizAlignment, final Map<Object, RGB> coloursByItem) {
 
         return new AbstractCellPainterBuilder() {
-
             private Color getterColorIn(TreeItem tItem, RuleFieldAccessor getter) {
 
                 Object value = valueFor(tItem, getter);
@@ -248,12 +249,14 @@ public class Util {
                 return color == null ? null : colorManager().colourFor(color);
             }
 
+            @Override
             public void addPainterFor(final Tree tree, final int columnIndex, final RuleFieldAccessor getter,
                     Map<Integer, List<Listener>> listenersByEventCode) {
 
                 final int xBoundary = 3;
 
                 Listener paintListener = new Listener() {
+                    @Override
                     public void handleEvent(Event event) {
                         if (event.index != columnIndex) {
                             return;
@@ -273,7 +276,7 @@ public class Util {
 
                         switch (horizAlignment) {
                         case SWT.CENTER:
-                            xOffset = (cellWidth / 2) - (width / 2) - xBoundary;
+                            xOffset = cellWidth / 2 - width / 2 - xBoundary;
                             break;
                         case SWT.RIGHT:
                             xOffset = cellWidth - width - xBoundary;
@@ -293,6 +296,7 @@ public class Util {
                 };
 
                 Listener measureListener = new Listener() {
+                    @Override
                     public void handleEvent(Event e) {
                         if (e.index != columnIndex) {
                             return;
@@ -324,13 +328,14 @@ public class Util {
     public static CellPainterBuilder backgroundBuilderFor(final int systemColourIndex) {
 
         return new CellPainterBuilder() {
-
+            @Override
             public void addPainterFor(final Tree tree, final int columnIndex, final RuleFieldAccessor getter,
                     Map<Integer, List<Listener>> paintListeners) {
 
                 final Display display = tree.getDisplay();
 
                 tree.addListener(SWT.EraseItem, new Listener() {
+                    @Override
                     public void handleEvent(Event event) {
 
                         if (event.index != columnIndex) {
@@ -383,7 +388,7 @@ public class Util {
     public static CellPainterBuilder textBuilderFor(final int systemColourIndex) {
 
         return new CellPainterBuilder() {
-
+            @Override
             public void addPainterFor(final Tree tree, final int columnIndex, final RuleFieldAccessor getter,
                     Map<Integer, List<Listener>> paintListeners) {
 
@@ -402,6 +407,7 @@ public class Util {
                 // });
 
                 tree.addListener(SWT.PaintItem, new Listener() {
+                    @Override
                     public void handleEvent(Event event) {
 
                         if (event.index != columnIndex) {
@@ -449,7 +455,6 @@ public class Util {
     }
 
     public static String asString(List<String> items, String separator) {
-
         if (items == null || items.isEmpty()) {
             return "";
         }
@@ -465,7 +470,6 @@ public class Util {
     }
 
     public static void asString(Object[] items, String separator, StringBuilder target) {
-
         if (items == null || items.length == 0) {
             return;
         }
@@ -475,5 +479,4 @@ public class Util {
             target.append(separator).append(items[i]);
         }
     }
-
 }

@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.eclipse.ui.preferences;
 
 import java.util.Comparator;
+import java.util.Locale;
 
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerComparator;
@@ -12,7 +13,7 @@ import org.eclipse.jface.viewers.ViewerComparator;
 import net.sourceforge.pmd.Rule;
 
 /**
- * Sorter for the rule table in the PMD Preference page
+ * Sorter for the rule table in the PMD Preference page.
  * 
  * @author Herlin
  *
@@ -24,6 +25,7 @@ public class RuleTableViewerSorter extends ViewerComparator {
      * Default Rule comparator for tabular display of Rules.
      */
     public static final Comparator<Rule> RULE_DEFAULT_COMPARATOR = new Comparator<Rule>() {
+        @Override
         public int compare(Rule r1, Rule r2) {
             int cmp = RULE_RULESET_NAME_COMPARATOR.compare(r1, r2);
             if (cmp == 0) {
@@ -37,6 +39,7 @@ public class RuleTableViewerSorter extends ViewerComparator {
      * Rule Language comparator for tabular display of Rules.
      */
     public static final Comparator<Rule> RULE_LANGUAGE_COMPARATOR = new Comparator<Rule>() {
+        @Override
         public int compare(Rule r1, Rule r2) {
             return compareStrings(r1.getLanguage().getName(), r2.getLanguage().getName());
         }
@@ -46,6 +49,7 @@ public class RuleTableViewerSorter extends ViewerComparator {
      * RuleSet Name comparator for tabular display of Rules.
      */
     public static final Comparator<Rule> RULE_RULESET_NAME_COMPARATOR = new Comparator<Rule>() {
+        @Override
         public int compare(Rule r1, Rule r2) {
             return compareStrings(r1.getRuleSetName(), r2.getRuleSetName());
         }
@@ -55,6 +59,7 @@ public class RuleTableViewerSorter extends ViewerComparator {
      * Rule Name comparator for tabular display of Rules.
      */
     public static final Comparator<Rule> RULE_NAME_COMPARATOR = new Comparator<Rule>() {
+        @Override
         public int compare(Rule r1, Rule r2) {
             return compareStrings(r1.getName(), r2.getName());
         }
@@ -64,6 +69,7 @@ public class RuleTableViewerSorter extends ViewerComparator {
      * Rule Since comparator for tabular display of Rules.
      */
     public static final Comparator<Rule> RULE_SINCE_COMPARATOR = new Comparator<Rule>() {
+        @Override
         public int compare(Rule r1, Rule r2) {
             return compareStrings(r1.getSince(), r2.getSince());
         }
@@ -73,6 +79,7 @@ public class RuleTableViewerSorter extends ViewerComparator {
      * Rule Priority comparator for tabular display of Rules.
      */
     public static final Comparator<Rule> RULE_PRIORITY_COMPARATOR = new Comparator<Rule>() {
+        @Override
         public int compare(Rule r1, Rule r2) {
             return r1.getPriority().getPriority() - r2.getPriority().getPriority();
         }
@@ -82,6 +89,7 @@ public class RuleTableViewerSorter extends ViewerComparator {
      * Rule Description comparator for tabular display of Rules.
      */
     public static final Comparator<Rule> RULE_DESCRIPTION_COMPARATOR = new Comparator<Rule>() {
+        @Override
         public int compare(Rule r1, Rule r2) {
             return compareStrings(r1.getDescription(), r2.getDescription());
         }
@@ -91,7 +99,7 @@ public class RuleTableViewerSorter extends ViewerComparator {
     private boolean sortDescending = false;
 
     /**
-     * Constructor
+     * Constructor.
      * 
      * @param comparator
      *            the initial comparator
@@ -122,6 +130,7 @@ public class RuleTableViewerSorter extends ViewerComparator {
      * @param comparator
      *            The comparator to set.
      */
+    @SuppressWarnings("PMD.CompareObjectsWithEquals")
     public void setComparator(Comparator<Rule> comparator) {
         if (this.comparator != comparator) {
             this.comparator = comparator;
@@ -151,8 +160,8 @@ public class RuleTableViewerSorter extends ViewerComparator {
      * @return int
      */
     private static int compareStrings(String s1, String s2) {
-        String str1 = s1 == null ? "" : s1.trim().toUpperCase();
-        String str2 = s2 == null ? "" : s2.trim().toUpperCase();
+        String str1 = s1 == null ? "" : s1.trim().toUpperCase(Locale.ROOT);
+        String str2 = s2 == null ? "" : s2.trim().toUpperCase(Locale.ROOT);
         return str1.compareTo(str2);
     }
 }

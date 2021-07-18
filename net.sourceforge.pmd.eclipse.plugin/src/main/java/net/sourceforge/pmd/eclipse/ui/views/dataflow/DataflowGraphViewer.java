@@ -20,7 +20,6 @@ import org.eclipse.swt.widgets.Display;
 
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
-import net.sourceforge.pmd.eclipse.util.IOUtil;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.dfa.DataFlowNode;
 import net.sourceforge.pmd.lang.dfa.VariableAccess;
@@ -175,6 +174,7 @@ public class DataflowGraphViewer extends Composite {
                 break;
             default:
                 exp.append("?(");
+                break;
             }
             exp.append(va.getVariableName()).append(')');
         }
@@ -193,11 +193,11 @@ public class DataflowGraphViewer extends Composite {
         List<DataFlowNode> flow = node.getDataFlowNode().getFlow();
 
         // the whole TableData
-        List<List<DataflowGraphTableData>> tableData = new ArrayList<List<DataflowGraphTableData>>();
+        List<List<DataflowGraphTableData>> tableData = new ArrayList<>();
 
         for (DataFlowNode inode : flow) {
             // one Data-List for a row
-            List<DataflowGraphTableData> rowData = new ArrayList<DataflowGraphTableData>();
+            List<DataflowGraphTableData> rowData = new ArrayList<>();
 
             // 1. The Nodes Line
             rowData.add(new DataflowGraphTableData(String.valueOf(inode.getLine()), SWT.CENTER));
@@ -233,7 +233,7 @@ public class DataflowGraphViewer extends Composite {
     }
 
     /**
-     * Simply returns the given Line from the String
+     * Simply returns the given Line from the String.
      *
      * @param code,
      *            in general a Text representing a Java-File
@@ -242,11 +242,7 @@ public class DataflowGraphViewer extends Composite {
      * @return the Line of Code or null, if not found
      */
     protected String getCodeLine(String code, int line) {
-
-        LineNumberReader reader = null;
-
-        try {
-            reader = new LineNumberReader(new StringReader(code));
+        try (LineNumberReader reader = new LineNumberReader(new StringReader(code))) {
             String retString;
 
             // read the Code (File) line-wise
@@ -260,15 +256,13 @@ public class DataflowGraphViewer extends Composite {
             }
         } catch (IOException ioe) {
             PMDPlugin.getDefault().logError(StringKeys.ERROR_IO_EXCEPTION + this.toString(), ioe);
-        } finally {
-            IOUtil.closeQuietly(reader);
         }
 
         return null;
     }
 
     /**
-     * Helper method to return an NLS string from its key
+     * Helper method to return an NLS string from its key.
      */
     private String getString(String key) {
         return PMDPlugin.getDefault().getStringTable().getString(key);

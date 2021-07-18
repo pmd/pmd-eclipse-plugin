@@ -110,17 +110,8 @@ public class NewPropertyDialog extends TitleAreaDialog implements SizeChangeList
         return results;
     }
 
-    public boolean close() {
-
-        return super.close();
-    }
-
-    /**
-     * @see org.eclipse.jface.dialogs.Dialog#createDialogArea(Composite)
-     */
     @Override
     protected Control createDialogArea(Composite parent) {
-
         // parent.setLayoutData(new GridData(GridData.FILL_BOTH));
         getShell().setText(SWTUtil.stringFor(StringKeys.DIALOG_PREFS_ADD_NEW_PROPERTY));
 
@@ -146,6 +137,7 @@ public class NewPropertyDialog extends TitleAreaDialog implements SizeChangeList
         return dlgArea;
     }
 
+    @Override
     protected Control createButtonBar(Composite parent) {
         Control result = super.createButtonBar(parent);
         validateForm();
@@ -153,7 +145,7 @@ public class NewPropertyDialog extends TitleAreaDialog implements SizeChangeList
     }
 
     /**
-     * Build a label
+     * Build a label.
      */
     private Label buildLabel(Composite parent, String msgKey) {
         Label label = new Label(parent, SWT.NONE);
@@ -172,7 +164,7 @@ public class NewPropertyDialog extends TitleAreaDialog implements SizeChangeList
     }
 
     /**
-     * Build the rule name text
+     * Build the rule name text.
      */
     private Text buildNameText(Composite parent) {
 
@@ -182,6 +174,7 @@ public class NewPropertyDialog extends TitleAreaDialog implements SizeChangeList
         text.addVerifyListener(RuleUIUtil.RULE_NAME_VERIFIER);
 
         text.addListener(SWT.Modify, new Listener() {
+            @Override
             public void handleEvent(Event event) {
                 validateForm();
             }
@@ -205,7 +198,7 @@ public class NewPropertyDialog extends TitleAreaDialog implements SizeChangeList
     }
 
     /**
-     * Build the rule name text
+     * Build the rule name text.
      */
     private Text buildLabelField(Composite parent) {
 
@@ -215,6 +208,7 @@ public class NewPropertyDialog extends TitleAreaDialog implements SizeChangeList
         text.addVerifyListener(RuleUIUtil.RULE_LABEL_VERIFIER);
 
         text.addListener(SWT.Modify, new Listener() {
+            @Override
             public void handleEvent(Event event) {
                 validateForm();
             }
@@ -229,7 +223,7 @@ public class NewPropertyDialog extends TitleAreaDialog implements SizeChangeList
 
     /**
      * A bit of a hack but this avoids the need to create an alternate lookup
-     * structure
+     * structure.
      *
      * @param label
      * @return
@@ -246,7 +240,7 @@ public class NewPropertyDialog extends TitleAreaDialog implements SizeChangeList
     }
 
     /**
-     * Build the rule name text
+     * Build the rule name text.
      */
     private Combo buildTypeField(final Composite parent) {
 
@@ -262,6 +256,7 @@ public class NewPropertyDialog extends TitleAreaDialog implements SizeChangeList
         combo.setItems(labels);
 
         combo.addSelectionListener(new SelectionAdapter() {
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 int selectionIdx = combo.getSelectionIndex();
                 EditorFactory<?> factory = factoryFor(combo.getItem(selectionIdx));
@@ -289,7 +284,7 @@ public class NewPropertyDialog extends TitleAreaDialog implements SizeChangeList
     }
 
     /**
-     * Pick the first name in the xpath source the rule doesn't know about
+     * Pick the first name in the xpath source the rule doesn't know about.
      */
     private void setPreferredName() {
         String xpath = "";
@@ -301,14 +296,17 @@ public class NewPropertyDialog extends TitleAreaDialog implements SizeChangeList
         List<int[]> positions = Util.referencedNamePositionsIn(xpath, '$');
         List<String> names = Util.fragmentsWithin(xpath, positions);
 
+        nameField.setText("");
+
         for (String name : names) {
             if (ruleHasPropertyName(name)) {
                 continue;
+            } else if (nameField.getText().isEmpty()) {
+                nameField.setText(name);
+            } else {
+                break;
             }
-            nameField.setText(name);
-            return;
         }
-        nameField.setText("");
     }
 
     private void setInitialType() {
@@ -438,15 +436,13 @@ public class NewPropertyDialog extends TitleAreaDialog implements SizeChangeList
         return factory.createDescriptor(nameField.getText().trim(), labelField.getText().trim(), factoryControls);
     }
 
-    /**
-     * @see org.eclipse.jface.dialogs.Dialog#cancelPressed()
-     */
     @Override
     protected void cancelPressed() {
         // courierFont.dispose();
         super.cancelPressed();
     }
 
+    @Override
     public void addedRows(int newRowCount) {
         dlgArea.pack();
         dlgArea.getParent().pack();

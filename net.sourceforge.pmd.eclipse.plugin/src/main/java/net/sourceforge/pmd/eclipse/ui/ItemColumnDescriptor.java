@@ -66,6 +66,7 @@ public class ItemColumnDescriptor<T extends Object, V extends Object> extends Ab
         TableColumn tc = super.buildTableColumn(parent);
 
         tc.addListener(SWT.Selection, new Listener() {
+            @Override
             public void handleEvent(Event e) {
                 sortListener.sortBy(accessor, e.widget);
             }

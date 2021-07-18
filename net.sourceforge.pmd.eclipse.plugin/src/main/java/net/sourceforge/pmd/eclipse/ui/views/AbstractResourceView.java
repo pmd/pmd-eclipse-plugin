@@ -26,6 +26,7 @@ import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
 public abstract class AbstractResourceView extends AbstractPMDPagebookView implements IResourceChangeListener {
 
     protected AbstractResourceView() {
+        // protected constructor for subclassing
     }
 
     protected static boolean getBoolUIPref(String prefId) {
@@ -38,7 +39,6 @@ public abstract class AbstractResourceView extends AbstractPMDPagebookView imple
 
     protected abstract AbstractStructureInspectorPage getCurrentViewPage();
 
-    /* @see org.eclipse.ui.IPartListener#partActivated(org.eclipse.ui.IPartListener) */
     @Override
     public void partActivated(IWorkbenchPart part) {
         IWorkbenchPart activePart = getSitePage().getActivePart();
@@ -65,7 +65,6 @@ public abstract class AbstractResourceView extends AbstractPMDPagebookView imple
 
     @Override
     protected void doDestroyPage(IWorkbenchPart part, PageRec pageRecord) {
-
         FileRecord resourceRecord = getFileRecordFromWorkbenchPart(part);
         if (resourceRecord != null) {
             resourceRecord.getResource().getWorkspace().removeResourceChangeListener(this);
@@ -80,18 +79,17 @@ public abstract class AbstractResourceView extends AbstractPMDPagebookView imple
         pageRecord.dispose();
     }
 
-    /*
-     * @see org.eclipse.core.resources.IResourceChangeListener#resourceChanged(org.eclipse.core.resources.
-     * IResourceChangeEvent)
-     */
+    @Override
     public void resourceChanged(IResourceChangeEvent event) {
         try {
             event.getDelta().accept(new IResourceDeltaVisitor() {
+                @Override
                 public boolean visit(final IResourceDelta delta) throws CoreException {
                     // find the resource for the path of the current page
                     IPath path = getResourcePath();
                     if (delta.getFullPath().equals(path)) {
                         Display.getDefault().asyncExec(new Runnable() {
+                            @Override
                             public void run() {
                                 refresh(delta.getResource());
                             }

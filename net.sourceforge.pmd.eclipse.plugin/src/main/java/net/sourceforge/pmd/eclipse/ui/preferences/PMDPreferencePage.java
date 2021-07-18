@@ -5,10 +5,10 @@
 package net.sourceforge.pmd.eclipse.ui.preferences;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
+import java.nio.file.Files;
 import java.util.Collections;
 import java.util.Comparator;
 
@@ -99,17 +99,12 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
     private final RuleTableViewerSorter ruleTableViewerSorter = new RuleTableViewerSorter(
             RuleTableViewerSorter.RULE_DEFAULT_COMPARATOR);
 
-    /**
-     * @see IWorkbenchPreferencePage#init(org.eclipse.ui.IWorkbench)
-     */
+    @Override
     public void init(IWorkbench workbench) {
         // setDescription(getMessage(StringKeys.PREF_RULESET_TITLE));
         activeInstance = this;
     }
 
-    /**
-     * @see org.eclipse.jface.preference.PreferencePage#performDefaults()
-     */
     @Override
     protected void performDefaults() {
         populateRuleTable();
@@ -118,9 +113,6 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
         super.performDefaults();
     }
 
-    /**
-     * @see org.eclipse.jface.preference.IPreferencePage#performOk()
-     */
     @Override
     public boolean performOk() {
         if (modified) {
@@ -131,9 +123,6 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
         return super.performOk();
     }
 
-    /**
-     * @see org.eclipse.jface.preference.PreferencePage#createContents(Composite)
-     */
     @Override
     protected Control createContents(Composite parent) {
         Composite composite = new Composite(parent, SWT.NULL);
@@ -142,7 +131,7 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
     }
 
     /**
-     * Main layout
+     * Main layout.
      */
     private void layoutControls(Composite parent) {
 
@@ -362,9 +351,7 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
         ruleTableViewer.setLabelProvider(new RuleLabelProvider());
         ruleTableViewer.setComparator(ruleTableViewerSorter);
         ruleTableViewer.addSelectionChangedListener(new ISelectionChangedListener() {
-            /**
-             * @see org.eclipse.jface.viewers.ISelectionChangedListener#selectionChanged(SelectionChangedEvent)
-             */
+            @Override
             public void selectionChanged(SelectionChangedEvent event) {
                 IStructuredSelection selection = (IStructuredSelection) event.getSelection();
                 Rule selectedRule = (Rule) selection.getFirstElement();
@@ -430,11 +417,7 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
                 Rule selectedRule = (Rule) selection.getFirstElement();
                 ruleSet.getRules().remove(selectedRule);
                 setModified(true);
-                try {
-                    refresh();
-                } catch (Throwable t) {
-                    ruleTableViewer.setSelection(null);
-                }
+                refresh();
             }
         });
         return button;
@@ -458,11 +441,7 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
                 int result = dialog.open();
                 if (result == RuleDialog.OK) {
                     setModified(true);
-                    try {
-                        refresh();
-                    } catch (Throwable t) {
-                        PMDPlugin.getDefault().logError("Exception when refreshing the rule table", t);
-                    }
+                    refresh();
                 }
             }
         });
@@ -487,18 +466,7 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
                     Rule addedRule = dialog.getRule();
                     ruleSet = RuleSetUtil.addRule(ruleSet, addedRule);
                     setModified(true);
-                    try {
-                        refresh();
-                    } catch (Throwable t) {
-                        PMDPlugin.getDefault().logError("Exception when refreshing the rule table", t);
-                    }
-
-                    setModified(true);
-                    try {
-                        refresh();
-                    } catch (Throwable t) {
-                        PMDPlugin.getDefault().logError("Exception when refreshing the rule table", t);
-                    }
+                    refresh();
                 }
             }
         });
@@ -507,7 +475,7 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
     }
 
     /**
-     * Build the import ruleset button
+     * Build the import ruleset button.
      */
     private Button buildImportRuleSetButton(Composite parent) {
         Button button = new Button(parent, SWT.PUSH | SWT.LEFT);
@@ -533,11 +501,7 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
                             }
                         }
                         setModified(true);
-                        try {
-                            refresh();
-                        } catch (Throwable t) {
-                            PMDPlugin.getDefault().logError("Exception when refreshing the rule table", t);
-                        }
+                        refresh();
                     } catch (RuntimeException e) {
                         PMDPlugin.getDefault().showError(getMessage(StringKeys.ERROR_IMPORTING_RULESET), e);
                     }
@@ -580,16 +544,14 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
                         if (flContinue && input != null) {
                             ruleSet = RuleSetUtil.setNameDescription(ruleSet,
                                     getFileNameWithoutExtension(file.getName()), input.getValue());
-                            OutputStream out = new FileOutputStream(fileName);
-                            IRuleSetWriter writer = PMDPlugin.getDefault().getRuleSetWriter();
-                            writer.write(out, ruleSet);
-                            out.close();
+                            try (OutputStream out = Files.newOutputStream(file.toPath())) {
+                                IRuleSetWriter writer = PMDPlugin.getDefault().getRuleSetWriter();
+                                writer.write(out, ruleSet);
+                            }
                             MessageDialog.openInformation(getShell(), getMessage(StringKeys.INFORMATION_TITLE),
                                     getMessage(StringKeys.INFORMATION_RULESET_EXPORTED));
                         }
-                    } catch (IOException e) {
-                        PMDPlugin.getDefault().showError(getMessage(StringKeys.ERROR_EXPORTING_RULESET), e);
-                    } catch (WriterException e) {
+                    } catch (IOException | WriterException e) {
                         PMDPlugin.getDefault().showError(getMessage(StringKeys.ERROR_EXPORTING_RULESET), e);
                     }
                 }
@@ -600,7 +562,7 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
     }
 
     /**
-     * Build the clear all button
+     * Build the clear all button.
      */
     private Button buildClearAllButton(Composite parent) {
         Button button = new Button(parent, SWT.PUSH | SWT.LEFT);
@@ -613,11 +575,7 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
                         getMessage(StringKeys.CONFIRM_CLEAR_RULESET))) {
                     ruleSet.getRules().clear();
                     setModified(true);
-                    try {
-                        refresh();
-                    } catch (Throwable t) {
-                        PMDPlugin.getDefault().logError("Exception when refreshing the rule table", t);
-                    }
+                    refresh();
                 }
             }
         });
@@ -626,7 +584,7 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
     }
 
     /**
-     * Build the Rule Designer button
+     * Build the Rule Designer button.
      */
     private Button buildRuleDesignerButton(Composite parent) {
         Button button = new Button(parent, SWT.PUSH | SWT.LEFT);
@@ -638,6 +596,7 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
                 // TODO Is this cool from Eclipse? Is there a nicer way to spawn
                 // a J2SE Application?
                 new Thread(new Runnable() {
+                    @Override
                     public void run() {
                         Designer.main(new String[] { "-noexitonclose" });
                     }
@@ -677,7 +636,7 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
     // }
 
     /**
-     * Build the exclude pattern table viewer
+     * Build the exclude pattern table viewer.
      */
     private Table buildExcludePatternTableViewer(Composite parent) {
         int tableStyle = SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL | SWT.SINGLE | SWT.FULL_SELECTION;
@@ -887,25 +846,24 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
     }
 
     /**
-     * Update the configured rule set Update also all configured projects
+     * Update the configured rule set Update also all configured projects.
      */
     private void updateRuleSet() {
         try {
             ProgressMonitorDialog monitorDialog = new ProgressMonitorDialog(getShell());
             monitorDialog.run(true, true, new IRunnableWithProgress() {
+                @Override
                 public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
                     PMDPlugin.getDefault().getPreferencesManager().setRuleSet(ruleSet);
                 }
             });
-        } catch (InterruptedException e) {
-            PMDPlugin.getDefault().logError("Exception updating all projects after a preference change", e);
-        } catch (InvocationTargetException e) {
+        } catch (InterruptedException | InvocationTargetException e) {
             PMDPlugin.getDefault().logError("Exception updating all projects after a preference change", e);
         }
     }
 
     /**
-     * If user wants to, rebuild all projects
+     * If user wants to, rebuild all projects.
      */
     private void rebuildProjects() {
         if (MessageDialog.openQuestion(getShell(), getMessage(StringKeys.QUESTION_TITLE),
@@ -913,6 +871,7 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
             try {
                 ProgressMonitorDialog monitorDialog = new ProgressMonitorDialog(getShell());
                 monitorDialog.run(true, true, new IRunnableWithProgress() {
+                    @Override
                     public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
                         try {
                             ResourcesPlugin.getWorkspace().build(IncrementalProjectBuilder.FULL_BUILD, monitor);
@@ -922,16 +881,14 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
                         }
                     }
                 });
-            } catch (InterruptedException e) {
-                PMDPlugin.getDefault().logError("Exception building all projects after a preference change", e);
-            } catch (InvocationTargetException e) {
+            } catch (InterruptedException | InvocationTargetException e) {
                 PMDPlugin.getDefault().logError("Exception building all projects after a preference change", e);
             }
         }
     }
 
     /**
-     * Select and show a particular rule in the table
+     * Select and show a particular rule in the table.
      */
     protected void selectAndShowRule(Rule rule) {
         Table table = ruleTableViewer.getTable();

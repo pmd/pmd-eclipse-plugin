@@ -17,12 +17,13 @@ import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
 import net.sourceforge.pmd.eclipse.ui.priority.PriorityDescriptorCache;
 
 /**
- * Provides the ViolationsOutlinePages with labels and images
+ * Provides the ViolationsOutlinePages with labels and images.
  * 
  * @author SebastianRaffel ( 08.05.2005 )
  */
 public class ViolationOutlineLabelProvider extends LabelProvider implements ITableLabelProvider {
 
+    @Override
     public Image getColumnImage(Object element, int columnIndex) {
         IMarker marker;
         if (element instanceof IMarker) {
@@ -45,11 +46,7 @@ public class ViolationOutlineLabelProvider extends LabelProvider implements ITab
         return null;
     }
 
-    /*
-     * @see
-     * org.eclipse.jface.viewers.ITableLabelProvider#getColumnText(java.lang.
-     * Object, int)
-     */
+    @Override
     public String getColumnText(Object element, int columnIndex) {
         IMarker marker;
         if (element instanceof IMarker) {

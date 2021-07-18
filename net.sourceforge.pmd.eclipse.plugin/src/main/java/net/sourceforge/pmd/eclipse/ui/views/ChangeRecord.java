@@ -14,12 +14,9 @@ import java.util.List;
  */
 public class ChangeRecord<T extends Object> {
 
-    final List<T> additions = new ArrayList<T>();
-    final List<T> removals = new ArrayList<T>();
-    final List<T> changes = new ArrayList<T>();
-
-    public ChangeRecord() {
-    }
+    final List<T> additions = new ArrayList<>();
+    final List<T> removals = new ArrayList<>();
+    final List<T> changes = new ArrayList<>();
 
     public boolean hasAdditions() {
         return !additions.isEmpty();
@@ -62,5 +59,4 @@ public class ChangeRecord<T extends Object> {
         removed(otherRecord.removals);
         changed(otherRecord.changes);
     }
-
 }

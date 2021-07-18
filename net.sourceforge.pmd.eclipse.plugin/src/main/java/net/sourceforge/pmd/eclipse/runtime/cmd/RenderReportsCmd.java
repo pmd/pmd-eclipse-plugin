@@ -48,7 +48,7 @@ public class RenderReportsCmd extends AbstractProjectCommand {
     /**
      * Table containing the renderers indexed by the file name.
      */
-    private Map<String, Renderer> renderers = new HashMap<String, Renderer>();
+    private Map<String, Renderer> renderers = new HashMap<>();
 
     /**
      * Default Constructor
@@ -138,11 +138,8 @@ public class RenderReportsCmd extends AbstractProjectCommand {
                 LOG.debug("   Render the report");
                 render(report, folder, reportName, renderer);
             }
-        } catch (CoreException e) {
-            LOG.debug("Core Exception: " + e.getMessage(), e);
-            throw new RuntimeException(e);
-        } catch (IOException e) {
-            LOG.debug("Core Exception: " + e.getMessage(), e);
+        } catch (CoreException | IOException e) {
+            LOG.debug(e.toString(), e);
             throw new RuntimeException(e);
         } finally {
             LOG.debug("End of RenderReport command");
@@ -153,7 +150,7 @@ public class RenderReportsCmd extends AbstractProjectCommand {
     @Override
     public void reset() {
         setProject(null);
-        renderers = new HashMap<String, Renderer>();
+        renderers = new HashMap<>();
         setTerminated(false);
     }
 
@@ -173,7 +170,7 @@ public class RenderReportsCmd extends AbstractProjectCommand {
     }
 
     /**
-     * Create a Report object from the markers of a project
+     * Create a Report object from the markers of a project.
      * 
      * @param project
      * @return

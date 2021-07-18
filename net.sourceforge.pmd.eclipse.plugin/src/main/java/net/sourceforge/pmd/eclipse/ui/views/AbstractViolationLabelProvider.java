@@ -28,13 +28,13 @@ public abstract class AbstractViolationLabelProvider extends LabelProvider imple
     }
 
     protected AbstractViolationLabelProvider() {
+        // protected constructor for subclassing
     }
 
     private static void loadImageMap() {
-        
         Map<Integer, ImageDescriptor> map = UISettings.markerImgDescriptorsByPriority();
 
-        imagesByPriorityIndex = new HashMap<Integer, Image>(map.size());
+        imagesByPriorityIndex = new HashMap<>(map.size());
 
         for (Map.Entry<Integer, ImageDescriptor> entry : map.entrySet()) {
             imagesByPriorityIndex.put(entry.getKey(), entry.getValue().createImage());

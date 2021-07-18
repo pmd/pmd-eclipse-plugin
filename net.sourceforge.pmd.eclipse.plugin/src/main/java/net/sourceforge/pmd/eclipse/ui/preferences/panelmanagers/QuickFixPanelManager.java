@@ -25,7 +25,6 @@ import net.sourceforge.pmd.eclipse.util.ResourceManager;
 public class QuickFixPanelManager extends AbstractRulePanelManager {
 
     private org.eclipse.swt.widgets.List fixerList;
-    private ListManager listManager;
 
     public static final String ID = "fixes";
 
@@ -36,7 +35,7 @@ public class QuickFixPanelManager extends AbstractRulePanelManager {
     protected List<Fix> commonFixes() {
         // TODO finish this
         List<Rule> theRules = rules.allRules();
-        List<Fix> fixes = new ArrayList<Fix>();
+        List<Fix> fixes = new ArrayList<>();
 
         Fix[] fixSet = PMDResolutionGenerator.fixesFor(theRules.get(0));
         if (fixSet != null) {
@@ -50,7 +49,6 @@ public class QuickFixPanelManager extends AbstractRulePanelManager {
 
     @Override
     protected void adapt() {
-
         fixerList.removeAll();
 
         List<Fix> fixes = commonFixes();
@@ -60,6 +58,7 @@ public class QuickFixPanelManager extends AbstractRulePanelManager {
         }
     }
 
+    @Override
     protected boolean canManageMultipleRules() {
         return true;
     }
@@ -69,13 +68,12 @@ public class QuickFixPanelManager extends AbstractRulePanelManager {
         fixerList.removeAll();
     }
 
+    @Override
     public void showControls(boolean flag) {
-
         fixerList.setVisible(flag);
     }
 
     public static <T> List<T> shift(List<T> items, int[] indices, int shiftAmt) {
-
         int[] indexArr = new int[items.size()];
 
         int currentIdx = 0;
@@ -87,7 +85,7 @@ public class QuickFixPanelManager extends AbstractRulePanelManager {
             }
         }
 
-        List<T> out = new ArrayList<T>(indexArr.length);
+        List<T> out = new ArrayList<>(indexArr.length);
         for (int element : indexArr) {
             out.add(items.get(element));
         }
@@ -96,7 +94,6 @@ public class QuickFixPanelManager extends AbstractRulePanelManager {
     }
 
     public static <T> List<T> shift(List<T> items, int index, int shiftAmt) {
-
         int start = Math.min(index, index + shiftAmt);
         int end = Math.max(index, index + shiftAmt);
 
@@ -105,8 +102,8 @@ public class QuickFixPanelManager extends AbstractRulePanelManager {
         return items;
     }
 
+    @Override
     public Control setupOn(Composite parent) {
-
         GridData gridData;
 
         Composite panel = new Composite(parent, 0);
@@ -143,14 +140,13 @@ public class QuickFixPanelManager extends AbstractRulePanelManager {
         shiftDownButton.setToolTipText("Shift down");
         shiftDownButton.setImage(ResourceManager.imageFor(PMDUiConstants.ICON_BUTTON_DOWNARROW));
 
-        listManager = new ListManager(fixerList, shiftUpButton, shiftDownButton, removeButton);
+        new ListManager(fixerList, shiftUpButton, shiftDownButton, removeButton);
 
         return panel;
     }
 
     public static void main(String[] args) {
-
-        List<Integer> numbers = new ArrayList<Integer>();
+        List<Integer> numbers = new ArrayList<>();
         Collections.addAll(numbers, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
         // int[] shiftSet = new int[] { 4, 6 };
 

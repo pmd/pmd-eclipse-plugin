@@ -57,10 +57,12 @@ public class StyledTextBuilder extends AbstractCellPainterBuilder {
         return style.font;
     }
 
+    @Override
     public void addPainterFor(final Tree tree, final int columnIndex, final RuleFieldAccessor getter,
             Map<Integer, List<Listener>> listenersByEventCode) {
 
         Listener paintListener = new Listener() {
+            @Override
             public void handleEvent(Event event) {
                 if (event.index != columnIndex) {
                     return;
@@ -76,6 +78,7 @@ public class StyledTextBuilder extends AbstractCellPainterBuilder {
         };
 
         Listener measureListener = new Listener() {
+            @Override
             public void handleEvent(Event event) {
                 if (event.index != columnIndex) {
                     return;

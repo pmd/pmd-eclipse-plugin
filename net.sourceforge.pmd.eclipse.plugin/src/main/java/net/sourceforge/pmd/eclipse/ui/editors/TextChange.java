@@ -12,10 +12,10 @@ class TextChange {
     private int length;
 
     // The replaced text
-    String replacedText;
+    private String replacedText;
 
     /**
-     * Constructs a TextChange
+     * Constructs a TextChange.
      * 
      * @param start
      *            the starting offset of the change

@@ -24,14 +24,14 @@ import net.sourceforge.pmd.util.CollectionUtil;
 /**
  * @author Brian Remedios
  */
-public class MultiStringEditorFactory extends AbstractMultiValueEditorFactory<String> {
+public final class MultiStringEditorFactory extends AbstractMultiValueEditorFactory<String> {
 
     public static final MultiStringEditorFactory INSTANCE = new MultiStringEditorFactory();
 
 
     private MultiStringEditorFactory() { }
 
-
+    @Override
     public PropertyDescriptor<List<String>> createDescriptor(String name, String optionalDescription,
                                                              Control[] otherData) {
         return PropertyFactory.stringListProperty(name).desc(optionalDescription).emptyDefaultValue().build();
@@ -52,12 +52,13 @@ public class MultiStringEditorFactory extends AbstractMultiValueEditorFactory<St
         ((Text) widget).setText(value == null ? "" : value);
     }
 
-
+    @Override
     protected void configure(final Text textWidget, final PropertyDescriptor<List<String>> desc,
                              final PropertySource source, final ValueChangeListener listener) {
 
 
         Listener widgetListener = new Listener() {
+            @Override
             public void handleEvent(Event event) {
                 List<String> newValues = textWidgetValues(textWidget);
                 List<String> existingValues = valueFor(source, desc);
@@ -95,10 +96,8 @@ public class MultiStringEditorFactory extends AbstractMultiValueEditorFactory<St
         return (nAdded == 0) ? null : newValue;
     }
 
-
+    @Override
     protected List<String> valueFrom(Control valueControl) {    // not necessary for this type
         return null;
     }
-
-
 }

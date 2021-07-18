@@ -35,7 +35,6 @@ import net.sourceforge.pmd.eclipse.ui.views.actions.ViolationPresentationTypeAct
  * @author Sven
  *
  */
-
 public class ViolationOverviewMenuManager implements IDisposable {
     private final ViolationOverview overview;
     private PriorityFilterAction[] priorityActions;
@@ -46,7 +45,7 @@ public class ViolationOverviewMenuManager implements IDisposable {
     }
 
     /**
-     * Setup the Actions for the ActionBars
+     * Setup the Actions for the ActionBars.
      */
     public void setupActions() {
         RulePriority[] priorities = UISettings.currentPriorities(true);
@@ -60,7 +59,7 @@ public class ViolationOverviewMenuManager implements IDisposable {
     }
 
     /**
-     * Creates the ActionBars
+     * Creates the ActionBars.
      */
     public void createActionBars(IToolBarManager manager) {
         // Action for calculating the #violations/loc
@@ -79,7 +78,7 @@ public class ViolationOverviewMenuManager implements IDisposable {
     }
 
     /**
-     * Creates the DropDownMenu
+     * Creates the DropDownMenu.
      */
     public void createDropDownMenu(IMenuManager manager) {
         manager.removeAll();
@@ -91,13 +90,14 @@ public class ViolationOverviewMenuManager implements IDisposable {
     }
 
     /**
-     * Creates the Context Menu
+     * Creates the Context Menu.
      */
     public void createContextMenu() {
         if (contextMenuManager == null) {
             contextMenuManager = new MenuManager();
             contextMenuManager.setRemoveAllWhenShown(true);
             contextMenuManager.addMenuListener(new IMenuListener() {
+                @Override
                 public void menuAboutToShow(IMenuManager manager) {
                     MenuManager submenuManager;
 
@@ -133,13 +133,13 @@ public class ViolationOverviewMenuManager implements IDisposable {
     }
 
     /**
-     * Create the Menu for filtering Projects
+     * Create the Menu for filtering Projects.
      *
      * @param manager, the MenuManager
      */
     private void createProjectFilterMenu(IMenuManager manager) {
         final List<AbstractPMDRecord> projectFilterList = this.overview.getProjectFilterList();
-        final List<ProjectRecord> projectList = new ArrayList<ProjectRecord>();
+        final List<ProjectRecord> projectList = new ArrayList<>();
 
         // We get a List of all Projects
         final AbstractPMDRecord[] projects = this.overview.getAllProjects();
@@ -177,7 +177,7 @@ public class ViolationOverviewMenuManager implements IDisposable {
     }
 
     /**
-     * Helper method to return an NLS string from its key
+     * Helper method to return an NLS string from its key.
      */
     private String getString(String key) {
         return PMDPlugin.getDefault().getStringTable().getString(key);

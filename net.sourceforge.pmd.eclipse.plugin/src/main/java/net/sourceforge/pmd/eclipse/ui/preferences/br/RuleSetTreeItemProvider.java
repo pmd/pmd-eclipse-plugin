@@ -40,14 +40,9 @@ public class RuleSetTreeItemProvider implements ITreeContentProvider {
         fieldAccessor = accessor;
         groupDescription = description;
         comparator = theComparator;
-        ruleGroups = new HashMap<Object, RuleGroup>();
+        ruleGroups = new HashMap<>();
     }
 
-    /**
-     *
-     * @param accessor
-     *            RuleFieldAccessor
-     */
     public void accessor(RuleFieldAccessor accessor) {
         fieldAccessor = accessor;
     }
@@ -62,15 +57,8 @@ public class RuleSetTreeItemProvider implements ITreeContentProvider {
         return rules;
     }
 
-    /**
-     *
-     * @param parentElement
-     *            Object
-     * @return Object[]
-     * @see org.eclipse.jface.viewers.ITreeContentProvider#getChildren(Object)
-     */
+    @Override
     public Object[] getChildren(Object parentElement) {
-
         if (parentElement instanceof RuleSet) {
             RuleSet ruleSet = (RuleSet) parentElement;
             return fieldAccessor == null ? sort(ruleSet.getRules()) : asRuleGroups(ruleSet.getRules());
@@ -84,15 +72,7 @@ public class RuleSetTreeItemProvider implements ITreeContentProvider {
         return Util.EMPTY_ARRAY;
     }
 
-    /**
-     * Method asRuleGroups.
-     * 
-     * @param rules
-     *            Collection<Rule>
-     * @return RuleGroup[]
-     */
     private RuleGroup[] asRuleGroups(Collection<Rule> rules) {
-
         Iterator<Rule> iter = rules.iterator();
         ruleGroups.clear();
 
@@ -140,6 +120,7 @@ public class RuleSetTreeItemProvider implements ITreeContentProvider {
      * @return Object
      * @see org.eclipse.jface.viewers.ITreeContentProvider#getParent(Object)
      */
+    @Override
     public Object getParent(Object element) {
 
         if (element instanceof RuleGroup) {
@@ -162,6 +143,7 @@ public class RuleSetTreeItemProvider implements ITreeContentProvider {
      * @return boolean
      * @see org.eclipse.jface.viewers.ITreeContentProvider#hasChildren(Object)
      */
+    @Override
     public boolean hasChildren(Object element) {
 
         if (element instanceof RuleSet) {
@@ -176,36 +158,18 @@ public class RuleSetTreeItemProvider implements ITreeContentProvider {
         return false;
     }
 
-    /**
-     * Method getElements.
-     * 
-     * @param inputElement
-     *            Object
-     * @return Object[]
-     * @see org.eclipse.jface.viewers.IStructuredContentProvider#getElements(Object)
-     */
+    @Override
     public Object[] getElements(Object inputElement) {
         return getChildren(inputElement);
     }
 
-    /**
-     * Method inputChanged.
-     * 
-     * @param viewer
-     *            Viewer
-     * @param oldInput
-     *            Object
-     * @param newInput
-     *            Object
-     * @see org.eclipse.jface.viewers.IContentProvider#inputChanged(Viewer,
-     *      Object, Object)
-     */
+    @Override
     public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-
+        // TODO
     }
 
+    @Override
     public void dispose() {
         // TODO Auto-generated method stub
     }
-
 }

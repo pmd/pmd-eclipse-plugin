@@ -11,6 +11,7 @@ import org.eclipse.ui.handlers.HandlerUtil;
 
 public class DisableRuleHandler extends AbstractHandler {
 
+    @Override
     public Object execute(ExecutionEvent event) throws ExecutionException {
         HandlerUtil.getActiveWorkbenchWindow(event).close();
         return null;

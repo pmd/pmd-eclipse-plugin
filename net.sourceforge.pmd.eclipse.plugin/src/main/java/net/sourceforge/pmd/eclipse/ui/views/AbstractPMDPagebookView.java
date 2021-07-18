@@ -32,15 +32,15 @@ public abstract class AbstractPMDPagebookView extends PageBookView {
     protected ViewMemento memento;
 
     protected AbstractPMDPagebookView() {
+        // protected constructor for subclassing
     }
 
     public static FileRecord tryForFileRecordFrom(IWorkbenchPart part) {
-
         if (part instanceof IEditorPart) {
             // If there is a file opened in the editor, we create a record for
             // it
             IEditorInput input = ((IEditorPart) part).getEditorInput();
-            if (input != null && input instanceof IFileEditorInput) {
+            if (input instanceof IFileEditorInput) {
                 IFile file = ((IFileEditorInput) input).getFile();
                 return new FileRecord(file);
             }
@@ -72,7 +72,7 @@ public abstract class AbstractPMDPagebookView extends PageBookView {
             // If there is a file opened in the editor, we create a record for
             // it
             IEditorInput input = ((IEditorPart) part).getEditorInput();
-            if (input != null && input instanceof IFileEditorInput) {
+            if (input instanceof IFileEditorInput) {
                 IFile file = ((IFileEditorInput) input).getFile();
                 return new FileRecord(file);
             }
@@ -87,7 +87,6 @@ public abstract class AbstractPMDPagebookView extends PageBookView {
         return null;
     }
 
-    /* @see org.eclipse.ui.part.ViewPart#init(org.eclipse.ui.IViewSite) */
     @Override
     public void init(IViewSite site) throws PartInitException {
         super.init(site);
@@ -103,37 +102,24 @@ public abstract class AbstractPMDPagebookView extends PageBookView {
         return memento == null ? Collections.<Integer>emptyList() : memento.getIntegerList(mementoId);
     }
 
-    /*
-     * @see org.eclipse.ui.IPartListener#partBroughtToTop(org.eclipse.ui.
-     * IPartListener)
-     */
     @Override
     public void partBroughtToTop(IWorkbenchPart part) {
         partActivated(part);
     }
 
-    /* @see org.eclipse.ui.part.PageBookView#getBootstrapPart() */
     @Override
     protected IWorkbenchPart getBootstrapPart() {
         IWorkbenchPage page = getSite().getPage();
         return page == null ? null : page.getActiveEditor();
     }
 
-    /*
-     * @see org.eclipse.ui.part.PageBookView#isImportant(org.eclipse.ui.
-     * IWorkbenchPart)
-     */
     @Override
     protected boolean isImportant(IWorkbenchPart part) {
         // We only care about the editor
         return part instanceof IEditorPart;
     }
 
-    /*
-     * @see
-     * org.eclipse.ui.part.PageBookView#createDefaultPage(org.eclipse.ui.part.
-     * PageBook)
-     */
+    @Override
     protected IPage createDefaultPage(PageBook book) {
         // builds a message page showing a text
         MessagePage page = new MessagePage();

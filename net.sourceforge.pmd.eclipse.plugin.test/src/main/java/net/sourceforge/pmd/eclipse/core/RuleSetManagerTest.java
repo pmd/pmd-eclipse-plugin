@@ -74,8 +74,7 @@ public class RuleSetManagerTest {
     }
 
     /**
-     * Unregistering twice the same Default rule set has no effect
-     * 
+     * Unregistering twice the same Default rule set has no effect.
      */
     @Test
     public void testDuplicateUnregisterDefault() {
@@ -88,8 +87,7 @@ public class RuleSetManagerTest {
     }
 
     /**
-     * Test the register default ruleset
-     * 
+     * Test the register default ruleset.
      */
     @Test
     public void testRegisterDefaultRuleSet() {
@@ -99,36 +97,23 @@ public class RuleSetManagerTest {
     }
 
     /**
-     * Test the registration of a null ruleset
-     * 
+     * Test the registration of a null ruleset.
      */
-    @Test
+    @Test(expected = IllegalArgumentException.class)
     public void testRegisterNullDefaultRuleSet() {
-        try {
-            this.ruleSetManager.registerDefaultRuleSet(null);
-            Assert.fail("Should return an IllegalArgumentException");
-        } catch (final IllegalArgumentException e) {
-            // cool
-        }
+        this.ruleSetManager.registerDefaultRuleSet(null);
     }
 
     /**
-     * Test the registration of a null ruleset
-     * 
+     * Test the registration of a null ruleset.
      */
-    @Test
+    @Test(expected = IllegalArgumentException.class)
     public void testRegisterNullRuleSet() {
-        try {
-            this.ruleSetManager.registerRuleSet(null);
-            Assert.fail("Should return an IllegalArgumentException");
-        } catch (final IllegalArgumentException e) {
-            // cool
-        }
+        this.ruleSetManager.registerRuleSet(null);
     }
 
     /**
-     * Test the register ruleset
-     * 
+     * Test the register ruleset.
      */
     @Test
     public void testRegisterRuleSet() {
@@ -138,8 +123,7 @@ public class RuleSetManagerTest {
     }
 
     /**
-     * Test unregistration default
-     * 
+     * Test unregistration default.
      */
     @Test
     public void testUnregisterDefaultRuleSet() {
@@ -152,36 +136,23 @@ public class RuleSetManagerTest {
     }
 
     /**
-     * Unregistering a null default ruleset is illegal
-     * 
+     * Unregistering a null default ruleset is illegal.
      */
-    @Test
+    @Test(expected = RuntimeException.class)
     public void testUnregisterNullDefaultRuleSet() {
-        try {
-            this.ruleSetManager.unregisterDefaultRuleSet(null);
-            Assert.fail("An IllegalArgumentException should be returned");
-        } catch (final RuntimeException e) {
-            // cool
-        }
+        this.ruleSetManager.unregisterDefaultRuleSet(null);
     }
 
     /**
-     * Unregistering a null ruleset is illegal
-     * 
+     * Unregistering a null ruleset is illegal.
      */
-    @Test
+    @Test(expected = RuntimeException.class)
     public void testUnregisterNullRuleSet() {
-        try {
-            this.ruleSetManager.unregisterRuleSet(null);
-            Assert.fail("An IllegalArgumentException should be returned");
-        } catch (final RuntimeException e) {
-            // cool
-        }
+        this.ruleSetManager.unregisterRuleSet(null);
     }
 
     /**
-     * Test unregistration
-     * 
+     * Test unregistration.
      */
     @Test
     public void testUnregisterRuleSet() {

@@ -30,10 +30,12 @@ public class CalculateStatisticsAction extends AbstractPMDAction {
         violationView = view;
     }
 
+    @Override
     protected String imageId() {
         return PMDUiConstants.ICON_BUTTON_CALCULATE;
     }
 
+    @Override
     protected String tooltipMsgId() {
         return StringKeys.VIEW_TOOLTIP_CALCULATE_STATS;
     }
@@ -43,14 +45,16 @@ public class CalculateStatisticsAction extends AbstractPMDAction {
     }
 
     /**
-     * Executes the Action
+     * Executes the Action.
      */
+    @Override
     public void run() {
         try {
             final ProgressMonitorDialog dialog = new ProgressMonitorDialog(Display.getCurrent().getActiveShell());
             dialog.setCancelable(true);
 
             dialog.run(false, false, new IRunnableWithProgress() {
+                @Override
                 public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
                     final TreeItem[] items = getViewer().getTree().getItems();
                     final int unitCount = calculateWorkUnits(items);

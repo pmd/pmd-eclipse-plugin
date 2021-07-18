@@ -5,11 +5,12 @@
 package net.sourceforge.pmd.eclipse.internal;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.file.Files;
 
-public class ResourceUtil {
+public final class ResourceUtil {
     private ResourceUtil() {
         // utility
     }
@@ -19,7 +20,7 @@ public class ResourceUtil {
         if (parent != null && !parent.exists()) {
             parent.mkdirs();
         }
-        try (FileOutputStream out = new FileOutputStream(target);
+        try (OutputStream out = Files.newOutputStream(target.toPath());
              InputStream in = context.getClass().getResourceAsStream(resource)) {
             int count;
             byte[] buffer = new byte[8192];

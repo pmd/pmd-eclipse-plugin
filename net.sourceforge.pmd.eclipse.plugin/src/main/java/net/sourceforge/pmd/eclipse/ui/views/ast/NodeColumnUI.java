@@ -20,48 +20,56 @@ import net.sourceforge.pmd.lang.ast.Node;
 public interface NodeColumnUI {
 
     ItemFieldAccessor<String, Node> TYPE_NAME_ACC = new ItemFieldAccessorAdapter<String, Node>(Util.COMP_STR) {
+        @Override
         public String valueFor(Node node) {
             return node.toString();
         }
     };
 
     ItemFieldAccessor<String, Node> IMAGE_ACC = new ItemFieldAccessorAdapter<String, Node>(Util.COMP_STR) {
+        @Override
         public String valueFor(Node node) {
             return node.getImage();
         }
     };
 
     ItemFieldAccessor<Integer, Node> BEGIN_LINE_NUM_ACC = new ItemFieldAccessorAdapter<Integer, Node>(Util.COMP_INT) {
+        @Override
         public Integer valueFor(Node node) {
             return node.getBeginLine();
         }
     };
 
     ItemFieldAccessor<Integer, Node> END_LINE_NUM_ACC = new ItemFieldAccessorAdapter<Integer, Node>(Util.COMP_INT) {
+        @Override
         public Integer valueFor(Node node) {
             return node.getEndLine();
         }
     };
 
     ItemFieldAccessor<Integer, Node> BEGIN_COLUMN_ACC = new ItemFieldAccessorAdapter<Integer, Node>(Util.COMP_INT) {
+        @Override
         public Integer valueFor(Node node) {
             return node.getBeginColumn();
         }
     };
 
     ItemFieldAccessor<Integer, Node> END_COLUMN_ACC = new ItemFieldAccessorAdapter<Integer, Node>(Util.COMP_INT) {
+        @Override
         public Integer valueFor(Node node) {
             return node.getEndColumn();
         }
     };
 
     ItemFieldAccessor<String, Node> DERIVED_ACC = new ItemFieldAccessorAdapter<String, Node>(Util.COMP_STR) {
+        @Override
         public String valueFor(Node node) {
             return NodeImageDeriver.derivedTextFor(node);
         }
     };
 
     ItemFieldAccessor<String, Node> IMAGE_OR_DERIVED_ACC = new ItemFieldAccessorAdapter<String, Node>(Util.COMP_STR) {
+        @Override
         public String valueFor(Node node) {
             return node.getImage() == null ? NodeImageDeriver.derivedTextFor(node) : node.getImage();
         }

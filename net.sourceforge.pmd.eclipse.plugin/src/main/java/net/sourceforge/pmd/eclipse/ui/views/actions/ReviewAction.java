@@ -6,8 +6,8 @@ package net.sourceforge.pmd.eclipse.ui.views.actions;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.Reader;
 import java.lang.reflect.InvocationTargetException;
 import java.text.MessageFormat;
 import java.util.Date;
@@ -46,28 +46,26 @@ public class ReviewAction extends AbstractViolationSelectionAction {
     private static final Logger LOG = LoggerFactory.getLogger(ReviewAction.class);
     private IProgressMonitor monitor;
 
-    /**
-     * Constructor
-     */
     public ReviewAction(TableViewer viewer) {
         super(viewer);
     }
 
+    @Override
     protected String textId() {
         return StringKeys.VIEW_ACTION_REVIEW;
     }
 
+    @Override
     protected String imageId() {
         return PMDUiConstants.ICON_BUTTON_REVIEW;
     }
 
+    @Override
     protected String tooltipMsgId() {
         return StringKeys.VIEW_TOOLTIP_REVIEW;
     }
 
-    /**
-     * @see org.eclipse.jface.action.IAction#run()
-     */
+    @Override
     public void run() {
         final IMarker[] markers = getSelectedViolations();
         if (markers == null) {
@@ -85,6 +83,7 @@ public class ReviewAction extends AbstractViolationSelectionAction {
             try {
                 ProgressMonitorDialog dialog = new ProgressMonitorDialog(Display.getCurrent().getActiveShell());
                 dialog.run(false, false, new IRunnableWithProgress() {
+                    @Override
                     public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
                         setMonitor(monitor);
                         monitor.beginTask(getString(StringKeys.MONITOR_REVIEW), 5);
@@ -112,7 +111,7 @@ public class ReviewAction extends AbstractViolationSelectionAction {
     }
 
     /**
-     * Do the insertion of the review comment
+     * Do the insertion of the review comment.
      *
      * @param marker
      */
@@ -130,7 +129,7 @@ public class ReviewAction extends AbstractViolationSelectionAction {
 
                     monitorWorked();
 
-                    sourceCode = reviewPmdStyle ? addPmdReviewComment(sourceCode, offset, marker)
+                    sourceCode = reviewPmdStyle ? addPmdReviewComment(sourceCode, offset)
                             : addPluginReviewComment(sourceCode, offset, marker);
 
                     monitorWorked();
@@ -170,26 +169,16 @@ public class ReviewAction extends AbstractViolationSelectionAction {
         }
     }
 
-    /**
-     * Get the monitor
-     *
-     * @return
-     */
     protected IProgressMonitor getMonitor() {
         return monitor;
     }
 
-    /**
-     * Set the monitor
-     *
-     * @param monitor
-     */
     protected void setMonitor(IProgressMonitor monitor) {
         this.monitor = monitor;
     }
 
     /**
-     * Progress monitor
+     * Progress monitor.
      */
     private void monitorWorked() {
         if (getMonitor() != null) {
@@ -198,7 +187,7 @@ public class ReviewAction extends AbstractViolationSelectionAction {
     }
 
     /**
-     * Renvoie la position dans le code source du début de la ligne du marqueur
+     * Renvoie la position dans le code source du début de la ligne du marqueur.
      */
     private static int getMarkerLineStart(String sourceCode, int lineNumber) {
         int lineStart;
@@ -227,7 +216,7 @@ public class ReviewAction extends AbstractViolationSelectionAction {
     }
 
     /**
-     * Insert a review comment with the Plugin style
+     * Insert a review comment with the Plugin style.
      */
     private static String addPluginReviewComment(String sourceCode, int offset, IMarker marker) {
 
@@ -248,9 +237,9 @@ public class ReviewAction extends AbstractViolationSelectionAction {
     }
 
     /**
-     * Insert a review comment with the PMD style
+     * Insert a review comment with the PMD style.
      */
-    private static String addPmdReviewComment(String sourceCode, int offset, IMarker marker) {
+    private static String addPmdReviewComment(String sourceCode, int offset) {
         String result = sourceCode;
 
         // Find the end of line
@@ -282,7 +271,7 @@ public class ReviewAction extends AbstractViolationSelectionAction {
     }
 
     /**
-     * Calcul l'indentation employée sur la ligne du marker
+     * Calcul l'indentation employée sur la ligne du marker.
      */
     private static String computeIndent(String sourceCode, int offset) {
         StringBuilder indent = new StringBuilder();
@@ -297,11 +286,9 @@ public class ReviewAction extends AbstractViolationSelectionAction {
     }
 
     public static String readFile(IFile file) throws IOException, CoreException {
-        InputStream contents = file.getContents(true);
         String charset = file.getCharset();
-        InputStreamReader reader = new InputStreamReader(contents, charset);
 
-        try {
+        try (Reader reader = new InputStreamReader(file.getContents(true), charset)) {
             char[] buffer = new char[4096];
             StringBuilder sb = new StringBuilder(4096);
             while (reader.ready()) {
@@ -312,9 +299,6 @@ public class ReviewAction extends AbstractViolationSelectionAction {
             }
 
             return sb.toString();
-
-        } finally {
-            reader.close();
         }
     }
 

@@ -32,12 +32,14 @@ public class RuleLabelDecorator implements ILightweightLabelDecorator {
 
     private Set<ILabelProviderListener> listeners = new CopyOnWriteArraySet<>();
 
+    @Override
     public void addListener(ILabelProviderListener listener) {
         listeners.add(listener);
     }
 
+    @Override
     public void dispose() {
-
+        // nothing to do
     }
 
     public void changed(Collection<IResource> resources) {
@@ -49,20 +51,24 @@ public class RuleLabelDecorator implements ILightweightLabelDecorator {
     }
 
     /**
-     * reloading is not necessary anymore
+     * @deprecated reloading is not necessary anymore
      */
     @Deprecated
     public void reloadDecorators() {
+        // nothing to do
     }
 
+    @Override
     public boolean isLabelProperty(Object element, String property) {
         return false;
     }
 
+    @Override
     public void removeListener(ILabelProviderListener listener) {
         listeners.remove(listener);
     }
 
+    @Override
     public void decorate(Object element, IDecoration decoration) {
         if (!(element instanceof IResource)) {
             return;

@@ -28,16 +28,12 @@ public class RulePropertyCellModifier implements ICellModifier {
         this.tableViewer = tableViewer;
     }
 
-    /**
-     * @see org.eclipse.jface.viewers.ICellModifier#canModify(Object, String)
-     */
+    @Override
     public boolean canModify(Object element, String property) {
         return property.equalsIgnoreCase(PMDPreferencePage.PROPERTY_VALUE);
     }
 
-    /**
-     * @see org.eclipse.jface.viewers.ICellModifier#getValue(Object, String)
-     */
+    @Override
     public Object getValue(Object element, String property) {
         Object result = null;
         if (element instanceof RuleProperty) {
@@ -53,10 +49,7 @@ public class RulePropertyCellModifier implements ICellModifier {
         return result;
     }
 
-    /**
-     * @see org.eclipse.jface.viewers.ICellModifier#modify(Object, String,
-     *      Object)
-     */
+    @Override
     public void modify(Object element, String property, Object value) {
         TableItem item = (TableItem) element;
 

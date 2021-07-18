@@ -6,6 +6,7 @@ package net.sourceforge.pmd.eclipse.ui.preferences;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.jface.util.IPropertyChangeListener;
@@ -39,7 +40,7 @@ public class IconSelector {
                     Button btn = (Button) e.widget;
                     if (btn.getSelection()) {
                         for (Button otherButton : buttonGroup) {
-                            if (otherButton != btn) {
+                            if (!Objects.equals(otherButton, btn)) {
                                 otherButton.setSelection(false);
                             }
                         }
@@ -57,7 +58,7 @@ public class IconSelector {
             public void propertyChange(PropertyChangeEvent event) {
                 PriorityDescriptorIcon icon = (PriorityDescriptorIcon) event.getNewValue();
                 for (Button btn : buttonGroup) {
-                    btn.setSelection(btn.getData() == icon);
+                    btn.setSelection(Objects.equals(btn.getData(), icon));
                 }
             }
         });

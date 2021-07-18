@@ -15,23 +15,18 @@ import net.sourceforge.pmd.eclipse.util.Util;
 import net.sourceforge.pmd.lang.java.rule.errorprone.DaaRuleViolation;
 
 /**
- * Provides the Content for the DataflowAnomalyTable
+ * Provides the Content for the DataflowAnomalyTable.
  *
  * @author SebastianRaffel ( 07.06.2005 )
  */
 public class DataflowAnomalyTableContentProvider implements IStructuredContentProvider {
     private static final int MAX_ROWS = 200;
 
-    /*
-     * @see
-     * org.eclipse.jface.viewers.IStructuredContentProvider#getElements(java.
-     * lang.Object)
-     */
+    @Override
     public Object[] getElements(Object inputElement) {
-
         if (inputElement instanceof Iterator<?>) {
             final Iterator<DaaRuleViolation> violationsIterator = (Iterator<DaaRuleViolation>) inputElement;
-            final List<DaaRuleViolation> violations = new ArrayList<DaaRuleViolation>();
+            final List<DaaRuleViolation> violations = new ArrayList<>();
             for (int count = 0; violationsIterator.hasNext() && count < MAX_ROWS; count++) {
                 final DaaRuleViolation violation = violationsIterator.next();
                 if (!violationIsInList(violation, violations)) {
@@ -39,22 +34,22 @@ public class DataflowAnomalyTableContentProvider implements IStructuredContentPr
                 }
             }
 
-            return violations.toArray(new DaaRuleViolation[violations.size()]);
+            return violations.toArray(new DaaRuleViolation[0]);
         }
         return Util.EMPTY_ARRAY;
     }
 
-    /* @see org.eclipse.jface.viewers.IContentProvider#dispose() */
+    @Override
     public void dispose() {
         // do nothing
     }
 
+    @Override
     public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
         // do nothing
     }
 
     private static boolean violationIsInList(DaaRuleViolation newViolation, List<DaaRuleViolation> list) {
-
         if (list.isEmpty()) {
             return false;
         }

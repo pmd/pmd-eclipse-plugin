@@ -5,9 +5,8 @@
 package net.sourceforge.pmd.eclipse.ui.model;
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -16,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
@@ -29,7 +29,6 @@ import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.runtime.PMDRuntimeConstants;
 import net.sourceforge.pmd.eclipse.runtime.builder.MarkerUtil;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
-import net.sourceforge.pmd.eclipse.util.IOUtil;
 
 /**
  * AbstractPMDRecord for Files
@@ -158,7 +157,7 @@ public class FileRecord extends AbstractPMDRecord {
             final Iterator<IMarker> markerIterator = markers.iterator();
 
             // put all markers in a map with key = rulename
-            final Map<String, MarkerRecord> allMarkerMap = new HashMap<String, MarkerRecord>();
+            final Map<String, MarkerRecord> allMarkerMap = new HashMap<>();
             while (markerIterator.hasNext()) {
                 final IMarker marker = markerIterator.next();
 
@@ -244,7 +243,7 @@ public class FileRecord extends AbstractPMDRecord {
     @Override
     public IMarker[] findMarkersByAttribute(String attributeName, Object value) {
         final IMarker[] markers = findMarkers();
-        final List<IMarker> attributeMarkers = new ArrayList<IMarker>();
+        final List<IMarker> attributeMarkers = new ArrayList<>();
         try {
             // we get all Markers and catch the ones that matches our criteria
             for (IMarker marker : markers) {
@@ -260,7 +259,7 @@ public class FileRecord extends AbstractPMDRecord {
         }
 
         // return an Array of the Markers
-        return attributeMarkers.toArray(new IMarker[attributeMarkers.size()]);
+        return attributeMarkers.toArray(new IMarker[0]);
     }
 
     /**
@@ -333,22 +332,17 @@ public class FileRecord extends AbstractPMDRecord {
      */
     protected String resourceToString(IResource resource) {
         final StringBuilder fileContents = new StringBuilder();
-        BufferedReader bReader = null;
-        try {
-            // we create a FileReader
-            bReader = new BufferedReader(new FileReader(resource.getRawLocation().toFile()));
-
+        IFile file = (IFile) resource.getAdapter(IFile.class);
+        try (BufferedReader bReader = new BufferedReader(new InputStreamReader(file.getContents(), file.getCharset()))) {
             // ... and read the File line by line
             while (bReader.ready()) {
                 fileContents.append(bReader.readLine()).append('\n');
             }
-        } catch (FileNotFoundException fnfe) {
+        } catch (CoreException e) {
             PMDPlugin.getDefault()
-                    .logError(StringKeys.ERROR_FILE_NOT_FOUND + resource.toString() + " in " + this.toString(), fnfe);
+                .logError(StringKeys.ERROR_FILE_NOT_FOUND + resource.toString() + " in " + this.toString(), e);
         } catch (IOException ioe) {
             PMDPlugin.getDefault().logError(StringKeys.ERROR_IO_EXCEPTION + this.toString(), ioe);
-        } finally {
-            IOUtil.closeQuietly(bReader);
         }
 
         return fileContents.toString();
@@ -362,7 +356,7 @@ public class FileRecord extends AbstractPMDRecord {
 
             // we need to change the Resource into a Java-File
             final IJavaElement element = JavaCore.create(resource);
-            final List<Object> methods = new ArrayList<Object>();
+            final List<Object> methods = new ArrayList<>();
 
             if (element instanceof ICompilationUnit) {
                 try {
@@ -394,25 +388,16 @@ public class FileRecord extends AbstractPMDRecord {
         return numberOfMethods; // deactivate this method for now
     }
 
-    /**
-     * @see net.sourceforge.pmd.eclipse.ui.model.AbstractPMDRecord#addResource(org.eclipse.core.resources.IResource)
-     */
     @Override
     public AbstractPMDRecord addResource(IResource resource) {
         return null;
     }
 
-    /**
-     * @see net.sourceforge.pmd.eclipse.ui.model.AbstractPMDRecord#removeResource(org.eclipse.core.resources.IResource)
-     */
     @Override
     public AbstractPMDRecord removeResource(IResource resource) {
         return null;
     }
 
-    /**
-     * @see net.sourceforge.pmd.eclipse.ui.model.AbstractPMDRecord#getName()
-     */
     @Override
     public String getName() {
         return resource.getName();
@@ -423,17 +408,11 @@ public class FileRecord extends AbstractPMDRecord {
         return RepositoryUtil.hasRepositoryAccess() ? RepositoryUtil.authorNameFor(resource) : null;
     }
 
-    /**
-     * @see net.sourceforge.pmd.eclipse.ui.model.AbstractPMDRecord#getResourceType()
-     */
     @Override
     public int getResourceType() {
         return TYPE_FILE;
     }
 
-    /**
-     * @see net.sourceforge.pmd.eclipse.ui.model.AbstractPMDRecord#getNumberOfViolationsToPriority(int)
-     */
     @Override
     public int getNumberOfViolationsToPriority(int prio, boolean invertMarkerAndFileRecords) {
         int number = 0;

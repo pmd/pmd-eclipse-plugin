@@ -64,17 +64,15 @@ public class FilterPreferencesPage extends AbstractPMDPreferencePage
         implements ValueChangeListener, SizeChangeListener {
 
     private TableViewer tableViewer;
-    private Button addButton;
-    private Button removeButton;
 
+    private Button removeButton;
     private Button excludeButt;
     private Button includeButt;
     // private Button cpdButt;
     // private Button pmdButt;
     private Text patternField;
 
-    private BasicTableManager<FilterHolder> reportTableMgr;
-    private Collection<Control> editorWidgets = new ArrayList<Control>();
+    private Collection<Control> editorWidgets = new ArrayList<>();
 
     private static Image includeIcon = plugin.getImage("include", "icons/ok.gif");
     private static Image excludeIcon = plugin.getImage("exclude", "icons/forbidden.png");
@@ -143,7 +141,7 @@ public class FilterPreferencesPage extends AbstractPMDPreferencePage
 
     private FilterHolder[] currentFilters() {
 
-        List<FilterHolder> holders = new ArrayList<FilterHolder>();
+        List<FilterHolder> holders = new ArrayList<>();
 
         RuleSet ruleSet = plugin.getPreferencesManager().getRuleSet();
 
@@ -153,7 +151,7 @@ public class FilterPreferencesPage extends AbstractPMDPreferencePage
         for (Pattern pattern : ruleSet.getFileInclusions()) {
             holders.add(new FilterHolder(pattern.pattern(), true, false, true));
         }
-        return holders.toArray(new FilterHolder[holders.size()]);
+        return holders.toArray(new FilterHolder[0]);
     }
 
     private void enableEditor(boolean flag) {
@@ -165,7 +163,7 @@ public class FilterPreferencesPage extends AbstractPMDPreferencePage
 
     private List<Pattern> tableFilters(boolean isInclude) {
 
-        List<Pattern> filters = new ArrayList<Pattern>();
+        List<Pattern> filters = new ArrayList<>();
 
         for (TableItem ti : tableViewer.getTable().getItems()) {
             FilterHolder fh = (FilterHolder) ti.getData();
@@ -193,19 +191,24 @@ public class FilterPreferencesPage extends AbstractPMDPreferencePage
     private Composite buildFilterGroup(Composite parent) {
 
         IStructuredContentProvider contentProvider = new IStructuredContentProvider() {
+            @Override
             public void dispose() {
+                // nothing to do
             }
 
+            @Override
             public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+                // nothing to do
             }
 
+            @Override
             public Object[] getElements(Object inputElement) {
                 return (FilterHolder[]) inputElement;
             }
         };
         BasicTableLabelProvider labelProvider = new BasicTableLabelProvider(FilterColumnUI.VISIBLE_COLUMNS);
 
-        reportTableMgr = new BasicTableManager<FilterHolder>("renderers", null, FilterColumnUI.VISIBLE_COLUMNS);
+        BasicTableManager<FilterHolder> reportTableMgr = new BasicTableManager<>("renderers", null, FilterColumnUI.VISIBLE_COLUMNS);
         tableViewer = reportTableMgr.buildTableViewer(parent,
                 SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL | SWT.MULTI | SWT.FULL_SELECTION | SWT.CHECK);
         reportTableMgr.setupColumns(FilterColumnUI.VISIBLE_COLUMNS);
@@ -227,12 +230,14 @@ public class FilterPreferencesPage extends AbstractPMDPreferencePage
         }
 
         tableViewer.addSelectionChangedListener(new ISelectionChangedListener() {
+            @Override
             public void selectionChanged(SelectionChangedEvent event) {
                 patternsSelected();
             }
         });
 
         tableViewer.getTable().addListener(SWT.Selection, new Listener() {
+            @Override
             public void handleEvent(Event event) {
                 if (event.detail == SWT.CHECK) {
                     checked(event.item);
@@ -312,6 +317,7 @@ public class FilterPreferencesPage extends AbstractPMDPreferencePage
 
         excludeButt = createButton(editorPanel, SWT.RADIO, excludeIcon, "Exclude");
         excludeButt.addSelectionListener(new SelectionAdapter() {
+            @Override
             public void widgetSelected(SelectionEvent se) {
                 setAllInclude(!includeButt.getSelection());
                 tableViewer.refresh();
@@ -320,6 +326,7 @@ public class FilterPreferencesPage extends AbstractPMDPreferencePage
 
         includeButt = createButton(editorPanel, SWT.RADIO, includeIcon, "Include");
         includeButt.addSelectionListener(new SelectionAdapter() {
+            @Override
             public void widgetSelected(SelectionEvent se) {
                 setAllInclude(includeButt.getSelection());
                 tableViewer.refresh();
@@ -357,6 +364,7 @@ public class FilterPreferencesPage extends AbstractPMDPreferencePage
         patternField = new Text(editorPanel, SWT.BORDER);
         patternField.setLayoutData(new GridData(GridData.FILL, GridData.CENTER, true, false, 2, 1));
         patternField.addFocusListener(new FocusAdapter() {
+            @Override
             public void focusLost(FocusEvent fe) {
                 setAllPatterns(patternField.getText());
                 tableViewer.refresh();
@@ -373,7 +381,7 @@ public class FilterPreferencesPage extends AbstractPMDPreferencePage
     }
 
     /**
-     * Create buttons for rule table management
+     * Create buttons for rule table management.
      * 
      * @param parent
      *            Composite
@@ -387,7 +395,7 @@ public class FilterPreferencesPage extends AbstractPMDPreferencePage
         gridLayout.verticalSpacing = 3;
         composite.setLayout(gridLayout);
 
-        addButton = buildAddButton(composite);
+        Button addButton = buildAddButton(composite);
         removeButton = buildRemoveButton(composite);
 
         GridData data = new GridData();
@@ -416,7 +424,7 @@ public class FilterPreferencesPage extends AbstractPMDPreferencePage
      */
     private Set<FilterHolder> currentCheckedFilters() {
 
-        Set<FilterHolder> holders = new HashSet<FilterHolder>();
+        Set<FilterHolder> holders = new HashSet<>();
         for (Object holder : checkedItems(tableViewer.getTable())) {
             holders.add((FilterHolder) holder);
         }
@@ -429,7 +437,7 @@ public class FilterPreferencesPage extends AbstractPMDPreferencePage
      */
     private Set<FilterHolder> selectedFilters() {
 
-        Set<FilterHolder> holders = new HashSet<FilterHolder>();
+        Set<FilterHolder> holders = new HashSet<>();
         for (Object tItem : tableViewer.getTable().getSelection()) {
             holders.add((FilterHolder) (((TableItem) tItem).getData()));
         }
@@ -442,7 +450,7 @@ public class FilterPreferencesPage extends AbstractPMDPreferencePage
      */
     private static Collection<FilterHolder> filtersIn(List<?> tableItems) {
 
-        Set<FilterHolder> holders = new HashSet<FilterHolder>();
+        Set<FilterHolder> holders = new HashSet<>();
         for (Object tItem : tableItems) {
             holders.add((FilterHolder) tItem);
         }
@@ -458,7 +466,7 @@ public class FilterPreferencesPage extends AbstractPMDPreferencePage
      */
     private static Set<Object> checkedItems(Table table) {
 
-        Set<Object> checkedItems = new HashSet<Object>();
+        Set<Object> checkedItems = new HashSet<>();
 
         for (TableItem ti : table.getItems()) {
             if (ti.getChecked()) {
@@ -473,7 +481,7 @@ public class FilterPreferencesPage extends AbstractPMDPreferencePage
      * @param item
      *            Object
      */
-    private void checked(Object item) {
+    private void checked(Object item) { //NOPMD unused formal parameter
 
         // FIXME
         boolean matches = currentCheckedFilters().equals(preferences.activeExclusionPatterns());
@@ -481,20 +489,11 @@ public class FilterPreferencesPage extends AbstractPMDPreferencePage
         setModified(!matches);
     }
 
-    /**
-     * 
-     * @see org.eclipse.jface.preference.PreferencePage#performDefaults()
-     */
     @Override
     protected void performDefaults() {
-
+        // TODO
     }
 
-    /**
-     *
-     * @return boolean
-     * @see org.eclipse.jface.preference.IPreferencePage#performCancel()
-     */
     @Override
     public boolean performCancel() {
         // clear out any changes for next possible usage
@@ -508,7 +507,7 @@ public class FilterPreferencesPage extends AbstractPMDPreferencePage
             return Collections.emptySet();
         }
 
-        Set<String> patterns = new HashSet<String>();
+        Set<String> patterns = new HashSet<>();
         for (FilterHolder holder : holders) {
             if (holder.isInclude == getInclusions) {
                 patterns.add(holder.pattern);
@@ -539,6 +538,7 @@ public class FilterPreferencesPage extends AbstractPMDPreferencePage
                 StringKeys.PREF_RULESET_BUTTON_ADDFILTER);
 
         button.addSelectionListener(new SelectionAdapter() {
+            @Override
             public void widgetSelected(SelectionEvent event) {
                 addNewFilter();
             }
@@ -577,7 +577,7 @@ public class FilterPreferencesPage extends AbstractPMDPreferencePage
     }
 
     /**
-     * Build the edit rule button
+     * Build the edit rule button.
      * 
      * @param parent
      *            Composite
@@ -589,6 +589,7 @@ public class FilterPreferencesPage extends AbstractPMDPreferencePage
                 StringKeys.PREF_RULESET_BUTTON_REMOVEFILTER);
 
         button.addSelectionListener(new SelectionAdapter() {
+            @Override
             public void widgetSelected(SelectionEvent event) {
                 deleteSelected();
             }
@@ -607,10 +608,6 @@ public class FilterPreferencesPage extends AbstractPMDPreferencePage
         tableViewer.remove(selections);
     }
 
-    /**
-     * @return boolean
-     * @see org.eclipse.jface.preference.IPreferencePage#performOk()
-     */
     @Override
     public boolean performOk() {
 
@@ -643,6 +640,7 @@ public class FilterPreferencesPage extends AbstractPMDPreferencePage
         return "???"; // TODO
     }
 
+    @Override
     public void changed(PropertySource source, PropertyDescriptor<?> desc, Object newValue) {
         // TODO enable/disable save/cancel buttons
     }
@@ -656,9 +654,13 @@ public class FilterPreferencesPage extends AbstractPMDPreferencePage
 
     // ignore these
 
+    @Override
     public void addedRows(int newRowCount) {
+        // ignored
     }
 
+    @Override
     public void changed(RuleSelection rule, PropertyDescriptor<?> desc, Object newValue) {
+        // ignored
     }
 }

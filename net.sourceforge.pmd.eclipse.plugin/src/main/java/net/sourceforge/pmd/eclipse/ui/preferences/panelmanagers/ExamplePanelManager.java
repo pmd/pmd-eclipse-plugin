@@ -40,21 +40,23 @@ public class ExamplePanelManager extends AbstractRulePanelManager {
         super(ID, theTitle, theMode, theListener);
     }
 
+    @Override
     protected boolean canManageMultipleRules() {
         return false;
     }
 
+    @Override
     protected void clearControls() {
         exampleField.setText("");
     }
 
+    @Override
     public void showControls(boolean flag) {
-
         exampleField.setVisible(flag);
     }
 
+    @Override
     protected void updateOverridenFields() {
-
         Rule rule = soleRule();
 
         if (rule instanceof RuleReference) {
@@ -63,8 +65,8 @@ public class ExamplePanelManager extends AbstractRulePanelManager {
         }
     }
 
+    @Override
     public Control setupOn(Composite parent) {
-
         GridData gridData;
 
         Composite panel = new Composite(parent, 0);
@@ -78,8 +80,8 @@ public class ExamplePanelManager extends AbstractRulePanelManager {
         exampleField.setLayoutData(gridData);
 
         exampleField.addListener(SWT.FocusOut, new Listener() {
+            @Override
             public void handleEvent(Event event) {
-
                 Rule soleRule = soleRule();
 
                 String cleanValue = exampleField.getText().trim();
@@ -101,13 +103,13 @@ public class ExamplePanelManager extends AbstractRulePanelManager {
         // sb.append(example.trim());
 
         String[] lines = example.split("\n");
-        List<String> realLines = new ArrayList<String>(lines.length);
+        List<String> realLines = new ArrayList<>(lines.length);
         for (String line : lines) {
             if (StringUtils.isNotBlank(line)) {
                 realLines.add(line);
             }
         }
-        lines = realLines.toArray(new String[realLines.size()]);
+        lines = realLines.toArray(new String[0]);
 
         int trimDepth = StringUtil.maxCommonLeadingWhitespaceForAll(lines);
         if (trimDepth > 0) {
@@ -119,7 +121,6 @@ public class ExamplePanelManager extends AbstractRulePanelManager {
     }
 
     private String examples(Rule rule) {
-
         List<String> examples = rule.getExamples();
         if (examples.isEmpty()) {
             return "";
@@ -136,8 +137,8 @@ public class ExamplePanelManager extends AbstractRulePanelManager {
         return sb.toString();
     }
 
+    @Override
     protected void adapt() {
-
         Rule soleRule = soleRule();
 
         if (soleRule == null) {
@@ -147,5 +148,4 @@ public class ExamplePanelManager extends AbstractRulePanelManager {
             modifyListener = SyntaxManager.adapt(exampleField, soleRule.getLanguage().getTerseName(), modifyListener);
         }
     }
-
 }

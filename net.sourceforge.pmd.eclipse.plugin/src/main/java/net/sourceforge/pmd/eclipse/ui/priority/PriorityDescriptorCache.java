@@ -18,13 +18,13 @@ import net.sourceforge.pmd.eclipse.runtime.preferences.IPreferencesManager;
  * 
  * @author Brian Remedios
  */
-public class PriorityDescriptorCache {
+public final class PriorityDescriptorCache {
     private Map<RulePriority, PriorityDescriptor> uiDescriptorsByPriority;
 
     public static final PriorityDescriptorCache INSTANCE = new PriorityDescriptorCache();
 
     private PriorityDescriptorCache() {
-        uiDescriptorsByPriority = new HashMap<RulePriority, PriorityDescriptor>(RulePriority.values().length);
+        uiDescriptorsByPriority = new HashMap<>(RulePriority.values().length);
         loadFromPreferences();
     }
 
@@ -77,8 +77,9 @@ public class PriorityDescriptorCache {
             PriorityDescriptor currentOne = currentPreferences.getPriorityDescriptor(rp);
             if (newOne.equals(currentOne)) {
                 continue;
+            } else {
+                return true;
             }
-            return true;
         }
         return false;
     }
