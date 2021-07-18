@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.eclipse.ui.views;
 
+import java.util.Objects;
+
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
@@ -50,11 +52,6 @@ public class ViolationOutline extends AbstractPMDPagebookView implements ISelect
     protected static final String COLUMN_WIDTHS = "tableColumnWidths";
     protected static final String COLUMN_SORTER = "tableColumnSorter";
 
-    /*
-     * @see
-     * org.eclipse.ui.part.PageBookView#createPartControl(org.eclipse.ui.part.
-     * PageBook)
-     */
     @Override
     public void createPartControl(Composite parent) {
         addFilterControls();
@@ -62,30 +59,22 @@ public class ViolationOutline extends AbstractPMDPagebookView implements ISelect
         getSite().setSelectionProvider(this);
     }
 
+    @Override
     protected String pageMessageId() {
         return StringKeys.VIEW_OUTLINE_DEFAULT_TEXT;
     }
 
+    @Override
     protected String mementoFileId() {
         return PMDUiConstants.MEMENTO_OUTLINE_FILE;
     }
 
-    /* @see org.eclipse.ui.part.ViewPart#init(org.eclipse.ui.IViewSite) */
     @Override
     public void init(IViewSite site) throws PartInitException {
         super.init(site);
         priorityFilter = PriorityFilter.getInstance();
     }
 
-    @Override
-    public void dispose() {
-        super.dispose();
-    }
-
-    /*
-     * @see org.eclipse.ui.part.PageBookView#doCreatePage(org.eclipse.ui.
-     * IWorkbenchPart)
-     */
     @Override
     protected PageRec doCreatePage(IWorkbenchPart part) {
         if (resourceRecord != null) {
@@ -99,13 +88,8 @@ public class ViolationOutline extends AbstractPMDPagebookView implements ISelect
         return null;
     }
 
-    /*
-     * @see org.eclipse.ui.part.PageBookView#doDestroyPage(org.eclipse.ui.
-     * IWorkbenchPart, org.eclipse.ui.part.PageBookView.PageRec)
-     */
     @Override
     protected void doDestroyPage(IWorkbenchPart part, PageRec pageRecord) {
-
         ViolationOutlinePageBR page = (ViolationOutlinePageBR) pageRecord.page;
 
         // get the State of the destroyed Page for loading it into the
@@ -120,7 +104,7 @@ public class ViolationOutline extends AbstractPMDPagebookView implements ISelect
     }
 
     /**
-     * Creates a DropDownMenu for the view
+     * Creates a DropDownMenu for the view.
      */
     private void addFilterControls() {
         IMenuManager manager = getViewSite().getActionBars().getMenuManager();
@@ -138,7 +122,7 @@ public class ViolationOutline extends AbstractPMDPagebookView implements ISelect
     }
 
     /**
-     * Creates a Context Menu for the View
+     * Creates a Context Menu for the View.
      * 
      * @param viewer
      */
@@ -147,6 +131,7 @@ public class ViolationOutline extends AbstractPMDPagebookView implements ISelect
         manager.setRemoveAllWhenShown(true);
         // here we add the Context Menus Actions
         manager.addMenuListener(new IMenuListener() {
+            @Override
             public void menuAboutToShow(IMenuManager manager) {
                 buildMenu(manager, viewer);
             }
@@ -184,10 +169,6 @@ public class ViolationOutline extends AbstractPMDPagebookView implements ISelect
         manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS + "-end"));
     }
 
-    /*
-     * @see
-     * org.eclipse.ui.IPartListener#partActivated(org.eclipse.ui.IPartListener)
-     */
     @Override
     public void partActivated(IWorkbenchPart part) {
         // We only care about the editor
@@ -214,10 +195,6 @@ public class ViolationOutline extends AbstractPMDPagebookView implements ISelect
         refresh();
     }
 
-    /*
-     * @see org.eclipse.ui.part.PageBookView#showPageRec(org.eclipse.ui.part.
-     * PageBookView.PageRec)
-     */
     @Override
     protected void showPageRec(PageRec pageRec) {
         ViolationOutlinePageBR oldPage = getCurrentOutlinePage();
@@ -229,7 +206,7 @@ public class ViolationOutline extends AbstractPMDPagebookView implements ISelect
         // here we change from one Page to another
         // so we get the State of the old Page, put it in a Memento
         // and load it into the new Page, so it looks like the old one
-        if (oldPage != newPage) {
+        if (!Objects.equals(oldPage, newPage)) {
             if (oldPage != null) {
                 storeColumnData(oldPage);
             }
@@ -276,7 +253,7 @@ public class ViolationOutline extends AbstractPMDPagebookView implements ISelect
     }
 
     /**
-     * Refreshes, reloads the View
+     * Refreshes, reloads the View.
      */
     public void refresh() {
         ViolationOutlinePageBR page = getCurrentOutlinePage();
@@ -285,11 +262,7 @@ public class ViolationOutline extends AbstractPMDPagebookView implements ISelect
         }
     }
 
-    /*
-     * @see
-     * org.eclipse.jface.viewers.ISelectionProvider#addSelectionChangedListener(
-     * org.eclipse.jface.viewers.ISelectionChangedListener)
-     */
+    @Override
     public void addSelectionChangedListener(ISelectionChangedListener listener) {
         ViolationOutlinePageBR page = getCurrentOutlinePage();
         if (page != null) {
@@ -297,7 +270,7 @@ public class ViolationOutline extends AbstractPMDPagebookView implements ISelect
         }
     }
 
-    /* @see org.eclipse.jface.viewers.ISelectionProvider#getSelection() */
+    @Override
     public ISelection getSelection() {
         ViolationOutlinePageBR page = getCurrentOutlinePage();
         if (page != null) {
@@ -306,11 +279,7 @@ public class ViolationOutline extends AbstractPMDPagebookView implements ISelect
         return null;
     }
 
-    /*
-     * @see org.eclipse.jface.viewers.ISelectionProvider#
-     * removeSelectionChangedListener(org.eclipse.jface.viewers.
-     * ISelectionChangedListener)
-     */
+    @Override
     public void removeSelectionChangedListener(ISelectionChangedListener listener) {
         ViolationOutlinePageBR page = getCurrentOutlinePage();
         if (page != null) {
@@ -318,11 +287,7 @@ public class ViolationOutline extends AbstractPMDPagebookView implements ISelect
         }
     }
 
-    /*
-     * @see
-     * org.eclipse.jface.viewers.ISelectionProvider#setSelection(org.eclipse.
-     * jface.viewers.ISelection)
-     */
+    @Override
     public void setSelection(ISelection selection) {
         ViolationOutlinePageBR page = getCurrentOutlinePage();
         if (page != null) {

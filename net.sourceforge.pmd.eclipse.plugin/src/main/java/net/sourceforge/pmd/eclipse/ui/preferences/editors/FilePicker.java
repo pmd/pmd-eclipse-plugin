@@ -48,12 +48,14 @@ public class FilePicker extends Composite {
 
         fileField = new Text(this, style);
         fileField.addListener(SWT.FocusOut, new Listener() {
+            @Override
             public void handleEvent(Event event) {
                 // reviseMethodListFor(fileField.getText());
             }
         });
 
         fileField.addListener(SWT.Modify, new Listener() {
+            @Override
             public void handleEvent(Event event) {
                 // reviseMethodListFor(fileField.getText()); // no cleanup,
                 // avoid event loop & overflow
@@ -64,6 +66,7 @@ public class FilePicker extends Composite {
         pickButton.setText("...");
         pickButton.setLayoutData(new GridData(GridData.BEGINNING, GridData.CENTER, false, false));
         pickButton.addSelectionListener(new SelectionAdapter() {
+            @Override
             public void widgetSelected(SelectionEvent event) {
                 openFileDialog(parent.getShell());
             }
@@ -94,6 +97,7 @@ public class FilePicker extends Composite {
         fileField.setFocus();
     }
 
+    @Override
     public void setBackground(Color clr) {
         fileField.setBackground(clr);
     }
@@ -102,6 +106,7 @@ public class FilePicker extends Composite {
         fileField.setText(file == null ? "" : file.getAbsolutePath());
     }
 
+    @Override
     public void setEnabled(boolean flag) {
         super.setEnabled(flag);
         fileField.setEnabled(flag);
@@ -113,9 +118,7 @@ public class FilePicker extends Composite {
     }
 
     public File getFile() {
-
         String name = fileField.getText();
         return StringUtils.isBlank(name) ? null : new File(name);
     }
-
 }

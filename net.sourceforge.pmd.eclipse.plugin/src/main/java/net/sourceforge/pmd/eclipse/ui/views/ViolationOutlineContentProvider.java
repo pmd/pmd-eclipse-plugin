@@ -21,7 +21,7 @@ import net.sourceforge.pmd.eclipse.ui.model.FileRecord;
 import net.sourceforge.pmd.eclipse.util.Util;
 
 /**
- * Provides the ViolationOutlinePages with Content
+ * Provides the ViolationOutlinePages with Content.
  *
  * @author SebastianRaffel ( 08.05.2005 )
  */
@@ -31,21 +31,12 @@ public class ViolationOutlineContentProvider implements IStructuredContentProvid
     private TableViewer tableViewer;
     private FileRecord resource;
 
-    /**
-     * Constructor
-     *
-     * @param page
-     */
     public ViolationOutlineContentProvider(RefreshableTablePage page) {
         tablePage = page;
         tableViewer = page.tableViewer();
     }
 
-    /*
-     * @see
-     * org.eclipse.jface.viewers.IStructuredContentProvider#getElements(java.
-     * lang.Object)
-     */
+    @Override
     public Object[] getElements(Object inputElement) {
 
         if (inputElement instanceof FileRecord) {
@@ -54,15 +45,12 @@ public class ViolationOutlineContentProvider implements IStructuredContentProvid
         return Util.EMPTY_ARRAY;
     }
 
-    /* @see org.eclipse.jface.viewers.IContentProvider#dispose() */
+    @Override
     public void dispose() {
+        // TODO
     }
 
-    /*
-     * @see
-     * org.eclipse.jface.viewers.IContentProvider#inputChanged(org.eclipse.jface
-     * .viewers.Viewer, java.lang.Object, java.lang.Object)
-     */
+    @Override
     public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
         if (resource != null) {
             resource.getResource().getWorkspace().removeResourceChangeListener(this);
@@ -76,13 +64,8 @@ public class ViolationOutlineContentProvider implements IStructuredContentProvid
         tableViewer = (TableViewer) viewer;
     }
 
-    /*
-     * @see
-     * org.eclipse.core.resources.IResourceChangeListener#resourceChanged(org.
-     * eclipse.core.resources.IResourceChangeEvent)
-     */
+    @Override
     public void resourceChanged(IResourceChangeEvent event) {
-
         if (resource == null || !resource.getResource().exists()) {
             return;
         }
@@ -94,9 +77,9 @@ public class ViolationOutlineContentProvider implements IStructuredContentProvid
         }
 
         // we search for removed, added or changed Markers
-        final List<IMarker> additions = new ArrayList<IMarker>();
-        final List<IMarker> removals = new ArrayList<IMarker>();
-        final List<IMarker> changes = new ArrayList<IMarker>();
+        final List<IMarker> additions = new ArrayList<>();
+        final List<IMarker> removals = new ArrayList<>();
+        final List<IMarker> changes = new ArrayList<>();
 
         for (IMarkerDelta delta : markerDeltas) {
             if (!delta.getResource().equals(resource.getResource())) {
@@ -121,6 +104,7 @@ public class ViolationOutlineContentProvider implements IStructuredContentProvid
 
         // updating the table MUST be in sync
         tableViewer.getControl().getDisplay().syncExec(new Runnable() {
+            @Override
             public void run() {
                 updateViewer(additions, removals, changes);
             }
@@ -128,7 +112,7 @@ public class ViolationOutlineContentProvider implements IStructuredContentProvid
     }
 
     /**
-     * Applies found updates on the table, adapted from Philippe Herlin
+     * Applies found updates on the table, adapted from Philippe Herlin.
      *
      * @param additions
      * @param removals
@@ -136,18 +120,18 @@ public class ViolationOutlineContentProvider implements IStructuredContentProvid
      */
     protected void updateViewer(List<IMarker> additions, List<IMarker> removals, List<IMarker> changes) {
         // perform removals
-        if (removals.size() > 0) {
+        if (!removals.isEmpty()) {
             tableViewer.cancelEditing();
             tableViewer.remove(removals.toArray());
         }
 
         // perform additions
-        if (additions.size() > 0) {
+        if (!additions.isEmpty()) {
             tableViewer.add(additions.toArray());
         }
 
         // perform changes
-        if (changes.size() > 0) {
+        if (!changes.isEmpty()) {
             tableViewer.update(changes.toArray(), null);
         }
 

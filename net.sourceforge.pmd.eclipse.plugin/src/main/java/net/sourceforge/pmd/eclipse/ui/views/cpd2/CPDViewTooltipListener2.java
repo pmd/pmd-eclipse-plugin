@@ -13,7 +13,6 @@ import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.viewers.TreeNode;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Cursor;
-import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
@@ -74,21 +73,17 @@ public class CPDViewTooltipListener2 implements Listener {
                 int length = document.getLineOffset(entry.getBeginLine() - 1 + match.getLineCount()) - offset - 1;
                 textEditor.selectAndReveal(offset, length);
             }
-        } catch (PartInitException pie) {
+        } catch (PartInitException | BadLocationException pie) {
             PMDPlugin.getDefault().logError(getString(StringKeys.ERROR_VIEW_EXCEPTION), pie);
-        } catch (BadLocationException ble) {
-            PMDPlugin.getDefault().logError(getString(StringKeys.ERROR_VIEW_EXCEPTION), ble);
         }
     }
 
     private static Match matchAt(TreeItem treeItem) {
-
         Object item = ((TreeNode) treeItem.getData()).getValue();
         return item instanceof Match ? (Match) item : null;
     }
 
-    private Mark itemAt(TreeItem treeItem, Point location, GC gc) {
-
+    private Mark itemAt(TreeItem treeItem, Point location) {
         if (treeItem == null) {
             return null;
         }
@@ -123,13 +118,8 @@ public class CPDViewTooltipListener2 implements Listener {
         return null;
     }
 
-    /*
-     * @see
-     * org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.
-     * Event)
-     */
+    @Override
     public void handleEvent(Event event) {
-
         Tree tree = view.getTreeViewer().getTree();
         Point location = new Point(event.x, event.y);
         Shell shell = tree.getShell();
@@ -140,7 +130,7 @@ public class CPDViewTooltipListener2 implements Listener {
         }
 
         TreeItem item = tree.getItem(location);
-        Mark entry = itemAt(item, location, event.gc);
+        Mark entry = itemAt(item, location);
         if (entry == null) {
             shell.setCursor(normalCursor);
             return;
@@ -161,7 +151,7 @@ public class CPDViewTooltipListener2 implements Listener {
     }
 
     /**
-     * Helper method to return an NLS string from its key
+     * Helper method to return an NLS string from its key.
      */
     private String getString(String key) {
         return PMDPlugin.getDefault().getStringTable().getString(key);

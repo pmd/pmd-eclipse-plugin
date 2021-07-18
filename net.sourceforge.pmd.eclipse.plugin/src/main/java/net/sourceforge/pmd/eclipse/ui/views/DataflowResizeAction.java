@@ -10,13 +10,12 @@ import net.sourceforge.pmd.eclipse.ui.views.actions.AbstractPMDAction;
 
 public class DataflowResizeAction extends AbstractPMDAction {
 
-    public DataflowResizeAction() {
-    }
-
+    @Override
     protected String imageId() {
         return PMDUiConstants.ICON_BUTTON_CALCULATE;
     }
 
+    @Override
     protected String tooltipMsgId() {
         return StringKeys.VIEW_TOOLTIP_CALCULATE_STATS;
     }
@@ -24,14 +23,16 @@ public class DataflowResizeAction extends AbstractPMDAction {
     /**
      * @return the Style, in which the Button is displayed
      */
+    @Override
     public int getStyle() {
         return AS_CHECK_BOX;
     }
 
     /**
-     * Performs the Action
+     * Performs the Action.
      */
+    @Override
     public void run() {
-
+        // TODO
     }
 }

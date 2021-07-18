@@ -42,9 +42,6 @@ public class CPDView extends ViewPart implements IPropertyListener {
     private CPDViewTooltipListener tooltipListener;
     private static final int MAX_MATCHES = 100;
 
-    /*
-     * @see org.eclipse.ui.ViewPart#init(org.eclipse.ui.IViewSite)
-     */
     @Override
     public void init(IViewSite site) throws PartInitException {
         super.init(site);
@@ -54,9 +51,6 @@ public class CPDView extends ViewPart implements IPropertyListener {
         tooltipListener = new CPDViewTooltipListener(this);
     }
 
-    /*
-     * @see org.eclipse.ui.part.WorkbenchPart#createPartControl(org.eclipse.swt.widgets.Composite)
-     */
     @Override
     public void createPartControl(Composite parent) {
         int treeStyle = SWT.H_SCROLL | SWT.V_SCROLL | SWT.MULTI | SWT.FULL_SELECTION;
@@ -113,15 +107,12 @@ public class CPDView extends ViewPart implements IPropertyListener {
     }
 
     /**
-     * Helper method to return an NLS string from its key
+     * Helper method to return an NLS string from its key.
      */
     private String getString(String key) {
         return PMDPlugin.getDefault().getStringTable().getString(key);
     }
 
-    /*
-     * @see org.eclipse.ui.part.WorkbenchPart#setFocus()
-     */
     @Override
     public void setFocus() {
         treeViewer.getTree().setFocus();
@@ -132,7 +123,7 @@ public class CPDView extends ViewPart implements IPropertyListener {
      * @param matches CPD Command that contain the matches from the CPD
      */
     public void setData(Iterator<Match> matches) {
-        List<TreeNode> elements = new ArrayList<TreeNode>();
+        List<TreeNode> elements = new ArrayList<>();
         if (matches != null) {
             // iterate the matches
             for (int count = 0; matches.hasNext() && count < MAX_MATCHES; count++) {
@@ -155,12 +146,13 @@ public class CPDView extends ViewPart implements IPropertyListener {
         }
 
         // set the children of the rootnode: the matches
-        treeViewer.setInput(elements.toArray(new TreeNode[elements.size()]));
+        treeViewer.setInput(elements.toArray(new TreeNode[0]));
     }
 
     /**
      * After the CPD command is executed, it will trigger an propertyChanged event.
      */
+    @Override
     public void propertyChanged(Object source, int propId) {
         if (propId == PMDRuntimeConstants.PROPERTY_CPD && source instanceof Iterator<?>) {
             Iterator<Match> iter = (Iterator<Match>) source;

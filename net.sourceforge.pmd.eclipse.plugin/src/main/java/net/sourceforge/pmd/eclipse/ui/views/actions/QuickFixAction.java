@@ -18,35 +18,33 @@ import net.sourceforge.pmd.eclipse.ui.PMDUiConstants;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
 
 /**
- * Enables the QuickFix Action for a Marker Adapted from Phillipe Herlin
+ * Enables the QuickFix Action for a Marker Adapted from Phillipe Herlin.
  * 
  * @author SebastianRaffel ( 21.05.2005 )
  */
 public class QuickFixAction extends AbstractViolationSelectionAction {
 
-    /**
-     * Constructor
-     * 
-     * @param viewer
-     */
     public QuickFixAction(TableViewer viewer) {
         super(viewer);
     }
 
+    @Override
     protected String textId() {
         return StringKeys.VIEW_ACTION_QUICKFIX;
     }
 
+    @Override
     protected String imageId() {
         return PMDUiConstants.ICON_BUTTON_QUICKFIX;
     }
 
+    @Override
     protected String tooltipMsgId() {
         return StringKeys.VIEW_TOOLTIP_QUICKFIX;
     }
 
     /**
-     * Checks, if the Markers support QuickFix
+     * Checks, if the Markers support QuickFix.
      * 
      * @return true, if the Marker(s) support QuickFix, false otherwise
      */
@@ -69,8 +67,9 @@ public class QuickFixAction extends AbstractViolationSelectionAction {
     }
 
     /**
-     * Executes the Action
+     * Executes the Action.
      */
+    @Override
     public void run() {
         IMarker[] selectedMarkers = getSelectedViolations();
         IWorkbench workbench = PlatformUI.getWorkbench();
@@ -81,7 +80,7 @@ public class QuickFixAction extends AbstractViolationSelectionAction {
                     workbench.getActiveWorkbenchWindow().getShell(), resolutions);
             if (dialog.open() == Window.OK) {
                 Object[] result = dialog.getResult();
-                if ((result != null) && (result.length > 0)) {
+                if (result != null && result.length > 0) {
                     IMarkerResolution selectedResolution = (IMarkerResolution) result[0];
                     selectedResolution.run(selectedMarkers[0]);
                 }

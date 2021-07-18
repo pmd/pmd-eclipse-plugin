@@ -62,7 +62,6 @@ public class PriorityDescriptor implements Cloneable {
     }
 
     public static PriorityDescriptor from(String text) {
-
         String[] values = text.split(Character.toString(DELIMITER));
         if (values.length != 7) {
             return null;
@@ -107,6 +106,7 @@ public class PriorityDescriptor implements Cloneable {
         return sb.toString();
     }
 
+    @Override
     public boolean equals(Object other) {
         if (other == null) {
             return false;
@@ -128,6 +128,7 @@ public class PriorityDescriptor implements Cloneable {
                 && StringUtils.equals(iconId, otherOne.iconId);
     }
 
+    @Override
     public int hashCode() {
         return priority.hashCode() ^ shape.hashCode() ^ String.valueOf(label).hashCode()
                 ^ String.valueOf(description).hashCode() ^ String.valueOf(iconId).hashCode();
@@ -156,14 +157,19 @@ public class PriorityDescriptor implements Cloneable {
         return PMDPlugin.getImageDescriptor(iconId);
     }
 
+    @Override
     public PriorityDescriptor clone() {
-        PriorityDescriptor copy = new PriorityDescriptor(priority);
-        copy.label = label;
-        copy.description = description;
-        copy.filterText = filterText;
-        copy.iconId = iconId;
-        copy.shape = shape.clone();
-        return copy;
+        try {
+            PriorityDescriptor copy = (PriorityDescriptor) super.clone();
+            copy.label = label;
+            copy.description = description;
+            copy.filterText = filterText;
+            copy.iconId = iconId;
+            copy.shape = shape.clone();
+            return copy;
+        } catch (CloneNotSupportedException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
@@ -184,6 +190,7 @@ public class PriorityDescriptor implements Cloneable {
         );
     }
 
+    @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("PriorityDescriptor: ");
@@ -218,8 +225,7 @@ public class PriorityDescriptor implements Cloneable {
             // if the image is changed. See #refreshImages()
             // also, we might need to scale the icon.
             ImageData imageData = srcImage.getImageData().scaledTo(size, size);
-            Image copy = new Image(srcImage.getDevice(), imageData);
-            return copy;
+            return new Image(srcImage.getDevice(), imageData);
         }
     }
 

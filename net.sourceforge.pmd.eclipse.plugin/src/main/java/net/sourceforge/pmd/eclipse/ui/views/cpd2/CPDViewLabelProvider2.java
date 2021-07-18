@@ -32,11 +32,7 @@ import net.sourceforge.pmd.cpd.TokenEntry;
 
 public class CPDViewLabelProvider2 extends LabelProvider implements ITableLabelProvider {
 
-    /*
-     * @see
-     * org.eclipse.jface.viewers.ITableLabelProvider#getColumnImage(java.lang.
-     * Object, int)
-     */
+    @Override
     public Image getColumnImage(Object element, int columnIndex) {
         Image image = null;
 
@@ -45,26 +41,22 @@ public class CPDViewLabelProvider2 extends LabelProvider implements ITableLabelP
 
         // the second Column gets an Image depending on,
         // if the Element is a Match or TokenEntry
-        switch (columnIndex) {
-        case 0:
+        if (columnIndex == 0) {
             if (value instanceof Match) {
                 // image =
                 // PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJS_ERROR_TSK);
             } else if (value instanceof TokenEntry) {
                 image = PlatformUI.getWorkbench().getSharedImages().getImage(SharedImages.IMG_OPEN_MARKER);
             }
-            break;
-
-        default:
-            // let the image null.
-
         }
+
+        // otherwise
+        // let the image null.
 
         return image;
     }
 
     private int lineCountFor(TreeNode node) {
-
         Object source = node.getValue();
 
         if (source instanceof Match) {
@@ -75,7 +67,6 @@ public class CPDViewLabelProvider2 extends LabelProvider implements ITableLabelP
     }
 
     public static String pathFor(Mark entry) {
-
         final IPath path = Path.fromOSString(entry.getFilename());
         final IResource resource = ResourcesPlugin.getWorkspace().getRoot().getContainerForLocation(path);
         if (resource != null) {
@@ -110,9 +101,8 @@ public class CPDViewLabelProvider2 extends LabelProvider implements ITableLabelP
     }
 
     public static Map<String, Mark> entriesByClassnameFor(Match match) {
-
         Mark[] entries = entriesFor(match);
-        Map<String, Mark> entriesByName = new HashMap<String, Mark>(entries.length);
+        Map<String, Mark> entriesByName = new HashMap<>(entries.length);
 
         for (Mark entry : entries) {
             entriesByName.put(pathFor(entry), entry);
@@ -121,11 +111,7 @@ public class CPDViewLabelProvider2 extends LabelProvider implements ITableLabelP
         return entriesByName;
     }
 
-    /*
-     * @see
-     * org.eclipse.jface.viewers.ITableLabelProvider#getColumnText(java.lang.
-     * Object, int)
-     */
+    @Override
     public String getColumnText(Object element, int columnIndex) {
         final TreeNode node = (TreeNode) element;
         final Object value = node.getValue();

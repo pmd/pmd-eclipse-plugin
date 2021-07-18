@@ -31,6 +31,7 @@ public class ASTContentProvider implements ITreeContentProvider {
     // private Set<Class<?>> hiddenNodeTypes;
 
     private static final Comparator<Node> BY_LINE_NUMBER = new Comparator<Node>() {
+        @Override
         public int compare(Node a, Node b) {
             return a.getBeginLine() - b.getBeginLine();
         }
@@ -43,7 +44,7 @@ public class ASTContentProvider implements ITreeContentProvider {
         includeComments = includeCommentsFlag;
     }
 
-    public ASTContentProvider(Set<Class<?>> theHiddenNodeTypes) {
+    public ASTContentProvider(Set<Class<?>> theHiddenNodeTypes) { // NOPMD: unused formal parameter TODO
         // hiddenNodeTypes = theHiddenNodeTypes;
     }
 
@@ -55,16 +56,18 @@ public class ASTContentProvider implements ITreeContentProvider {
         includeComments = flag;
     }
 
+    @Override
     public void dispose() {
+        // TODO
     }
 
+    @Override
     public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-
+        // TODO
     }
 
     private List<Node> withoutHiddenOnes(Object parent) {
-
-        List<Node> kids = new ArrayList<Node>();
+        List<Node> kids = new ArrayList<>();
 
         if (includeComments && parent instanceof ASTCompilationUnit) {
             // if (!hiddenNodeTypes.contains(Comment.class)) {
@@ -93,31 +96,31 @@ public class ASTContentProvider implements ITreeContentProvider {
         return kids;
     }
 
+    @Override
     public Object[] getElements(Object inputElement) {
-
         AbstractNode parent = (AbstractNode) inputElement;
         return withoutHiddenOnes(parent).toArray();
     }
 
+    @Override
     public Object[] getChildren(Object parentElement) {
-
         AbstractNode parent = (AbstractNode) parentElement;
         return withoutHiddenOnes(parent).toArray();
     }
 
+    @Override
     public Object getParent(Object element) {
-
         AbstractNode parent = (AbstractNode) element;
         return parent.getParent();
     }
 
+    @Override
     public boolean hasChildren(Object element) {
-
         AbstractNode parent = (AbstractNode) element;
         return parent.getNumChildren() > 0;
     }
 
     public static void setupSorter(TableViewer viewer) {
-
+        // TODO
     }
 }

@@ -114,7 +114,6 @@ public abstract class AbstractStructureInspectorPage extends Page
     }
 
     protected void highlightLine(int lineNumber) {
-
         if (textEditor == null) {
             return;
         }
@@ -131,11 +130,13 @@ public abstract class AbstractStructureInspectorPage extends Page
         highlight(offset, length);
     }
 
+    @Override
     public void propertyChange(PropertyChangeEvent event) {
         // TODO adapt the editors
         System.out.println("property changed: " + event.getProperty());
     }
 
+    @Override
     public void dispose() {
         super.dispose();
         unregisterListeners();
@@ -157,6 +158,7 @@ public abstract class AbstractStructureInspectorPage extends Page
         colorRegistry().removeListener(this);
     }
 
+    @Override
     public void setFocus() {
         methodSelector.setFocus();
     }
@@ -182,7 +184,6 @@ public abstract class AbstractStructureInspectorPage extends Page
     }
 
     protected RuleViolation selectedViolationFrom(SelectionChangedEvent event) {
-
         if (event.getSelection() instanceof IStructuredSelection) {
             final Object element = ((IStructuredSelection) event.getSelection()).getFirstElement();
             return element instanceof RuleViolation ? (RuleViolation) element : null;
@@ -191,13 +192,8 @@ public abstract class AbstractStructureInspectorPage extends Page
         return null; // should never happen
     }
 
-    /*
-     * @see
-     * org.eclipse.jface.viewers.ISelectionChangedListener#selectionChanged(org.
-     * eclipse.jface.viewers.SelectionChangedEvent)
-     */
+    @Override
     public void selectionChanged(SelectionChangedEvent event) {
-
         RuleViolation violation = selectedViolationFrom(event);
         if (violation == null) {
             return;
@@ -288,18 +284,14 @@ public abstract class AbstractStructureInspectorPage extends Page
         methodSelector.setText(getString(StringKeys.VIEW_DATAFLOW_CHOOSE_METHOD));
         methodSelector.setLayoutData(new GridData(300, SWT.DEFAULT));
         methodSelector.addSelectionListener(new SelectionAdapter() {
-
-            /*
-             * @see
-             * org.eclipse.swt.events.SelectionListener#widgetDefaultSelected(
-             * org.eclipse.swt.events.SelectionEvent)
-             */
+            @Override
             public void widgetDefaultSelected(SelectionEvent e) {
                 if (methodSelector.equals(e.widget)) {
                     showMethod(methodSelector.getSelectionIndex());
                 }
             }
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 methodPicked();
             }
@@ -318,8 +310,7 @@ public abstract class AbstractStructureInspectorPage extends Page
      * @return an List of ASTMethodDeclarations
      */
     private List<ASTMethodDeclaration> getPMDMethods() {
-
-        List<ASTMethodDeclaration> methodList = new ArrayList<ASTMethodDeclaration>();
+        List<ASTMethodDeclaration> methodList = new ArrayList<>();
 
         // we need PMD to run over the given Resource
         // with the DFAGraphRule to get the Methods;

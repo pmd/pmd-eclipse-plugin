@@ -32,19 +32,19 @@ import net.sourceforge.pmd.properties.PropertySource;
  * held in the event handlers and passed onto any new handlers created to manage values newly created
  * by the user - hence the monster method calls with umpteen arguments.
  *
- * Concrete subclasses are responsible for instantiating the type-appropriate edit widgets, retrieving
+ * <p>Concrete subclasses are responsible for instantiating the type-appropriate edit widgets, retrieving
  * their values, and updating the rule property. Provided you have widget capable of displaying/editing
  * your value type you can use this class as a base to bring up the appropriate widgets for the
  * individual values.
  *
- * The editor is held in a composite divided into three columns. In the collapsed mode, a text field
+ * <p>The editor is held in a composite divided into three columns. In the collapsed mode, a text field
  * displaying the value collection occupies the first two cells with an expand/collapse button in the
  * last cell. When the user clicks the button the row beneath is given a label, a type-specific edit
  * widget, and a control button for every value in the collection. The last row is empty and serves as
  * a place the user can enter additional values. When the user enters a value and clicks the control
  * button that row becomes read-only and a new empty row is added to the bottom.
  *
- * Note inclusion of the size and value changed callbacks used to let the parent composite resize itself
+ * <p>Note inclusion of the size and value changed callbacks used to let the parent composite resize itself
  * and update the values in the rule listings respectively.
  *
  * @author Brian Remedios
@@ -57,6 +57,7 @@ public abstract class AbstractMultiValueEditorFactory<T> extends AbstractEditorF
 
 
     protected AbstractMultiValueEditorFactory() {
+        // protected default constructor for subclassing
     }
 
 
@@ -75,6 +76,7 @@ public abstract class AbstractMultiValueEditorFactory<T> extends AbstractEditorF
     protected abstract Control addWidget(Composite parent, T value, PropertyDescriptor<List<T>> desc, PropertySource source);
 
 
+    @Override
     public Control newEditorOn(final Composite parent, final PropertyDescriptor<List<T>> desc,
                                final PropertySource source, final ValueChangeListener changeListener, final SizeChangeListener sizeListener) {
 
@@ -92,7 +94,7 @@ public abstract class AbstractMultiValueEditorFactory<T> extends AbstractEditorF
             boolean itemsVisible = false;
             List<Control> items = new ArrayList<Control>();
 
-
+            @Override
             public void handleEvent(Event event) {
                 if (itemsVisible) {
                     hideCollection(items);
@@ -137,7 +139,7 @@ public abstract class AbstractMultiValueEditorFactory<T> extends AbstractEditorF
         renumberLabelsIn(controlList);
 
         List<T> values = valueFor(source, desc);
-        List<T> newValues = new ArrayList<T>(values.size() - 1);
+        List<T> newValues = new ArrayList<>(values.size() - 1);
         for (T value : values) {
             if (value.equals(deleteValue)) {
                 continue;
@@ -153,7 +155,7 @@ public abstract class AbstractMultiValueEditorFactory<T> extends AbstractEditorF
                                          final PropertySource source, final Text textWidget, final ValueChangeListener changeListener,
                                          final SizeChangeListener sizeListener) {
 
-        final List<Control> newControls = new ArrayList<Control>();
+        final List<Control> newControls = new ArrayList<>();
 
         int i;
         List<T> values = valueFor(source, desc);
@@ -167,6 +169,7 @@ public abstract class AbstractMultiValueEditorFactory<T> extends AbstractEditorF
             butt.setText("-");  // TODO use icon for consistent width
             final T value = values.get(i);
             butt.addListener(SWT.Selection, new Listener() {  // remove value handler
+                @Override
                 public void handleEvent(Event event) {
                     delete(number, widget, butt, newControls, value, desc, source);
                     fillWidget(textWidget, desc, source); // j
@@ -218,6 +221,7 @@ public abstract class AbstractMultiValueEditorFactory<T> extends AbstractEditorF
         butt.setText("+");  // TODO use icon for consistent width
         newControls.add(butt);
         Listener addListener = new Listener() {
+            @Override
             public void handleEvent(Event event) {      // add new value handler
                 // add the new value to the property set
                 // set the value in the widget to the cleaned up one, disable it
@@ -255,6 +259,7 @@ public abstract class AbstractMultiValueEditorFactory<T> extends AbstractEditorF
         button.setText("-");
         Util.removeListeners(button, SWT.Selection);
         button.addListener(SWT.Selection, new Listener() {
+            @Override
             public void handleEvent(Event event) {
                 delete(number, widget, button, newControls, toDeleteValue, desc, source);
                 fillWidget(parentWidget, desc, source);
@@ -282,7 +287,7 @@ public abstract class AbstractMultiValueEditorFactory<T> extends AbstractEditorF
         }
 
         String[] valueSet = values.split(DELIMITER);
-        List<String> valueList = new ArrayList<String>(valueSet.length);
+        List<String> valueList = new ArrayList<>(valueSet.length);
 
         for (String value : valueSet) {
             String str = value.trim();

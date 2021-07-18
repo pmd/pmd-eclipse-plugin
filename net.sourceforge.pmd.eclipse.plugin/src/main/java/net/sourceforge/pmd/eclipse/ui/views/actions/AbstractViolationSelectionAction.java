@@ -17,7 +17,7 @@ import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.eclipse.runtime.builder.MarkerUtil;
 
 /**
- * Base Class for Actions that need to know, which Markers are selected
+ * Base Class for Actions that need to know, which Markers are selected.
  *
  * @author SebastianRaffel ( 21.05.2005 )
  * @author Brian Remedios ( 4.03.2010 )
@@ -26,11 +26,6 @@ public abstract class AbstractViolationSelectionAction extends AbstractPMDAction
 
     private TableViewer tableViewer;
 
-    /**
-     * Constructor
-     *
-     * @param viewer
-     */
     protected AbstractViolationSelectionAction(TableViewer viewer) {
         tableViewer = viewer;
 
@@ -43,6 +38,7 @@ public abstract class AbstractViolationSelectionAction extends AbstractPMDAction
         return hasSelections();
     }
 
+    @Override
     protected void setupWidget() {
         super.setupWidget();
 
@@ -67,14 +63,13 @@ public abstract class AbstractViolationSelectionAction extends AbstractPMDAction
     }
 
     /**
-     * Return the selected Violations (Markers)
+     * Return the selected Violations (Markers).
      *
      * @return the Marker(s) currently selected
      */
     public IMarker[] getSelectedViolations() {
-
         ISelection selection = tableViewer.getSelection();
-        if (selection != null && selection instanceof IStructuredSelection) {
+        if (selection instanceof IStructuredSelection) {
 
             IStructuredSelection structuredSelection = (IStructuredSelection) selection;
 

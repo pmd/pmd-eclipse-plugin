@@ -28,6 +28,7 @@ public abstract class AbstractNumericEditorFactory<T> extends AbstractEditorFact
 
 
     protected AbstractNumericEditorFactory() {
+        // protected default constructor for subclassing
     }
 
 
@@ -67,18 +68,21 @@ public abstract class AbstractNumericEditorFactory<T> extends AbstractEditorFact
 
     private void linkup(final Spinner minWidget, final Spinner valueWidget, final Spinner maxWidget) {
         minWidget.addListener(SWT.Selection, new Listener() {
+            @Override
             public void handleEvent(Event event) {
                 adjustForMin(minWidget, valueWidget, maxWidget);
             }
         });
 
         valueWidget.addListener(SWT.Selection, new Listener() {
+            @Override
             public void handleEvent(Event event) {
                 adjustForValue(minWidget, valueWidget, maxWidget);
             }
         });
 
         maxWidget.addListener(SWT.Selection, new Listener() {
+            @Override
             public void handleEvent(Event event) {
                 adjustForMax(minWidget, valueWidget, maxWidget);
             }

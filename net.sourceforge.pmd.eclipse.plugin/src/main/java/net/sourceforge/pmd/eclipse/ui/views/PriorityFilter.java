@@ -120,11 +120,6 @@ public class PriorityFilter extends ViewerFilter {
         editorsPreferences.setValue(getMarkerKeyOverviewRuler(priority), false);
     }
 
-    /*
-     * @see
-     * org.eclipse.jface.viewers.ViewerFilter#select(org.eclipse.jface.viewers.
-     * Viewer, java.lang.Object, java.lang.Object)
-     */
     @Override
     public boolean select(Viewer viewer, Object parentElement, Object element) {
         boolean select = false;
@@ -180,7 +175,7 @@ public class PriorityFilter extends ViewerFilter {
     }
 
     /**
-     * Sets the List of Priorities to filter
+     * Sets the List of Priorities to filter.
      *
      * @param newList,
      *            an ArrayLust of Integers
@@ -195,7 +190,7 @@ public class PriorityFilter extends ViewerFilter {
     }
 
     /**
-     * Gets the FilterList with the Priorities
+     * Gets the FilterList with the Priorities.
      *
      * @return an List of Integers
      * @deprecated will be removed. Use {@link #isPriorityEnabled(RulePriority)} instead.
@@ -226,7 +221,7 @@ public class PriorityFilter extends ViewerFilter {
     }
 
     /**
-     * Adds a Priority to The List
+     * Adds a Priority to The List.
      *
      * @param priority
      * @deprecated use {@link #enablePriority(RulePriority)}
@@ -240,7 +235,7 @@ public class PriorityFilter extends ViewerFilter {
     }
 
     /**
-     * Removes a Priority From the List
+     * Removes a Priority From the List.
      *
      * @param priority
      * @deprecated use {@link #disablePriority(RulePriority)}
@@ -267,7 +262,7 @@ public class PriorityFilter extends ViewerFilter {
     public void setPriorityFilterListFromString(String newList, String splitter) {
         if (newList != null) {
             final String[] newArray = newList.split(splitter);
-            final List<Integer> priorities = new ArrayList<Integer>(newArray.length);
+            final List<Integer> priorities = new ArrayList<>(newArray.length);
 
             for (String element : newArray) {
                 priorities.add(Integer.valueOf(element));

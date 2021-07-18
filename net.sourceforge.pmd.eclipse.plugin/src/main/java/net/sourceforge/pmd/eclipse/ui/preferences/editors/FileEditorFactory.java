@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.eclipse.ui.preferences.editors;
 
 import java.io.File;
+import java.util.Objects;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -31,9 +32,12 @@ public class FileEditorFactory extends AbstractEditorFactory<File> {
     public static final FileEditorFactory INSTANCE = new FileEditorFactory();
 
 
-    protected FileEditorFactory() { }
+    protected FileEditorFactory() {
+        // protected default constructor for subclassing
+    }
 
 
+    @Override
     public PropertyDescriptor<File> createDescriptor(String name, String description, Control[] otherData) {
         return new FileProperty(
             name,
@@ -44,6 +48,7 @@ public class FileEditorFactory extends AbstractEditorFactory<File> {
     }
 
 
+    @Override
     public Control newEditorOn(Composite parent, final PropertyDescriptor<File> desc, final PropertySource source,
                                final ValueChangeListener listener, SizeChangeListener sizeListener) {
 
@@ -53,6 +58,7 @@ public class FileEditorFactory extends AbstractEditorFactory<File> {
         fillWidget(picker, desc, source);
 
         picker.addFocusOutListener(new Listener() {
+            @Override
             public void handleEvent(Event event) {
                 File newValue = picker.getFile();
                 File existingValue = valueFor(source, desc);
@@ -78,7 +84,7 @@ public class FileEditorFactory extends AbstractEditorFactory<File> {
 
 
     public static boolean areSemanticEquals(File fileA, File fileB) {
-        return fileA == fileB || fileA != null && fileB != null && fileA.equals(fileB);
+        return Objects.equals(fileA, fileB);
     }
 
 

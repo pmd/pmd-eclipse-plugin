@@ -24,6 +24,9 @@ This is a minor release.
 *   `net.sourceforge.pmd.eclipse.runtime.cmd.BaseVisitor.isUseTaskMarker()`
 *   `net.sourceforge.pmd.eclipse.runtime.cmd.BaseVisitor.setUseTaskMarker(boolean)`
 *   `net.sourceforge.pmd.eclipse.ui.preferences.br.FilterManager`
+*   `net.sourceforge.pmd.eclipse.util.IOUtil`
+*   All classes that couldn't be instantiated because they had a private constructor only
+    are now also `final`.
 
 ### External Contributions
 

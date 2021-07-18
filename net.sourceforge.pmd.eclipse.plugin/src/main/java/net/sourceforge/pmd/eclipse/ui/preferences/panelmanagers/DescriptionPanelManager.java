@@ -8,6 +8,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.swt.SWT;
@@ -53,17 +54,19 @@ public class DescriptionPanelManager extends AbstractRulePanelManager {
         super(ID, theTitle, theMode, theListener);
     }
 
+    @Override
     protected boolean canManageMultipleRules() {
         return false;
     }
 
+    @Override
     protected void clearControls() {
         descriptionBox.setText("");
         externalURLField.setText("");
     }
 
+    @Override
     public void showControls(boolean flag) {
-
         descriptionBox.setVisible(flag);
         externalURLField.setVisible(flag);
         browseButton.setVisible(flag);
@@ -72,8 +75,8 @@ public class DescriptionPanelManager extends AbstractRulePanelManager {
         messageField.setVisible(flag);
     }
 
+    @Override
     protected void updateOverridenFields() {
-
         Rule rule = soleRule();
 
         if (rule instanceof RuleReference) {
@@ -85,8 +88,8 @@ public class DescriptionPanelManager extends AbstractRulePanelManager {
         }
     }
 
+    @Override
     public Control setupOn(Composite parent) {
-
         initializeOn(parent);
 
         GridData gridData;
@@ -102,8 +105,8 @@ public class DescriptionPanelManager extends AbstractRulePanelManager {
         descriptionBox.setLayoutData(gridData);
 
         descriptionBox.addModifyListener(new ModifyListener() {
+            @Override
             public void modifyText(ModifyEvent event) {
-
                 Rule soleRule = soleRule();
                 if (soleRule == null) {
                     return;
@@ -129,7 +132,6 @@ public class DescriptionPanelManager extends AbstractRulePanelManager {
     }
 
     private void validateRuleParams() {
-
         validate();
 
         boolean urlOK = StringUtils.isBlank(externalURLField.getText()) || hasValidURL();
@@ -137,7 +139,6 @@ public class DescriptionPanelManager extends AbstractRulePanelManager {
     }
 
     private void buildExternalUrlPanel(Composite parent, String urlLabel) {
-
         GridData gridData = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
 
         extURLLabel = new Label(parent, 0);
@@ -158,11 +159,13 @@ public class DescriptionPanelManager extends AbstractRulePanelManager {
         browseButton.setLayoutData(gridData);
 
         externalURLField.addListener(SWT.FocusOut, new Listener() {
+            @Override
             public void handleEvent(Event e) {
                 handleExternalURLChange();
             }
         });
         externalURLField.addModifyListener(new ModifyListener() {
+            @Override
             public void modifyText(ModifyEvent e) {
                 validateRuleParams();
             }
@@ -170,7 +173,6 @@ public class DescriptionPanelManager extends AbstractRulePanelManager {
     }
 
     private void buildMessagePanel(Composite parent, String messageLbl) {
-
         GridData gridData = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
 
         messageLabel = new Label(parent, 0);
@@ -186,6 +188,7 @@ public class DescriptionPanelManager extends AbstractRulePanelManager {
         messageField.setLayoutData(gridData);
 
         messageField.addModifyListener(new ModifyListener() {
+            @Override
             public void modifyText(ModifyEvent e) {
                 handleMessageChange();
                 validateRuleParams();
@@ -194,7 +197,6 @@ public class DescriptionPanelManager extends AbstractRulePanelManager {
     }
 
     private void handleExternalURLChange() {
-
         String newURL = asCleanString(externalURLField.getText());
         Rule rule = soleRule();
 
@@ -208,7 +210,6 @@ public class DescriptionPanelManager extends AbstractRulePanelManager {
     }
 
     private void handleMessageChange() {
-
         String newMessage = asCleanString(messageField.getText());
         Rule rule = soleRule();
 
@@ -220,7 +221,6 @@ public class DescriptionPanelManager extends AbstractRulePanelManager {
     }
 
     private Button buildExternalInfoUrlButton(Composite parent) {
-
         final Button button = new Button(parent, SWT.PUSH);
         button.setText(SWTUtil.stringFor(StringKeys.PREF_RULEEDIT_BUTTON_OPEN_EXTERNAL_INFO_URL));
 
@@ -232,9 +232,7 @@ public class DescriptionPanelManager extends AbstractRulePanelManager {
                     try {
                         IWebBrowser browser = PlatformUI.getWorkbench().getBrowserSupport().getExternalBrowser();
                         browser.openURL(new URL(url));
-                    } catch (PartInitException e) {
-                        e.printStackTrace();
-                    } catch (MalformedURLException e) {
+                    } catch (PartInitException | MalformedURLException e) {
                         e.printStackTrace();
                     }
                 }
@@ -244,8 +242,8 @@ public class DescriptionPanelManager extends AbstractRulePanelManager {
         return button;
     }
 
+    @Override
     protected void adapt() {
-
         Rule soleRule = soleRule();
 
         if (soleRule == null) {
@@ -263,12 +261,11 @@ public class DescriptionPanelManager extends AbstractRulePanelManager {
     }
 
     public static boolean isValidURL(String url) {
-
         if (StringUtils.isBlank(url)) {
             return false;
         }
 
-        String urlUC = url.toUpperCase();
+        String urlUC = url.toUpperCase(Locale.ROOT);
         if (!urlUC.startsWith("HTTP")) {
             return false;
         }
@@ -296,9 +293,9 @@ public class DescriptionPanelManager extends AbstractRulePanelManager {
         externalURLField.setForeground(hasValidURL ? textColour : errorColour);
     }
 
+    @Override
     protected List<String> fieldErrors() {
-
-        List<String> errors = new ArrayList<String>(3);
+        List<String> errors = new ArrayList<>(3);
 
         if (StringUtils.isBlank(descriptionBox.getText().trim())) {
             errors.add("Missing description");

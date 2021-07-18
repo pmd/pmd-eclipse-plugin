@@ -10,7 +10,7 @@ import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
 import net.sourceforge.pmd.eclipse.ui.views.ViolationOverview;
 
 /**
- * Allows to Switch between Package and Files or Files only view in the Violation Overview
+ * Allows to Switch between Package and Files or Files only view in the Violation Overview.
  * 
  * @author SebastianRaffel ( 22.05.2005 )
  */
@@ -18,19 +18,16 @@ public class PackageSwitchAction extends AbstractPMDAction {
 
     private ViolationOverview violationView;
 
-    /**
-     * Constructor
-     * 
-     * @param view
-     */
     public PackageSwitchAction(ViolationOverview view) {
         violationView = view;
     }
 
+    @Override
     protected String imageId() {
         return PMDUiConstants.ICON_BUTTON_FILES;
     }
 
+    @Override
     protected String tooltipMsgId() {
         return StringKeys.VIEW_TOOLTIP_PACKAGES_FILES;
     }
@@ -38,13 +35,15 @@ public class PackageSwitchAction extends AbstractPMDAction {
     /**
      * @return the Style, in which the Button is displayed
      */
+    @Override
     public int getStyle() {
         return AS_CHECK_BOX;
     }
 
     /**
-     * Executes the Action
+     * Executes the Action.
      */
+    @Override
     public void run() {
         // we simply use Functions declared in the Violations Overview
         // the View itself does the Rest, when refreshed
@@ -56,11 +55,12 @@ public class PackageSwitchAction extends AbstractPMDAction {
     }
 
     /**
-     * Sets an Action-Button as checked or unchecked
+     * Sets an Action-Button as checked or unchecked.
      * 
      * @param checked,
      *            true, if the Action should be checked, false otherwise
      */
+    @Override
     public void setChecked(boolean checked) {
         // we use this Function to change the Images of the Action's Button
 

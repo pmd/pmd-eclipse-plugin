@@ -5,11 +5,12 @@
 package net.sourceforge.pmd.eclipse.ui.views;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -26,7 +27,7 @@ import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
 
 /**
  * Provides functions to save the state of a View during a session, even when the view is closed and re-opened 
- * saves the state in an XML-File in the Plugins-Path (Standard: .metadata in the workspace)
+ * saves the state in an XML-File in the Plugins-Path (Standard: .metadata in the workspace).
  *
  * @author SebastianRaffel ( 24.05.2005 ), Philippe Herlin, Sven Jacob
  *
@@ -44,7 +45,7 @@ public class ViewMemento {
     protected static final String ATTR_VALUE = "value";
 
     /**
-     * Constructor Searches for the XML-File, where the Memento should be saved and creates it if there is none
+     * Constructor Searches for the XML-File, where the Memento should be saved and creates it if there is none.
      *
      * @param type, a String identifying the View, used for the File's Name
      */
@@ -59,23 +60,15 @@ public class ViewMemento {
         }
 
         // then we create a ReadRoot for the Memento
-        FileReader reader = null;
-        try {
-            reader = new FileReader(file);
+        try (BufferedReader reader = Files.newBufferedReader(this.file.toPath(), StandardCharsets.UTF_8)) {
             this.memento = XMLMemento.createReadRoot(reader);
         } catch (WorkbenchException wbe) {
             PMDPlugin.getDefault().logError(StringKeys.ERROR_VIEW_EXCEPTION + this.toString(), wbe);
         } catch (FileNotFoundException fnfe) {
             PMDPlugin.getDefault().logError(
                     StringKeys.ERROR_FILE_NOT_FOUND + path.toString() + "/" + type + " in " + this.toString(), fnfe);
-        } finally {
-            if (reader != null) {
-                try {
-                    reader.close();
-                } catch (IOException e) { // NOPMD by Herlin on 10/10/06 23:55
-                    // Ignored
-                }
-            }
+        } catch (IOException e) {
+            PMDPlugin.getDefault().logError(StringKeys.ERROR_IO_EXCEPTION + this.toString(), e);
         }
 
         // Validate that the memento has been built
@@ -85,40 +78,27 @@ public class ViewMemento {
     }
 
     /**
-     * Creates a new XML-Structure in a given File
+     * Creates a new XML-Structure in a given File.
      *
      * @param file
      */
     protected final void createNewFile(File file) {
-        FileWriter writer = null;
-        try {
-            writer = new FileWriter(file);
+        try (BufferedWriter writer = Files.newBufferedWriter(file.toPath(), StandardCharsets.UTF_8)) {
             writer.write(XML_PREFIX + "\n" + "<" + MEMENTO_PREFIX + "/>");
         } catch (IOException ioe) {
             PMDPlugin.getDefault().logError(StringKeys.ERROR_IO_EXCEPTION + this.toString(), ioe);
-        } finally {
-            if (writer != null) {
-                try {
-                    writer.close();
-                } catch (IOException e) { // NOPMD by Herlin on 10/10/06 23:55
-                    // ignored
-                }
-            }
         }
     }
 
     /**
-     * Checks for an XML-Structure in a File
+     * Checks for an XML-Structure in a File.
      *
      * @param file
      * @return true, if the File is a XML-File we can use, false otherwise
      */
     protected final boolean checkForXMLFile(File file) {
         boolean isXmlFile = false;
-        BufferedReader contentReader = null;
-        try {
-            contentReader = new BufferedReader(new FileReader(file));
-
+        try (BufferedReader contentReader = Files.newBufferedReader(file.toPath(), StandardCharsets.UTF_8)) {
             while (contentReader.ready()) {
                 String line = contentReader.readLine();
                 if (line != null && line.length() != 0) {
@@ -132,46 +112,28 @@ public class ViewMemento {
                     fnfe);
         } catch (IOException ioe) {
             PMDPlugin.getDefault().logError(StringKeys.ERROR_IO_EXCEPTION + this.toString(), ioe);
-        } finally {
-            if (contentReader != null) {
-                try {
-                    contentReader.close();
-                } catch (IOException e) { // NOPMD by Herlin on 10/10/06 23:57
-                    // Ignored
-                }
-            }
         }
 
         return isXmlFile;
     }
 
     /**
-     * Saves the Memento into the File
+     * Saves the Memento into the File.
      *
      * @param type
      */
     public void save() {
         if (this.memento != null) {
-            FileWriter writer = null;
-            try {
-                writer = new FileWriter(this.file);
+            try (BufferedWriter writer = Files.newBufferedWriter(this.file.toPath(), StandardCharsets.UTF_8)) {
                 this.memento.save(writer);
             } catch (IOException ioe) {
                 PMDPlugin.getDefault().logError(StringKeys.ERROR_IO_EXCEPTION + this.toString(), ioe);
-            } finally {
-                if (writer != null) {
-                    try {
-                        writer.close();
-                    } catch (IOException e) { // NOPMD by Herlin on 11/10/06 00:00
-                        // Ignored
-                    }
-                }
             }
         }
     }
 
     /**
-     * Returns a Memento with the given Attribute
+     * Returns a Memento with the given Attribute.
      *
      * @param name
      * @return a Memento
@@ -196,7 +158,7 @@ public class ViewMemento {
     }
 
     /**
-     * Puts a String into a Memento
+     * Puts a String into a Memento.
      *
      * @param key
      * @param value
@@ -207,7 +169,7 @@ public class ViewMemento {
     }
 
     /**
-     * Puts an Integer into a Memento
+     * Puts an Integer into a Memento.
      *
      * @param key
      * @param value
@@ -218,7 +180,7 @@ public class ViewMemento {
     }
 
     /**
-     * Puts a Float into a Memento
+     * Puts a Float into a Memento.
      *
      * @param key
      * @param value
@@ -229,13 +191,12 @@ public class ViewMemento {
     }
 
     /**
-     * puts an List into a Memento, the List is changed into a delimited String
+     * puts an List into a Memento, the List is changed into a delimited String.
      *
      * @param key
      * @param valueList
      */
     public <T extends Object> void putList(String key, List<T> valueList) {
-        
         if (valueList.isEmpty()) {
             putString(key, ""); // even necessary?
             return;
@@ -250,7 +211,7 @@ public class ViewMemento {
     }
 
     /**
-     * Gets a String from a Memento
+     * Gets a String from a Memento.
      *
      * @param key
      * @return a String with the Value
@@ -261,7 +222,7 @@ public class ViewMemento {
     }
 
     /**
-     * Gets an Integer From a Memento
+     * Gets an Integer From a Memento.
      *
      * @param key
      * @return an Integer with the Value
@@ -272,7 +233,7 @@ public class ViewMemento {
     }
 
     /**
-     * Returns a Float from a Memento
+     * Returns a Float from a Memento.
      *
      * @param key
      * @return a Float with the Value
@@ -283,13 +244,13 @@ public class ViewMemento {
     }
 
     /**
-     * Returns an List of Integers from a Memento
+     * Returns an List of Integers from a Memento.
      *
      * @param key
      * @return List of Integer-values
      */
     public List<Integer> getIntegerList(String key) {
-        final List<Integer> valuelist = new ArrayList<Integer>();
+        final List<Integer> valuelist = new ArrayList<>();
         final String valueString = getString(key);
         if (valueString != null) {
             final String[] objects = valueString.split(LIST_SEPARATOR);
@@ -305,7 +266,7 @@ public class ViewMemento {
     }
 
     /**
-     * Returns an List of Strings from a Memento
+     * Returns an List of Strings from a Memento.
      *
      * @param key
      * @return a List of String values
@@ -314,7 +275,7 @@ public class ViewMemento {
         List<String> valuelist = Collections.emptyList();
         final String valueString = getString(key);
         if (valueString != null) {
-            valuelist = new ArrayList<String>(Arrays.asList(valueString.split(LIST_SEPARATOR)));
+            valuelist = new ArrayList<>(Arrays.asList(valueString.split(LIST_SEPARATOR)));
         }
 
         return valuelist;

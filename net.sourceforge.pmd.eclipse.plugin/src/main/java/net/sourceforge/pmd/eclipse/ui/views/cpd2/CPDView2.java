@@ -70,8 +70,7 @@ public class CPDView2 extends ViewPart implements IPropertyListener {
     public static final int SOURCE_COLUMN_IDX = 1;
 
     private static List<Match> asList(Iterator<Match> matchIter) {
-
-        List<Match> matches = new ArrayList<Match>(MAX_MATCHES);
+        List<Match> matches = new ArrayList<>(MAX_MATCHES);
 
         for (int count = 0; matchIter.hasNext() && count < MAX_MATCHES; count++) {
             matches.add(matchIter.next());
@@ -95,9 +94,9 @@ public class CPDView2 extends ViewPart implements IPropertyListener {
         final String text = match.getSourceCodeSlice().replaceAll("\t", TAB_EQUIVALENT);
         final StringTokenizer lines = new StringTokenizer(text, "\n");
 
-        List<String> sourceLines = new ArrayList<String>();
+        List<String> sourceLines = new ArrayList<>();
 
-        for (int i = 0; lines.hasMoreTokens(); i++) {
+        while (lines.hasMoreTokens()) {
             String line = lines.nextToken();
             sourceLines.add(line);
         }
@@ -114,9 +113,6 @@ public class CPDView2 extends ViewPart implements IPropertyListener {
         return lineArr;
     }
 
-    /*
-     * @see org.eclipse.ui.ViewPart#init(org.eclipse.ui.IViewSite)
-     */
     @Override
     public void init(IViewSite site) throws PartInitException {
         super.init(site);
@@ -124,12 +120,14 @@ public class CPDView2 extends ViewPart implements IPropertyListener {
         labelProvider = new CPDViewLabelProvider2();
 
         measureListener = new Listener() {
+            @Override
             public void handleEvent(Event event) {
                 captureColumnWidths();
             }
         };
 
         resizeListener = new Listener() {
+            @Override
             public void handleEvent(Event event) {
                 int width = treeViewer.getTree().getBounds().width;
                 messageColumn.setWidth(width - SPAN_COLUMN_WIDTH);
@@ -138,7 +136,7 @@ public class CPDView2 extends ViewPart implements IPropertyListener {
             }
         };
 
-        nameWidthsByName = new HashMap<String, int[]>();
+        nameWidthsByName = new HashMap<>();
     }
 
     public int widthOf(int columnIndex) {
@@ -158,10 +156,6 @@ public class CPDView2 extends ViewPart implements IPropertyListener {
         }
     }
 
-    /*
-     * @see org.eclipse.ui.part.WorkbenchPart#createPartControl(org.eclipse.swt.
-     * widgets.Composite)
-     */
     @Override
     public void createPartControl(Composite parent) {
         int treeStyle = SWT.H_SCROLL | SWT.V_SCROLL | SWT.MULTI | SWT.FULL_SELECTION;
@@ -191,8 +185,8 @@ public class CPDView2 extends ViewPart implements IPropertyListener {
     }
 
     protected void addDeleteListener(Control control) {
-
         control.addKeyListener(new KeyAdapter() {
+            @Override
             public void keyPressed(KeyEvent ev) {
                 if (ev.character == SWT.DEL) {
                     removeSelectedItems();
@@ -209,7 +203,6 @@ public class CPDView2 extends ViewPart implements IPropertyListener {
     }
 
     public int inColumn(Point point) {
-
         if (columnWidths == null) {
             return -1;
         }
@@ -230,8 +223,7 @@ public class CPDView2 extends ViewPart implements IPropertyListener {
         return nameWidthsByName.get(name);
     }
 
-    private void paintName(GC gc, int x, int y, String name, int rightEdge, int descent, int cellWidth) {
-
+    private void paintName(GC gc, int x, int y, String name, int rightEdge, int descent) {
         String[] parts = partsOf(name);
         int packageWidth;
         int classWidth;
@@ -267,8 +259,8 @@ public class CPDView2 extends ViewPart implements IPropertyListener {
     }
 
     private void addPainters(Tree tree) {
-
         Listener paintListener = new Listener() {
+            @Override
             public void handleEvent(Event event) {
                 if (event.index != SOURCE_COLUMN_IDX) {
                     return;
@@ -289,12 +281,13 @@ public class CPDView2 extends ViewPart implements IPropertyListener {
 
                 for (int i = 0; i < names.length; i++) {
                     int rightEdge = colWidth - (cellWidth * i);
-                    paintName(event.gc, event.x, event.y, names[i], rightEdge, descent, cellWidth);
+                    paintName(event.gc, event.x, event.y, names[i], rightEdge, descent);
                 }
             }
         };
 
         Listener measureListener = new Listener() {
+            @Override
             public void handleEvent(Event event) {
                 if (event.index != SOURCE_COLUMN_IDX) {
                     return;
@@ -337,15 +330,12 @@ public class CPDView2 extends ViewPart implements IPropertyListener {
     }
 
     /**
-     * Helper method to return an NLS string from its key
+     * Helper method to return an NLS string from its key.
      */
     private String getString(String key) {
         return PMDPlugin.getDefault().getStringTable().getString(key);
     }
 
-    /*
-     * @see org.eclipse.ui.part.WorkbenchPart#setFocus()
-     */
     @Override
     public void setFocus() {
         treeViewer.getTree().setFocus();
@@ -358,12 +348,9 @@ public class CPDView2 extends ViewPart implements IPropertyListener {
      *            CPD Command that contain the matches from the CPD
      */
     public void setData(Iterator<Match> matches) {
-
-        List<TreeNode> elements = new ArrayList<TreeNode>();
+        List<TreeNode> elements = new ArrayList<>();
         if (matches != null) {
-
             for (Match match : asList(matches)) {
-
                 // create a treenode for the match and add to the list
                 TreeNode matchNode = new TreeNode(match);
                 elements.add(matchNode);
@@ -384,13 +371,14 @@ public class CPDView2 extends ViewPart implements IPropertyListener {
         }
 
         // set the children of the rootnode: the matches
-        treeViewer.setInput(elements.toArray(new TreeNode[elements.size()]));
+        treeViewer.setInput(elements.toArray(new TreeNode[0]));
     }
 
     /**
      * After the CPD command is executed, it will trigger an propertyChanged
      * event.
      */
+    @Override
     public void propertyChanged(Object source, int propId) {
         if (propId == PMDRuntimeConstants.PROPERTY_CPD && source instanceof Iterator<?>) {
             Iterator<Match> iter = (Iterator<Match>) source;

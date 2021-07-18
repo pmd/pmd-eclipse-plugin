@@ -19,11 +19,11 @@ import org.eclipse.swt.widgets.Display;
  * 
  * @author Brian Remedios
  */
-public class ColourManager {
+public final class ColourManager {
 
     private final Display display;
 
-    private final Map<RGB, Color> coloursByRGB = new HashMap<RGB, Color>();
+    private final Map<RGB, Color> coloursByRGB = new HashMap<>();
 
     private static ColourManager instance;
 
@@ -31,8 +31,7 @@ public class ColourManager {
         display = theDisplay;
     }
 
-    public static ColourManager managerFor(Display display) {
-
+    public static synchronized ColourManager managerFor(Display display) {
         if (instance == null) {
             instance = new ColourManager(display);
         }
@@ -85,7 +84,6 @@ public class ColourManager {
     }
 
     public void dispose() {
-
         Iterator<Color> iter = coloursByRGB.values().iterator();
         while (iter.hasNext()) {
             iter.next().dispose();

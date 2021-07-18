@@ -26,9 +26,10 @@ import net.sourceforge.pmd.lang.java.ast.AccessNode;
  * 
  * @author Brian Remedios
  */
-public class ASTUtil {
+public final class ASTUtil {
 
     public static final Comparator<ASTMethodDeclaration> METHOD_COMPARATOR = new Comparator<ASTMethodDeclaration>() {
+        @Override
         public int compare(ASTMethodDeclaration m1, ASTMethodDeclaration m2) {
             return m1.getName().compareTo(m2.getName());
         }
@@ -38,13 +39,11 @@ public class ASTUtil {
     }
 
     public static String getAnnotationLabel(ASTAnnotation annotation) {
-
         AbstractNode name = annotation.getFirstChildOfType(ASTName.class);
         return name == null ? "??" : name.getImage();
     }
 
     public static String getMethodLabel(ASTMethodDeclaration pmdMethod, boolean includeModifiers) {
-
         String returnType = returnType(pmdMethod);
 
         StringBuilder sb = new StringBuilder();
@@ -65,8 +64,7 @@ public class ASTUtil {
     }
 
     private static List<String> modifiersFor(AccessNode node) {
-
-        List<String> modifiers = new ArrayList<String>();
+        List<String> modifiers = new ArrayList<>();
         if (node.isPublic()) {
             modifiers.add("public");
         } else {

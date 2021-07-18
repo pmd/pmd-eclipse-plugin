@@ -125,6 +125,7 @@ public class SummaryPanelManager extends AbstractRulePanelManager {
         viewField.setEditable(false);
     }
 
+    @Override
     public void setVisible(boolean flag) {
         viewField.setVisible(flag);
     }
@@ -134,6 +135,7 @@ public class SummaryPanelManager extends AbstractRulePanelManager {
         return false;
     }
 
+    @Override
     protected boolean canWorkWith(Rule rule) {
         return true;
     }
@@ -145,7 +147,6 @@ public class SummaryPanelManager extends AbstractRulePanelManager {
 
     @Override
     public Control setupOn(Composite parent) {
-
         Composite panel = new Composite(parent, 0);
         panel.setLayout(new FillLayout());
 
@@ -160,5 +161,4 @@ public class SummaryPanelManager extends AbstractRulePanelManager {
     public void showControls(boolean flag) {
         viewField.setVisible(flag);
     }
-
 }

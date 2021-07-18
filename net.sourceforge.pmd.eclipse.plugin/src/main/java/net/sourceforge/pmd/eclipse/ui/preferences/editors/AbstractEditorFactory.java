@@ -26,6 +26,7 @@ public abstract class AbstractEditorFactory<T> implements EditorFactory<T> {
     // protected static Color overriddenColour;
 
     protected AbstractEditorFactory() {
+        // protected default constructor for subclassing
     }
 
     // private static ColourManager colourManager() {
@@ -50,6 +51,7 @@ public abstract class AbstractEditorFactory<T> implements EditorFactory<T> {
      * necessary but must be able to extract the values held by them when the
      * property is created.
      */
+    @Override
     public Control[] createOtherControlsOn(Composite parent, PropertyDescriptor<T> desc, PropertySource source,
             ValueChangeListener listener, SizeChangeListener sizeListener) {
         return new Control[] { newLabel(parent, "Default"), newEditorOn(parent, desc, source, listener, sizeListener) };
@@ -68,18 +70,8 @@ public abstract class AbstractEditorFactory<T> implements EditorFactory<T> {
         return source.hasDescriptor(desc) ? source.getProperty(desc) : desc.defaultValue();
     }
 
-    /**
-     * Method addLabel.
-     *
-     * @param parent
-     *            Composite
-     * @param desc
-     *            PropertyDescriptor
-     *
-     * @return Label
-     */
+    @Override
     public Label addLabel(Composite parent, PropertyDescriptor<T> desc) {
-
         Label label = new Label(parent, SWT.NONE);
         label.setText(desc.description());
         GridData data = new GridData();
@@ -109,7 +101,7 @@ public abstract class AbstractEditorFactory<T> implements EditorFactory<T> {
     // }
     protected void adjustRendering(PropertySource source, PropertyDescriptor<?> desc, Control control) {
 
-        return; // don't do it...kinda irritating
+        // return; // don't do it...kinda irritating
 
         // if (!(rule instanceof RuleReference)) return;
         //

@@ -12,11 +12,8 @@ public abstract class AbstractFix implements Fix {
         label = theLabel;
     }
 
-    /**
-     * @see net.sourceforge.pmd.eclipse.Fix#getLabel()
-     */
+    @Override
     public String getLabel() {
         return label;
     }
-
 }
