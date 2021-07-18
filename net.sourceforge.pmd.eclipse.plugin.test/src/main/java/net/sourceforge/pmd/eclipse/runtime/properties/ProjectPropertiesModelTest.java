@@ -19,6 +19,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 import org.apache.commons.io.IOUtils;
@@ -125,7 +126,7 @@ public class ProjectPropertiesModelTest {
                 Rule pluginRule = it1.next();
                 Rule projectRule = it2.next();
 
-                if (pluginRule != projectRule) {
+                if (!Objects.equals(pluginRule, projectRule)) {
                     System.out.println("i=" + i + ": pluginRule=" + pluginRule + " projectRule=" + projectRule);
                     System.out.println("plugin: " + pluginRule.getName() + " (" + pluginRule.getLanguage() + ")");
                     System.out.println("project: " + projectRule.getName() + " (" + projectRule.getLanguage() + ")");
@@ -172,7 +173,7 @@ public class ProjectPropertiesModelTest {
         RuleSet rereadProjectRuleSet = model.getProjectRuleSet();
         Assert.assertEquals("The rule count should 1 less", ruleCountBefore - 1, rereadProjectRuleSet.getRules().size());
         for (Rule r : rereadProjectRuleSet.getRules()) {
-            if (r.getName().equals(removedRule.getName()) && r.getLanguage() == removedRule.getLanguage()) {
+            if (r.getName().equals(removedRule.getName()) && Objects.equals(r.getLanguage(), removedRule.getLanguage())) {
                 Assert.fail("The rule has not been removed!");
             }
         }
@@ -327,18 +328,12 @@ public class ProjectPropertiesModelTest {
      * It should not be possible to set to null a project ruleset
      * 
      */
-    @Test
+    @Test(expected = PropertiesException.class)
     public void testProjectRuleSetNull() throws PropertiesException {
         final IProjectPropertiesManager mgr = PMDPlugin.getDefault().getPropertiesManager();
         final IProjectProperties model = mgr.loadProjectProperties(this.testProject);
 
-        try {
-            model.setProjectRuleSetList(null);
-            Assert.fail("A ModelException must be raised when setting a project ruleset to null");
-        } catch (final PropertiesException e) {
-            // OK that's correct
-        }
-
+        model.setProjectRuleSetList(null);
     }
 
     /**
@@ -503,7 +498,8 @@ public class ProjectPropertiesModelTest {
     @Test(expected = PropertiesException.class)
     public void testInvalidProperties() throws PropertiesException, RuleSetNotFoundException, CoreException {
         final IProjectPropertiesManager mgr = PMDPlugin.getDefault().getPropertiesManager();
-        IProjectProperties model = mgr.loadProjectProperties(this.testProject);
+        // load the project properties to fill the cache
+        mgr.loadProjectProperties(this.testProject);
         // remove PMD's cached project properties, so that we reload it from disk again
         mgr.removeProjectProperties(this.testProject);
 
@@ -517,7 +513,7 @@ public class ProjectPropertiesModelTest {
         file.setContents(propertiesStream, 0, null);
 
         // reload the project properties
-        model = mgr.loadProjectProperties(this.testProject);
+        mgr.loadProjectProperties(this.testProject);
     }
 
     private void dumpRuleSet(final RuleSet ruleSet) {
@@ -591,7 +587,7 @@ public class ProjectPropertiesModelTest {
         file.setContents(IOUtils.toInputStream(newClasspathContent, "UTF-8"), 0, null);
         final IProjectPropertiesManager mgr = PMDPlugin.getDefault().getPropertiesManager();
         IProjectProperties model = mgr.loadProjectProperties(this.testProject);
-        URLClassLoader auxClasspath = (URLClassLoader) model.getAuxClasspath();
+        URLClassLoader auxClasspath = (URLClassLoader) model.getAuxClasspath(); // NOPMD: don't close auxclasspath in test, this should be done by the plugin
         Set<URI> urls = new HashSet<>();
         for (URL url : auxClasspath.getURLs()) {
             urls.add(url.toURI());

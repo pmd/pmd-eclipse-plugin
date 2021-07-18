@@ -29,9 +29,6 @@ import net.sourceforge.pmd.renderers.HTMLRenderer;
 public class RenderReportCmdTest {
     private IProject testProject;
 
-    /**
-     * @see junit.framework.TestCase#setUp()
-     */
     @Before
     public void setUp() throws Exception {
 
@@ -42,10 +39,9 @@ public class RenderReportCmdTest {
 
         // 2. Create a test source file inside that project
         EclipseUtils.createTestSourceFile(this.testProject);
-        final InputStream is = EclipseUtils.getResourceStream(this.testProject, "/src/Test.java");
-        Assert.assertNotNull("Cannot find the test source file", is);
-        is.close();
-
+        try (InputStream is = EclipseUtils.getResourceStream(this.testProject, "/src/Test.java")) {
+            Assert.assertNotNull("Cannot find the test source file", is);
+        }
     }
 
     @After

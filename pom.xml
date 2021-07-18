@@ -290,6 +290,9 @@
             <failurePriority>2</failurePriority>
             <failOnViolation>true</failOnViolation>
             <printFailingErrors>true</printFailingErrors>
+            <excludeRoots>
+                <excludeRoot>${basedir}/src/main/resources</excludeRoot>
+            </excludeRoots>
           </configuration>
           <dependencies>
             <dependency>
