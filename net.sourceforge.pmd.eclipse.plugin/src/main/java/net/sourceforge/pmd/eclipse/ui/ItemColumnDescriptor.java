@@ -22,6 +22,7 @@ public class ItemColumnDescriptor<T extends Object, V extends Object> extends Ab
 
     private final ItemFieldAccessor<T, V> accessor;
     private final ValueFormatter[] formatters;
+    private boolean shouldImageBeDisposed;
 
     public ItemColumnDescriptor(String theId, String labelKey, int theAlignment, int theWidth, boolean resizableFlag,
             ItemFieldAccessor<T, V> theAccessor) {
@@ -34,6 +35,15 @@ public class ItemColumnDescriptor<T extends Object, V extends Object> extends Ab
 
         accessor = theAccessor;
         formatters = theFormatters;
+    }
+
+    public ItemColumnDescriptor<T, V> disposeImage() {
+        shouldImageBeDisposed = true;
+        return this;
+    }
+
+    public boolean shouldImageBeDisposed() {
+        return shouldImageBeDisposed;
     }
 
     public T valueFor(V item) {

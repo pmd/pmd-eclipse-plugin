@@ -15,6 +15,8 @@ This is a minor release.
 
 ### Fixed Issues
 
+*   [#153](https://github.com/pmd/pmd-eclipse-plugin/issues/153): Not properly disposed SWT resource
+
 ### API Changes
 
 ### External Contributions
