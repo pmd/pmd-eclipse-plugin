@@ -125,6 +125,7 @@ Export-Package: ch.qos.logback.classic;x-friends:="net.sourceforge.pmd.eclipse.p
    org.eclipse.jface.viewers,
    net.sourceforge.pmd,
    org.eclipse.core.commands",
+ net.sourceforge.pmd.eclipse.ui.actions.internal;x-friends:="net.sourceforge.pmd.eclipse.plugin.test",
  net.sourceforge.pmd.eclipse.ui.model;uses:="org.eclipse.jdt.core,org.eclipse.core.resources,net.sourceforge.pmd.lang.ast",
  net.sourceforge.pmd.eclipse.ui.preferences.br;
   uses:="net.sourceforge.pmd.eclipse.ui.preferences,
