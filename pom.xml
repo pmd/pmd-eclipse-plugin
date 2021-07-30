@@ -334,6 +334,19 @@
                     <ignore></ignore>
                   </action>
                 </pluginExecution>
+                <pluginExecution>
+                 <pluginExecutionFilter>
+                  <groupId>org.apache.maven.plugins</groupId>
+                  <artifactId>maven-toolchains-plugin</artifactId>
+                  <versionRange>[3.0.0,)</versionRange>
+                  <goals>
+                   <goal>toolchain</goal>
+                  </goals>
+                 </pluginExecutionFilter>
+                 <action>
+                  <ignore></ignore>
+                 </action>
+                </pluginExecution>
               </pluginExecutions>
             </lifecycleMappingMetadata>
           </configuration>
