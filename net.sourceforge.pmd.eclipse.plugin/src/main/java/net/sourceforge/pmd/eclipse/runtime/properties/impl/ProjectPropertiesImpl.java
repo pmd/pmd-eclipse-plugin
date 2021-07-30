@@ -67,8 +67,8 @@ public class ProjectPropertiesImpl implements IProjectProperties {
     private boolean includeDerivedFiles;
     private boolean violationsAsErrors = true;
     private boolean fullBuildEnabled = true; // default in case didn't come from properties
-    private Set<String> buildPathExcludePatterns = new HashSet<String>();
-    private Set<String> buildPathIncludePatterns = new HashSet<String>();
+    private Set<String> buildPathExcludePatterns = new HashSet<>();
+    private Set<String> buildPathIncludePatterns = new HashSet<>();
     private JavaProjectClassLoader auxclasspath;
 
     /**
@@ -124,23 +124,17 @@ public class ProjectPropertiesImpl implements IProjectProperties {
         return regex;
     }
 
-    /**
-     * @see net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties#getProject()
-     */
+    @Override
     public IProject getProject() {
         return this.project;
     }
 
-    /**
-     * @see net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties#isPmdEnabled()
-     */
+    @Override
     public boolean isPmdEnabled() {
         return this.pmdEnabled;
     }
 
-    /**
-     * @see net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties#setPmdEnabled(boolean)
-     */
+    @Override
     public void setPmdEnabled(final boolean pmdEnabled) {
         LOG.debug("Enable PMD for project {}: before={} now={}", this.project.getName(), this.pmdEnabled, pmdEnabled);
         if (this.pmdEnabled != pmdEnabled) {
@@ -158,13 +152,12 @@ public class ProjectPropertiesImpl implements IProjectProperties {
         return InternalRuleSetUtil.toRuleSets(projectRuleSets);
     }
 
+    @Override
     public List<RuleSet> getProjectRuleSetList() throws PropertiesException {
         return projectRuleSets;
     }
 
-    /**
-     * @see net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties#getProjectRuleSet()
-     */
+    @Override
     public RuleSet getProjectRuleSet() throws PropertiesException {
         return projectRuleSets.get(0);
     }
@@ -203,16 +196,12 @@ public class ProjectPropertiesImpl implements IProjectProperties {
         }
     }
 
-    /**
-     * @see net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties#isRuleSetStoredInProject()
-     */
+    @Override
     public boolean isRuleSetStoredInProject() {
         return this.ruleSetStoredInProject;
     }
 
-    /**
-     * @see net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties#setRuleSetStoredInProject(boolean)
-     */
+    @Override
     public void setRuleSetStoredInProject(final boolean ruleSetStoredInProject) throws PropertiesException {
         LOG.debug("Set rule set stored in project for project {}: {}", this.project.getName(), ruleSetStoredInProject);
         this.setNeedRebuild(needRebuild | this.ruleSetStoredInProject != ruleSetStoredInProject);
@@ -232,16 +221,12 @@ public class ProjectPropertiesImpl implements IProjectProperties {
         }
     }
 
-    /**
-     * @see net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties#getRuleSetFile()
-     */
+    @Override
     public String getRuleSetFile() {
         return StringUtils.isBlank(ruleSetFile) ? PROJECT_RULESET_FILE : ruleSetFile;
     }
 
-    /**
-     * @see net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties#setRuleSetFile(String)
-     */
+    @Override
     public void setRuleSetFile(String ruleSetFile) throws PropertiesException {
         LOG.debug("Set rule set file for project {}: {}", project.getName(), ruleSetFile);
         this.setNeedRebuild(needRebuild | this.ruleSetFile == null || !this.ruleSetFile.equals(ruleSetFile));
@@ -261,16 +246,12 @@ public class ProjectPropertiesImpl implements IProjectProperties {
         }
     }
 
-    /**
-     * @see net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties#getProjectWorkingSet()
-     */
+    @Override
     public IWorkingSet getProjectWorkingSet() {
         return this.projectWorkingSet;
     }
 
-    /**
-     * @see net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties#setProjectWorkingSet(org.eclipse.ui.IWorkingSet)
-     */
+    @Override
     public void setProjectWorkingSet(final IWorkingSet projectWorkingSet) {
         LOG.debug("Set working set for project {}: {}", project.getName(),
                 projectWorkingSet == null ? "none" : projectWorkingSet.getName());
@@ -280,9 +261,6 @@ public class ProjectPropertiesImpl implements IProjectProperties {
         this.projectWorkingSet = projectWorkingSet;
     }
 
-    /**
-     * @see net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties#isNeedRebuild()
-     */
     @Override
     public boolean isNeedRebuild() {
         LOG.debug("Query if project {} need rebuild : {}", project.getName(), needRebuild);
@@ -298,17 +276,13 @@ public class ProjectPropertiesImpl implements IProjectProperties {
         return needRebuild;
     }
 
-    /**
-     * @see net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties#setNeedRebuild()
-     */
+    @Override
     public void setNeedRebuild(final boolean needRebuild) {
         LOG.debug("Set needRebuild for project " + project.getName() + ": " + needRebuild);
         this.needRebuild = needRebuild;
     }
 
-    /**
-     * @see net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties#isRuleSetFileExist()
-     */
+    @Override
     public final boolean isRuleSetFileExist() {
         boolean allFilesCanBeRead = false;
         for (File f : getResolvedRuleSetFiles()) {
@@ -331,13 +305,10 @@ public class ProjectPropertiesImpl implements IProjectProperties {
         return null;
     }
 
-    /**
-     * @see net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties#getResolvedRuleSetFiles()
-     */
     @Override
     public List<File> getResolvedRuleSetFiles() {
         // Check as project-relative path
-        List<File> files = new ArrayList<File>();
+        List<File> files = new ArrayList<>();
         for (String ruleSetFile : getRuleSetFile().split(",")) {
             IFile file = project.getFile(ruleSetFile);
             File f = getExistingFileOrNull(file);
@@ -347,7 +318,7 @@ public class ProjectPropertiesImpl implements IProjectProperties {
                 try {
                     IFile workspaceFile = workspaceRoot.getFile(new Path(ruleSetFile));
                     f = getExistingFileOrNull(workspaceFile);
-                } catch (IllegalArgumentException e) {
+                } catch (IllegalArgumentException ignored) {
                     // Fall back to below
                 }
                 if (f == null) {
@@ -383,9 +354,9 @@ public class ProjectPropertiesImpl implements IProjectProperties {
     }
 
     /**
-     * Create a project ruleset file from the current configured rules
-     *
+     * Create a project ruleset file from the current configured rules.
      */
+    @Override
     public void createDefaultRuleSetFile() throws PropertiesException {
         LOG.info("Create a default rule set file for project " + this.project.getName());
         ByteArrayOutputStream baos = null;
@@ -412,9 +383,7 @@ public class ProjectPropertiesImpl implements IProjectProperties {
                 bais = new ByteArrayInputStream(baos.toByteArray());
                 file.create(bais, true, null);
             }
-        } catch (WriterException e) {
-            throw new PropertiesException("Error while creating default ruleset file for project " + this.project.getName(), e);
-        } catch (CoreException e) {
+        } catch (WriterException | CoreException e) {
             throw new PropertiesException("Error while creating default ruleset file for project " + this.project.getName(), e);
         } finally {
             IOUtil.closeQuietly(baos);
@@ -422,53 +391,42 @@ public class ProjectPropertiesImpl implements IProjectProperties {
         }
     }
 
-    /**
-     * @see net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties#isIncludeDerivedFiles()
-     */
+    @Override
     public boolean isIncludeDerivedFiles() {
         return includeDerivedFiles;
     }
 
-    /**
-     * @see net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties#setIncludeDerivedFiles(boolean)
-     */
+    @Override
     public void setIncludeDerivedFiles(boolean includeDerivedFiles) {
         LOG.debug("Set if derived files should be included: " + includeDerivedFiles);
         this.setNeedRebuild(this.needRebuild | this.includeDerivedFiles != includeDerivedFiles);
         this.includeDerivedFiles = includeDerivedFiles;
     }
 
-    /**
-     * @see net.sourceforge.pmd.eclipse.model.PMDPluginModel#sync()
-     */
+    @Override
     public void sync() throws PropertiesException {
         LOG.info("Commit properties for project " + project.getName());
         projectPropertiesManager.storeProjectProperties(this);
     }
 
-    /**
-     * @see net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties#violationsAsErrors()
-     */
+    @Override
     public boolean violationsAsErrors() throws PropertiesException {
         return this.violationsAsErrors;
     }
 
+    @Override
     public void setViolationsAsErrors(boolean violationsAsErrors) throws PropertiesException {
         LOG.debug("Set to handle violations as errors: {}", violationsAsErrors);
         this.setNeedRebuild(needRebuild | this.violationsAsErrors != violationsAsErrors);
         this.violationsAsErrors = violationsAsErrors;
     }
 
-    /**
-     * @see net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties#isFullBuildEnabled()
-     */
+    @Override
     public boolean isFullBuildEnabled() throws PropertiesException {
         return fullBuildEnabled;
     }
 
-    /**
-     * @see net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties#setFullBuildEnabled(boolean)
-     */
+    @Override
     public void setFullBuildEnabled(boolean fullBuildEnabled) throws PropertiesException {
         LOG.debug("Set if run at full build for project {}: {}", project.getName(), fullBuildEnabled);
         if (this.fullBuildEnabled != fullBuildEnabled) {
@@ -480,8 +438,9 @@ public class ProjectPropertiesImpl implements IProjectProperties {
     }
 
     /**
-     * Provide some help to folks using the debugger and logging
+     * Provide some help to folks using the debugger and logging.
      */
+    @Override
     public String toString() {
         String projectName = "n/a";
         String projectRuleSetName = "n/a";
@@ -505,10 +464,12 @@ public class ProjectPropertiesImpl implements IProjectProperties {
                 + " ruleSetStoredInProject:" + ruleSetStoredInProject + " violationsAsErrors: " + violationsAsErrors;
     }
 
+    @Override
     public Set<String> getBuildPathExcludePatterns() {
         return buildPathExcludePatterns;
     }
 
+    @Override
     public Set<String> getBuildPathIncludePatterns() {
         return buildPathIncludePatterns;
     }
@@ -523,7 +484,7 @@ public class ProjectPropertiesImpl implements IProjectProperties {
                             + " changed - recreating it.");
                     try {
                         auxclasspath.close();
-                    } catch (IOException e) {
+                    } catch (IOException ignored) {
                         // ignored
                     }
                     auxclasspath = null;

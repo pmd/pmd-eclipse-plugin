@@ -25,14 +25,7 @@ public class SimpleColumnDescriptor extends AbstractRuleColumnDescriptor {
         super(theId, labelKey, theAlignment, theWidth, theAccessor, resizableFlag, theImagePath);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see net.sourceforge.pmd.eclipse.ui.preferences.br.IRuleColumnDescriptor#
-     * newTreeColumnFor(org.eclipse.swt.widgets.Tree, int,
-     * net.sourceforge.pmd.eclipse.ui.preferences.br.RuleSortListener,
-     * java.util.Map)
-     */
+    @Override
     public TreeColumn newTreeColumnFor(Tree parent, int columnIndex, SortListener sortListener,
             Map<Integer, List<Listener>> paintListeners) {
         TreeColumn tc = buildTreeColumn(parent, sortListener);
@@ -52,16 +45,19 @@ public class SimpleColumnDescriptor extends AbstractRuleColumnDescriptor {
         return formatter == null ? value.toString() : formatter.format(value);
     }
 
+    @Override
     public String stringValueFor(Rule rule) {
         Object value = valueFor(rule);
         return asString(value);
     }
 
+    @Override
     public String stringValueFor(RuleCollection collection) {
         Object value = valueFor(collection);
         return asString(value);
     }
 
+    @Override
     public Image imageFor(Rule rule) {
         return null;
     }

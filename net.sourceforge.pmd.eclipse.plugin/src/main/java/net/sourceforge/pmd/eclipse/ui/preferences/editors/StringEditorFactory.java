@@ -27,9 +27,12 @@ public class StringEditorFactory extends AbstractEditorFactory<String> {
     public static final StringEditorFactory INSTANCE = new StringEditorFactory();
 
 
-    protected StringEditorFactory() { }
+    protected StringEditorFactory() {
+        // protected constructor for subclassing
+    }
 
 
+    @Override
     public PropertyDescriptor<String> createDescriptor(String name, String description, Control[] otherData) {
         return PropertyFactory.stringProperty(name).desc(description)
             .defaultValue(otherData == null ? "" : valueFrom(otherData[1]))
@@ -37,11 +40,13 @@ public class StringEditorFactory extends AbstractEditorFactory<String> {
     }
 
 
+    @Override
     protected String valueFrom(Control valueControl) {
         return ((Text) valueControl).getText();
     }
 
 
+    @Override
     public Control newEditorOn(Composite parent, final PropertyDescriptor<String> desc, final PropertySource source,
                                final ValueChangeListener listener, SizeChangeListener sizeListener) {
 
@@ -51,6 +56,7 @@ public class StringEditorFactory extends AbstractEditorFactory<String> {
         fillWidget(text, desc, source);
 
         text.addListener(SWT.FocusOut, new Listener() {
+            @Override
             public void handleEvent(Event event) {
                 String newValue = text.getText().trim();
                 String existingValue = valueFor(source, desc);
@@ -76,7 +82,6 @@ public class StringEditorFactory extends AbstractEditorFactory<String> {
 
 
     private void setValue(PropertySource source, PropertyDescriptor<String> desc, String value) {
-
         if (!source.hasDescriptor(desc)) {
             return;
         }

@@ -17,9 +17,7 @@ public class CommentOutLineFix extends AbstractFix {
         super("Comment out the line");
     }
 
-    /**
-     * @see net.sourceforge.pmd.eclipse.Fix#fix(java.lang.String, int)
-     */
+    @Override
     public String fix(String sourceCode, int lineNumber) {
         final Document document = new Document(sourceCode);
 
@@ -27,5 +25,4 @@ public class CommentOutLineFix extends AbstractFix {
 
         return document.get();
     }
-
 }

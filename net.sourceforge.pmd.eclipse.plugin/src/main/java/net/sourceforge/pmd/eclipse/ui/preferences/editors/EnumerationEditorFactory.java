@@ -22,7 +22,7 @@ import net.sourceforge.pmd.properties.PropertySource;
 /**
  * @author Brian Remedios
  */
-public class EnumerationEditorFactory extends AbstractEditorFactory<Object> {
+public final class EnumerationEditorFactory extends AbstractEditorFactory<Object> {
 
     public static final EnumerationEditorFactory INSTANCE = new EnumerationEditorFactory();
 
@@ -30,18 +30,20 @@ public class EnumerationEditorFactory extends AbstractEditorFactory<Object> {
     private EnumerationEditorFactory() { }
 
 
+    @Override
     protected Object valueFrom(Control valueControl) {
-
-        int index = ((Combo) valueControl).getSelectionIndex();
+        // TODO int index = ((Combo) valueControl).getSelectionIndex();
         return null;    // TODO ???
     }
 
 
+    @Override
     public PropertyDescriptor<Object> createDescriptor(String name, String optionalDescription, Control[] otherData) {
         return PropertyFactory.enumProperty(name, new HashMap<String, Object>()).desc("Value set " + name).build();
     }
 
 
+    @Override
     public Control newEditorOn(Composite parent, final PropertyDescriptor<Object> desc, final PropertySource source,
                                final ValueChangeListener listener, SizeChangeListener sizeListener) {
 
@@ -67,6 +69,7 @@ public class EnumerationEditorFactory extends AbstractEditorFactory<Object> {
         }
 
         combo.addSelectionListener(new SelectionAdapter() {
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 int selectionIdx = combo.getSelectionIndex();
                 Object[][] choices = (Object[][]) combo.getData();
@@ -86,7 +89,7 @@ public class EnumerationEditorFactory extends AbstractEditorFactory<Object> {
 
 
     /**
-     * Search through both columns if necessary
+     * Search through both columns if necessary.
      */
     public static int indexOf(Object item, Object[][] items) {
         int index = indexOf(item, items, 0);
@@ -104,8 +107,7 @@ public class EnumerationEditorFactory extends AbstractEditorFactory<Object> {
     }
 
     public static <T> Object[][] choices(PropertyDescriptor<T> prop) {
-        Object[][] res = new Object[0][2];
         // TODO: prop.mapping() would be needed to get the valid choices....
-        return res;
+        return new Object[0][2];
     }
 }

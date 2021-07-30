@@ -35,20 +35,12 @@ public class ViolationOverviewLabelProvider extends LabelProvider implements ITa
 
     private final ViolationOverview violationView;
 
-    /**
-     * Constructor
-     *
-     * @param overview
-     */
     public ViolationOverviewLabelProvider(ViolationOverview overview) {
         super();
         violationView = overview;
     }
 
-    /**
-     * @see org.eclipse.jface.viewers.ITableLabelProvider#getColumnImage(java.lang.Object,
-     *      int)
-     */
+    @Override
     public Image getColumnImage(Object element, int columnIndex) {
         Image image = null;
 
@@ -69,10 +61,7 @@ public class ViolationOverviewLabelProvider extends LabelProvider implements ITa
         return image;
     }
 
-    /**
-     * @see org.eclipse.jface.viewers.ITableLabelProvider#getColumnText(java.lang.Object,
-     *      int)
-     */
+    @Override
     public String getColumnText(Object element, int columnIndex) {
         String result = "";
 

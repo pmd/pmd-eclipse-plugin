@@ -12,7 +12,7 @@ import net.sourceforge.pmd.RulePriority;
  * @author Philippe Herlin
  *
  */
-public class PMDUiConstants {
+public final class PMDUiConstants {
     public static final String PLUGIN_ID = "net.sourceforge.pmd.eclipse.ui";
 
     public static final String RULESET_PREFERENCE = PLUGIN_ID + ".ruleset";
@@ -122,8 +122,7 @@ public class PMDUiConstants {
     public static final String SIMPLE_CPDREPORT_NAME = "cpd-report.txt";
 
     /**
-     * This class is not meant to be instantiated
-     *
+     * This class is not meant to be instantiated.
      */
     private PMDUiConstants() {
         super();

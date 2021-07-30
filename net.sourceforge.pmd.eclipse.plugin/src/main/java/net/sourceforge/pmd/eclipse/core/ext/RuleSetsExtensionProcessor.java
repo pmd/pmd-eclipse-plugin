@@ -19,7 +19,7 @@ import net.sourceforge.pmd.eclipse.core.IRuleSetsExtension;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 
 /**
- * This class processes the AdditionalRuleSets extension point
+ * This class processes the AdditionalRuleSets extension point.
  *
  * @author Herlin
  *
@@ -30,16 +30,12 @@ public class RuleSetsExtensionProcessor {
     private static final String CLASS_ATTRIBUTE = "class";
     private final IRuleSetManager ruleSetManager;
 
-    /**
-     * Constructor
-     * @param ruleSetManager the plugin RuleSetManager
-     */
-    public RuleSetsExtensionProcessor(IRuleSetManager ruleSetManager) {
-        this.ruleSetManager = ruleSetManager;
+    public RuleSetsExtensionProcessor(IRuleSetManager theRuleSetManager) {
+        this.ruleSetManager = theRuleSetManager;
     }
 
     /**
-     * Process the extension point
+     * Process the extension point.
      */
     public void process() throws CoreException {
         final IExtensionRegistry registry = Platform.getExtensionRegistry();
@@ -50,7 +46,7 @@ public class RuleSetsExtensionProcessor {
     }
 
     /**
-     * Process an extension
+     * Process an extension.
      * @param element the extension to process
      */
     private void processExecutableExtension(IConfigurationElement element) throws CoreException {
@@ -58,12 +54,12 @@ public class RuleSetsExtensionProcessor {
         if (object instanceof IRuleSetsExtension) {
             final IRuleSetsExtension extension = (IRuleSetsExtension) object;
 
-            LinkedHashSet<RuleSet> registeredRulesets = new LinkedHashSet<RuleSet>(ruleSetManager.getRegisteredRuleSets());
+            LinkedHashSet<RuleSet> registeredRulesets = new LinkedHashSet<>(ruleSetManager.getRegisteredRuleSets());
             extension.registerRuleSets(registeredRulesets);
             ruleSetManager.getRegisteredRuleSets().clear();
             ruleSetManager.getRegisteredRuleSets().addAll(registeredRulesets);
 
-            LinkedHashSet<RuleSet> defaultRegisteredRulesets = new LinkedHashSet<RuleSet>(ruleSetManager.getDefaultRuleSets());
+            LinkedHashSet<RuleSet> defaultRegisteredRulesets = new LinkedHashSet<>(ruleSetManager.getDefaultRuleSets());
             extension.registerDefaultRuleSets(defaultRegisteredRulesets);
             ruleSetManager.getDefaultRuleSets().clear();
             ruleSetManager.getDefaultRuleSets().addAll(defaultRegisteredRulesets);

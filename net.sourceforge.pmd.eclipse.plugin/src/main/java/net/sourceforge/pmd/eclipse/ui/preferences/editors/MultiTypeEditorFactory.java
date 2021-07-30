@@ -32,20 +32,19 @@ import net.sourceforge.pmd.util.StringUtil;
  * @deprecated will be removed
  */
 @Deprecated
-public class MultiTypeEditorFactory extends AbstractMultiValueEditorFactory<Class> {
+public final class MultiTypeEditorFactory extends AbstractMultiValueEditorFactory<Class> {
 
     public static final MultiTypeEditorFactory INSTANCE = new MultiTypeEditorFactory();
 
-
     private MultiTypeEditorFactory() { }
 
-
+    @Override
     public PropertyDescriptor<List<Class>> createDescriptor(String name, String optionalDescription, Control[] otherData) {
         return new TypeMultiProperty(name, "Type value "
             + name, Arrays.asList((Class) String.class), new String[] {"java.lang"}, 0.0f);
     }
 
-
+    @Override
     protected Control addWidget(Composite parent, Class value, PropertyDescriptor<List<Class>> desc, PropertySource
         source) {
         TypeText typeWidget = new TypeText(parent, SWT.SINGLE | SWT.BORDER, true, "Enter type name");
@@ -53,17 +52,18 @@ public class MultiTypeEditorFactory extends AbstractMultiValueEditorFactory<Clas
         return typeWidget;
     }
 
-
+    @Override
     protected void setValue(Control widget, Class value) {
         Class<?> type = (Class<?>) value;
         ((TypeText) widget).setType(type);
     }
 
-
+    @Override
     protected void configure(final Text textWidget, final PropertyDescriptor<List<Class>> desc,
                              final PropertySource source, final ValueChangeListener listener) {
 
         textWidget.addListener(SWT.FocusOut, new Listener() {
+            @Override
             public void handleEvent(Event event) {
                 List<Class> newValue = currentTypes(textWidget);
                 List<Class> existingValue = valueFor(source, desc);
@@ -80,15 +80,13 @@ public class MultiTypeEditorFactory extends AbstractMultiValueEditorFactory<Clas
         });
     }
 
-
     private List<Class> currentTypes(Text textWidget) {
-
         List<String> typeNames = textWidgetValues(textWidget);
         if (typeNames.isEmpty()) {
             return Collections.emptyList();
         }
 
-        List<Class> types = new ArrayList<Class>(typeNames.size());
+        List<Class> types = new ArrayList<>(typeNames.size());
 
         for (String typeName : typeNames) {
             Class newType = TypeEditorFactory.typeFor(typeName);
@@ -99,9 +97,8 @@ public class MultiTypeEditorFactory extends AbstractMultiValueEditorFactory<Clas
         return types;
     }
 
-
+    @Override
     protected void fillWidget(Text textWidget, PropertyDescriptor<List<Class>> desc, PropertySource source) {
-
         List<Class> values = valueFor(source, desc);
         if (values == null) {
             textWidget.setText("");
@@ -114,7 +111,7 @@ public class MultiTypeEditorFactory extends AbstractMultiValueEditorFactory<Clas
 
 
     private String asString(List<Class> types) {
-        String[] typeNames = shortNamesFor(types.toArray(new Class<?>[types.size()]));
+        String[] typeNames = shortNamesFor(types.toArray(new Class<?>[0]));
         return StringUtil.asString(typeNames, DELIMITER + ' ');
     }
 
@@ -127,7 +124,7 @@ public class MultiTypeEditorFactory extends AbstractMultiValueEditorFactory<Clas
         return typeNames;
     }
 
-
+    @Override
     protected void update(PropertySource source, PropertyDescriptor<List<Class>> desc, List<Class> newValues) {
         source.setProperty(desc, newValues);
     }
@@ -146,7 +143,7 @@ public class MultiTypeEditorFactory extends AbstractMultiValueEditorFactory<Clas
         return nAdded == 0 ? null : enteredValue;
     }
 
-
+    @Override
     protected List<Class> valueFrom(Control valueControl) {    // not necessary for this type
         return null;
     }

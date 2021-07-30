@@ -5,7 +5,7 @@
 package net.sourceforge.pmd.eclipse.core;
 
 /**
- * Root exception of the CORE plug-in
+ * Root exception of the CORE plug-in.
  *
  * @author Herlin
  *
@@ -40,7 +40,7 @@ public class PMDCoreException extends Exception {
     }
 
     /**
-     * Constructor with a root cause exception only
+     * Constructor with a root cause exception only.
      * @param arg0 root cause exception
      */
     public PMDCoreException(Throwable arg0) {

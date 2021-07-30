@@ -25,7 +25,7 @@ import net.sourceforge.pmd.util.ClassUtil;
  * @deprecated will be removed
  */
 @Deprecated
-public class TypeEditorFactory extends AbstractEditorFactory<Class> {
+public final class TypeEditorFactory extends AbstractEditorFactory<Class> {
 
     public static final TypeEditorFactory INSTANCE = new TypeEditorFactory();
 
@@ -33,8 +33,8 @@ public class TypeEditorFactory extends AbstractEditorFactory<Class> {
     private TypeEditorFactory() { }
 
 
+    @Override
     public PropertyDescriptor<Class> createDescriptor(String name, String description, Control[] otherData) {
-
         return new TypeProperty(
             name,
             description,
@@ -44,12 +44,12 @@ public class TypeEditorFactory extends AbstractEditorFactory<Class> {
         );
     }
 
-
+    @Override
     protected Class valueFrom(Control valueControl) {
         return ((TypeText) valueControl).getType(false);
     }
 
-
+    @Override
     public Control newEditorOn(Composite parent, final PropertyDescriptor<Class> desc, final PropertySource source,
                                final ValueChangeListener listener, SizeChangeListener sizeListener) {
 
@@ -60,6 +60,7 @@ public class TypeEditorFactory extends AbstractEditorFactory<Class> {
         fillWidget(typeText, desc, source);
 
         Listener wereDoneListener = new Listener() {
+            @Override
             public void handleEvent(Event event) {
                 Class<?> newValue = typeText.getType(true);
                 if (newValue == null) {
@@ -85,14 +86,12 @@ public class TypeEditorFactory extends AbstractEditorFactory<Class> {
 
 
     protected void fillWidget(TypeText textWidget, PropertyDescriptor<Class> desc, PropertySource source) {
-
         Class<?> type = (Class<?>) valueFor(source, desc);
         textWidget.setType(type);
     }
 
 
     public static Class<?> typeFor(String typeName) {
-
         Class<?> newType = ClassUtil.getTypeFor(typeName);    // try for well-known types first
         if (newType != null) {
             return newType;

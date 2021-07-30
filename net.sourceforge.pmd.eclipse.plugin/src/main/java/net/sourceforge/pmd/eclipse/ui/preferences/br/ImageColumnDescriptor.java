@@ -24,13 +24,14 @@ public class ImageColumnDescriptor extends AbstractRuleColumnDescriptor {
     private final CellPainterBuilder painterBuilder;
 
     public static final RuleFieldAccessor PROPERTIES_ACCESSOR = new BasicRuleFieldAccessor() {
-
+        @Override
         public Comparable<?> valueFor(Rule rule) {
             // notes indices of non-default values in the string for emphasis
             // during later rendering
             return RuleUIUtil.indexedPropertyStringFrom(rule); 
         }
 
+        @Override
         public Comparable<?> valueFor(RuleCollection collection) {
             return IndexedString.EMPTY;
             // int count = RuleUtil.countNonOccurrencesOf(collection, this,
@@ -49,11 +50,7 @@ public class ImageColumnDescriptor extends AbstractRuleColumnDescriptor {
         painterBuilder = thePainterBuilder;
     }
 
-    /**
-     * @see net.sourceforge.pmd.eclipse.ui.preferences.br.IRuleColumnDescriptor#newTreeColumnFor(org.eclipse.swt.widgets.Tree,
-     *      int, net.sourceforge.pmd.eclipse.ui.preferences.br.SortListener,
-     *      java.util.Map)
-     */
+    @Override
     public TreeColumn newTreeColumnFor(Tree parent, int columnIndex, final SortListener sortListener,
             Map<Integer, List<Listener>> paintListeners) {
         TreeColumn tc = buildTreeColumn(parent, sortListener);
@@ -64,10 +61,12 @@ public class ImageColumnDescriptor extends AbstractRuleColumnDescriptor {
         return tc;
     }
 
+    @Override
     public String stringValueFor(Rule rule) {
         return "";
     }
 
+    @Override
     public Image imageFor(Rule rule) {
         return null;
     }

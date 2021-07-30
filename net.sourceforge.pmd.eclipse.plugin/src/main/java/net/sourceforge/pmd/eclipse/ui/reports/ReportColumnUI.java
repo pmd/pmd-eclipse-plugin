@@ -45,13 +45,13 @@ public interface ReportColumnUI {
         }
     };
 
-    ItemColumnDescriptor<String, Renderer> NAME = new ItemColumnDescriptor<String, Renderer>("", "Name", SWT.LEFT, 55,
+    ItemColumnDescriptor<String, Renderer> NAME = new ItemColumnDescriptor<>("", "Name", SWT.LEFT, 55,
             true, NAME_ACC);
-    ItemColumnDescriptor<String, Renderer> DESCRIPTION = new ItemColumnDescriptor<String, Renderer>("", "Format",
+    ItemColumnDescriptor<String, Renderer> DESCRIPTION = new ItemColumnDescriptor<>("", "Format",
             SWT.LEFT, 99, true, DESCRIPTION_ACC);
-    ItemColumnDescriptor<Boolean, Renderer> SUPPRESSED = new ItemColumnDescriptor<Boolean, Renderer>("",
+    ItemColumnDescriptor<Boolean, Renderer> SUPPRESSED = new ItemColumnDescriptor<>("",
             "Show suppressed", SWT.LEFT, 40, true, SHOW_SUPPRESSED_ACC);
-    ItemColumnDescriptor<String, Renderer> PROPERTIES = new ItemColumnDescriptor<String, Renderer>("", "Properties",
+    ItemColumnDescriptor<String, Renderer> PROPERTIES = new ItemColumnDescriptor<>("", "Properties",
             SWT.LEFT, 99, true, PROPERTIES_ACC);
 
     @SuppressWarnings("rawtypes")

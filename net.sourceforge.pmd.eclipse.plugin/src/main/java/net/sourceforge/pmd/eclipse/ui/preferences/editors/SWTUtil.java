@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 import org.eclipse.swt.SWT;
@@ -24,7 +25,7 @@ import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
  *
  * @author Brian Remedios
  */
-public class SWTUtil {
+public final class SWTUtil {
 
     private static PMDPlugin plugin = PMDPlugin.getDefault();
 
@@ -49,9 +50,10 @@ public class SWTUtil {
     public static void asRadioButtons(final Collection<Button> buttons) {
 
         Listener listener = new Listener() {
+            @Override
             public void handleEvent(Event e) {
                 for (Button button : buttons) {
-                    if (e.widget != button) {
+                    if (Objects.equals(e.widget, button)) {
                         button.setSelection(false);
                     }
                 }
@@ -72,12 +74,11 @@ public class SWTUtil {
 
     // TODO move this to to Collections utility
     public static String asString(Collection<String> values, char separator) {
-
         if (values == null || values.isEmpty()) {
             return "";
         }
 
-        String[] strings = values.toArray(new String[values.size()]);
+        String[] strings = values.toArray(new String[0]);
         StringBuilder sb = new StringBuilder(strings[0]);
 
         for (int i = 1; i < strings.length; i++) {

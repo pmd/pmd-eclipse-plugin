@@ -33,7 +33,7 @@ public class StyleExtractor {
 
     public StyleExtractor(SyntaxData theSyntaxData) {
         syntaxData = theSyntaxData;
-        commentOffsets = new LinkedList<int[]>();
+        commentOffsets = new LinkedList<>();
     }
 
     public void syntax(SyntaxData theSyntax) {
@@ -172,7 +172,7 @@ public class StyleExtractor {
         String content = text.substring(offset, offset + length);
         String[] lines = content.split(lineSeparator);
 
-        List<StyleRange> styles = new ArrayList<StyleRange>();
+        List<StyleRange> styles = new ArrayList<>();
 
         int separatorLength = lineSeparator.length();
 
@@ -186,7 +186,7 @@ public class StyleExtractor {
                 sr.start += currentOffset;
             }
             styles.addAll(lineStyles);
-            currentOffset += (lineLength + separatorLength);
+            currentOffset += lineLength + separatorLength;
         }
 
         return styles;
@@ -194,7 +194,7 @@ public class StyleExtractor {
 
     public List<StyleRange> lineStylesFor(String lineText, int lineOffset, int length) {
 
-        List<StyleRange> styles = new ArrayList<StyleRange>();
+        List<StyleRange> styles = new ArrayList<>();
 
         int start = 0;
 

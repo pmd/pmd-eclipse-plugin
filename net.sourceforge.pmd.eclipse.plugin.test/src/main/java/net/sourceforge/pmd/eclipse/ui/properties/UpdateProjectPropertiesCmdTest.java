@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.eclipse.ui.properties;
 
+import java.util.Objects;
+
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.junit.After;
@@ -46,7 +48,7 @@ public class UpdateProjectPropertiesCmdTest {
     }
 
     /**
-     * Bug: when a user deselect a project rule it is not saved
+     * Bug: when a user deselect a project rule it is not saved.
      */
     @Test
     public void testBug() throws PropertiesException {
@@ -78,7 +80,7 @@ public class UpdateProjectPropertiesCmdTest {
         projectRuleSet = model.getProjectRuleSet();
         Assert.assertEquals("Rule count should be 1 less", ruleCountBefore - 1, projectRuleSet.getRules().size());
         for (Rule r : projectRuleSet.getRules()) {
-            if (r.getName().equals(removedRule.getName()) && r.getLanguage() == removedRule.getLanguage()) {
+            if (r.getName().equals(removedRule.getName()) && Objects.equals(r.getLanguage(), removedRule.getLanguage())) {
                 Assert.fail("The rule has not been removed!");
             }
         }

@@ -21,6 +21,7 @@ public abstract class AbstractRealNumberEditor<T extends Number> extends Abstrac
 
 
     protected AbstractRealNumberEditor() {
+        // protected default constructor for subclassing
     }
 
 

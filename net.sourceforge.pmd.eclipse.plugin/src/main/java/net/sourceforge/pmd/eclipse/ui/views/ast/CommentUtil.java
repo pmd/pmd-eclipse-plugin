@@ -13,7 +13,7 @@ import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 
-public class CommentUtil {
+public final class CommentUtil {
 
     private static final String CR = "\n";
 
@@ -43,7 +43,7 @@ public class CommentUtil {
             return Collections.emptyMap();
         }
 
-        Map<String, Integer> tags = new HashMap<String, Integer>();
+        Map<String, Integer> tags = new HashMap<>();
         while (atPos >= 0) {
             String tag = wordAfter(comment, atPos);
             tags.put(tag, atPos);
@@ -55,7 +55,7 @@ public class CommentUtil {
     public static List<String> multiLinesIn(String comment) {
 
         String[] lines = comment.split(CR);
-        List<String> filteredLines = new ArrayList<String>(lines.length);
+        List<String> filteredLines = new ArrayList<>(lines.length);
 
         for (String rawLine : lines) {
             String line = rawLine.trim();
@@ -100,7 +100,6 @@ public class CommentUtil {
      * @param lines
      */
     public static List<String> trim(List<String> lines) {
-
         int firstNonEmpty = 0;
         for (; firstNonEmpty < lines.size(); firstNonEmpty++) {
             if (StringUtils.isNotBlank(lines.get(firstNonEmpty))) {
@@ -120,7 +119,7 @@ public class CommentUtil {
             }
         }
 
-        List<String> filtered = new ArrayList<String>();
+        List<String> filtered = new ArrayList<>();
         for (int i = firstNonEmpty; i < lastNonEmpty; i++) {
             filtered.add(lines.get(i));
         }
@@ -129,7 +128,6 @@ public class CommentUtil {
     }
 
     public static void main(String[] args) {
-
         Collection<String> tags = javadocTagsIn(args[0]).keySet();
 
         for (String tag : tags) {

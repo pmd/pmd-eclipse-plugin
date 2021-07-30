@@ -17,7 +17,9 @@ import net.sourceforge.pmd.properties.StringProperty;
 /**
  * 
  * @author BrianRemedios
+ * @deprecated unused and incomplete
  */
+@Deprecated
 public class FilterManager {
 
     private String newFilterPrefix;
@@ -32,14 +34,14 @@ public class FilterManager {
     }
 
     public void addFilter(String name, String source) {
-
+        // TODO
     }
 
     public void addFilterFrom(Rule rule) {
 
         if (rulesByFilterName == null) {
-            rulesByFilterName = new HashMap<String, List<Rule>>();
-            namesByFilterHash = new HashMap<Integer, String>();
+            rulesByFilterName = new HashMap<>();
+            namesByFilterHash = new HashMap<>();
         }
 
         String filter = rule.getProperty(filterPropertyDesc);
@@ -61,7 +63,7 @@ public class FilterManager {
     }
 
     public void setFilter(String name, Rule rule) {
-
+        // TODO
     }
 
     private String newName() {
@@ -125,10 +127,10 @@ public class FilterManager {
     }
 
     public void load() {
-
+        // TODO
     }
 
     public void save() {
-
+        // TODO
     }
 }

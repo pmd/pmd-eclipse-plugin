@@ -47,6 +47,7 @@ public class UpdateProjectPropertiesCmd extends AbstractProjectCommand {
         setTerminated(false);
     }
 
+    @Override
     public void execute() {
         try {
             final IProjectProperties properties = projectProperties();
@@ -159,6 +160,7 @@ public class UpdateProjectPropertiesCmd extends AbstractProjectCommand {
         return ruleSetFileExists;
     }
 
+    @Override
     public void reset() {
         setProject(null);
         setPmdEnabled(false);
@@ -171,6 +173,7 @@ public class UpdateProjectPropertiesCmd extends AbstractProjectCommand {
         setTerminated(false);
     }
 
+    @Override
     public boolean isReadyToExecute() {
         return super.isReadyToExecute() && projectRuleSets != null;
     }

@@ -92,6 +92,7 @@ public class DataflowViewPage extends AbstractStructureInspectorPage implements 
         switchButton = new Button(titleArea, SWT.RIGHT);
         switchButton.setLayoutData(new GridData(130, 25));
         switchButton.addSelectionListener(new SelectionAdapter() {
+            @Override
             public void widgetSelected(SelectionEvent se) {
                 isTableShown = !isTableShown;
                 showTableArea(isTableShown);
@@ -148,6 +149,7 @@ public class DataflowViewPage extends AbstractStructureInspectorPage implements 
      * @param pmdMethod
      *            Method to show in the graph
      */
+    @Override
     protected void showMethod(final ASTMethodDeclaration pmdMethod) {
         if (pmdMethod != null) {
 
@@ -156,7 +158,7 @@ public class DataflowViewPage extends AbstractStructureInspectorPage implements 
             graphViewer.setVisible(true);
             graphViewer.setData(pmdMethod, resourceString);
             graphViewer.addMouseListener(new MouseAdapter() {
-
+                @Override
                 public void mouseDown(MouseEvent e) {
                     int row = (int) ((double) e.y / DataflowGraphViewer.ROW_HEIGHT);
                     graphViewer.getGraph().demark();
@@ -198,13 +200,8 @@ public class DataflowViewPage extends AbstractStructureInspectorPage implements 
         dfaFrame.layout(true, true);
     }
 
-    /*
-     * @see
-     * org.eclipse.jface.viewers.ISelectionChangedListener#selectionChanged(org.
-     * eclipse.jface.viewers.SelectionChangedEvent)
-     */
+    @Override
     public void selectionChanged(SelectionChangedEvent event) {
-
         RuleViolation violation = selectedViolationFrom(event);
         if (violation == null) {
             return;
@@ -245,6 +242,7 @@ public class DataflowViewPage extends AbstractStructureInspectorPage implements 
      * @param newResource
      *            new resource for the page
      */
+    @Override
     public void refresh(IResource newResource) {
         super.refresh(newResource);
 
@@ -283,6 +281,7 @@ public class DataflowViewPage extends AbstractStructureInspectorPage implements 
     /**
      * If the review is ready propertyChanged with the results will be called.
      */
+    @Override
     public void propertyChanged(Object source, int propId) {
         if (source instanceof Iterator<?> && propId == PMDRuntimeConstants.PROPERTY_REVIEW) {
             tableViewer.setInput(source);

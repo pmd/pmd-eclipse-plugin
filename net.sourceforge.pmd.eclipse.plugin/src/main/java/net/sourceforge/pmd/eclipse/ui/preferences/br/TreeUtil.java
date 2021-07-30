@@ -15,7 +15,7 @@ import org.eclipse.swt.dnd.Transfer;
  * 
  * @author Brian Remedios
  */
-public class TreeUtil {
+public final class TreeUtil {
 
     private TreeUtil() {
     }

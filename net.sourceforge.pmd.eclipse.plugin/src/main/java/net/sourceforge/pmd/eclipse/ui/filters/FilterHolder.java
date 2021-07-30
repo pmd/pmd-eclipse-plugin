@@ -22,30 +22,35 @@ class FilterHolder {
     public static final FilterHolder[] EMPTY_HOLDERS = new FilterHolder[0];
 
     public static final Accessor EXCLUDE_ACCESSOR = new BasicAccessor() {
+        @Override
         public boolean boolValueFor(FilterHolder fh) {
             return !fh.isInclude;
         }
     };
 
     public static final Accessor INCLUDE_ACCESSOR = new BasicAccessor() {
+        @Override
         public boolean boolValueFor(FilterHolder fh) {
             return fh.isInclude;
         }
     };
 
     public static final Accessor PMD_ACCESSOR = new BasicAccessor() {
+        @Override
         public boolean boolValueFor(FilterHolder fh) {
             return fh.forPMD;
         }
     };
 
     public static final Accessor CPD_ACCESSOR = new BasicAccessor() {
+        @Override
         public boolean boolValueFor(FilterHolder fh) {
             return fh.forCPD;
         }
     };
 
     public static final Accessor PATTERN_ACCESSOR = new BasicAccessor() {
+        @Override
         public String textValueFor(FilterHolder fh) {
             return fh.pattern;
         }
@@ -65,19 +70,19 @@ class FilterHolder {
     }
 
     public static Boolean boolValueOf(Collection<FilterHolder> holders, Accessor boolAccessor) {
-        Set<Boolean> values = new HashSet<Boolean>();
+        Set<Boolean> values = new HashSet<>();
         for (FilterHolder fh : holders) {
             values.add(boolAccessor.boolValueFor(fh));
         }
         int valueCount = values.size();
-        return (valueCount == 2 || valueCount == 0) ? null : values.iterator().next();
+        return valueCount == 2 || valueCount == 0 ? null : values.iterator().next();
     }
 
     public static String textValueOf(Collection<FilterHolder> holders, Accessor textAccessor) {
-        Set<String> values = new HashSet<String>();
+        Set<String> values = new HashSet<>();
         for (FilterHolder fh : holders) {
             values.add(textAccessor.textValueFor(fh));
         }
-        return (values.size() == 1) ? values.iterator().next() : "";
+        return values.size() == 1 ? values.iterator().next() : "";
     }
 }

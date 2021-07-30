@@ -15,7 +15,7 @@ import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
 import net.sourceforge.pmd.eclipse.ui.preferences.RuleDialog;
 
 /**
- * Implements the call of the rule dialog to show rule data
+ * Implements the call of the rule dialog to show rule data.
  *
  * @author Philippe Herlin
  *
@@ -24,38 +24,36 @@ public class ShowRuleAction extends AbstractViolationSelectionAction {
 
     private Shell shell;
 
-    /**
-     * Constructor
-     */
-    public ShowRuleAction(TableViewer viewer, Shell shell) {
+    public ShowRuleAction(TableViewer viewer, Shell shell) { // NOPMD: unused formal parameter shell TODO
         super(viewer);
     }
 
+    @Override
     protected String textId() {
         return StringKeys.VIEW_ACTION_SHOW_RULE;
     }
 
+    @Override
     protected String imageId() {
         return null;
     }
 
+    @Override
     protected String tooltipMsgId() {
         return StringKeys.VIEW_TOOLTIP_SHOW_RULE;
     }
 
+    @Override
     protected boolean canExecute() {
         return super.canExecute() && allSelectionsDenoteSameRule();
     }
 
     private boolean allSelectionsDenoteSameRule() {
-
         IMarker[] markers = getSelectedViolations();
         return MarkerUtil.commonRuleNameAmong(markers) != null;
     }
 
-    /**
-     * @see org.eclipse.jface.action.IAction#run()
-     */
+    @Override
     public void run() {
         Rule selectedRule = getSelectedViolationRule();
         if (selectedRule != null) {
@@ -65,7 +63,7 @@ public class ShowRuleAction extends AbstractViolationSelectionAction {
     }
 
     /**
-     * Returns the rule from the first selected violation
+     * Returns the rule from the first selected violation.
      */
     public Rule getSelectedViolationRule() {
         Rule rule = null;

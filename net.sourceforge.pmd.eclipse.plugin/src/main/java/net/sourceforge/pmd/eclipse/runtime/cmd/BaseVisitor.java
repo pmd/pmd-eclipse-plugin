@@ -11,6 +11,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
@@ -44,12 +45,10 @@ import net.sourceforge.pmd.eclipse.runtime.PMDRuntimeConstants;
 import net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties;
 import net.sourceforge.pmd.eclipse.runtime.properties.PropertiesException;
 import net.sourceforge.pmd.eclipse.ui.actions.internal.InternalRuleSetUtil;
-import net.sourceforge.pmd.eclipse.util.IOUtil;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.LanguageVersionDiscoverer;
 import net.sourceforge.pmd.lang.java.JavaLanguageModule;
-import net.sourceforge.pmd.renderers.AbstractRenderer;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.util.datasource.DataSource;
 import net.sourceforge.pmd.util.datasource.ReaderDataSource;
@@ -63,6 +62,7 @@ import net.sourceforge.pmd.util.datasource.ReaderDataSource;
 public class BaseVisitor {
     private static final Logger LOG = LoggerFactory.getLogger(BaseVisitor.class);
     private IProgressMonitor monitor;
+    @Deprecated
     private boolean useTaskMarker = false;
     private Map<IFile, Set<MarkerInfo2>> accumulator;
     // private PMDEngine pmdEngine;
@@ -75,7 +75,7 @@ public class BaseVisitor {
     private PMDConfiguration configuration;
 
     /**
-     * The constructor is protected to avoid illegal instantiation
+     * The constructor is protected to avoid illegal instantiation.
      *
      */
     protected BaseVisitor() {
@@ -93,7 +93,9 @@ public class BaseVisitor {
      * Returns the useTaskMarker.
      *
      * @return boolean
+     * @deprecated not used
      */
+    @Deprecated
     public boolean isUseTaskMarker() {
         return useTaskMarker;
     }
@@ -101,11 +103,13 @@ public class BaseVisitor {
     /**
      * Sets the useTaskMarker.
      *
-     * @param useTaskMarker
+     * @param shouldUseTaskMarker
      *            The useTaskMarker to set
+     * @deprecated not used
      */
-    public void setUseTaskMarker(final boolean useTaskMarker) {
-        this.useTaskMarker = useTaskMarker;
+    @Deprecated
+    public void setUseTaskMarker(final boolean shouldUseTaskMarker) {
+        this.useTaskMarker = shouldUseTaskMarker;
     }
 
     /**
@@ -127,31 +131,23 @@ public class BaseVisitor {
         this.accumulator = accumulator;
     }
 
-    /**
-     * @return
-     */
     public IProgressMonitor getMonitor() {
         return monitor;
     }
 
-    /**
-     * @param monitor
-     */
     public void setMonitor(final IProgressMonitor monitor) {
         this.monitor = monitor;
     }
 
     /**
-     * Tell whether the user has required to cancel the operation
-     *
-     * @return
+     * Tell whether the user has required to cancel the operation.
      */
     public boolean isCanceled() {
-        return getMonitor() == null ? false : getMonitor().isCanceled();
+        return getMonitor() != null && getMonitor().isCanceled();
     }
 
     /**
-     * Begin a subtask
+     * Begin a subtask.
      *
      * @param name
      *            the task name
@@ -163,9 +159,7 @@ public class BaseVisitor {
     }
 
     /**
-     * Inform of the work progress
-     *
-     * @param work
+     * Inform of the work progress.
      */
     public void worked(final int work) {
         if (getMonitor() != null) {
@@ -203,7 +197,6 @@ public class BaseVisitor {
 
     /**
      * This returns the first ruleset file.
-     * @return
      */
     public RuleSet getRuleSet() {
         return this.ruleSets.get(0);
@@ -212,8 +205,6 @@ public class BaseVisitor {
     /**
      * This removes all the Rulesets from the rulesets
      * and sets the only ruleset to the one passed in.
-     * 
-     * @param ruleSet
      */
     public void setRuleSet(RuleSet ruleSet) {
         this.ruleSets = new ArrayList<>();
@@ -291,7 +282,6 @@ public class BaseVisitor {
             }
         }
 
-        Reader input = null;
         try {
             boolean included = isIncluded(file);
             LOG.debug("Derived files included: " + projectProperties.isIncludeDerivedFiles());
@@ -304,7 +294,7 @@ public class BaseVisitor {
             LanguageVersion languageVersion = languageDiscoverer.getDefaultLanguageVersionForFile(file.getName());
             // in case it is java, select the correct java version
             if (languageVersion != null
-                    && languageVersion.getLanguage() == LanguageRegistry.getLanguage(JavaLanguageModule.NAME)) {
+                    && LanguageRegistry.getLanguage(JavaLanguageModule.NAME).equals(languageVersion.getLanguage())) {
                 languageVersion = PMDPlugin.javaVersionFor(file.getProject());
             }
             if (languageVersion != null) {
@@ -326,61 +316,26 @@ public class BaseVisitor {
 
                 long start = System.currentTimeMillis();
 
-                input = new InputStreamReader(file.getContents(), file.getCharset());
-                // getPmdEngine().processFile(input, getRuleSet(), context);
-                // getPmdEngine().processFile(sourceCodeFile, getRuleSet(),
-                // context);
+                Report collectingReport = null;
 
-                DataSource dataSource = new ReaderDataSource(input, file.getRawLocation().toFile().getPath());
-                // need to disable multi threading, as the ruleset is
-                // not recreated and shared between threads...
-                // but as we anyway have only one file to process, it won't hurt
-                // here.
-                configuration().setThreads(0);
-                LOG.debug("PMD running on file {}", file.getName());
-                final Report collectingReport = new Report();
-                Renderer collectingRenderer = new AbstractRenderer("collectingRenderer",
-                        "Renderer that collect violations") {
-                    @Override
-                    public void startFileAnalysis(DataSource dataSource) {
-                        // TODO Auto-generated method stub
-
-                    }
-
-                    @Override
-                    public void start() throws IOException {
-                        // TODO Auto-generated method stub
-
-                    }
-
-                    @Override
-                    public void renderFileReport(Report report) throws IOException {
-                        for (RuleViolation v : report.getViolations()) {
-                            collectingReport.addRuleViolation(v);
-                        }
-                        for (ProcessingError error : report.getProcessingErrors()) {
-                            collectingReport.addError(error);
-                        }
-                        for (ConfigurationError configError : report.getConfigurationErrors()) {
-                            collectingReport.addConfigError(configError);
-                        }
-                    }
-
-                    @Override
-                    public void end() throws IOException {
-                        // TODO Auto-generated method stub
-
-                    }
-
-                    @Override
-                    public String defaultFileExtension() {
-                        // TODO Auto-generated method stub
-                        return null;
-                    }
-                };
-
-                PMD.processFiles(configuration(), ruleSets, Arrays.asList(dataSource), Arrays.asList(collectingRenderer));
-                LOG.debug("PMD run finished.");
+                try (Reader input = new InputStreamReader(file.getContents(), file.getCharset());
+                     DataSource dataSource = new ReaderDataSource(input, file.getRawLocation().toFile().getPath());) {
+                    
+                    // getPmdEngine().processFile(input, getRuleSet(), context);
+                    // getPmdEngine().processFile(sourceCodeFile, getRuleSet(),
+                    // context);
+                    
+                    
+                    // need to disable multi threading, as the ruleset is
+                    // not recreated and shared between threads...
+                    // but as we anyway have only one file to process, it won't hurt
+                    // here.
+                    configuration().setThreads(0);
+                    LOG.debug("PMD running on file {}", file.getName());
+                    collectingReport = PMD.processFiles(configuration(), ruleSets, Arrays.asList(dataSource),
+                            Collections.<Renderer>emptyList());
+                    LOG.debug("PMD run finished.");
+                }
 
                 pmdDuration += System.currentTimeMillis() - start;
 
@@ -404,7 +359,7 @@ public class BaseVisitor {
                     throw new PMDException(message.toString());
                 }
 
-                updateMarkers(file, collectingReport.getViolations(), isUseTaskMarker());
+                updateMarkers(file, collectingReport.getViolations());
 
                 worked(1);
                 fileCount++;
@@ -426,14 +381,12 @@ public class BaseVisitor {
             LOG.error("Properties exception visiting " + file.getName(), e);
         } catch (IllegalArgumentException e) {
             LOG.error("Illegal argument: {}", e.toString(), e);
-        } finally {
-            IOUtil.closeQuietly(input);
         }
 
     }
 
     /**
-     * Test if a file is in the PMD working set
+     * Test if a file is in the PMD working set.
      *
      * @param file
      * @return true if the file should be checked
@@ -474,11 +427,11 @@ public class BaseVisitor {
         }
     }
 
-    private void updateMarkers(IFile file, List<RuleViolation> violations, boolean fTask)
+    private void updateMarkers(IFile file, List<RuleViolation> violations)
             throws CoreException, PropertiesException {
 
         Map<IFile, Set<MarkerInfo2>> accumulator = getAccumulator();
-        Set<MarkerInfo2> markerSet = new HashSet<MarkerInfo2>();
+        Set<MarkerInfo2> markerSet = new HashSet<>();
         List<Review> reviewsList = findReviewedViolations(file);
         Review review = new Review();
         // final IPreferences preferences =
@@ -524,14 +477,12 @@ public class BaseVisitor {
      * @param file
      */
     private List<Review> findReviewedViolations(final IFile file) {
-        final List<Review> reviews = new ArrayList<Review>();
-        BufferedReader reader = null;
-        try {
-            int lineNumber = 0;
-            boolean findLine = false;
-            boolean comment = false;
-            final Stack<String> pendingReviews = new Stack<String>();
-            reader = new BufferedReader(new InputStreamReader(file.getContents()));
+        final List<Review> reviews = new ArrayList<>();
+        int lineNumber = 0;
+        boolean findLine = false;
+        boolean comment = false;
+        final Stack<String> pendingReviews = new Stack<>();
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(file.getContents()))) {
             while (reader.ready()) {
                 String line = reader.readLine();
                 if (line != null) {
@@ -572,8 +523,6 @@ public class BaseVisitor {
             PMDPlugin.getDefault().logError("Core Exception when searching reviewed violations", e);
         } catch (IOException e) {
             PMDPlugin.getDefault().logError("IO Exception when searching reviewed violations", e);
-        } finally {
-            IOUtil.closeQuietly(reader);
         }
 
         return reviews;
@@ -615,7 +564,7 @@ public class BaseVisitor {
     }
 
     /**
-     * Private inner type to handle reviews
+     * Private inner type to handle reviews.
      */
     private class Review {
         public String ruleName;

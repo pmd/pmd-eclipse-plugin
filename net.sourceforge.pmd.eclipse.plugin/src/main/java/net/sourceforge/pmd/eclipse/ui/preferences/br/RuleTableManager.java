@@ -6,16 +6,18 @@ package net.sourceforge.pmd.eclipse.ui.preferences.br;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ICheckStateProvider;
@@ -26,14 +28,12 @@ import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
@@ -59,13 +59,11 @@ import net.sourceforge.pmd.eclipse.ui.preferences.RuleDupeChecker;
 import net.sourceforge.pmd.eclipse.ui.preferences.RuleSetSelectionDialog;
 import net.sourceforge.pmd.eclipse.ui.preferences.editors.SWTUtil;
 import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.CreateRuleWizard;
-import net.sourceforge.pmd.eclipse.util.IOUtil;
 import net.sourceforge.pmd.eclipse.util.ResourceManager;
 import net.sourceforge.pmd.eclipse.util.Util;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertySource;
 import net.sourceforge.pmd.util.FileUtil;
-import net.sourceforge.pmd.util.StringUtil;
 import net.sourceforge.pmd.util.designer.Designer;
 
 /**
@@ -90,7 +88,6 @@ public class RuleTableManager extends AbstractTreeTableManager<Rule> implements 
 
     // private Menu ruleListMenu;
     private MenuItem useDefaultsItem;
-    private Button addRuleButton;
     private Button removeRuleButton;
     private Button exportRuleSetButton;
     private RuleSelectionListener ruleSelectionListener;
@@ -105,14 +102,14 @@ public class RuleTableManager extends AbstractTreeTableManager<Rule> implements 
         resetHandler = aResetHandler;
     }
 
+    @Override
     protected boolean isQualifiedItem(Object item) {
         return item instanceof Rule;
     }
 
     public List<Rule> activeRules() {
-
         Object[] checkedItems = treeViewer.getCheckedElements();
-        List<Rule> activeOnes = new ArrayList<Rule>(checkedItems.length);
+        List<Rule> activeOnes = new ArrayList<>(checkedItems.length);
 
         for (Object item : checkedItems) {
             if (isQualifiedItem(item)) {
@@ -123,6 +120,7 @@ public class RuleTableManager extends AbstractTreeTableManager<Rule> implements 
         return activeOnes;
     }
 
+    @Override
     protected String nameFor(Object treeItemData) {
         return ((Rule) treeItemData).getName();
     }
@@ -132,8 +130,8 @@ public class RuleTableManager extends AbstractTreeTableManager<Rule> implements 
     }
 
     private RuleFieldAccessor createCheckedItemAccessor() {
-
         return new BasicRuleFieldAccessor() {
+            @Override
             public Comparable<Boolean> valueFor(Rule rule) {
                 return isActive(rule.getName());
             }
@@ -213,35 +211,37 @@ public class RuleTableManager extends AbstractTreeTableManager<Rule> implements 
     // }
     // }
 
+    @Override
     protected void addTableSelectionOptions(Menu menu) {
-
         useDefaultsItem = new MenuItem(menu, SWT.PUSH);
         useDefaultsItem.setText("Use defaults");
         // useDefaultsItem.setEnabled(false);
         useDefaultsItem.addSelectionListener(new SelectionAdapter() {
+            @Override
             public void widgetSelected(SelectionEvent event) {
                 resetHandler.resetValuesIn(ruleSelection);
             }
         });
     }
 
+    @Override
     protected void adjustTableMenuOptions() {
         boolean hasDefaults = ruleSelection.haveDefaultValues();
         useDefaultsItem.setEnabled(!hasDefaults);
     }
 
     /**
-     * Build the edit rule button
+     * Build the add rule button.
      * 
      * @param parent
      *            Composite
      * @return Button
      */
     public Button buildAddRuleButton(final Composite parent) {
-
         Button button = newImageButton(parent, PMDUiConstants.ICON_BUTTON_ADD, StringKeys.PREF_RULESET_BUTTON_ADDRULE);
 
         button.addSelectionListener(new SelectionAdapter() {
+            @Override
             public void widgetSelected(SelectionEvent event) {
                 createRule(parent.getShell());
             }
@@ -271,12 +271,8 @@ public class RuleTableManager extends AbstractTreeTableManager<Rule> implements 
             added(addedRule);
 
             setModified();
-            try {
-                refresh();
-                treeViewer.reveal(addedRule);
-            } catch (Throwable t) {
-                plugin.logError("Exception when refreshing the rule table", t);
-            }
+            refresh();
+            treeViewer.reveal(addedRule);
 
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -284,18 +280,18 @@ public class RuleTableManager extends AbstractTreeTableManager<Rule> implements 
     }
 
     /**
-     * Build the remove rule button
+     * Build the remove rule button.
      * 
      * @param parent
      *            Composite
      * @return Button
      */
     public Button buildRemoveRuleButton(Composite parent) {
-
         Button button = newImageButton(parent, PMDUiConstants.ICON_BUTTON_DELETE,
                 StringKeys.PREF_RULESET_BUTTON_REMOVERULE);
 
         button.addSelectionListener(new SelectionAdapter() {
+            @Override
             public void widgetSelected(SelectionEvent event) {
                 removeSelectedItems();
             }
@@ -303,8 +299,8 @@ public class RuleTableManager extends AbstractTreeTableManager<Rule> implements 
         return button;
     }
 
+    @Override
     protected void removeSelectedItems() {
-
         if (ruleSelection == null) {
             return;
         }
@@ -324,7 +320,7 @@ public class RuleTableManager extends AbstractTreeTableManager<Rule> implements 
 
         try {
             refresh();
-        } catch (Throwable t) {
+        } catch (RuntimeException t) {
             treeViewer.setSelection(null);
         }
 
@@ -332,19 +328,18 @@ public class RuleTableManager extends AbstractTreeTableManager<Rule> implements 
     }
 
     /**
-     * Build the export rule set button
+     * Build the export rule set button.
      * 
      * @param parent
      *            Composite
      * @return Button
      */
     private Button buildExportRuleSetButton(final Composite parent) {
-
         Button button = newImageButton(parent, PMDUiConstants.ICON_BUTTON_EXPORT,
                 StringKeys.PREF_RULESET_BUTTON_EXPORTRULESET);
 
         button.addSelectionListener(new SelectionAdapter() {
-
+            @Override
             public void widgetSelected(SelectionEvent event) {
                 exportSelectedRules();
             }
@@ -354,14 +349,13 @@ public class RuleTableManager extends AbstractTreeTableManager<Rule> implements 
     }
 
     private void exportSelectedRules() {
-
         Shell shell = treeViewer.getTree().getShell();
 
         FileDialog dialog = new FileDialog(shell, SWT.SAVE);
         dialog.setText("Export " + ruleSelection.allRules().size() + " rules");
 
         String fileName = dialog.open();
-        if (StringUtil.isNotEmpty(fileName)) {
+        if (StringUtils.isNotBlank(fileName)) {
             try {
                 exportTo(fileName, shell);
             } catch (Exception e) {
@@ -371,7 +365,6 @@ public class RuleTableManager extends AbstractTreeTableManager<Rule> implements 
     }
 
     private RuleSet ruleSelectionAsRuleSet() {
-
         RuleSet rs = RuleSetUtil.newCopyOf(ruleSet);
         rs = RuleSetUtil.clearRules(ruleSet);
         rs = RuleSetUtil.addRules(rs, ruleSelection.allRules());
@@ -379,7 +372,6 @@ public class RuleTableManager extends AbstractTreeTableManager<Rule> implements 
     }
 
     private void exportTo(String fileName, Shell shell) throws FileNotFoundException, WriterException, IOException {
-
         File file = new File(fileName);
         boolean flContinue = true;
 
@@ -402,15 +394,11 @@ public class RuleTableManager extends AbstractTreeTableManager<Rule> implements 
         }
 
         if (flContinue && input != null) {
-            OutputStream out = null;
-            try {
-                ruleSet = RuleSetUtil.setNameDescription(ruleSet, FileUtil.getFileNameWithoutExtension(file.getName()),
-                        input.getValue());
-                out = new FileOutputStream(fileName);
-                IRuleSetWriter writer = plugin.getRuleSetWriter();
+            ruleSet = RuleSetUtil.setNameDescription(ruleSet, FileUtil.getFileNameWithoutExtension(file.getName()),
+                    input.getValue());
+            IRuleSetWriter writer = plugin.getRuleSetWriter();
+            try (OutputStream out = Files.newOutputStream(file.toPath())) {
                 writer.write(out, ruleSet);
-            } finally {
-                IOUtil.closeQuietly(out);
             }
             MessageDialog.openInformation(shell, getMessage(StringKeys.INFORMATION_TITLE),
                     getMessage(StringKeys.INFORMATION_RULESET_EXPORTED));
@@ -419,11 +407,12 @@ public class RuleTableManager extends AbstractTreeTableManager<Rule> implements 
 
     private RuleColumnDescriptor newDupeIndicatorColumn() {
         return new SimpleColumnDescriptor("a", "", SWT.CENTER, 35, null, false, null) {
-
+            @Override
             public String stringValueFor(Rule rule) {
                 return isDuplicate(rule) ? "X" : "";
             }
 
+            @Override
             public Image imageFor(Rule rule) {
                 return null;
             }
@@ -431,7 +420,6 @@ public class RuleTableManager extends AbstractTreeTableManager<Rule> implements 
     }
 
     private RuleColumnDescriptor[] ruleImportColumns() {
-
         return new RuleColumnDescriptor[] { newDupeIndicatorColumn(),
             new SimpleColumnDescriptor("a", RuleTableColumns.NAME.label(), SWT.LEFT, 210,
                     RuleTableColumns.NAME.accessor(), true, null),
@@ -440,18 +428,18 @@ public class RuleTableManager extends AbstractTreeTableManager<Rule> implements 
     }
 
     /**
-     * Build the import ruleset button
+     * Build the import ruleset button.
      * 
      * @param parent
      *            Composite
      * @return Button
      */
     private Button buildImportRuleSetButton(final Composite parent) {
-
         Button button = newImageButton(parent, PMDUiConstants.ICON_BUTTON_IMPORT,
                 StringKeys.PREF_RULESET_BUTTON_IMPORTRULESET);
 
         button.addSelectionListener(new SelectionAdapter() {
+            @Override
             public void widgetSelected(SelectionEvent event) {
                 RuleColumnDescriptor[] rcd = ruleImportColumns();
                 RuleSetSelectionDialog dialog = new RuleSetSelectionDialog(parent.getShell(), "Import rules", rcd,
@@ -477,8 +465,8 @@ public class RuleTableManager extends AbstractTreeTableManager<Rule> implements 
      * @param rule
      * @return
      */
+    @Override
     public boolean isDuplicate(Rule otherRule) {
-
         for (Rule rule : ruleSet.getRules()) {
             if (areSemanticEquals(rule, otherRule)) {
                 return true;
@@ -488,7 +476,6 @@ public class RuleTableManager extends AbstractTreeTableManager<Rule> implements 
     }
 
     private void add(RuleSet incomingRuleSet) {
-
         Iterator<Rule> iter = incomingRuleSet.getRules().iterator();
 
         while (iter.hasNext()) {
@@ -503,7 +490,6 @@ public class RuleTableManager extends AbstractTreeTableManager<Rule> implements 
     }
 
     private void doImport(RuleSet selectedRuleSet, boolean doByReference) {
-
         try {
             if (doByReference) {
                 RuleSet filteredRS = RuleSetUtil.newEmpty(RuleSetUtil.DEFAULT_RULESET_NAME,
@@ -518,11 +504,7 @@ public class RuleTableManager extends AbstractTreeTableManager<Rule> implements 
                 add(selectedRuleSet);
             }
             setModified();
-            try {
-                refresh();
-            } catch (Throwable t) {
-                plugin.logError("Exception when refreshing the rule table", t);
-            }
+            refresh();
         } catch (RuntimeException e) {
             plugin.showError(getMessage(StringKeys.ERROR_IMPORTING_RULESET), e);
         }
@@ -531,7 +513,6 @@ public class RuleTableManager extends AbstractTreeTableManager<Rule> implements 
     }
 
     public Composite buildGroupCombo(Composite parent, String comboLabelKey, final Object[][] groupingChoices) {
-
         Composite panel = new Composite(parent, 0);
         GridLayout layout = new GridLayout(6, false);
         panel.setLayout(layout);
@@ -552,6 +533,7 @@ public class RuleTableManager extends AbstractTreeTableManager<Rule> implements 
         combo.select(groupingChoices.length - 1); 
 
         combo.addSelectionListener(new SelectionAdapter() {
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 int selectionIdx = combo.getSelectionIndex();
                 Object[] choice = groupingChoices[selectionIdx];
@@ -566,23 +548,23 @@ public class RuleTableManager extends AbstractTreeTableManager<Rule> implements 
     }
 
     /**
-     * Build the Rule Designer button
+     * Build the Rule Designer button.
      * 
      * @param parent
      *            Composite
      * @return Button
      */
     private Button buildRuleDesignerButton(Composite parent) {
-
         Button button = newImageButton(parent, PMDUiConstants.ICON_BUTTON_EDITOR,
                 StringKeys.PREF_RULESET_BUTTON_RULEDESIGNER);
 
         button.addSelectionListener(new SelectionAdapter() {
-
+            @Override
             public void widgetSelected(SelectionEvent event) {
                 // TODO Is this cool from Eclipse? Is there a nicer way to spawn
                 // a J2SE Application?
                 new Thread(new Runnable() {
+                    @Override
                     public void run() {
                         Designer.main(new String[] { "-noexitonclose" });
                     }
@@ -594,21 +576,20 @@ public class RuleTableManager extends AbstractTreeTableManager<Rule> implements 
     }
 
     /**
-     * Create buttons for rule table management
+     * Create buttons for rule table management.
      * 
      * @param parent
      *            Composite
      * @return Composite
      */
     public Composite buildRuleTableButtons(Composite parent) {
-
         Composite composite = new Composite(parent, SWT.NULL);
         GridLayout gridLayout = new GridLayout();
         gridLayout.numColumns = 1;
         gridLayout.verticalSpacing = 3;
         composite.setLayout(gridLayout);
 
-        addRuleButton = buildAddRuleButton(composite);
+        Button addRuleButton = buildAddRuleButton(composite);
         removeRuleButton = buildRemoveRuleButton(composite);
         Button importRuleSetButton = buildImportRuleSetButton(composite);
         exportRuleSetButton = buildExportRuleSetButton(composite);
@@ -633,17 +614,13 @@ public class RuleTableManager extends AbstractTreeTableManager<Rule> implements 
     }
 
     protected boolean hasIssue(TreeItem item) {
-
         Object data = item.getData();
         return data instanceof Rule && ((Rule) data).dysfunctionReason() != null;
     }
 
     protected void addIssueStyler(final Tree tree) {
-
-        final Display display = tree.getDisplay();
-        final Color issueColor = display.getSystemColor(SWT.COLOR_YELLOW);
-
         tree.addListener(SWT.EraseItem, new Listener() {
+            @Override
             public void handleEvent(Event event) {
 
                 // event.detail &= ~SWT.HOT;
@@ -675,20 +652,17 @@ public class RuleTableManager extends AbstractTreeTableManager<Rule> implements 
                 // gc.setBackground(background);
                 // event.detail &= ~SWT.SELECTED;
             }
-
         });
-
     }
 
     /**
-     * Build rule table viewer
+     * Build rule table viewer.
      * 
      * @param parent
      *            Composite
      * @return Tree
      */
     public Tree buildRuleTreeViewer(Composite parent) {
-
         buildTreeViewer(parent);
 
         final Tree ruleTree = treeViewer.getTree();
@@ -708,6 +682,7 @@ public class RuleTableManager extends AbstractTreeTableManager<Rule> implements 
         return ruleTree;
     }
 
+    @Override
     public void changed(PropertySource source, PropertyDescriptor<?> desc, Object newValue) {
         // TODO enhance to recognize default values
         // RuleUtil.modifiedPropertiesIn(rule);
@@ -716,6 +691,7 @@ public class RuleTableManager extends AbstractTreeTableManager<Rule> implements 
         setModified();
     }
 
+    @Override
     public void changed(RuleSelection selection, PropertyDescriptor<?> desc, Object newValue) {
         // TODO enhance to recognize default values
 
@@ -755,29 +731,28 @@ public class RuleTableManager extends AbstractTreeTableManager<Rule> implements 
     // }
 
     private ICheckStateProvider createCheckStateProvider() {
-
         return new ICheckStateProvider() {
-
+            @Override
             public boolean isChecked(Object item) {
                 if (item instanceof Rule) {
                     return isActive(((Rule) item).getName());
                 } else {
                     if (item instanceof RuleGroup) {
                         SelectionStats stats = selectionRatioIn(((RuleGroup) item).rules());
-                        return (stats.selectedCount > 0) && stats.allSelected();
+                        return stats.selectedCount > 0 && stats.allSelected();
                     }
                 }
                 return false; // should never get here
             }
 
+            @Override
             public boolean isGrayed(Object item) {
-
                 if (item instanceof Rule) {
                     return false;
                 }
                 if (item instanceof RuleGroup) {
                     SelectionStats stats = selectionRatioIn(((RuleGroup) item).rules());
-                    return (stats.selectedCount > 0) && (!stats.allSelected());
+                    return stats.selectedCount > 0 && !stats.allSelected();
                 }
                 return false;
             }
@@ -840,12 +815,11 @@ public class RuleTableManager extends AbstractTreeTableManager<Rule> implements 
      *            RuleColumnDescriptor
      */
     public void groupBy(RuleColumnDescriptor chosenColumn) {
-
         groupColumnLabel = chosenColumn == null ? null : chosenColumn.label();
 
-        List<ColumnDescriptor> visibleColumns = new ArrayList<ColumnDescriptor>(availableColumns.length);
+        List<ColumnDescriptor> visibleColumns = new ArrayList<>(availableColumns.length);
         for (ColumnDescriptor desc : availableColumns) {
-            if (desc == chosenColumn) {
+            if (Objects.equals(desc, chosenColumn)) {
                 continue; // redundant, don't include it
             }
             if (isHidden(desc)) {
@@ -854,7 +828,7 @@ public class RuleTableManager extends AbstractTreeTableManager<Rule> implements 
             visibleColumns.add(desc);
         }
 
-        setupTreeColumns(visibleColumns.toArray(new RuleColumnDescriptor[visibleColumns.size()]),
+        setupTreeColumns(visibleColumns.toArray(new RuleColumnDescriptor[0]),
                 chosenColumn == null ? null : chosenColumn.accessor());
 
         selectedItems(new Object[0]); // selections are killed by grouping
@@ -867,12 +841,11 @@ public class RuleTableManager extends AbstractTreeTableManager<Rule> implements 
     // }
 
     private String labelFor(TreeColumn tc) {
-
         return groupColumnLabel == null ? tc.getText() : groupColumnLabel + " / " + tc.getText();
     }
 
     /**
-     * Populate the rule table
+     * Populate the rule table.
      */
     public void populateRuleTable() {
         treeViewer.setInput(ruleSet);
@@ -899,6 +872,7 @@ public class RuleTableManager extends AbstractTreeTableManager<Rule> implements 
     //// ruleListMenu.setVisible(true);
     // }
 
+    @Override
     protected void redrawTable(String sortColumnLabel, int sortDir) {
         groupBy(groupingColumn);
 
@@ -915,9 +889,8 @@ public class RuleTableManager extends AbstractTreeTableManager<Rule> implements 
     }
 
     private void restoreSavedRuleSelections() {
-
         Set<String> names = PreferenceUIStore.INSTANCE.selectedRuleNames();
-        List<Rule> rules = new ArrayList<Rule>();
+        List<Rule> rules = new ArrayList<>();
         for (String name : names) {
             rules.add(ruleSet.getRuleByName(name));
         }
@@ -940,11 +913,11 @@ public class RuleTableManager extends AbstractTreeTableManager<Rule> implements 
     // return names.toArray(new String[names.size()]);
     // }
 
+    @Override
     protected void saveItemSelections() {
-
         IStructuredSelection selection = (IStructuredSelection) treeViewer.getSelection();
 
-        Set<String> ruleNames = new HashSet<String>();
+        Set<String> ruleNames = new HashSet<>();
         for (Object item : selection.toList()) {
             if (item instanceof Rule) {
                 ruleNames.add(((Rule) item).getName());
@@ -954,12 +927,8 @@ public class RuleTableManager extends AbstractTreeTableManager<Rule> implements 
         PreferenceUIStore.INSTANCE.selectedRuleNames(ruleNames);
     }
 
-    /**
-     * @param item
-     *            Object[]
-     */
+    @Override
     protected void selectedItems(Object[] items) {
-
         ruleSelection = new RuleSelection(items);
         if (ruleSelectionListener != null) {
             ruleSelectionListener.selection(ruleSelection);
@@ -992,13 +961,12 @@ public class RuleTableManager extends AbstractTreeTableManager<Rule> implements 
     }
 
     private SelectionStats selectionRatioIn(Rule[] rules) {
-
         int selectedCount = 0;
         int dysfunctionCount = 0;
         for (Rule rule : rules) {
             if (isActive(rule.getName())) {
                 selectedCount++;
-                if (StringUtil.isNotEmpty(rule.dysfunctionReason())) {
+                if (StringUtils.isNotBlank(rule.dysfunctionReason())) {
                     dysfunctionCount++;
                 }
             }
@@ -1006,11 +974,12 @@ public class RuleTableManager extends AbstractTreeTableManager<Rule> implements 
         return new SelectionStats(selectedCount, rules.length, dysfunctionCount);
     }
 
+    @Override
     protected void setAllItemsActive() {
         Collection<Rule> rules = ruleSet.getRules();
-        Rule[] rulesArray = rules.toArray(new Rule[rules.size()]);
+        Rule[] rulesArray = rules.toArray(new Rule[0]);
 
-        Set<String> activeRules = new HashSet<String>();
+        Set<String> activeRules = new HashSet<>();
         for (int i = 0; i < rulesArray.length; i++) {
             activeRules.add(rulesArray[i].getName());
         }
@@ -1043,15 +1012,7 @@ public class RuleTableManager extends AbstractTreeTableManager<Rule> implements 
     // // TODO - awaiting support in PMD itself
     // }
 
-    /**
-     *
-     * @param columnDescs
-     *            RuleColumnDescriptor[]
-     * @param groupingField
-     *            RuleFieldAccessor
-     */
     private void setupTreeColumns(RuleColumnDescriptor[] columnDescs, RuleFieldAccessor groupingField) {
-
         Tree ruleTree = cleanupRuleTree();
 
         createCheckBoxColumn(ruleTree);
@@ -1080,6 +1041,7 @@ public class RuleTableManager extends AbstractTreeTableManager<Rule> implements 
         return (RuleFieldAccessor) columnSorter;
     }
 
+    @Override
     protected void sortByCheckedItems() {
         sortBy(checkedColumnAccessor, treeViewer.getTree().getColumn(0));
     }
@@ -1088,17 +1050,8 @@ public class RuleTableManager extends AbstractTreeTableManager<Rule> implements 
         ruleSet = theSet;
     }
 
-    private boolean activeRulesHaveIssues(Rule[] rules) {
-        for (Rule rule : rules) {
-            if (isActive(rule.getName()) && StringUtil.isNotEmpty(rule.dysfunctionReason())) {
-                return true;
-            }
-        }
-        return false;
-    }
-
+    @Override
     protected void updateCheckControls() {
-
         Rule[] rules = new Rule[ruleSet.size()];
         rules = ruleSet.getRules().toArray(rules);
         SelectionStats stats = selectionRatioIn(rules);
@@ -1110,8 +1063,8 @@ public class RuleTableManager extends AbstractTreeTableManager<Rule> implements 
                 hasIssues ? ResourceManager.imageFor(PMDUiConstants.ICON_WARN) : null);
     }
 
+    @Override
     protected void updateTooltipFor(TreeItem item, int columnIndex) {
-
         RuleLabelProvider provider = (RuleLabelProvider) treeViewer.getLabelProvider();
         String txt = provider.getDetailText(item.getData(), columnIndex);
         treeViewer.getTree().setToolTipText(txt);

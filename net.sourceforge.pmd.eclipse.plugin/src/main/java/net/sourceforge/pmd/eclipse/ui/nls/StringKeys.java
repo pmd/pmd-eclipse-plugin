@@ -10,7 +10,7 @@ package net.sourceforge.pmd.eclipse.ui.nls;
  * @author phherlin
  * @author bremedios
  */
-public class StringKeys {
+public final class StringKeys {
 
     public static final String PROPERTY_BUTTON_ENABLE = "property.button.enable";
     public static final String PROPERTY_LABEL_SELECT_RULE = "property.label.select_rule";

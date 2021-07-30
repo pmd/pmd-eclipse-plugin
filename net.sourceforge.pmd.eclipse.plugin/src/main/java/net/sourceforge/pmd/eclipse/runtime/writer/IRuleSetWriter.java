@@ -18,7 +18,7 @@ import net.sourceforge.pmd.RuleSet;
 public interface IRuleSetWriter {
 
     /**
-     * Write a ruleset as an XML stream
+     * Write a ruleset as an XML stream.
      * 
      * @param outputStream
      *            the output target

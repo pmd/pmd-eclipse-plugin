@@ -20,6 +20,17 @@ This is a minor release.
 
 ### API Changes
 
+#### Deprecated for removal
+
+*   `net.sourceforge.pmd.eclipse.plugin.EclipseUtil`
+*   `net.sourceforge.pmd.eclipse.plugin.PMDPlugin.getPluginFolder()`
+*   `net.sourceforge.pmd.eclipse.runtime.cmd.BaseVisitor.isUseTaskMarker()`
+*   `net.sourceforge.pmd.eclipse.runtime.cmd.BaseVisitor.setUseTaskMarker(boolean)`
+*   `net.sourceforge.pmd.eclipse.ui.preferences.br.FilterManager`
+*   `net.sourceforge.pmd.eclipse.util.IOUtil`
+*   All classes that couldn't be instantiated because they had a private constructor only
+    are now also `final`.
+
 ### External Contributions
 
 ## 26-June-2021: 4.25.0.v20210626-0908

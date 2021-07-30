@@ -31,18 +31,8 @@ import net.sourceforge.pmd.lang.LanguageRegistry;
 public class RuleSearchPage extends DialogPage implements ISearchPage {
 
     private Text idText;
-    private Button caseSensitive;
 
     private String selected;
-
-    private Button name;
-    private Button description;
-    private Button example;
-    private Button xpath;
-    private Combo languageCombo;
-
-    public RuleSearchPage() {
-    }
 
     public RuleSearchPage(String title) {
         super(title);
@@ -52,11 +42,13 @@ public class RuleSearchPage extends DialogPage implements ISearchPage {
         super(title, image);
     }
 
+    @Override
     public boolean performAction() {
         // TODO Auto-generated method stub
         return false;
     }
 
+    @Override
     public void setContainer(ISearchPageContainer container) {
         if (container.getSelection() instanceof TextSelection) {
             selected = ((TextSelection) container.getSelection()).getText();
@@ -67,14 +59,14 @@ public class RuleSearchPage extends DialogPage implements ISearchPage {
 
         final Collection<Language> languages = LanguageRegistry.getLanguages();
 
-        languageCombo = new Combo(parent, SWT.READ_ONLY);
+        Combo languageCombo = new Combo(parent, SWT.READ_ONLY);
 
         Language defaultLanguage = LanguageRegistry.getDefaultLanguage();
         int selectionIndex = -1;
         int i = 0;
 
         for (Language language : languages) {
-            if (language == defaultLanguage) {
+            if (defaultLanguage.equals(language)) {
                 selectionIndex = i;
             }
             languageCombo.add(language.getName());
@@ -91,19 +83,20 @@ public class RuleSearchPage extends DialogPage implements ISearchPage {
         group.setLayout(new GridLayout(2, false));
         group.setText("Scope");
 
-        name = new Button(group, SWT.CHECK);
+        Button name = new Button(group, SWT.CHECK);
         name.setText("Names");
 
-        description = new Button(group, SWT.CHECK);
+        Button description = new Button(group, SWT.CHECK);
         description.setText("Descriptions");
 
-        example = new Button(group, SWT.CHECK);
+        Button example = new Button(group, SWT.CHECK);
         example.setText("Examples");
 
-        xpath = new Button(group, SWT.CHECK);
+        Button xpath = new Button(group, SWT.CHECK);
         xpath.setText("XPaths");
     }
 
+    @Override
     public void createControl(Composite parent) {
 
         Composite panel = new Composite(parent, SWT.NONE);
@@ -133,11 +126,11 @@ public class RuleSearchPage extends DialogPage implements ISearchPage {
             idText.setSelection(0, selected.length());
         }
 
-        caseSensitive = new Button(textPanel, SWT.CHECK);
+        Button caseSensitive = new Button(textPanel, SWT.CHECK);
         caseSensitive.setText("Case sensitive");
         caseSensitive.setLayoutData(new GridData(GridData.END, GridData.BEGINNING, false, false, 1, 1));
 
-        // addButtons(panel, 4);
+        addButtons(panel, 4);
         //
         // Label langLabel = new Label(panel, SWT.None);
         // langLabel.setText("Language");

@@ -89,10 +89,6 @@ public class PMDPreferencePage2 extends AbstractPMDPreferencePage
         { RuleTableColumns.FILTER_VIOLATION_REGEX, StringKeys.PREF_RULESET_GROUPING_REGEX },
         { null, StringKeys.PREF_RULESET_GROUPING_NONE } };
 
-    public PMDPreferencePage2() {
-
-    }
-
     public static RulePropertyManager[] buildPropertyManagersOn(TabFolder folder, ValueChangeListener listener) {
 
         return new RulePropertyManager[] {
@@ -113,6 +109,7 @@ public class PMDPreferencePage2 extends AbstractPMDPreferencePage
         };
     }
 
+    @Override
     protected String descriptionId() {
         return StringKeys.PREF_RULESET_TITLE;
     }
@@ -139,7 +136,7 @@ public class PMDPreferencePage2 extends AbstractPMDPreferencePage
     }
 
     /**
-     * Create buttons for rule properties table management
+     * Create buttons for rule properties table management.
      * 
      * @param parent
      *            Composite
@@ -203,13 +200,6 @@ public class PMDPreferencePage2 extends AbstractPMDPreferencePage
         return ruleSection;
     }
 
-    /**
-     * Method buildTabFolder.
-     * 
-     * @param parent
-     *            Composite
-     * @return TabFolder
-     */
     private TabFolder buildTabFolder(Composite parent) {
 
         tabFolder = new TabFolder(parent, SWT.TOP);
@@ -220,12 +210,6 @@ public class PMDPreferencePage2 extends AbstractPMDPreferencePage
         return tabFolder;
     }
 
-    /**
-     * @param parent
-     *            TabFolder
-     * @param index
-     *            int
-     */
     private static RulePropertyManager buildRuleTab(TabFolder parent, int index, String title,
             ValueChangeListener listener) {
 
@@ -238,12 +222,6 @@ public class PMDPreferencePage2 extends AbstractPMDPreferencePage
         return manager;
     }
 
-    /**
-     * @param parent
-     *            TabFolder
-     * @param index
-     *            int
-     */
     private static RulePropertyManager buildPropertyTab(TabFolder parent, int index, String title,
             ValueChangeListener listener) {
 
@@ -256,12 +234,6 @@ public class PMDPreferencePage2 extends AbstractPMDPreferencePage
         return manager;
     }
 
-    /**
-     * @param parent
-     *            TabFolder
-     * @param index
-     *            int
-     */
     private static RulePropertyManager buildXPathTab(TabFolder parent, int index, String title,
             ValueChangeListener listener) {
 
@@ -274,12 +246,6 @@ public class PMDPreferencePage2 extends AbstractPMDPreferencePage
         return manager;
     }
 
-    /**
-     * @param parent
-     *            TabFolder
-     * @param index
-     *            int
-     */
     private static RulePropertyManager buildFullViewTab(TabFolder parent, int index, String title,
             ValueChangeListener listener) {
 
@@ -292,15 +258,6 @@ public class PMDPreferencePage2 extends AbstractPMDPreferencePage
         return manager;
     }
 
-    /**
-     *
-     * @param parent
-     *            TabFolder
-     * @param index
-     *            int
-     * @param title
-     *            String
-     */
     private static RulePropertyManager buildExclusionTab(TabFolder parent, int index, String title,
             ValueChangeListener listener) {
 
@@ -313,12 +270,14 @@ public class PMDPreferencePage2 extends AbstractPMDPreferencePage
         return manager;
     }
 
+    @Override
     public void changed(PropertySource source, PropertyDescriptor<?> desc, Object newValue) {
         // TODO enhance to recognize default values
         setModified();
         tableManager.updated(source);
     }
 
+    @Override
     public void changed(RuleSelection selection, PropertyDescriptor<?> desc, Object newValue) {
         // TODO enhance to recognize default values
 
@@ -341,7 +300,7 @@ public class PMDPreferencePage2 extends AbstractPMDPreferencePage
     }
 
     /**
-     * Main layout
+     * Main layout.
      * 
      * @param parent
      *            Composite
@@ -391,6 +350,7 @@ public class PMDPreferencePage2 extends AbstractPMDPreferencePage
         data.top = new FormAttachment(ruleTableFraction, 0);
         sash.setLayoutData(data);
         sash.addSelectionListener(new SelectionAdapter() {
+            @Override
             public void widgetSelected(SelectionEvent event) {
                 // Re-attach to the top edge, and we use the y value of the
                 // event to determine the offset from the top
@@ -421,9 +381,6 @@ public class PMDPreferencePage2 extends AbstractPMDPreferencePage
         SWTUtil.setEnabledRecursive(contentPanel.getChildren(), checkButton.getSelection());
     }
 
-    /**
-     * @see org.eclipse.jface.preference.IPreferencePage#performOk()
-     */
     @Override
     public boolean performOk() {
         if (isModified()) {
@@ -457,13 +414,13 @@ public class PMDPreferencePage2 extends AbstractPMDPreferencePage
     }
 
     private void populateRuleset() {
-
         RuleSet defaultRuleSet = plugin.getPreferencesManager().getRuleSet();
         RuleSet ruleSet = RuleSetUtil.newCopyOf(defaultRuleSet);
 
         tableManager.useRuleSet(ruleSet);
     }
 
+    @Override
     public void selection(RuleSelection selection) {
 
         if (rulePropertyManagers == null) {
@@ -484,9 +441,8 @@ public class PMDPreferencePage2 extends AbstractPMDPreferencePage
     }
 
     private void storeActiveRules() {
-
         List<Rule> chosenRules = tableManager.activeRules();
-        Set<String> activeRules = new HashSet<String>();
+        Set<String> activeRules = new HashSet<>();
         for (Rule rule : chosenRules) {
             activeRules.add(rule.getName());
         }
@@ -502,6 +458,7 @@ public class PMDPreferencePage2 extends AbstractPMDPreferencePage
         try {
             ProgressMonitorDialog monitorDialog = new ProgressMonitorDialog(getShell());
             monitorDialog.run(true, true, new IRunnableWithProgress() {
+                @Override
                 public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
                     plugin.getPreferencesManager().setRuleSet(tableManager.ruleSet());
                 }
@@ -511,13 +468,12 @@ public class PMDPreferencePage2 extends AbstractPMDPreferencePage
         }
     }
 
+    @Override
     public void resetValuesIn(RuleSelection rules) {
-
         rules.useDefaultValues();
         tableManager.refresh();
         for (RulePropertyManager rpm : rulePropertyManagers) {
             rpm.loadValues();
         }
     }
-
 }

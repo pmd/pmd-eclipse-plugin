@@ -11,7 +11,7 @@ import org.eclipse.swt.custom.LineStyleListener;
 import org.eclipse.swt.custom.StyleRange;
 
 /**
- * This class performs the syntax highlighting and styling for Pmpe
+ * This class performs the syntax highlighting and styling for Pmpe.
  */
 public class BasicLineStyleListener extends StyleExtractor implements LineStyleListener {
 
@@ -26,12 +26,13 @@ public class BasicLineStyleListener extends StyleExtractor implements LineStyleL
     }
 
     /**
-     * Called by StyledText to get styles for a line
+     * Called by StyledText to get styles for a line.
      */
+    @Override
     public void lineGetStyle(LineStyleEvent event) {
 
         List<StyleRange> styles = lineStylesFor(event.lineText, event.lineOffset, event.lineText.length());
 
-        event.styles = styles.toArray(new StyleRange[styles.size()]);
+        event.styles = styles.toArray(new StyleRange[0]);
     }
 }

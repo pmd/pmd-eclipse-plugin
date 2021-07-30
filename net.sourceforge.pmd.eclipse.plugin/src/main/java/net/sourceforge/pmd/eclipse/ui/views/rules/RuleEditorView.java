@@ -21,7 +21,6 @@ import org.eclipse.ui.part.ViewPart;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
-import net.sourceforge.pmd.eclipse.runtime.preferences.IPreferences;
 import net.sourceforge.pmd.eclipse.runtime.preferences.impl.PreferenceUIStore;
 import net.sourceforge.pmd.eclipse.ui.ModifyListener;
 import net.sourceforge.pmd.eclipse.ui.actions.RuleSetUtil;
@@ -50,8 +49,6 @@ public class RuleEditorView extends ViewPart
     private RulePropertyManager[] rulePropertyManagers;
     private RuleTableManager tableManager;
 
-    private IPreferences preferences = PMDPlugin.getDefault().loadPreferences();
-
     protected static PMDPlugin plugin = PMDPlugin.getDefault();
 
     // columns shown in the rule treetable in the desired order
@@ -60,17 +57,12 @@ public class RuleEditorView extends ViewPart
     // last item in this list is the grouping used at startup
     private static final Object[][] GROUPING_CHOICES = PMDPreferencePage2.GROUPING_CHOICES;
 
-    public RuleEditorView() {
-
-    }
-
     protected String descriptionId() {
         return StringKeys.PREF_RULESET_TITLE;
     }
 
     @Override
     public void createPartControl(Composite parent) {
-
         tableManager = new RuleTableManager("rules", AVAILABLE_COLUMNS, PMDPlugin.getDefault().loadPreferences(), this);
         tableManager.modifyListener(this);
         tableManager.selectionListener(this);
@@ -87,7 +79,6 @@ public class RuleEditorView extends ViewPart
     }
 
     private Composite createRuleSection(Composite parent) {
-
         Composite ruleSection = new Composite(parent, SWT.NULL);
 
         // Create the controls (order is important !)
@@ -141,7 +132,6 @@ public class RuleEditorView extends ViewPart
      * @return TabFolder
      */
     private TabFolder buildTabFolder(Composite parent) {
-
         tabFolder = new TabFolder(parent, SWT.TOP);
 
         rulePropertyManagers = PMDPreferencePage2.buildPropertyManagersOn(tabFolder, this);
@@ -150,12 +140,14 @@ public class RuleEditorView extends ViewPart
         return tabFolder;
     }
 
+    @Override
     public void changed(PropertySource source, PropertyDescriptor<?> desc, Object newValue) {
         // TODO enhance to recognize default values
         setModified();
         tableManager.updated(source);
     }
 
+    @Override
     public void changed(RuleSelection selection, PropertyDescriptor<?> desc, Object newValue) {
         // TODO enhance to recognize default values
 
@@ -178,13 +170,12 @@ public class RuleEditorView extends ViewPart
     }
 
     /**
-     * Main layout
+     * Main layout.
      * 
      * @param parent
      *            Composite
      */
     private void layoutControls(Composite parent) {
-
         parent.setLayout(new FormLayout());
         int ruleTableFraction = 55; // PreferenceUIStore.instance.tableFraction();
 
@@ -196,6 +187,7 @@ public class RuleEditorView extends ViewPart
         data.top = new FormAttachment(ruleTableFraction, 0);
         sash.setLayoutData(data);
         sash.addSelectionListener(new SelectionAdapter() {
+            @Override
             public void widgetSelected(SelectionEvent event) {
                 // Re-attach to the top edge, and we use the y value of the
                 // event to determine the offset from the top
@@ -224,12 +216,7 @@ public class RuleEditorView extends ViewPart
         propertySection.setLayoutData(data);
     }
 
-    /**
-     * @see org.eclipse.jface.preference.IPreferencePage#performOk()
-     */
-
     public void performOk() {
-
         saveUIState();
 
         // if (isModified()) {
@@ -239,23 +226,18 @@ public class RuleEditorView extends ViewPart
         // }
     }
 
-    /**
-     * @see org.eclipse.jface.preference.PreferencePage#performDefaults()
-     */
-
     protected void performDefaults() {
         tableManager.populateRuleTable();
     }
 
     private void populateRuleset() {
-
         RuleSet defaultRuleSet = plugin.getPreferencesManager().getRuleSet();
         RuleSet ruleSet = RuleSetUtil.newCopyOf(defaultRuleSet);
         tableManager.useRuleSet(ruleSet);
     }
 
+    @Override
     public void selection(RuleSelection selection) {
-
         if (rulePropertyManagers == null) {
             return;
         }
@@ -267,33 +249,33 @@ public class RuleEditorView extends ViewPart
     }
 
     /**
-     * If user wants to, rebuild all projects
+     * If user wants to, rebuild all projects.
      */
-    private void rebuildProjects() {
-        // if (MessageDialog.openQuestion(getShell(),
-        // getMessage(StringKeys.MSGKEY_QUESTION_TITLE),
-        // getMessage(StringKeys.MSGKEY_QUESTION_RULES_CHANGED))) {
-        // try {
-        // ProgressMonitorDialog monitorDialog = new
-        // ProgressMonitorDialog(getShell());
-        // monitorDialog.run(true, true, new IRunnableWithProgress() {
-        // public void run(IProgressMonitor monitor) throws
-        // InvocationTargetException, InterruptedException {
-        // try {
-        // ResourcesPlugin.getWorkspace().build(IncrementalProjectBuilder.FULL_BUILD,
-        // monitor);
-        // } catch (CoreException e) {
-        // plugin.logError("Exception building all projects after a preference
-        // change", e);
-        // }
-        // }
-        // });
-        // } catch (Exception e) {
-        // plugin.logError("Exception building all projects after a preference
-        // change", e);
-        // }
-        // }
-    }
+    //private void rebuildProjects() {
+    // if (MessageDialog.openQuestion(getShell(),
+    // getMessage(StringKeys.MSGKEY_QUESTION_TITLE),
+    // getMessage(StringKeys.MSGKEY_QUESTION_RULES_CHANGED))) {
+    // try {
+    // ProgressMonitorDialog monitorDialog = new
+    // ProgressMonitorDialog(getShell());
+    // monitorDialog.run(true, true, new IRunnableWithProgress() {
+    // public void run(IProgressMonitor monitor) throws
+    // InvocationTargetException, InterruptedException {
+    // try {
+    // ResourcesPlugin.getWorkspace().build(IncrementalProjectBuilder.FULL_BUILD,
+    // monitor);
+    // } catch (CoreException e) {
+    // plugin.logError("Exception building all projects after a preference
+    // change", e);
+    // }
+    // }
+    // });
+    // } catch (Exception e) {
+    // plugin.logError("Exception building all projects after a preference
+    // change", e);
+    // }
+    // }
+    // }
 
     private void saveUIState() {
         tableManager.saveUIState();
@@ -303,41 +285,40 @@ public class RuleEditorView extends ViewPart
     }
 
     /**
-     * Update the configured rule set Update also all configured projects
+     * Update the configured rule set Update also all configured projects.
      */
-    private void updateRuleSet() {
-        // try {
-        // ProgressMonitorDialog monitorDialog = new
-        // ProgressMonitorDialog(getShell());
-        // monitorDialog.run(true, true, new IRunnableWithProgress() {
-        // public void run(IProgressMonitor monitor) throws
-        // InvocationTargetException, InterruptedException {
-        // plugin.getPreferencesManager().setRuleSet(tableManager.ruleSet());
-        // }
-        // });
-        // } catch (Exception e) {
-        // plugin.logError("Exception updating all projects after a preference
-        // change", e);
-        // }
-    }
+    // private void updateRuleSet() {
+    // try {
+    // ProgressMonitorDialog monitorDialog = new
+    // ProgressMonitorDialog(getShell());
+    // monitorDialog.run(true, true, new IRunnableWithProgress() {
+    // public void run(IProgressMonitor monitor) throws
+    // InvocationTargetException, InterruptedException {
+    // plugin.getPreferencesManager().setRuleSet(tableManager.ruleSet());
+    // }
+    // });
+    // } catch (Exception e) {
+    // plugin.logError("Exception updating all projects after a preference
+    // change", e);
+    // }
+    // }
 
     protected String getMessage(String key) {
         return PMDPlugin.getDefault().getStringTable().getString(key);
     }
 
+    @Override
     public void setModified() {
         // TODO Auto-generated method stub
-
     }
 
     @Override
     public void setFocus() {
         // TODO Auto-generated method stub
-
     }
 
+    @Override
     public void resetValuesIn(RuleSelection rules) {
         // TODO Auto-generated method stub
-
     }
 }

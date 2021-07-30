@@ -15,14 +15,13 @@ import net.sourceforge.pmd.RuleSet;
  */
 public class BasicRuleSetFieldAccessor implements RuleSetFieldAccessor {
 
-    public BasicRuleSetFieldAccessor() {
-    }
-
+    @Override
     public String labelFor(RuleSet ruleSet) {
         Comparable<?> value = valueFor(ruleSet);
         return value == null ? "" : value.toString();
     }
 
+    @Override
     public Comparable<?> valueFor(RuleSet ruleSet) {
         throw new RuntimeException("unimplemented method");
     }

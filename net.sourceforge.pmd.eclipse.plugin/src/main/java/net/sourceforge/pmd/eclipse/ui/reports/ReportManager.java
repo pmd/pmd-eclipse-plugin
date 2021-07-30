@@ -4,8 +4,10 @@
 
 package net.sourceforge.pmd.eclipse.ui.reports;
 
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
+import java.io.File;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -21,7 +23,7 @@ import net.sourceforge.pmd.renderers.RendererFactory;
  *
  * @author Brian Remedios
  */
-public class ReportManager {
+public final class ReportManager {
 
     private final Renderer[] allRenderers;
 
@@ -52,19 +54,17 @@ public class ReportManager {
     // }
 
     public Renderer[] availableRenderers2() {
-
-        List<Renderer> renderers = new ArrayList<Renderer>();
+        List<Renderer> renderers = new ArrayList<>();
 
         for (String reportName : RendererFactory.REPORT_FORMAT_TO_RENDERER.keySet()) {
             renderers.add(RendererFactory.createRenderer(reportName, new Properties()));
         }
 
-        return renderers.toArray(new Renderer[renderers.size()]);
+        return renderers.toArray(new Renderer[0]);
     }
 
     public List<Renderer> activeRenderers() {
-
-        List<Renderer> actives = new ArrayList<Renderer>();
+        List<Renderer> actives = new ArrayList<>();
         IPreferences prefs = PMDPlugin.getDefault().loadPreferences();
 
         for (Renderer renderer : allRenderers) {
@@ -121,26 +121,14 @@ public class ReportManager {
      * @return boolean
      */
     private static boolean loadReportProperties(String propertyFilename) {
-
         Properties props = new Properties();
-        FileInputStream fis = null;
-        try {
-            fis = new FileInputStream(propertyFilename);
-            props.loadFromXML(fis);
+        try (InputStream in = Files.newInputStream(new File(propertyFilename).toPath())) {
+            props.loadFromXML(in);
         } catch (Exception e) {
             return false;
-        } finally {
-            try {
-                if (fis != null) {
-                    fis.close();
-                }
-            } catch (Exception e) {
-                // ignored
-            }
         }
 
         for (Renderer renderer : ReportManager.INSTANCE.allRenderers()) {
-
             for (PropertyDescriptor pDesc : renderer.getPropertyDescriptors()) {
                 String key = keyOf(renderer, pDesc);
                 if (props.containsKey(key)) {
@@ -160,7 +148,6 @@ public class ReportManager {
      *            String
      */
     private static void saveReportProperties(String propertyFilename) {
-
         Properties props = new Properties();
 
         for (Renderer renderer : ReportManager.INSTANCE.allRenderers()) {
@@ -172,22 +159,10 @@ public class ReportManager {
             }
         }
 
-        FileOutputStream fos = null;
-
-        try {
-            fos = new FileOutputStream(propertyFilename);
-            props.storeToXML(fos, "asdf");
-
+        try (OutputStream out = Files.newOutputStream(new File(propertyFilename).toPath())) {
+            props.storeToXML(out, "asdf");
         } catch (Exception e) {
             e.printStackTrace();
-        } finally {
-            try {
-                if (fos != null) {
-                    fos.close();
-                }
-            } catch (Exception e) {
-                // ignored;
-            }
         }
     }
 

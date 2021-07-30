@@ -38,9 +38,7 @@ public class ViolationOverviewDoubleClickListener implements IDoubleClickListene
         this.overview = overview;
     }
 
-    /**
-     * @see org.eclipse.jface.viewers.IDoubleClickListener#doubleClick(org.eclipse.jface.viewers.DoubleClickEvent)
-     */
+    @Override
     public void doubleClick(DoubleClickEvent event) {
         final IStructuredSelection selection = (IStructuredSelection) event.getSelection();
         final Object object = selection.getFirstElement();
@@ -66,6 +64,7 @@ public class ViolationOverviewDoubleClickListener implements IDoubleClickListene
         final IMarker[] markers = record.findMarkers();
 
         Display.getDefault().asyncExec(new Runnable() {
+            @Override
             public void run() {
                 selectMarkerInOutline(markers);
             }
@@ -86,6 +85,7 @@ public class ViolationOverviewDoubleClickListener implements IDoubleClickListene
             final IMarker[] markers = markerRec.findMarkers();
 
             Display.getDefault().asyncExec(new Runnable() {
+                @Override
                 public void run() {
                     selectMarkerInOutline(markers);
                 }

@@ -37,7 +37,7 @@ import java.util.ResourceBundle;
 @Deprecated
 public class DefaultCommandProcessorStrategy implements CommandProcessorStrategy {
     private static final CommandProcessor DEFAULT_COMMAND_PROCESSOR = new DefaultCommandProcessor();
-    private final Map<String, String> registeredCommandProcessors = new Hashtable<String, String>();
+    private final Map<String, String> registeredCommandProcessors = new Hashtable<>();
 
     /**
      * Default constructor. Load registered command from bundle.
@@ -51,6 +51,7 @@ public class DefaultCommandProcessorStrategy implements CommandProcessorStrategy
      * @param aCommand a command for finding a processor
      * @return a processor for the specified command according to the strategy.
      */
+    @Override
     public CommandProcessor getCommandProcessor(AbstractProcessableCommand aCommand) {
         CommandProcessor aProcessor = getRegisteredCommandProcessor(aCommand);
 
@@ -79,13 +80,7 @@ public class DefaultCommandProcessorStrategy implements CommandProcessorStrategy
                 Class<?> clazz = Class.forName(processorClassName);
                 aProcessor = (CommandProcessor) clazz.newInstance();
             }
-        } catch (ClassNotFoundException e) {
-            // @PMD:REVIEWED:EmptyCatchBlock: by Herlin on 01/05/05 18:09
-            // ignore
-        } catch (InstantiationException e) {
-            // @PMD:REVIEWED:EmptyCatchBlock: by Herlin on 01/05/05 18:09
-            // ignore
-        } catch (IllegalAccessException e) {
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException ignored) {
             // @PMD:REVIEWED:EmptyCatchBlock: by Herlin on 01/05/05 18:09
             // ignore
         }
@@ -107,7 +102,7 @@ public class DefaultCommandProcessorStrategy implements CommandProcessorStrategy
                 String value = bundle.getString(key);
                 registeredCommandProcessors.put(key, value);
             }
-        } catch (RuntimeException e) {
+        } catch (RuntimeException ignored) {
             // @PMD:REVIEWED:EmptyCatchBlock: by Herlin on 01/05/05 18:10
             // ignore bundle not found
         }

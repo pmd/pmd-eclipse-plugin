@@ -42,6 +42,7 @@ public abstract class AbstractRuleColumnDescriptor extends AbstractColumnDescrip
         TreeColumn tc = super.buildTreeColumn(parent);
 
         tc.addListener(SWT.Selection, new Listener() {
+            @Override
             public void handleEvent(Event e) {
                 sortListener.sortBy(accessor(), e.widget);
             }
@@ -55,6 +56,7 @@ public abstract class AbstractRuleColumnDescriptor extends AbstractColumnDescrip
         TableColumn tc = super.buildTableColumn(parent);
 
         tc.addListener(SWT.Selection, new Listener() {
+            @Override
             public void handleEvent(Event e) {
                 sortListener.sortBy(accessor(), e.widget);
             }
@@ -71,26 +73,32 @@ public abstract class AbstractRuleColumnDescriptor extends AbstractColumnDescrip
         return accessor.valueFor(collection);
     }
 
+    @Override
     public RuleFieldAccessor accessor() {
         return accessor;
     }
 
+    @Override
     public String detailStringFor(Rule rule) {
         return accessor.labelFor(rule);
     }
 
+    @Override
     public String detailStringFor(RuleGroup group) {
         return "TODO in AbstractRuleColumnDescriptor";
     }
 
+    @Override
     public Image imageFor(RuleCollection collection) {
         return null; // override in subclasses
     }
 
+    @Override
     public String stringValueFor(RuleCollection collection) {
         return null; // override in subclasses
     }
 
+    @Override
     public TableColumn newTableColumnFor(Table parent, int columnIndex, SortListener sortListener,
             Map<Integer, List<Listener>> paintListeners) {
         TableColumn tc = buildTableColumn(parent, sortListener);

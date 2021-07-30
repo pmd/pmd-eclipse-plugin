@@ -39,10 +39,9 @@ public class UniqueItemsAsShapeBuilder extends AbstractCellPainterBuilder {
     }
 
     private List<ShapeDescriptor> getterShapesIn(TreeItem tItem, RuleFieldAccessor getter) {
-
         Set<Comparable<?>> values = RuleUtil.uniqueItemsIn(tItem.getData(), getter);
 
-        List<ShapeDescriptor> shapes = new ArrayList<ShapeDescriptor>(values.size());
+        List<ShapeDescriptor> shapes = new ArrayList<>(values.size());
         Iterator<?> iter = values.iterator();
         while (iter.hasNext()) {
             ShapeDescriptor desc = shapesByItem.get(iter.next());
@@ -54,15 +53,16 @@ public class UniqueItemsAsShapeBuilder extends AbstractCellPainterBuilder {
         return shapes;
     }
 
+    @Override
     public void addPainterFor(final Tree tree, final int columnIndex, final RuleFieldAccessor getter,
             Map<Integer, List<Listener>> listenersByEventCode) {
 
         final int xBoundary = 3;
 
         Listener paintListener = new Listener() {
-            final int gap = 2;
-
+            @Override
             public void handleEvent(Event event) {
+                final int gap = 2;
                 if (event.index != columnIndex) {
                     return;
                 }
@@ -73,7 +73,7 @@ public class UniqueItemsAsShapeBuilder extends AbstractCellPainterBuilder {
                 }
 
                 GC gc = event.gc;
-                int verticalOffset = (event.height / 2) - (height / 2);
+                int verticalOffset = event.height / 2 - height / 2;
 
                 Color original = gc.getBackground();
 
@@ -89,7 +89,7 @@ public class UniqueItemsAsShapeBuilder extends AbstractCellPainterBuilder {
 
                     switch (hAlignment) {
                     case SWT.CENTER:
-                        xOffset = (cellWidth / 2) - (width / 2) - xBoundary + step;
+                        xOffset = cellWidth / 2 - width / 2 - xBoundary + step;
                         break;
                     case SWT.RIGHT:
                         xOffset = cellWidth - width - xBoundary;
@@ -111,6 +111,7 @@ public class UniqueItemsAsShapeBuilder extends AbstractCellPainterBuilder {
         };
 
         Listener measureListener = new Listener() {
+            @Override
             public void handleEvent(Event event) {
                 if (event.index != columnIndex) {
                     return;
@@ -130,5 +131,4 @@ public class UniqueItemsAsShapeBuilder extends AbstractCellPainterBuilder {
         addListener(tree, SWT.PaintItem, paintListener, listenersByEventCode);
         addListener(tree, SWT.MeasureItem, measureListener, listenersByEventCode);
     }
-
 }

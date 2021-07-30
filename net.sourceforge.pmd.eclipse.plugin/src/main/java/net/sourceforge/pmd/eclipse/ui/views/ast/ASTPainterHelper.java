@@ -24,7 +24,6 @@ import net.sourceforge.pmd.lang.java.ast.JavadocElement;
  * @author Brian Remedios
  */
 public class ASTPainterHelper {
-
     private Font renderFont;
     private Font italicFont;
     private TextLayout textLayout;

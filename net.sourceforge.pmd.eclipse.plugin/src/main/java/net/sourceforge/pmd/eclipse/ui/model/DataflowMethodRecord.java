@@ -81,7 +81,7 @@ public class DataflowMethodRecord {
      */
     public IMarker[] getMarkers() {
         // TODO optimize this to avoid creation when no results found
-        final List<IMarker> markers = new ArrayList<IMarker>();
+        final List<IMarker> markers = new ArrayList<>();
         try {
             if (method.getResource().isAccessible()) {
 
@@ -120,7 +120,7 @@ public class DataflowMethodRecord {
      * @return an Array of Attributes
      */
     private Object[] getMarkerAttributes(IMarker marker) {
-        final List<Object> values = new ArrayList<Object>();
+        final List<Object> values = new ArrayList<>();
 
         // add Message, default ""
         values.add(marker.getAttribute(IMarker.MESSAGE, ""));

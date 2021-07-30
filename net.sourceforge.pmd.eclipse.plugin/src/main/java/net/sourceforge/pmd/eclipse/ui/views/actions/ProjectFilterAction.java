@@ -13,7 +13,7 @@ import net.sourceforge.pmd.eclipse.ui.views.ProjectFilter;
 import net.sourceforge.pmd.eclipse.ui.views.ViolationOverview;
 
 /**
- * Filters Projects in the Violation Overview
+ * Filters Projects in the Violation Overview.
  * 
  * @author SebastianRaffel ( 22.05.2005 )
  */
@@ -47,10 +47,12 @@ public class ProjectFilterAction extends AbstractPMDAction {
         setText(getString(StringKeys.VIEW_FILTER_PROJECT_PREFIX) + " " + projectRecord.getName());
     }
 
+    @Override
     protected String imageId() {
         return PMDUiConstants.ICON_PROJECT;
     }
 
+    @Override
     protected String tooltipMsgId() {
         return null;
     }
@@ -58,13 +60,15 @@ public class ProjectFilterAction extends AbstractPMDAction {
     /**
      * @return the Style, in which the Button is displayed
      */
+    @Override
     public int getStyle() {
         return AS_CHECK_BOX;
     }
 
     /**
-     * Executes the Action
+     * Executes the Action.
      */
+    @Override
     public void run() {
         // the Filter contains a List of Projects to show
         // we add or remove our project to/from this List

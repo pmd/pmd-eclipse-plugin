@@ -20,7 +20,7 @@ import net.sourceforge.pmd.eclipse.ui.views.PriorityFilter;
  * @deprecated use directly {@link PriorityFilter} instead.
  */
 @Deprecated
-public class PriorityUtil {
+public final class PriorityUtil {
 
     private PriorityUtil() {
     }
@@ -45,7 +45,7 @@ public class PriorityUtil {
      */
     @Deprecated
     public static List<RulePriority> getActivePriorites() {
-        List<RulePriority> active = new ArrayList<RulePriority>();
+        List<RulePriority> active = new ArrayList<>();
         for (RulePriority priority : UISettings.currentPriorities(true)) {
             if (PriorityFilter.getInstance().getPriorityFilterList().contains(priority.getPriority())) {
                 active.add(priority);
@@ -67,6 +67,7 @@ public class PriorityUtil {
      */
     @Deprecated
     public static void setPriorityFilter(PriorityFilter priorityFilter) {
+        // does nothing
     }
 
 }

@@ -17,7 +17,7 @@ import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
  * @author br
  *
  */
-public class ShapePainter {
+public final class ShapePainter {
     private static final RGB RGB_BLACK = new RGB(0, 0, 0);
 
     private ShapePainter() {
@@ -55,10 +55,10 @@ public class ShapePainter {
 
     @Deprecated
     public static void disposeAll() {
+        // nothing to do
     }
 
     public static void drawShape(int width, int height, Shape shapeId, GC gc, int x, int y, String optionalText) {
-
         // TODO implement the following shapes: star, pentagon, hexagon,
         // octagon, doughnut
 
@@ -165,6 +165,7 @@ public class ShapePainter {
                 gc.fillPolygon(points);
                 gc.drawPolygon(points);
             }
+            break;
         }
         }
         if (optionalText != null) {

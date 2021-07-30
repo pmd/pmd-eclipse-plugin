@@ -20,16 +20,12 @@ public class RuleSpecTO {
     private String name;
     private String ruleSetName;
 
-    /**
-     * Default constructor
-     * 
-     */
     public RuleSpecTO() {
         super();
     }
 
     /**
-     * Constructor with fields
+     * Constructor with fields.
      * 
      * @param name
      *            a rule name

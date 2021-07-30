@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 import org.eclipse.jface.window.Window;
@@ -59,14 +60,6 @@ public class FormArranger implements ValueChangeListener {
 
     private Map<PropertyDescriptor<?>, Control[]> controlsByProperty;
 
-    /**
-     * Constructor for FormArranger.
-     * 
-     * @param theParent
-     *            Composite
-     * @param factories
-     *            Map<Class,EditorFactory>
-     */
     public FormArranger(Composite theParent, Map<Class<?>, EditorFactory<?>> factories, ValueChangeListener listener,
             SizeChangeListener sizeListener) {
         parent = theParent;
@@ -78,7 +71,7 @@ public class FormArranger implements ValueChangeListener {
     }
 
     /**
-     * Echo the change to the second listener after notifying the primary one
+     * Echo the change to the second listener after notifying the primary one.
      * 
      * @param primaryListener
      * @param secondListener
@@ -87,12 +80,13 @@ public class FormArranger implements ValueChangeListener {
     public static ValueChangeListener chain(final ValueChangeListener primaryListener,
             final ValueChangeListener secondaryListener) {
         return new ValueChangeListener() {
-
+            @Override
             public void changed(RuleSelection rule, PropertyDescriptor<?> desc, Object newValue) {
                 primaryListener.changed(rule, desc, newValue);
                 secondaryListener.changed(rule, desc, newValue);
             }
 
+            @Override
             public void changed(PropertySource source, PropertyDescriptor<?> desc, Object newValue) {
                 primaryListener.changed(source, desc, newValue);
                 secondaryListener.changed(source, desc, newValue);
@@ -104,11 +98,6 @@ public class FormArranger implements ValueChangeListener {
         controlsByProperty.put(property, controls);
     }
 
-    /**
-     * @param desc
-     *            PropertyDescriptor
-     * @return EditorFactory
-     */
     private EditorFactory<?> factoryFor(PropertyDescriptor<?> desc) {
         Class<?> type = desc.type();
         if (desc.isMultiValue()) {
@@ -128,13 +117,8 @@ public class FormArranger implements ValueChangeListener {
         propertySource = null;
     }
 
-    /**
-     * @param theRule
-     *            Rule
-     */
     public int arrangeFor(PropertySource theSource) {
-
-        if (propertySource == theSource) {
+        if (Objects.equals(propertySource, theSource)) {
             return -1;
         }
         return rearrangeFor(theSource);
@@ -145,7 +129,6 @@ public class FormArranger implements ValueChangeListener {
     }
 
     private int rearrangeFor(PropertySource theSource) {
-
         clearChildren();
 
         propertySource = theSource;
@@ -227,13 +210,15 @@ public class FormArranger implements ValueChangeListener {
     }
 
     private void addAddButton() {
-
         Button button = new Button(parent, SWT.PUSH);
         button.setText("Add new...");
         button.addSelectionListener(new SelectionListener() {
+            @Override
             public void widgetDefaultSelected(SelectionEvent e) {
+                // TODO
             }
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 NewPropertyDialog dialog = new NewPropertyDialog(parent.getShell(), editorFactoriesByValueType,
                         propertySource, changeListener);
@@ -246,18 +231,8 @@ public class FormArranger implements ValueChangeListener {
         });
     }
 
-    /**
-     * @param factory
-     *            EditorFactory
-     * @param rowIndex
-     *            int
-     * @param desc
-     *            PropertyDescriptor
-     * @return boolean
-     */
     private boolean addRowWidgets(EditorFactory<?> factory, int rowIndex, PropertyDescriptor desc,
             boolean isXPathRule) {
-
         if (factory == null) {
             return false;
         }
@@ -267,7 +242,7 @@ public class FormArranger implements ValueChangeListener {
         widgets[rowIndex][1] = factory.newEditorOn(parent, desc, propertySource, changeListener, sizeChangeListener);
 
         if (isXPathRule) {
-            widgets[rowIndex][2] = addDeleteButton(parent, desc, propertySource, sizeChangeListener);
+            widgets[rowIndex][2] = addDeleteButton(parent, desc, propertySource);
         }
 
         register(desc, widgets[rowIndex]);
@@ -275,17 +250,19 @@ public class FormArranger implements ValueChangeListener {
         return true;
     }
 
-    private Control addDeleteButton(Composite parent, final PropertyDescriptor<?> desc, final PropertySource source,
-            final SizeChangeListener sizeChangeListener) {
+    private Control addDeleteButton(Composite parent, final PropertyDescriptor<?> desc, final PropertySource source) {
 
         Button button = new Button(parent, SWT.PUSH);
         button.setData(desc.name()); // for later reference
         button.setImage(ResourceManager.imageFor(PMDUiConstants.ICON_BUTTON_DELETE));
 
         button.addSelectionListener(new SelectionListener() {
+            @Override
             public void widgetDefaultSelected(SelectionEvent e) {
+                // TODO
             }
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 // rule.undefine(desc);
                 rearrangeFor(source);
@@ -302,7 +279,6 @@ public class FormArranger implements ValueChangeListener {
      * images they may have. Returns the names of any unreferenced variables are found;
      */
     public List<String> updateDeleteButtons() {
-
         if (propertySource == null || !RuleUtil.isXPathRule(propertySource)) {
             return Collections.emptyList();
         }
@@ -313,7 +289,7 @@ public class FormArranger implements ValueChangeListener {
             return Collections.emptyList();
         }
 
-        List<String> unreferencedOnes = new ArrayList<String>(refPositions.size());
+        List<String> unreferencedOnes = new ArrayList<>(refPositions.size());
         List<String> varNames = Util.fragmentsWithin(source, refPositions);
 
         for (Control[] widgetRow : widgets) {
@@ -332,7 +308,6 @@ public class FormArranger implements ValueChangeListener {
     }
 
     private void adjustEnabledStates() {
-
         Set<PropertyDescriptor<?>> ignoreds = propertySource.ignoredProperties();
 
         for (Map.Entry<PropertyDescriptor<?>, Control[]> entry : controlsByProperty.entrySet()) {
@@ -344,11 +319,13 @@ public class FormArranger implements ValueChangeListener {
         }
     }
 
+    @Override
     public void changed(RuleSelection rule, PropertyDescriptor<?> desc, Object newValue) {
+        // TODO
     }
 
+    @Override
     public void changed(PropertySource source, PropertyDescriptor<?> desc, Object newValue) {
-
         adjustEnabledStates();
     }
 }

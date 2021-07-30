@@ -17,6 +17,7 @@ import net.sourceforge.pmd.eclipse.util.UniqueItemsAsShapeBuilder;
  * 
  * @author Brian Remedios
  */
+@SuppressWarnings("PMD.ConstantsInInterface")
 public interface RuleTableColumns {
 
     RuleColumnDescriptor NAME = new TextColumnDescriptor("tName", StringKeys.PREF_RULESET_COLUMN_RULE_NAME, SWT.LEFT,

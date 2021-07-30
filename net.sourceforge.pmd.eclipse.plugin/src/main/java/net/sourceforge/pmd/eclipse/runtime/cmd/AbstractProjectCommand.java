@@ -25,15 +25,12 @@ public abstract class AbstractProjectCommand extends AbstractDefaultCommand {
         super(theName, theDescription);
     }
 
+    @Override
     public void reset() {
         setProject(null);
         setTerminated(false);
     }
 
-    /**
-     * @param project
-     *            The project to set.
-     */
     public void setProject(final IProject theProject) {
         project = theProject;
         setReadyToExecute(project != null);
@@ -47,6 +44,7 @@ public abstract class AbstractProjectCommand extends AbstractDefaultCommand {
         project.accept(visitor);
     }
 
+    @Override
     public boolean isReadyToExecute() {
         return project != null;
     }

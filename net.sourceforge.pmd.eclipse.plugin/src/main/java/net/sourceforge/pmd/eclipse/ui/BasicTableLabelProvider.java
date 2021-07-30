@@ -18,17 +18,19 @@ import net.sourceforge.pmd.eclipse.ui.preferences.AbstractTableLabelProvider;
  */
 public class BasicTableLabelProvider extends AbstractTableLabelProvider {
 
-    private final ItemColumnDescriptor<?, ?>[] columns;
+    private final ItemColumnDescriptor[] columns;
     private final List<Image> imagesToBeDisposed = new ArrayList<>();
 
     public BasicTableLabelProvider(ItemColumnDescriptor<?, ?>[] theColumns) {
         columns = theColumns;
     }
 
+    @Override
     public boolean isLabelProperty(Object element, String property) {
         return false;
     }
 
+    @Override
     public Image getColumnImage(Object element, int columnIndex) {
         ItemColumnDescriptor itemColumnDescriptor = columns[columnIndex];
         Image image = itemColumnDescriptor.imageFor(element);
@@ -38,14 +40,14 @@ public class BasicTableLabelProvider extends AbstractTableLabelProvider {
         return image;
     }
 
+    @Override
     public String getColumnText(Object element, int columnIndex) {
-        ItemColumnDescriptor itemColumnDescriptor = columns[columnIndex];
-        Object value = itemColumnDescriptor.textFor(element);
+        Object value = columns[columnIndex].textFor(element);
         return value == null ? null : value.toString();
     }
 
     public void addColumnsTo(Table table) {
-        for (ItemColumnDescriptor<?, ?> desc : columns) {
+        for (ItemColumnDescriptor desc : columns) {
             desc.buildTableColumn(table);
         }
     }

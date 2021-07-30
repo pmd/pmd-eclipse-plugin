@@ -15,16 +15,13 @@ import org.eclipse.jface.viewers.Viewer;
  */
 public abstract class AbstractStructuredContentProvider implements IStructuredContentProvider {
 
-    /**
-     * @see org.eclipse.jface.viewers.IContentProvider#dispose()
-     */
+    @Override
     public void dispose() {
+        // to be overridden
     }
 
-    /**
-     * @see org.eclipse.jface.viewers.IContentProvider#inputChanged(Viewer,
-     *      Object, Object)
-     */
+    @Override
     public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+        // to be overriden
     }
 }

@@ -7,6 +7,7 @@ package net.sourceforge.pmd.eclipse.ui.preferences.br;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import org.eclipse.swt.SWT;
@@ -25,7 +26,7 @@ import net.sourceforge.pmd.properties.PropertyDescriptor;
  * 
  * @author Brian Remedios
  */
-public class RuleUIUtil {
+public final class RuleUIUtil {
     
     private RuleUIUtil() {
         
@@ -41,6 +42,7 @@ public class RuleUIUtil {
     public static final FontBuilder CHANGED_PROPERTY_FONT = BLUE_BOLD_11;
 
     public static final VerifyListener RULE_NAME_VERIFIER = new VerifyListener() {
+        @Override
         public void verifyText(VerifyEvent event) {
 
             event.doit = false; // Assume we don't allow it
@@ -65,8 +67,8 @@ public class RuleUIUtil {
     };
 
     public static final VerifyListener RULE_LABEL_VERIFIER = new VerifyListener() {
+        @Override
         public void verifyText(VerifyEvent event) {
-
             event.doit = false; // Assume we don't allow it
 
             char ch = event.character; // Get the character typed
@@ -88,7 +90,7 @@ public class RuleUIUtil {
 
     // FIXME clean up the ruleset names in PMD proper!
     public static String ruleSetNameFrom(String rulesetName) {
-        int pos = rulesetName.toUpperCase().indexOf("RULES");
+        int pos = rulesetName.toUpperCase(Locale.ROOT).indexOf("RULES");
         return pos < 0 ? rulesetName : rulesetName.substring(0, pos - 1);
     }
 
@@ -153,13 +155,7 @@ public class RuleUIUtil {
         return sb.toString();
     }
 
-    /**
-     * @param rule
-     *            Rule
-     * @return String
-     */
     public static IndexedString indexedPropertyStringFrom(Rule rule) {
-
         Map<PropertyDescriptor<?>, Object> valuesByProp = Configuration.filteredPropertiesOf(rule);
 
         if (valuesByProp.isEmpty()) {
@@ -169,7 +165,7 @@ public class RuleUIUtil {
 
         Iterator<Map.Entry<PropertyDescriptor<?>, Object>> iter = valuesByProp.entrySet().iterator();
 
-        List<int[]> modifiedValueIndexes = new ArrayList<int[]>(valuesByProp.size());
+        List<int[]> modifiedValueIndexes = new ArrayList<>(valuesByProp.size());
 
         Map.Entry<PropertyDescriptor<?>, Object> entry = iter.next();
         sb.append(entry.getKey().name()).append(": ");

@@ -74,11 +74,12 @@ public class ViolationOutlinePage extends Page implements IPage, ISelectionChang
         }
     }
 
+    @Override
     public TableViewer tableViewer() {
         return tableViewer;
     }
-    
-    /* @see org.eclipse.ui.part.IPage#createControl(org.eclipse.swt.widgets.Composite) */
+
+    @Override
     public void createControl(Composite parent) {
         int tableStyle = SWT.H_SCROLL | SWT.V_SCROLL | SWT.MULTI | SWT.FULL_SELECTION;
         tableViewer = new TableViewer(parent, tableStyle);
@@ -101,7 +102,7 @@ public class ViolationOutlinePage extends Page implements IPage, ISelectionChang
     }
 
     /**
-     * Create the Columns
+     * Create the Columns.
      * 
      * @param table
      */
@@ -126,7 +127,7 @@ public class ViolationOutlinePage extends Page implements IPage, ISelectionChang
     }
 
     /**
-     * Creates Adapter for sorting and resizing the Columns
+     * Creates Adapter for sorting and resizing the Columns.
      * 
      * @param table
      */
@@ -138,6 +139,7 @@ public class ViolationOutlinePage extends Page implements IPage, ISelectionChang
             final int i = k;
             // the Sorter
             columns[k].addSelectionListener(new SelectionAdapter() {
+                @Override
                 public void widgetSelected(SelectionEvent e) {
                     currentSortedColumn = i;
                     columnSortOrder[currentSortedColumn] *= -1;
@@ -146,6 +148,7 @@ public class ViolationOutlinePage extends Page implements IPage, ISelectionChang
             });
             // the Resizing
             columns[k].addControlListener(new ControlAdapter() {
+                @Override
                 public void controlResized(ControlEvent e) {
                     columnWidths[i] = Integer.valueOf(tableViewer.getTable().getColumn(i).getWidth());
                 }
@@ -154,7 +157,7 @@ public class ViolationOutlinePage extends Page implements IPage, ISelectionChang
     }
 
     /**
-     * Creates the ActionBars
+     * Creates the ActionBars.
      */
     private void createActionBars() {
         IToolBarManager manager = getSite().getActionBars().getToolBarManager();
@@ -165,7 +168,7 @@ public class ViolationOutlinePage extends Page implements IPage, ISelectionChang
     }
 
     /**
-     * Returns the ViewerSorter
+     * Returns the ViewerSorter.
      * 
      * @param column, the Number of the Column
      * @return, the Sorter for this Column
@@ -178,6 +181,7 @@ public class ViolationOutlinePage extends Page implements IPage, ISelectionChang
         // sorts by the Priority
         case 0:
             return new TableColumnSorter(column, sortOrder) {
+                @Override
                 public int compare(Viewer viewer, Object e1, Object e2) {
                     IMarker marker1 = (IMarker) e1;
                     IMarker marker2 = (IMarker) e2;
@@ -203,6 +207,7 @@ public class ViolationOutlinePage extends Page implements IPage, ISelectionChang
         // sorts by the Message
         case 1:
             return new TableColumnSorter(column, sortOrder) {
+                @Override
                 public int compare(Viewer viewer, Object e1, Object e2) {
                     String message1 = "";
                     String message2 = "";
@@ -220,6 +225,7 @@ public class ViolationOutlinePage extends Page implements IPage, ISelectionChang
         // sorts by the Line-Number
         case 2:
             return new TableColumnSorter(column, sortOrder) {
+                @Override
                 public int compare(Viewer viewer, Object e1, Object e2) {
                     Integer prio1;
                     Integer prio2;
@@ -245,12 +251,12 @@ public class ViolationOutlinePage extends Page implements IPage, ISelectionChang
         return tableViewer;
     }
 
-    /* @see org.eclipse.ui.part.IPage#getControl() */
+    @Override
     public Control getControl() {
         return tableViewer.getControl();
     }
 
-    /* @see org.eclipse.ui.part.IPage#setFocus() */
+    @Override
     public void setFocus() {
         tableViewer.getTable().setFocus();
     }
@@ -263,7 +269,7 @@ public class ViolationOutlinePage extends Page implements IPage, ISelectionChang
     }
 
     /**
-     * Sets the Column's Widths
+     * Sets the Column's Widths.
      * 
      * @param widths, an Integer-Array containing the widths
      */
@@ -291,7 +297,7 @@ public class ViolationOutlinePage extends Page implements IPage, ISelectionChang
     }
 
     /**
-     * Sets the Properties to sort by
+     * Sets the Properties to sort by.
      * 
      * @param properties, an Integer-Array with the Number of Column to sort by [0] and the Direction to sort by (-1 or 1) [1]
      */
@@ -311,8 +317,9 @@ public class ViolationOutlinePage extends Page implements IPage, ISelectionChang
     }
 
     /**
-     * Refreshes the View
+     * Refreshes the View.
      */
+    @Override
     public void refresh() {
         if (!tableViewer.getControl().isDisposed()) {
             tableViewer.getControl().setRedraw(false);
@@ -322,7 +329,7 @@ public class ViolationOutlinePage extends Page implements IPage, ISelectionChang
 
     }
 
-    /* @see org.eclipse.jface.viewers.ISelectionChangedListener#selectionChanged(org.eclipse.jface.viewers.SelectionChangedEvent) */
+    @Override
     public void selectionChanged(SelectionChangedEvent event) {
         IStructuredSelection selection = (IStructuredSelection) event.getSelection();
         IMarker marker = (IMarker) selection.getFirstElement();
@@ -341,7 +348,7 @@ public class ViolationOutlinePage extends Page implements IPage, ISelectionChang
     }
 
     /**
-     * Helper method to return an NLS string from its key
+     * Helper method to return an NLS string from its key.
      */
     private String getString(String key) {
         return PMDPlugin.getDefault().getStringTable().getString(key);

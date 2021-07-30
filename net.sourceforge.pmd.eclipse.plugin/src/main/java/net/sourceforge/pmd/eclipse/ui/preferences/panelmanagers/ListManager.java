@@ -24,7 +24,6 @@ public class ListManager {
     private final Button deleteButton;
 
     public ListManager(List theList, Button theUpButton, Button theDownButton, Button theDeleteButton) {
-
         list = theList;
         upButton = theUpButton;
         downButton = theDownButton;
@@ -36,23 +35,26 @@ public class ListManager {
 
     private void registerListeners() {
         list.addListener(SWT.Selection, new Listener() {
-
+            @Override
             public void handleEvent(Event arg0) {
                 updateButtonStates();
             }
 
         });
         upButton.addSelectionListener(new SelectionAdapter() {
+            @Override
             public void widgetSelected(SelectionEvent arg0) {
                 shiftUp();
             }
         });
         downButton.addSelectionListener(new SelectionAdapter() {
+            @Override
             public void widgetSelected(SelectionEvent arg0) {
                 shiftDown();
             }
         });
         deleteButton.addSelectionListener(new SelectionAdapter() {
+            @Override
             public void widgetSelected(SelectionEvent arg0) {
                 delete();
             }

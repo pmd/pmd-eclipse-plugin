@@ -32,9 +32,6 @@ public class ASTView extends AbstractResourceView {
     private static final String SHOW_IMPORTS = "ASTView.showImports";
     private static final String SHOW_COMMENTS = "ASTView.showComments";
 
-    public ASTView() {
-    }
-
     static boolean showImports() {
         return getBoolUIPref(SHOW_IMPORTS);
     }
@@ -43,6 +40,7 @@ public class ASTView extends AbstractResourceView {
         return getBoolUIPref(SHOW_COMMENTS);
     }
 
+    @Override
     protected String pageMessageId() {
         return StringKeys.VIEW_AST_DEFAULT_TEXT;
     }
@@ -72,6 +70,7 @@ public class ASTView extends AbstractResourceView {
         return null;
     }
 
+    @Override
     protected AbstractStructureInspectorPage getCurrentViewPage() {
         return getCurrentASTViewPage();
     }
@@ -99,8 +98,8 @@ public class ASTView extends AbstractResourceView {
     }
 
     private void makeActions() {
-
         toggleShowImportsAction = new Action() {
+            @Override
             public void run() {
                 boolean show = !showImports();
                 setChecked(show);
@@ -111,6 +110,7 @@ public class ASTView extends AbstractResourceView {
         toggleShowImportsAction.setChecked(showImports());
 
         toggleShowCommentsAction = new Action() {
+            @Override
             public void run() {
                 boolean show = !showComments();
                 setChecked(show);
@@ -122,7 +122,6 @@ public class ASTView extends AbstractResourceView {
     }
 
     private void addToolbarControls() {
-
         IActionBars aBars = getViewSite().getActionBars();
 
         IToolBarManager manager = aBars.getToolBarManager();
@@ -133,10 +132,8 @@ public class ASTView extends AbstractResourceView {
     }
 
     private void addViewFilterOptions(IActionBars aBars) {
-
         IMenuManager mmgr = aBars.getMenuManager();
         mmgr.add(toggleShowImportsAction);
         mmgr.add(toggleShowCommentsAction);
     }
-
 }

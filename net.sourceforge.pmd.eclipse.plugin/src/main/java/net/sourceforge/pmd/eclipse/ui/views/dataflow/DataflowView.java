@@ -14,12 +14,13 @@ import net.sourceforge.pmd.eclipse.ui.views.AbstractResourceView;
 import net.sourceforge.pmd.eclipse.ui.views.AbstractStructureInspectorPage;
 
 /**
- * A View that shows DataflowGraph and -Table as well as the Anomaly-List
+ * A View that shows DataflowGraph and -Table as well as the Anomaly-List.
  *
  * @author SebastianRaffel ( 26.05.2005 ), Sven Jacob ( 19.09.2006 )
  */
 public class DataflowView extends AbstractResourceView {
 
+    @Override
     protected String pageMessageId() {
         return StringKeys.VIEW_DATAFLOW_DEFAULT_TEXT;
     }
@@ -47,6 +48,7 @@ public class DataflowView extends AbstractResourceView {
         return null;
     }
 
+    @Override
     protected AbstractStructureInspectorPage getCurrentViewPage() {
         return getCurrentDataflowViewPage();
     }
@@ -62,5 +64,4 @@ public class DataflowView extends AbstractResourceView {
 
         return (DataflowViewPage) page;
     }
-
 }

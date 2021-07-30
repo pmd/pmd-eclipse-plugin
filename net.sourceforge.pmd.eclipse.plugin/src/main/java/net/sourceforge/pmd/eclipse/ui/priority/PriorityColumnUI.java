@@ -18,48 +18,56 @@ import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
 public interface PriorityColumnUI {
 
     ItemFieldAccessor<String, RulePriority> NAME_ACC = new ItemFieldAccessorAdapter<String, RulePriority>(null) {
+        @Override
         public String valueFor(RulePriority priority) {
             return PriorityDescriptorCache.INSTANCE.descriptorFor(priority).label;
         }
     };
 
     ItemFieldAccessor<String, RulePriority> PMD_NAME_ACC = new ItemFieldAccessorAdapter<String, RulePriority>(null) {
+        @Override
         public String valueFor(RulePriority priority) {
             return priority.getName();
         }
     };
 
     ItemFieldAccessor<String, RulePriority> DESCRIPTION_ACC = new ItemFieldAccessorAdapter<String, RulePriority>(null) {
+        @Override
         public String valueFor(RulePriority priority) {
             return PriorityDescriptorCache.INSTANCE.descriptorFor(priority).description;
         }
     };
 
     ItemFieldAccessor<Shape, RulePriority> SHAPE_ACC = new ItemFieldAccessorAdapter<Shape, RulePriority>(null) {
+        @Override
         public Shape valueFor(RulePriority priority) {
             return PriorityDescriptorCache.INSTANCE.descriptorFor(priority).shape.shape;
         }
     };
 
     ItemFieldAccessor<RGB, RulePriority> COLOR_ACC = new ItemFieldAccessorAdapter<RGB, RulePriority>(null) {
+        @Override
         public RGB valueFor(RulePriority priority) {
             return PriorityDescriptorCache.INSTANCE.descriptorFor(priority).shape.rgbColor;
         }
     };
 
     ItemFieldAccessor<Integer, RulePriority> SIZE_ACC = new ItemFieldAccessorAdapter<Integer, RulePriority>(null) {
+        @Override
         public Integer valueFor(RulePriority priority) {
             return PriorityDescriptorCache.INSTANCE.descriptorFor(priority).shape.size;
         }
     };
 
     ItemFieldAccessor<Integer, RulePriority> VALUE_ACC = new ItemFieldAccessorAdapter<Integer, RulePriority>(null) {
+        @Override
         public Integer valueFor(RulePriority priority) {
             return priority.getPriority();
         }
     };
 
     ItemFieldAccessor<Image, RulePriority> IMAGE_ACC = new ItemFieldAccessorAdapter<Image, RulePriority>(null) {
+        @Override
         public Image imageFor(RulePriority priority) {
             // Note: Not using the cached annotation image, but create a new image based on the
             // current priority descriptor settings.
@@ -67,15 +75,15 @@ public interface PriorityColumnUI {
         }
     };
 
-    ItemColumnDescriptor<String, RulePriority> NAME = new ItemColumnDescriptor<String, RulePriority>("",
+    ItemColumnDescriptor<String, RulePriority> NAME = new ItemColumnDescriptor<>("",
             StringKeys.PRIORITY_COLUMN_NAME, SWT.LEFT, 25, true, NAME_ACC);
-    ItemColumnDescriptor<String, RulePriority> PMD_NAME = new ItemColumnDescriptor<String, RulePriority>("",
+    ItemColumnDescriptor<String, RulePriority> PMD_NAME = new ItemColumnDescriptor<>("",
             StringKeys.PRIORITY_COLUMN_PMD_NAME, SWT.LEFT, 25, true, PMD_NAME_ACC);
-    ItemColumnDescriptor<Integer, RulePriority> VALUE = new ItemColumnDescriptor<Integer, RulePriority>("",
+    ItemColumnDescriptor<Integer, RulePriority> VALUE = new ItemColumnDescriptor<>("",
             StringKeys.PRIORITY_COLUMN_VALUE, SWT.CENTER, 25, true, VALUE_ACC);
     // PriorityColumnDescriptor size = new PriorityColumnDescriptor("", StringKeys.PRIORITY_COLUMN_SIZE, SWT.RIGHT, 25,
     // true, sizeAcc);
-    ItemColumnDescriptor<Image, RulePriority> IMAGE = new ItemColumnDescriptor<Image, RulePriority>("",
+    ItemColumnDescriptor<Image, RulePriority> IMAGE = new ItemColumnDescriptor<>("",
             StringKeys.PRIORITY_COLUMN_SYMBOL, SWT.CENTER, 25, true, IMAGE_ACC).disposeImage();
     // PriorityColumnDescriptor color = new PriorityColumnDescriptor("", StringKeys.PRIORITY_COLUMN_COLOR, SWT.RIGHT,
     // 25, true, colorAcc);

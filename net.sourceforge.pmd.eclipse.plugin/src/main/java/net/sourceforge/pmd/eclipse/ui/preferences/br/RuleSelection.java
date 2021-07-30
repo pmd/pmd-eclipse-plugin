@@ -45,6 +45,7 @@ public class RuleSelection implements RuleCollection {
         ruleItems = theRuleItems;
     }
 
+    @Override
     public boolean isEmpty() {
         return ruleItems == null || ruleItems.length == 0;
     }
@@ -60,6 +61,7 @@ public class RuleSelection implements RuleCollection {
      * @param visitor
      * @return
      */
+    @Override
     public boolean rulesDo(RuleVisitor visitor) {
 
         for (Object item : ruleItems) {
@@ -85,9 +87,10 @@ public class RuleSelection implements RuleCollection {
             return ImplementationType.Mixed;
         }
 
-        final Set<ImplementationType> types = new HashSet<ImplementationType>();
+        final Set<ImplementationType> types = new HashSet<>();
 
         RuleVisitor visitor = new RuleVisitor() {
+            @Override
             public boolean accept(Rule rule) {
                 types.add(implementationType(rule));
                 return types.size() < 2;
@@ -109,11 +112,12 @@ public class RuleSelection implements RuleCollection {
      *            Object[]
      * @return boolean
      */
+    @SuppressWarnings("PMD.CompareObjectsWithEquals")
     public static final boolean valuesAreTransitivelyEqual(Object[] thisArray, Object[] thatArray) {
         if (thisArray == thatArray) {
             return true;
         }
-        if ((thisArray == null) || (thatArray == null)) {
+        if (thisArray == null || thatArray == null) {
             return false;
         }
         if (thisArray.length != thatArray.length) {
@@ -128,8 +132,8 @@ public class RuleSelection implements RuleCollection {
     }
 
     public boolean haveDefaultValues() {
-
         RuleVisitor visitor = new RuleVisitor() {
+            @Override
             public boolean accept(Rule rule) {
                 return rule.usesDefaultValues();
             }
@@ -139,7 +143,6 @@ public class RuleSelection implements RuleCollection {
     }
 
     public boolean hasOneRule() {
-
         if (ruleItems == null || ruleItems.length > 1) {
             return false;
         }
@@ -150,8 +153,8 @@ public class RuleSelection implements RuleCollection {
         return ruleItems != null && allRules().size() > 1;
     }
 
+    @Override
     public Rule soleRule() {
-
         if (ruleItems == null || ruleItems.length != 1) {
             return null;
         }
@@ -166,12 +169,11 @@ public class RuleSelection implements RuleCollection {
     }
 
     public Collection<String> ruleGroupNames() {
-
         if (ruleItems == null) {
             return Collections.emptyList();
         }
 
-        Collection<String> names = new ArrayList<String>();
+        Collection<String> names = new ArrayList<>();
         for (Object item : ruleItems) {
             if (item instanceof RuleGroup) {
                 names.add(((RuleGroup) item).label());
@@ -182,15 +184,14 @@ public class RuleSelection implements RuleCollection {
     }
 
     private static void useDefaultValues(Rule rule) {
-
         for (Map.Entry<PropertyDescriptor<?>, Object> entry : Configuration.filteredPropertiesOf(rule).entrySet()) {
             rule.useDefaultValueFor(entry.getKey());
         }
     }
 
     public void useDefaultValues() {
-
         RuleVisitor visitor = new RuleVisitor() {
+            @Override
             public boolean accept(Rule rule) {
                 useDefaultValues(rule);
                 return true;
@@ -201,7 +202,6 @@ public class RuleSelection implements RuleCollection {
     }
 
     public static ImplementationType implementationType(Rule rule) {
-
         if (rule instanceof RuleReference) {
             return ((RuleReference) rule).getRule() instanceof XPathRule ? ImplementationType.XPath
                     : ImplementationType.Java;
@@ -211,17 +211,16 @@ public class RuleSelection implements RuleCollection {
     }
 
     public static String commonStringValueFor(Object item, StringProperty desc) {
-
         return item instanceof Rule ? ((Rule) item).getProperty(desc) : ((RuleGroup) item).commonStringProperty(desc);
     }
 
     public void setLanguage(final Language language) {
-
         if (ruleItems == null) {
             return;
         }
 
         RuleVisitor visitor = new RuleVisitor() {
+            @Override
             public boolean accept(Rule rule) {
                 rule.setLanguage(language);
                 return true;
@@ -232,12 +231,12 @@ public class RuleSelection implements RuleCollection {
     }
 
     public void setMinLanguageVersion(final LanguageVersion version) {
-
         if (ruleItems == null) {
             return;
         }
 
         RuleVisitor visitor = new RuleVisitor() {
+            @Override
             public boolean accept(Rule rule) {
                 rule.setMinimumLanguageVersion(version);
                 return true;
@@ -248,12 +247,12 @@ public class RuleSelection implements RuleCollection {
     }
 
     public void setMaxLanguageVersion(final LanguageVersion version) {
-
         if (ruleItems == null) {
             return;
         }
 
         RuleVisitor visitor = new RuleVisitor() {
+            @Override
             public boolean accept(Rule rule) {
                 rule.setMaximumLanguageVersion(version);
                 return true;
@@ -264,12 +263,12 @@ public class RuleSelection implements RuleCollection {
     }
 
     public void setPriority(final RulePriority priority) {
-
         if (ruleItems == null) {
             return;
         }
 
         RuleVisitor visitor = new RuleVisitor() {
+            @Override
             public boolean accept(Rule rule) {
                 rule.setPriority(priority);
                 return true;
@@ -280,13 +279,12 @@ public class RuleSelection implements RuleCollection {
     }
 
     public int removeAllFrom(RuleSet ruleSet) {
-
         List<Rule> rules = allRules();
         if (rules.isEmpty()) {
             return 0;
         }
 
-        Set<Rule> rulesAsSet = new HashSet<Rule>();
+        Set<Rule> rulesAsSet = new HashSet<>();
         rulesAsSet.addAll(rules);
 
         Iterator<Rule> currentRuleIter = ruleSet.getRules().iterator();
@@ -309,14 +307,14 @@ public class RuleSelection implements RuleCollection {
     }
 
     public List<Rule> allRules() {
-
         if (ruleItems == null || ruleItems.length == 0) {
             return Collections.emptyList();
         }
 
-        final List<Rule> rules = new ArrayList<Rule>(ruleItems.length);
+        final List<Rule> rules = new ArrayList<>(ruleItems.length);
 
         RuleVisitor visitor = new RuleVisitor() {
+            @Override
             public boolean accept(Rule rule) {
                 rules.add(rule);
                 return true;
@@ -329,7 +327,6 @@ public class RuleSelection implements RuleCollection {
     }
 
     public String commonStringValue(StringProperty desc) {
-
         if (ruleItems == null || ruleItems.length == 0 || desc == null) {
             return null;
         }
@@ -350,12 +347,12 @@ public class RuleSelection implements RuleCollection {
     }
 
     public void setValue(final StringProperty desc, final String value) {
-
         if (ruleItems == null || ruleItems.length == 0) {
             return;
         }
 
         RuleVisitor visitor = new RuleVisitor() {
+            @Override
             public boolean accept(Rule rule) {
                 rule.setProperty(desc, value);
                 return true;
@@ -365,8 +362,8 @@ public class RuleSelection implements RuleCollection {
         rulesDo(visitor);
     }
 
+    @Override
     public String toString() {
-
         StringBuilder sb = new StringBuilder();
 
         Collection<String> rgNames = ruleGroupNames();

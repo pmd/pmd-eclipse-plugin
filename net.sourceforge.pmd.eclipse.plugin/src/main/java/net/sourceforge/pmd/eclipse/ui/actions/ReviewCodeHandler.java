@@ -38,9 +38,6 @@ public class ReviewCodeHandler extends AbstractHandler {
     private IResource[] fResources;
     private IPath fLocation;
 
-    public ReviewCodeHandler() {
-    }
-
     protected final ISelection getSelection() {
         IWorkbenchWindow window = getWorkbenchWindow();
         return window != null ? window.getSelectionService().getSelection() : null;
@@ -70,6 +67,7 @@ public class ReviewCodeHandler extends AbstractHandler {
     // return (IFile[]) files.toArray(new IFile[files.size()]);
     // }
 
+    @Override
     public Object execute(ExecutionEvent event) throws ExecutionException {
 
         computeSelectedResources();
@@ -127,7 +125,7 @@ public class ReviewCodeHandler extends AbstractHandler {
             }
 
             if (!resources.isEmpty()) {
-                fResources = (IResource[]) resources.toArray(new IResource[resources.size()]);
+                fResources = (IResource[]) resources.toArray(new IResource[0]);
             }
 
         } else if (selection instanceof ITextSelection) {

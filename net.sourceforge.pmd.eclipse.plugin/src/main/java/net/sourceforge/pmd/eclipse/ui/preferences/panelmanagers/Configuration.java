@@ -17,7 +17,7 @@ import net.sourceforge.pmd.properties.PropertySource;
  *
  * @author Brian Remedios
  */
-public class Configuration {
+public final class Configuration {
     private Configuration() { }
 
     // properties that should not be shown in the PerRuleProperty page
@@ -26,7 +26,6 @@ public class Configuration {
         XPathRule.VERSION_DESCRIPTOR, StatisticalRule.SIGMA_DESCRIPTOR, StatisticalRule.TOP_SCORE_DESCRIPTOR };
 
     public static Map<PropertyDescriptor<?>, Object> filteredPropertiesOf(PropertySource source) {
-
         Map<PropertyDescriptor<?>, Object> valuesByProp = new HashMap<>(source.getPropertiesByPropertyDescriptor());
 
         for (PropertyDescriptor<?> excludedRuleProperty : EXCLUDED_RULE_PROPERTIES) {

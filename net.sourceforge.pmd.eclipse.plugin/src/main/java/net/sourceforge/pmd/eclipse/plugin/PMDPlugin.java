@@ -57,9 +57,8 @@ import org.slf4j.LoggerFactory;
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSet;
-import net.sourceforge.pmd.RuleSetFactory;
-import net.sourceforge.pmd.RuleSetNotFoundException;
-import net.sourceforge.pmd.RulesetsFactoryUtils;
+import net.sourceforge.pmd.RuleSetLoadException;
+import net.sourceforge.pmd.RuleSetLoader;
 import net.sourceforge.pmd.eclipse.core.IRuleSetManager;
 import net.sourceforge.pmd.eclipse.core.ext.RuleSetsExtensionProcessor;
 import net.sourceforge.pmd.eclipse.core.impl.RuleSetManagerImpl;
@@ -79,6 +78,7 @@ import net.sourceforge.pmd.eclipse.runtime.writer.IRuleSetWriter;
 import net.sourceforge.pmd.eclipse.runtime.writer.impl.WriterFactoryImpl;
 import net.sourceforge.pmd.eclipse.ui.RuleLabelDecorator;
 import net.sourceforge.pmd.eclipse.ui.actions.RuleSetUtil;
+import net.sourceforge.pmd.eclipse.ui.actions.internal.InternalRuleSetUtil;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
 import net.sourceforge.pmd.eclipse.ui.nls.StringTable;
 import net.sourceforge.pmd.eclipse.ui.priority.PriorityDescriptorCache;
@@ -90,35 +90,34 @@ import net.sourceforge.pmd.lang.java.JavaLanguageModule;
 import net.sourceforge.pmd.lang.rule.RuleReference;
 
 /**
- * The activator class controls the plug-in life cycle
+ * The activator class controls the plug-in life cycle.
  */
 public class PMDPlugin extends AbstractUIPlugin {
     private static final Logger LOG = LoggerFactory.getLogger(PMDPlugin.class);
 
-    private static File pluginFolder;
+    private static Map<IProject, IJavaProject> javaProjectsByIProject = new HashMap<>();
 
-    private FileChangeReviewer changeReviewer;
+    // The shared instance
+    private static PMDPlugin plugin;
 
-    private Map<RGB, Color> coloursByRGB = new HashMap<RGB, Color>();
+    private static final Integer[] PRIORITY_VALUES = new Integer[] { Integer.valueOf(1), Integer.valueOf(2),
+        Integer.valueOf(3), Integer.valueOf(4), Integer.valueOf(5), };
+
+    @Deprecated
+    public static final String ROOT_LOG_ID = LogbackConfiguration.ROOT_LOG_ID;
 
     public static final String PLUGIN_ID = "net.sourceforge.pmd.eclipse.plugin";
     public static final String VIOLATIONS_OVERVIEW_ID = "net.sourceforge.pmd.eclipse.ui.views.violationOverview"; 
     public static final String VIOLATIONS_OUTLINE_ID = "net.sourceforge.pmd.eclipse.ui.views.violationOutline"; 
 
-    private static Map<IProject, IJavaProject> javaProjectsByIProject = new HashMap<IProject, IJavaProject>();
-
-    // The shared instance
-    private static PMDPlugin plugin;
-
     public static String version = "unknown";
 
-    private static final Integer[] PRIORITY_VALUES = new Integer[] { Integer.valueOf(1), Integer.valueOf(2),
-        Integer.valueOf(3), Integer.valueOf(4), Integer.valueOf(5), };
+    private FileChangeReviewer changeReviewer;
+
+    private Map<RGB, Color> coloursByRgb = new HashMap<>();
 
     private StringTable stringTable; // NOPMD by Herlin on 11/10/06 00:22
 
-    @Deprecated
-    public static final String ROOT_LOG_ID = LogbackConfiguration.ROOT_LOG_ID;
     private IPreferencesFactory preferencesFactory = new PreferencesFactoryImpl();
     private IPropertiesFactory propertiesFactory = new PropertiesFactoryImpl();
 
@@ -126,22 +125,19 @@ public class PMDPlugin extends AbstractUIPlugin {
 
     private final LogbackConfiguration logbackConfiguration = new LogbackConfiguration();
 
-    /**
-     * The constructor
-     */
     public PMDPlugin() {
-        plugin = this;
+        plugin = this; //NOPMD
     }
 
     public Color colorFor(RGB rgb) {
 
-        Color color = coloursByRGB.get(rgb);
+        Color color = coloursByRgb.get(rgb);
         if (color != null) {
             return color;
         }
 
         color = new Color(null, rgb.red, rgb.green, rgb.blue);
-        coloursByRGB.put(rgb, color);
+        coloursByRgb.put(rgb, color);
 
         return color;
     }
@@ -205,7 +201,7 @@ public class PMDPlugin extends AbstractUIPlugin {
 
     private void disposeResources() {
 
-        disposeAll(coloursByRGB.values());
+        disposeAll(coloursByRgb.values());
     }
 
     public static void disposeAll(Collection<Color> colors) {
@@ -214,26 +210,21 @@ public class PMDPlugin extends AbstractUIPlugin {
         }
     }
 
+    /**
+     * @deprecated will be removed since it is not needed
+     */
+    @Deprecated
     public static File getPluginFolder() {
-
-        if (pluginFolder == null) {
-            URL url = Platform.getBundle(PLUGIN_ID).getEntry("/");
-            try {
-                url = FileLocator.resolve(url);
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
-            pluginFolder = new File(url.getPath());
+        URL url = Platform.getBundle(PLUGIN_ID).getEntry("/");
+        try {
+            url = FileLocator.resolve(url);
+        } catch (IOException ex) {
+            ex.printStackTrace();
         }
-
-        return pluginFolder;
+        return new File(url.getPath());
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework. BundleContext )
-     */
+    @Override
     public void start(BundleContext context) throws Exception {
         super.start(context);
         logbackConfiguration.configureLogback();
@@ -250,6 +241,7 @@ public class PMDPlugin extends AbstractUIPlugin {
 
         // if a project is deleted, remove the cached project properties
         ResourcesPlugin.getWorkspace().addResourceChangeListener(new IResourceChangeListener() {
+            @Override
             public void resourceChanged(IResourceChangeEvent arg0) {
                 if (arg0.getType() == IResourceChangeEvent.PRE_DELETE && arg0.getResource() instanceof IProject) {
                     getPropertiesManager().removeProjectProperties((IProject) arg0.getResource());
@@ -266,14 +258,13 @@ public class PMDPlugin extends AbstractUIPlugin {
     }
 
     /**
-     * Get a list of all the files that are open in eclipse currently
+     * Get a list of all the files that are open in eclipse currently.
      * 
-     * @return
      * @deprecated will be removed since it is not needed
      */
     @Deprecated
     public Set<IFile> getOpenFiles() {
-        Set<IFile> files = new HashSet<IFile>();
+        Set<IFile> files = new HashSet<>();
         IEditorReference[] refs = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
                 .getEditorReferences();
         if (refs.length > 0) {
@@ -371,11 +362,7 @@ public class PMDPlugin extends AbstractUIPlugin {
         });
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework. BundleContext )
-     */
+    @Override
     public void stop(BundleContext context) throws Exception {
         fileChangeListenerEnabled(false);
 
@@ -391,7 +378,7 @@ public class PMDPlugin extends AbstractUIPlugin {
     }
 
     /**
-     * Returns the shared instance
+     * Returns the shared instance.
      *
      * @return the shared instance
      */
@@ -411,7 +398,7 @@ public class PMDPlugin extends AbstractUIPlugin {
     }
 
     /**
-     * Get an image corresponding to the severity
+     * Get an image corresponding to the severity.
      */
     public Image getImage(String key, String iconPath) {
         ImageRegistry registry = getImageRegistry();
@@ -452,12 +439,12 @@ public class PMDPlugin extends AbstractUIPlugin {
     }
 
     /**
-     * Helper method to display error
+     * Helper method to display error.
      */
     public void showError(final String message, final Throwable t) {
         logError(message, t);
         Display.getDefault().syncExec(new Runnable() {
-
+            @Override
             public void run() {
                 String errTitle = getStringTable().getString(StringKeys.ERROR_TITLE);
                 MessageDialog.openError(Display.getCurrent().getActiveShell(), errTitle,
@@ -467,12 +454,12 @@ public class PMDPlugin extends AbstractUIPlugin {
     }
 
     /**
-     * Helper method to display a non-logged user error
+     * Helper method to display a non-logged user error.
      */
     public void showUserError(final String message) {
 
         Display.getDefault().syncExec(new Runnable() {
-
+            @Override
             public void run() {
                 String errTitle = getStringTable().getString(StringKeys.ERROR_TITLE);
                 MessageDialog.openError(Display.getCurrent().getActiveShell(), errTitle, message);
@@ -588,23 +575,21 @@ public class PMDPlugin extends AbstractUIPlugin {
     }
 
     /**
-     * Registering the standard rulesets
+     * Registering the standard rulesets.
      *
      */
     private void registerStandardRuleSets() {
+        RuleSetLoader loader = InternalRuleSetUtil.getDefaultRuleSetLoader();
 
-        final RuleSetFactory factory = RulesetsFactoryUtils.defaultFactory();
         try {
-            Iterator<RuleSet> iterator = factory.getRegisteredRuleSets();
             final IRuleSetManager manager = getRuleSetManager();
-            RuleSet ruleSet;
-            while (iterator.hasNext()) {
-                ruleSet = iterator.next();
-                ruleSet = removeDeprecatedRuleReferences(ruleSet);
-                manager.registerRuleSet(ruleSet);
-                manager.registerDefaultRuleSet(ruleSet);
+            for (RuleSet ruleset : loader.getStandardRuleSets()) {
+                RuleSet modifiedRuleSet = removeDeprecatedRuleReferences(ruleset);
+                manager.registerRuleSet(modifiedRuleSet);
+                manager.registerDefaultRuleSet(modifiedRuleSet);
+                
             }
-        } catch (RuleSetNotFoundException e) {
+        } catch (RuleSetLoadException e) {
             log(IStatus.WARNING, "Problem getting all registered PMD RuleSets", e);
         }
     }
@@ -650,7 +635,7 @@ public class PMDPlugin extends AbstractUIPlugin {
             return;
         }
 
-        Collection<IResource> withParents = new HashSet<IResource>(changedFiles.size() * 2);
+        Collection<IResource> withParents = new HashSet<>(changedFiles.size() * 2);
         withParents.addAll(changedFiles);
         for (IFile file : changedFiles) {
             IResource parent = file.getParent();
@@ -722,7 +707,7 @@ public class PMDPlugin extends AbstractUIPlugin {
             return;
         }
 
-        Collection<IResource> changes = new ArrayList<IResource>();
+        Collection<IResource> changes = new ArrayList<>();
 
         addFilesTo(resource, changes);
 

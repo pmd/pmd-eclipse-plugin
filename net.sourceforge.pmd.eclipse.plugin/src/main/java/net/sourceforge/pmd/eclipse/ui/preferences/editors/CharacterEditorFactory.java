@@ -21,7 +21,7 @@ import net.sourceforge.pmd.properties.PropertySource;
 /**
  * @author Brian Remedios
  */
-public class CharacterEditorFactory extends AbstractEditorFactory<Character> {
+public final class CharacterEditorFactory extends AbstractEditorFactory<Character> {
 
     public static final CharacterEditorFactory INSTANCE = new CharacterEditorFactory();
 
@@ -29,21 +29,23 @@ public class CharacterEditorFactory extends AbstractEditorFactory<Character> {
     private CharacterEditorFactory() { }
 
 
+    @Override
     public PropertyDescriptor<Character> createDescriptor(String name, String description, Control[] otherData) {
         return PropertyFactory.charProperty(name).desc(description)
             .defaultValue('a').build();
     }
 
 
+    @Override
     protected Character valueFrom(Control valueControl) {
-
         String value = ((Text) valueControl).getText().trim();
 
-        return (StringUtils.isBlank(value) || value.length() > 1) ? null
-                                                                 : value.charAt(0);
+        return StringUtils.isBlank(value) || value.length() > 1 ? null
+                                                                : value.charAt(0);
     }
 
 
+    @Override
     public Control newEditorOn(Composite parent, final PropertyDescriptor<Character> desc, final PropertySource
         source, final ValueChangeListener listener, SizeChangeListener sizeListener) {
 
@@ -52,6 +54,7 @@ public class CharacterEditorFactory extends AbstractEditorFactory<Character> {
         fillWidget(text, desc, source);
 
         text.addListener(SWT.FocusOut, new Listener() {
+            @Override
             public void handleEvent(Event event) {
                 Character newValue = charValueIn(text);
                 Character existingValue = valueFor(source, desc);
@@ -69,12 +72,6 @@ public class CharacterEditorFactory extends AbstractEditorFactory<Character> {
     }
 
 
-    /**
-     * Method fillWidget.
-     *
-     * @param textWidget Text
-     * @param desc       PropertyDescriptor<?>
-     */
     protected void fillWidget(Text textWidget, PropertyDescriptor<Character> desc, PropertySource source) {
         Character val = valueFor(source, desc);
         textWidget.setText(val == null ? "" : val.toString());
