@@ -16,6 +16,7 @@ This is a minor release.
 ### Fixed Issues
 
 *   [#150](https://github.com/pmd/pmd-eclipse-plugin/issues/150): Error executing command ReviewCode: java.util.regex.PatternSyntaxException: Illegal/unsupported escape sequence near index
+*   [#153](https://github.com/pmd/pmd-eclipse-plugin/issues/153): Not properly disposed SWT resource
 
 ### API Changes
 

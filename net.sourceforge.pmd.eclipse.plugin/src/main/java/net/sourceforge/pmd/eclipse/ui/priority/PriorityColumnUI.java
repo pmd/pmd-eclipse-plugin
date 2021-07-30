@@ -76,7 +76,7 @@ public interface PriorityColumnUI {
     // PriorityColumnDescriptor size = new PriorityColumnDescriptor("", StringKeys.PRIORITY_COLUMN_SIZE, SWT.RIGHT, 25,
     // true, sizeAcc);
     ItemColumnDescriptor<Image, RulePriority> IMAGE = new ItemColumnDescriptor<Image, RulePriority>("",
-            StringKeys.PRIORITY_COLUMN_SYMBOL, SWT.CENTER, 25, true, IMAGE_ACC);
+            StringKeys.PRIORITY_COLUMN_SYMBOL, SWT.CENTER, 25, true, IMAGE_ACC).disposeImage();
     // PriorityColumnDescriptor color = new PriorityColumnDescriptor("", StringKeys.PRIORITY_COLUMN_COLOR, SWT.RIGHT,
     // 25, true, colorAcc);
     // PriorityColumnDescriptor description = new PriorityColumnDescriptor("", StringKeys.PRIORITY_COLUMN_DESC,
