@@ -59,11 +59,17 @@ function snapshot_build() {
     pmd_ci_log_group_start "Snapshot Build: ${PMD_CI_MAVEN_PROJECT_VERSION}"
         pmd_ci_log_info "This is a snapshot build on branch ${PMD_CI_BRANCH} (version: ${PMD_CI_MAVEN_PROJECT_VERSION})"
 
-        # Build
-        xvfb-run --auto-servernum ./mvnw clean verify --show-version --errors --batch-mode \
-            --no-transfer-progress \
+        # Build 1 - without signing but with tests
+        xvfb-run --auto-servernum ./mvnw clean verify \
+            --show-version --errors --batch-mode --no-transfer-progress \
+            --toolchains .ci/files/toolchains.xml
+
+        # Build 2 - with signing, but skipping tests, pmd, checkstyle
+        xvfb-run --auto-servernum ./mvnw clean verify \
+            --show-version --errors --batch-mode --no-transfer-progress \
             --toolchains .ci/files/toolchains.xml \
-            --activate-profiles sign
+            --activate-profiles sign \
+            -Dpmd.skip=true -DskipTests -Dcheckstyle.skip
 
         # Upload update site to sourceforge
         local qualifiedVersion
@@ -110,11 +116,18 @@ function release_build() {
     pmd_ci_log_group_start "Release Build: ${PMD_CI_MAVEN_PROJECT_VERSION}"
         pmd_ci_log_info "This is a release build for tag ${PMD_CI_TAG} (version: ${PMD_CI_MAVEN_PROJECT_VERSION})"
 
-        # Build
-        xvfb-run --auto-servernum ./mvnw clean verify --show-version --errors --batch-mode \
-            --no-transfer-progress \
+        # Build 1 - without signing but with tests
+        xvfb-run --auto-servernum ./mvnw clean verify \
+            --show-version --errors --batch-mode --no-transfer-progress \
+            --toolchains .ci/files/toolchains.xml
+
+        # Build 2 - with signing, but skipping tests, pmd, checkstyle
+        xvfb-run --auto-servernum ./mvnw clean verify \
+            --show-version --errors --batch-mode --no-transfer-progress \
             --toolchains .ci/files/toolchains.xml \
-            --activate-profiles sign
+            --activate-profiles sign \
+            -Dpmd.skip=true -DskipTests -Dcheckstyle.skip
+
     pmd_ci_log_group_end
 
     pmd_ci_log_group_start "Update Github Releases"
