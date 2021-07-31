@@ -5,8 +5,10 @@
 package net.sourceforge.pmd.eclipse.ui.priority;
 
 import java.util.EnumSet;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -42,10 +44,6 @@ public class PriorityDescriptor implements Cloneable {
     public PriorityDescriptor(RulePriority thePriority, String theLabelKey, String theFilterTextKey, String theIconId,
             Shape theShape, RGB theColor, int theSize) {
         this(thePriority, theLabelKey, theFilterTextKey, theIconId, new ShapeDescriptor(theShape, theColor, theSize));
-    }
-
-    private PriorityDescriptor(RulePriority thePriority) {
-        priority = thePriority;
     }
 
     public PriorityDescriptor(RulePriority thePriority, String theLabelKey, String theFilterTextKey, String theIconId,
@@ -166,6 +164,7 @@ public class PriorityDescriptor implements Cloneable {
             copy.filterText = filterText;
             copy.iconId = iconId;
             copy.shape = shape.clone();
+            copy.cachedImages = new ConcurrentHashMap<>(3);
             return copy;
         } catch (CloneNotSupportedException e) {
             throw new RuntimeException(e);
@@ -185,7 +184,7 @@ public class PriorityDescriptor implements Cloneable {
      */
     @Deprecated
     public Image getImage(Display display, int maxDimension) {
-        return ShapePainter.newDrawnImage(display, Math.min(shape.size, maxDimension),
+        return ShapePainter.newDrawnImage(null, Math.min(shape.size, maxDimension),
                 Math.min(shape.size, maxDimension), shape.shape, PROTO_TRANSPARENT_COLOR, shape.rgbColor // fillColour
         );
     }
@@ -203,7 +202,7 @@ public class PriorityDescriptor implements Cloneable {
         return sb.toString();
     }
 
-    private Map<Integer, Image> cachedImages = new HashMap<>(3);
+    private ConcurrentMap<Integer, Image> cachedImages = new ConcurrentHashMap<>(3);
     private static final int ANNOTATION_IMAGE_DIMENSION = 9;
 
     public Image getAnnotationImage() {
@@ -216,7 +215,7 @@ public class PriorityDescriptor implements Cloneable {
 
     private Image createImage(final int size) {
         if (iconId == null || iconId.isEmpty() || "null".equals(iconId)) {
-            return ShapePainter.newDrawnImage(Display.getCurrent(), size, size, shape.shape, PROTO_TRANSPARENT_COLOR,
+            return ShapePainter.newDrawnImage(null, size, size, shape.shape, PROTO_TRANSPARENT_COLOR,
                     shape.rgbColor // fillColour
             );
         } else {
@@ -239,8 +238,16 @@ public class PriorityDescriptor implements Cloneable {
     public Image getImage(int size) {
         Image cached = cachedImages.get(size);
         if (cached == null) {
-            cached = createImage(size);
-            cachedImages.put(size, cached);
+            Image newImage = createImage(size);
+            cached = cachedImages.putIfAbsent(size, newImage);
+            if (cached == null) {
+                cached = newImage;
+            } else {
+                // two threads might have created the same image, only one is needed
+                // use the already cached image and dispose the new image, that was
+                // unnecessarily created
+                newImage.dispose();
+            }
         }
         return cached;
     }
@@ -259,24 +266,20 @@ public class PriorityDescriptor implements Cloneable {
     }
 
     public void dispose() {
-        for (Image image : cachedImages.values()) {
+        Set<Image> copy = new HashSet<>(cachedImages.values());
+        cachedImages.clear();
+
+        for (Image image : copy) {
             image.dispose();
         }
-        cachedImages.clear();
     }
 
     /**
      * Eagerly create the images.
+     * @deprecated not used anymore, it does nothing anymore. The images are created on demand now.
      */
+    @Deprecated
     public void refreshImages() {
-        dispose();
-        Image image = getAnnotationImage();
-        if (image == null) {
-            throw new RuntimeException("Could not create annotation image");
-        }
-        image = getImage(16);
-        if (image == null) {
-            throw new RuntimeException("Could not create marker image");
-        }
+        // does nothing
     }
 }

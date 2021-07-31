@@ -37,7 +37,7 @@ import net.sourceforge.pmd.lang.Language;
  */
 public class PageBuilder {
     private static final char CR = '\n';
-    private static final Color BACKGROUND = Display.getCurrent().getSystemColor(SWT.COLOR_WHITE);
+    private static final Color BACKGROUND = Display.getDefault().getSystemColor(SWT.COLOR_WHITE);
     
     private static final Comparator<StyleRange> STYLE_COMPARATOR = new Comparator<StyleRange>() {
         @Override
@@ -62,7 +62,7 @@ public class PageBuilder {
         buffer = new StringBuilder(500);
         indentDepth = textIndent;
 
-        Display display = Display.getCurrent();
+        Display display = Display.getDefault();
         headingColor = display.getSystemColor(headingColorIndex);
         codeStyle = codeFontBuilder.style(display);
 

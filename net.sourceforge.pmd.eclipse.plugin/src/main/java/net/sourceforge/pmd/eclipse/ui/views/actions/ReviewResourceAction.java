@@ -49,7 +49,7 @@ public class ReviewResourceAction extends AbstractPMDAction {
     @Override
     public void run() {
         try {
-            ProgressMonitorDialog dialog = new ProgressMonitorDialog(Display.getCurrent().getActiveShell());
+            ProgressMonitorDialog dialog = new ProgressMonitorDialog(Display.getDefault().getActiveShell());
             dialog.run(false, false, new IRunnableWithProgress() {
                 @Override
                 public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {

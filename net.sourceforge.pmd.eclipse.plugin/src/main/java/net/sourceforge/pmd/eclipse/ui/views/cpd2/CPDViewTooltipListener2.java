@@ -47,7 +47,7 @@ public class CPDViewTooltipListener2 implements Listener {
     }
 
     private void initialize() {
-        Display disp = Display.getCurrent();
+        Display disp = Display.getDefault();
         normalCursor = disp.getSystemCursor(SWT.CURSOR_ARROW);
         handCursor = disp.getSystemCursor(SWT.CURSOR_HAND);
     }

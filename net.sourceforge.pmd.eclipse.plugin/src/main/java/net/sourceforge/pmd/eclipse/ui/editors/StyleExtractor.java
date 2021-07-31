@@ -24,12 +24,12 @@ public class StyleExtractor {
     private SyntaxData syntaxData;
     private List<int[]> commentOffsets;
 
-    private static final Color COMMENT_COLOR = Display.getCurrent().getSystemColor(SWT.COLOR_DARK_GREEN);
-    private static final Color REFERENCED_VAR_COLOR = Display.getCurrent().getSystemColor(SWT.COLOR_DARK_GREEN);
-    private static final Color COMMENT_BACKGROUND = Display.getCurrent().getSystemColor(SWT.COLOR_WHITE);
-    private static final Color PUNCTUATION_COLOR = Display.getCurrent().getSystemColor(SWT.COLOR_BLACK);
-    private static final Color KEYWORD_COLOR = Display.getCurrent().getSystemColor(SWT.COLOR_DARK_MAGENTA);
-    private static final Color STRING_COLOR = Display.getCurrent().getSystemColor(SWT.COLOR_BLUE);
+    private static final Color COMMENT_COLOR = Display.getDefault().getSystemColor(SWT.COLOR_DARK_GREEN);
+    private static final Color REFERENCED_VAR_COLOR = Display.getDefault().getSystemColor(SWT.COLOR_DARK_GREEN);
+    private static final Color COMMENT_BACKGROUND = Display.getDefault().getSystemColor(SWT.COLOR_WHITE);
+    private static final Color PUNCTUATION_COLOR = Display.getDefault().getSystemColor(SWT.COLOR_BLACK);
+    private static final Color KEYWORD_COLOR = Display.getDefault().getSystemColor(SWT.COLOR_DARK_MAGENTA);
+    private static final Color STRING_COLOR = Display.getDefault().getSystemColor(SWT.COLOR_BLUE);
 
     public StyleExtractor(SyntaxData theSyntaxData) {
         syntaxData = theSyntaxData;

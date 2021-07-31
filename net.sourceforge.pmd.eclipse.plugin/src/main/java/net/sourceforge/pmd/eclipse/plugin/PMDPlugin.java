@@ -334,7 +334,7 @@ public class PMDPlugin extends AbstractUIPlugin {
      * @param viewId id of the view 
      */ 
     public void refreshView(final String viewId) {
-        Display.getCurrent().asyncExec(new Runnable() {
+        Display.getDefault().asyncExec(new Runnable() {
             @Override
             public void run() {
                 try {
@@ -447,7 +447,7 @@ public class PMDPlugin extends AbstractUIPlugin {
             @Override
             public void run() {
                 String errTitle = getStringTable().getString(StringKeys.ERROR_TITLE);
-                MessageDialog.openError(Display.getCurrent().getActiveShell(), errTitle,
+                MessageDialog.openError(Display.getDefault().getActiveShell(), errTitle,
                         message + "\n" + String.valueOf(t));
             }
         });
@@ -462,7 +462,7 @@ public class PMDPlugin extends AbstractUIPlugin {
             @Override
             public void run() {
                 String errTitle = getStringTable().getString(StringKeys.ERROR_TITLE);
-                MessageDialog.openError(Display.getCurrent().getActiveShell(), errTitle, message);
+                MessageDialog.openError(Display.getDefault().getActiveShell(), errTitle, message);
             }
         });
     }

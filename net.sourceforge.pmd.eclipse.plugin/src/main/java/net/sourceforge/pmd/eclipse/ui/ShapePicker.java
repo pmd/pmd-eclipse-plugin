@@ -118,7 +118,7 @@ public class ShapePicker<T extends Object> extends Canvas implements ISelectionP
     private Color colourFor(int itemIndex) {
         ShapeDescriptor desc = shapeDescriptorsByItem.get(items[itemIndex]);
         if (desc == null) {
-            return Display.getCurrent().getSystemColor(SWT.COLOR_BLACK);
+            return Display.getDefault().getSystemColor(SWT.COLOR_BLACK);
         }
 
         RGB rgb = desc.rgbColor;

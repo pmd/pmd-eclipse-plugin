@@ -5,8 +5,9 @@
 package net.sourceforge.pmd.eclipse.ui.priority;
 
 import java.io.PrintStream;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
@@ -19,12 +20,11 @@ import net.sourceforge.pmd.eclipse.runtime.preferences.IPreferencesManager;
  * @author Brian Remedios
  */
 public final class PriorityDescriptorCache {
-    private Map<RulePriority, PriorityDescriptor> uiDescriptorsByPriority;
+    private final ConcurrentMap<RulePriority, PriorityDescriptor> uiDescriptorsByPriority = new ConcurrentHashMap<>(RulePriority.values().length);
 
     public static final PriorityDescriptorCache INSTANCE = new PriorityDescriptorCache();
 
     private PriorityDescriptorCache() {
-        uiDescriptorsByPriority = new HashMap<>(RulePriority.values().length);
         loadFromPreferences();
     }
 
@@ -47,7 +47,6 @@ public final class PriorityDescriptorCache {
             // preferences, but the user might cancel.
             uiDescriptorsByPriority.put(rp, preferences.getPriorityDescriptor(rp).clone());
         }
-        refreshImages();
     }
 
     public void storeInPreferences() {
@@ -61,8 +60,8 @@ public final class PriorityDescriptorCache {
             prefs.setPriorityDescriptor(entry.getKey(), entry.getValue().clone());
         }
         prefs.sync();
-        // recreate images with the changed settings
-        refreshImages();
+        // remove old images so that the images are recreated with the changed settings
+        dispose();
     }
 
     public PriorityDescriptor descriptorFor(RulePriority priority) {
@@ -87,12 +86,6 @@ public final class PriorityDescriptorCache {
     public void dispose() {
         for (PriorityDescriptor pd : uiDescriptorsByPriority.values()) {
             pd.dispose();
-        }
-    }
-
-    private void refreshImages() {
-        for (PriorityDescriptor pd : uiDescriptorsByPriority.values()) {
-            pd.refreshImages();
         }
     }
 }

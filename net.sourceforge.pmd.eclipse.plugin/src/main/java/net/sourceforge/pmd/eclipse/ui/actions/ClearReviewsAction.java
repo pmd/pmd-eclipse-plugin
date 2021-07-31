@@ -57,7 +57,7 @@ public class ClearReviewsAction extends AbstractUIAction implements IResourceVis
     @Override
     public void run(IAction action) {
         LOG.info("Remove violation reviews requested.");
-        ProgressMonitorDialog monitorDialog = new ProgressMonitorDialog(Display.getCurrent().getActiveShell());
+        ProgressMonitorDialog monitorDialog = new ProgressMonitorDialog(Display.getDefault().getActiveShell());
         try {
             monitorDialog.run(false, false, new IRunnableWithProgress() {
                 @Override

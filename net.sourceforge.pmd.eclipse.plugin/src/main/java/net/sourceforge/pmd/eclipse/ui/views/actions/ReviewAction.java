@@ -81,7 +81,7 @@ public class ReviewAction extends AbstractViolationSelectionAction {
         // If only one marker selected or user has confirmed, review violation
         if (go) {
             try {
-                ProgressMonitorDialog dialog = new ProgressMonitorDialog(Display.getCurrent().getActiveShell());
+                ProgressMonitorDialog dialog = new ProgressMonitorDialog(Display.getDefault().getActiveShell());
                 dialog.run(false, false, new IRunnableWithProgress() {
                     @Override
                     public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
@@ -104,7 +104,7 @@ public class ReviewAction extends AbstractViolationSelectionAction {
         if (markers.length > 1 && !reviewPmdStyle) {
             String title = getString(StringKeys.CONFIRM_TITLE);
             String message = getString(StringKeys.CONFIRM_REVIEW_MULTIPLE_MARKERS);
-            Shell shell = Display.getCurrent().getActiveShell();
+            Shell shell = Display.getDefault().getActiveShell();
             go = MessageDialog.openConfirm(shell, title, message);
         }
         return go;
@@ -139,7 +139,7 @@ public class ReviewAction extends AbstractViolationSelectionAction {
 
                     monitorWorked();
                 } else {
-                    MessageDialog.openError(Display.getCurrent().getActiveShell(), getString(StringKeys.ERROR_TITLE),
+                    MessageDialog.openError(Display.getDefault().getActiveShell(), getString(StringKeys.ERROR_TITLE),
                             "The file " + file.getName()
                                     + " doesn't exist, review aborted. Try to refresh the workspace and retry.");
                 }

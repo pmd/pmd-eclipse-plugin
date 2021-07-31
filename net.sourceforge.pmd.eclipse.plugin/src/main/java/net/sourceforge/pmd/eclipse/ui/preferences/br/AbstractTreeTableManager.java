@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.eclipse.jface.viewers.CheckboxTreeViewer;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -129,16 +130,21 @@ public abstract class AbstractTreeTableManager<T extends Object> extends Abstrac
     }
 
     protected void createCheckBoxColumn(Tree tree) {
-
         TreeColumn tc = new TreeColumn(tree, 0);
 
-        Image image = new Image(Display.getCurrent(), 15, 15);
-        GC gc = new GC(image);
-        Point textExtent = gc.textExtent("m");
-        gc.dispose();
-        image.dispose();
+        final AtomicReference<Point> textExtent = new AtomicReference<>();
+        Display.getDefault().syncExec(new Runnable() {
+            @Override
+            public void run() {
+                Image image = new Image(Display.getDefault(), 15, 15);
+                GC gc = new GC(image);
+                textExtent.set(gc.textExtent("m"));
+                gc.dispose();
+                image.dispose();
+            }
+        });
 
-        tc.setWidth(textExtent.x * 4);
+        tc.setWidth(textExtent.get().x * 4);
 
         tc.setResizable(true);
         tc.pack();
