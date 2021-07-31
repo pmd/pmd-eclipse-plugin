@@ -7,7 +7,7 @@ Eclipse Update Site:
 *   Releases: <https://pmd.github.io/pmd-eclipse-plugin-p2-site/>
 *   Snapshots: <https://pmd.github.io/pmd-eclipse-plugin-p2-site/snapshot/>
 
-## ????: 4.26.0.v????
+## 31-July-2021: 4.26.0.v20210731-1741-r
 
 This is a minor release.
 
@@ -34,8 +34,6 @@ This is a minor release.
 *   `net.sourceforge.pmd.eclipse.ui.priority.PriorityDescriptor.refreshImages()`
 *   All classes that couldn't be instantiated because they had a private constructor only
     are now also `final`.
-
-### External Contributions
 
 ## 26-June-2021: 4.25.0.v20210626-0908
 
