@@ -32,7 +32,7 @@ public abstract class AbstractEditorFactory<T> implements EditorFactory<T> {
     // private static ColourManager colourManager() {
     //
     // if (colourManager != null) return colourManager;
-    // colourManager = ColourManager.managerFor(Display.getCurrent());
+    // colourManager = ColourManager.managerFor(Display.getDefault());
     // return colourManager;
     // }
 

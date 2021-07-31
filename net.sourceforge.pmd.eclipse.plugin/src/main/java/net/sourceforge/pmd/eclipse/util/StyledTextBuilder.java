@@ -25,7 +25,7 @@ import net.sourceforge.pmd.eclipse.ui.preferences.br.RuleFieldAccessor;
 
 public class StyledTextBuilder extends AbstractCellPainterBuilder {
 
-    private Display display = Display.getCurrent(); // NOPMD by br on 2/22/11 11:22 PM
+    private Display display = Display.getDefault(); // NOPMD by br on 2/22/11 11:22 PM
     private TextLayout layout = new TextLayout(display);
     private final TextStyle style;
 

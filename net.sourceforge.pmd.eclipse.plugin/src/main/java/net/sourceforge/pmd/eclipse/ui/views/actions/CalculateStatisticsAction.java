@@ -50,7 +50,7 @@ public class CalculateStatisticsAction extends AbstractPMDAction {
     @Override
     public void run() {
         try {
-            final ProgressMonitorDialog dialog = new ProgressMonitorDialog(Display.getCurrent().getActiveShell());
+            final ProgressMonitorDialog dialog = new ProgressMonitorDialog(Display.getDefault().getActiveShell());
             dialog.setCancelable(true);
 
             dialog.run(false, false, new IRunnableWithProgress() {

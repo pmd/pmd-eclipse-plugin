@@ -15,6 +15,7 @@ This is a minor release.
 
 ### Fixed Issues
 
+*   [#148](https://github.com/pmd/pmd-eclipse-plugin/issues/148): Eclipse nearly-consistently crashes on startup when workspace contains PMD enabled projects
 *   [#150](https://github.com/pmd/pmd-eclipse-plugin/issues/150): Error executing command ReviewCode: java.util.regex.PatternSyntaxException: Illegal/unsupported escape sequence near index
 *   [#153](https://github.com/pmd/pmd-eclipse-plugin/issues/153): Not properly disposed SWT resource
 
@@ -28,6 +29,7 @@ This is a minor release.
 *   `net.sourceforge.pmd.eclipse.runtime.cmd.BaseVisitor.setUseTaskMarker(boolean)`
 *   `net.sourceforge.pmd.eclipse.ui.preferences.br.FilterManager`
 *   `net.sourceforge.pmd.eclipse.util.IOUtil`
+*   `net.sourceforge.pmd.eclipse.ui.priority.PriorityDescriptor.refreshImages()`
 *   All classes that couldn't be instantiated because they had a private constructor only
     are now also `final`.
 

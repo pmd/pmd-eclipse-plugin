@@ -54,7 +54,7 @@ public abstract class AbstractCellPainterBuilder implements CellPainterBuilder {
             return colourManager;
         }
 
-        colourManager = ColourManager.managerFor(Display.getCurrent());
+        colourManager = ColourManager.managerFor(Display.getDefault());
         return colourManager;
     }
 

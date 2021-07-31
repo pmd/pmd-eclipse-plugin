@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.eclipse.ui;
 
+import java.util.concurrent.atomic.AtomicReference;
+
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
@@ -28,29 +30,38 @@ public final class ShapePainter {
      * drawn within. It will return cached images to avoid creating new images
      * (and using the limited GDI handles under Windows).
      */
-    public static Image newDrawnImage(Display display, int width, int height, Shape shape, RGB transparentColour,
-            RGB fillColour) {
-        Image image = new Image(display, width, height);
-        GC gc = new GC(image);
+    public static Image newDrawnImage(final Display displayNotUsed, final int width, final int height, final Shape shape,
+            final RGB transparentColour, final RGB fillColour) {
 
-        gc.setBackground(PMDPlugin.getDefault().colorFor(transparentColour));
-        gc.fillRectangle(0, 0, width, height);
+        final AtomicReference<Image> result = new AtomicReference<>();
+        Display.getDefault().syncExec(new Runnable() {
+            @Override
+            public void run() {
+                Display display = Display.getDefault();
+                Image image = new Image(display, width, height);
+                GC gc = new GC(image);
 
-        gc.setForeground(PMDPlugin.getDefault().colorFor(RGB_BLACK));
-        gc.setBackground(PMDPlugin.getDefault().colorFor(fillColour));
+                gc.setBackground(PMDPlugin.getDefault().colorFor(transparentColour));
+                gc.fillRectangle(0, 0, width, height);
 
-        drawShape(width - 1, height - 1, shape, gc, 0, 0, null);
+                gc.setForeground(PMDPlugin.getDefault().colorFor(RGB_BLACK));
+                gc.setBackground(PMDPlugin.getDefault().colorFor(fillColour));
 
-        ImageData data = image.getImageData();
-        int clrIndex = data.palette.getPixel(transparentColour);
-        data.transparentPixel = clrIndex;
+                drawShape(width - 1, height - 1, shape, gc, 0, 0, null);
 
-        Image newImage = new Image(display, data);
-        image.dispose();
+                ImageData data = image.getImageData();
+                int clrIndex = data.palette.getPixel(transparentColour);
+                data.transparentPixel = clrIndex;
 
-        gc.dispose();
+                Image newImage = new Image(display, data);
+                image.dispose();
 
-        return newImage;
+                gc.dispose();
+
+                result.set(newImage);
+            }
+        });
+        return result.get();
     }
 
     @Deprecated
