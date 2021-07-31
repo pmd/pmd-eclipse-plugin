@@ -13,6 +13,8 @@ This is a minor release.
 
 ### New and noteworthy
 
+*   Updated to PMD 6.37.0
+
 ### Fixed Issues
 
 *   [#148](https://github.com/pmd/pmd-eclipse-plugin/issues/148): Eclipse nearly-consistently crashes on startup when workspace contains PMD enabled projects
