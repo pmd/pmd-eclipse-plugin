@@ -87,8 +87,10 @@ public class PMDGenerateASTActionTest {
 
         Assert.assertNotNull("No AST file has been generated", astFile);
         IFile adapter = (IFile) astFile.getAdapter(IFile.class);
-        String content = IOUtils.toString(adapter.getContents(), adapter.getCharset());
-        Assert.assertTrue(content.startsWith("<?xml version=\"1.0\" encoding=\"UTF-8\"?>"));
-        Assert.assertTrue(content.contains("<CompilationUnit"));
+        try (InputStream in = adapter.getContents()) {
+            String content = IOUtils.toString(in, adapter.getCharset());
+            Assert.assertTrue(content.startsWith("<?xml version=\"1.0\" encoding=\"UTF-8\"?>"));
+            Assert.assertTrue(content.contains("<CompilationUnit"));
+        }
     }
 }

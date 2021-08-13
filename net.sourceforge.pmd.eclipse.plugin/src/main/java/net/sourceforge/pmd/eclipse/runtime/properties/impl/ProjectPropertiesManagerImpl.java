@@ -7,6 +7,7 @@ package net.sourceforge.pmd.eclipse.runtime.properties.impl;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
@@ -190,8 +191,10 @@ public class ProjectPropertiesManagerImpl implements IProjectPropertiesManager {
 
             final IFile propertiesFile = project.getFile(ProjectPropertiesTimestampTupel.PROPERTIES_FILE);
             if (propertiesFile.exists() && propertiesFile.isAccessible()) {
-                String properties = IOUtils.toString(propertiesFile.getContents(), StandardCharsets.UTF_8);
-                projectProperties = convertProjectPropertiesFromString(properties);
+                try (InputStream in = propertiesFile.getContents()) {
+                    String properties = IOUtils.toString(in, StandardCharsets.UTF_8);
+                    projectProperties = convertProjectPropertiesFromString(properties);
+                }
             }
 
             return projectProperties;

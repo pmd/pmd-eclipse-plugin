@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
 import org.eclipse.core.resources.IContainer;
@@ -29,10 +30,12 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
+import org.junit.Assert;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.eclipse.runtime.PMDRuntimeConstants;
@@ -368,6 +371,17 @@ public class EclipseUtils {
                 folder.create(true, false, null);
             }
             current = folder;
+        }
+    }
+
+    public static void waitForJobs() throws InterruptedException {
+        long start = System.currentTimeMillis();
+        while (!Job.getJobManager().isIdle()) {
+            Thread.sleep(500);
+
+            if (System.currentTimeMillis() - start > TimeUnit.SECONDS.toMillis(30)) {
+                Assert.fail("Timeout while waiting for Jobs to finish");
+            }
         }
     }
 }
