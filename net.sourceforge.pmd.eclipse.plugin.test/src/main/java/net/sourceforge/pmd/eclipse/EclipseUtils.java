@@ -35,6 +35,7 @@ import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
+import org.eclipse.jdt.launching.JavaRuntime;
 import org.junit.Assert;
 
 import net.sourceforge.pmd.Rule;
@@ -233,7 +234,7 @@ public class EclipseUtils {
             javaProject
                     .setRawClasspath(
                             new IClasspathEntry[] { JavaCore.newSourceEntry(sourceFolder.getFullPath()),
-                                JavaCore.newContainerEntry(new Path("org.eclipse.jdt.launching.JRE_CONTAINER")) },
+                                JavaRuntime.getDefaultJREContainerEntry() },
                             null);
 
             Hashtable<String, String> javaOptions = JavaCore.getOptions();
