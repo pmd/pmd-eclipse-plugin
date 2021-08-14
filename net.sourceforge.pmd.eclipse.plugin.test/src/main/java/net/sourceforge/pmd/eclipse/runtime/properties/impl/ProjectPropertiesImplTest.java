@@ -75,25 +75,26 @@ public class ProjectPropertiesImplTest {
                 newClasspath.add(entry);
             }
         }
+        // excludes all *.java files, but includes Test.java
         newClasspath.add(JavaCore.newSourceEntry(new Path("/ProjectPropertiesImplTest/src/main/java"),
-                new Path[] {new Path("**/*.java")},
-                new Path[0], null));
+                new Path[] {new Path("**/Test.java")},
+                new Path[] {new Path("**/*.java")}, null));
         newClasspath.add(JavaCore.newSourceEntry(new Path("/ProjectPropertiesImplTest/src/main/resources"),
                 new Path[0],
                 new Path[] {new Path("**")}, null));
         javaProject.setRawClasspath(newClasspath.toArray(new IClasspathEntry[0]), new NullProgressMonitor());
 
-        String expectedPattern = testProject.getFolder("/src/main/java").getLocation().toPortableString();
-        expectedPattern += "/.*/[^/]*\\.java";
-
         IProjectProperties projectProperties = PMDPlugin.getDefault().getPropertiesManager().loadProjectProperties(testProject);
-        Set<String> includePatterns = projectProperties.getBuildPathIncludePatterns();
-        Collection<Pattern> patterns = InternalRuleSetUtil.convertStringPatterns(includePatterns);
 
+        Set<String> includeStringPatterns = projectProperties.getBuildPathIncludePatterns();
+        Collection<Pattern> includePatterns = InternalRuleSetUtil.convertStringPatterns(includeStringPatterns);
+        Assert.assertEquals(1, includeStringPatterns.size());
         Assert.assertEquals(1, includePatterns.size());
-        Assert.assertEquals(1, patterns.size());
-        Assert.assertEquals(includePatterns.toString(), patterns.toString());
-        Assert.assertEquals("[" + expectedPattern + "]", patterns.toString());
+
+        Set<String> excludeStringPatterns = projectProperties.getBuildPathExcludePatterns();
+        Collection<Pattern> excludePatterns = InternalRuleSetUtil.convertStringPatterns(excludeStringPatterns);
+        Assert.assertEquals(1, excludeStringPatterns.size());
+        Assert.assertEquals(1, excludePatterns.size());
 
         // now run a review
         projectProperties.setPmdEnabled(true);
@@ -111,5 +112,16 @@ public class ProjectPropertiesImplTest {
             }
         }
         Assert.assertTrue("EmptyCatchBlock marker is missing", found);
+
+        // patterns should be correct
+        Assert.assertEquals(includeStringPatterns.toString(), includePatterns.toString());
+        String expectedIncludePattern = testProject.getFolder("/src/main/java").getLocation().toPortableString();
+        expectedIncludePattern += "/.*Test\\.java";
+        Assert.assertEquals("[" + expectedIncludePattern + "]", includePatterns.toString());
+
+        String expectedExcludePattern = testProject.getFolder("/src/main/java").getLocation().toPortableString();
+        expectedExcludePattern += "/.*[^/]*\\.java";
+        Assert.assertEquals(excludeStringPatterns.toString(), excludePatterns.toString());
+        Assert.assertEquals("[" + expectedExcludePattern + "]", excludePatterns.toString());
     }
 }

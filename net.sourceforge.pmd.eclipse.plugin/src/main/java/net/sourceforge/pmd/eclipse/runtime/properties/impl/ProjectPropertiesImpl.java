@@ -89,26 +89,22 @@ public class ProjectPropertiesImpl implements IProjectProperties {
     private void determineBuildPathIncludesExcludes() {
         IClasspathEntry source = PMDPlugin.buildSourceClassPathEntryFor(project);
         if (source != null) {
-            try {
-                String basePath = new File(project.getWorkspace().getRoot()
-                        .getFolder(source.getPath()).getLocation().toOSString()).getCanonicalPath();
-                if (!basePath.endsWith(File.separator)) {
-                    basePath += File.separator;
+            String basePath = project.getWorkspace().getRoot()
+                    .getFolder(source.getPath()).getLocation().toPortableString();
+            if (!basePath.endsWith(String.valueOf(IPath.SEPARATOR))) {
+                basePath += IPath.SEPARATOR;
+            }
+            if (source.getExclusionPatterns() != null) {
+                for (IPath path : source.getExclusionPatterns()) {
+                    String pathString = path.toPortableString();
+                    buildPathExcludePatterns.add(basePath + convertPatternToRegex(pathString));
                 }
-                if (source.getExclusionPatterns() != null) {
-                    for (IPath path : source.getExclusionPatterns()) {
-                        String pathString = path.toOSString();
-                        buildPathExcludePatterns.add(basePath + convertPatternToRegex(pathString));
-                    }
+            }
+            if (source.getInclusionPatterns() != null) {
+                for (IPath path : source.getInclusionPatterns()) {
+                    String pathString = path.toPortableString();
+                    buildPathIncludePatterns.add(basePath + convertPatternToRegex(pathString));
                 }
-                if (source.getInclusionPatterns() != null) {
-                    for (IPath path : source.getInclusionPatterns()) {
-                        String pathString = path.toOSString();
-                        buildPathIncludePatterns.add(basePath + convertPatternToRegex(pathString));
-                    }
-                }
-            } catch (IOException e) {
-                LOG.error("Couldn't determine build class path", e);
             }
         }
     }
@@ -117,9 +113,11 @@ public class ProjectPropertiesImpl implements IProjectProperties {
      * Simple conversion from the Ant-like pattern to regex pattern.
      */
     private String convertPatternToRegex(String pattern) {
-        String regex = pattern.replaceAll("\\.", "\\\\."); // replace "." with "\\."
+        String regex = pattern;
+        regex = regex.replaceAll("\\.", "\\\\."); // replace "." with "\\."
         regex = regex.replaceAll("\\*\\*", ".*"); // replace "**" with ".*"
-        regex = regex.replaceAll("/\\*", "/[^/]*"); // replace "/*" with "/[^/]"
+        regex = regex.replaceAll("/\\*([^\\*])", "/[^/]*$1"); // replace "/*" with "/[^/]*"
+        regex = regex.replaceAll("\\.\\*/", ".*"); // replace ".*/" with ".*"
         regex = regex.replaceAll("\\?", "."); // replace "?" with "."
         return regex;
     }

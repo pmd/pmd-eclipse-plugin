@@ -17,7 +17,6 @@ import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
@@ -119,7 +118,7 @@ public class MultipleRulesetsTest {
             }
         });
         latch.await(30, TimeUnit.SECONDS);
-        waitForJobs();
+        EclipseUtils.waitForJobs();
 
         final ReviewCodeCmd cmd = new ReviewCodeCmd();
         cmd.addResource(this.testProject);
@@ -141,13 +140,6 @@ public class MultipleRulesetsTest {
                 .findMarkers(PMDRuntimeConstants.PMD_MARKER_1, false, 1);
         Assert.assertEquals(1, markersThird.length);
         assertHasRuleViolation(markersThird, "UseUtilityClass");
-    }
-
-    private void waitForJobs() throws InterruptedException {
-        long start = System.currentTimeMillis();
-        while (!Job.getJobManager().isIdle() && System.currentTimeMillis() - start < TimeUnit.SECONDS.toMillis(30)) {
-            Thread.sleep(500);
-        }
     }
 
     private void assertHasRuleViolation(IMarker[] markers, String rulename) throws CoreException {
