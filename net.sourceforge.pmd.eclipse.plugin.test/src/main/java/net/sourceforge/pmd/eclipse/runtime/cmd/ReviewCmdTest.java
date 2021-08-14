@@ -30,6 +30,7 @@ import org.junit.Test;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.eclipse.EclipseUtils;
+import net.sourceforge.pmd.eclipse.LoggingRule;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.runtime.PMDRuntimeConstants;
 import net.sourceforge.pmd.eclipse.runtime.preferences.IPreferences;
@@ -44,6 +45,9 @@ import net.sourceforge.pmd.eclipse.ui.actions.RuleSetUtil;
  */
 public class ReviewCmdTest {
     private IProject testProject;
+
+    @org.junit.Rule
+    public LoggingRule loggingRule = new LoggingRule();
 
     @Before
     public void setUp() throws Exception {
