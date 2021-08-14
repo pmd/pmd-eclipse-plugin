@@ -31,6 +31,7 @@ import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.eclipse.EclipseUtils;
 import net.sourceforge.pmd.eclipse.LoggingRule;
+import net.sourceforge.pmd.eclipse.WaitingMonitor;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.runtime.PMDRuntimeConstants;
 import net.sourceforge.pmd.eclipse.runtime.preferences.IPreferences;
@@ -120,8 +121,16 @@ public class ReviewCmdTest {
               + "  void run() {\n" // line 2
               + "  }\n"
               + "}");
-        project.build(IncrementalProjectBuilder.FULL_BUILD, null);
-        project.refreshLocal(IResource.DEPTH_INFINITE, null);
+
+        WaitingMonitor monitor;
+        monitor = new WaitingMonitor();
+        project.refreshLocal(IResource.DEPTH_INFINITE, monitor);
+        monitor.await();
+
+        monitor = new WaitingMonitor();
+        project.build(IncrementalProjectBuilder.FULL_BUILD, monitor);
+        monitor.await();
+
         return sourceFile;
     }
 

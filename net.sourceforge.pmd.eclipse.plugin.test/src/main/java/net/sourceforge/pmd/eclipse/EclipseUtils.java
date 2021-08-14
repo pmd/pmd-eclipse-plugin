@@ -14,7 +14,6 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
@@ -28,7 +27,6 @@ import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jdt.core.IClasspathEntry;
@@ -49,21 +47,7 @@ import net.sourceforge.pmd.properties.PropertyDescriptor;
  * @author Philippe Herlin
  * @author Brian Remedios
  */
-public class EclipseUtils {
-    static class OpenMonitor extends NullProgressMonitor {
-        private final CountDownLatch latch;
-
-        OpenMonitor(final CountDownLatch latch) {
-            this.latch = latch;
-        }
-
-        @Override
-        public void done() {
-            super.done();
-            latch.countDown();
-        }
-    }
-
+public final class EclipseUtils {
     /**
      * Because this class is a utility class, it cannot be instantiated
      */
@@ -377,6 +361,8 @@ public class EclipseUtils {
 
     public static void waitForJobs() throws InterruptedException {
         long start = System.currentTimeMillis();
+        Thread.sleep(500);
+
         while (!Job.getJobManager().isIdle()) {
             Thread.sleep(500);
 

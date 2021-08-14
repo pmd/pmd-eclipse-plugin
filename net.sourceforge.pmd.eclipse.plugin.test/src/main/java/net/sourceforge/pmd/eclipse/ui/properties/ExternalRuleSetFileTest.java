@@ -19,6 +19,7 @@ import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.eclipse.EclipseUtils;
+import net.sourceforge.pmd.eclipse.LoggingRule;
 import net.sourceforge.pmd.eclipse.internal.ResourceUtil;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.runtime.cmd.BuildProjectCommand;
@@ -29,6 +30,9 @@ import net.sourceforge.pmd.eclipse.ui.actions.RuleSetUtil;
 
 public class ExternalRuleSetFileTest {
     private static final Logger LOG = LoggerFactory.getLogger(ExternalRuleSetFileTest.class);
+
+    @org.junit.Rule
+    public LoggingRule loggingRule = new LoggingRule();
 
     private static final String PMD_PROPERTIES_FILENAME = ".pmd";
 
@@ -91,6 +95,7 @@ public class ExternalRuleSetFileTest {
         Assert.assertEquals(1, projectRuleSet.getRules().size());
 
         // now let's change the ruleSetFile without eclipse knowing about it ("externally")
+        waitASecond();
         File ruleSetFileReal = ruleSetFile.getLocation().toFile();
         ResourceUtil.copyResource(this, "ruleset2.xml", ruleSetFileReal);
 
@@ -121,6 +126,7 @@ public class ExternalRuleSetFileTest {
             Assert.fail("File " + PROJECT_RULESET_FILENAME + " already exists!");
         }
         File ruleSetFileReal = ruleSetFile.getLocation().toFile();
+        waitASecond();
         ResourceUtil.copyResource(this, "ruleset1.xml", ruleSetFileReal);
 
         // now create the .pmd project properties without eclipse knowing about it ("externally")
@@ -192,6 +198,7 @@ public class ExternalRuleSetFileTest {
             Assert.fail("File .pmd does not exist!");
         }
         File projectPropertiesFileReal = projectPropertiesFile.getLocation().toFile();
+        waitASecond();
         ResourceUtil.copyResource(this, "pmd-properties", projectPropertiesFileReal);
         LOG.debug("Overwritten {}", projectPropertiesFile);
 
@@ -214,5 +221,10 @@ public class ExternalRuleSetFileTest {
         JobCommandProcessor.getInstance().waitCommandToFinish(null);
         // need rebuild flag should be reset now
         Assert.assertFalse(model.isNeedRebuild());
+    }
+
+    // HFS+ under MacOS has a date resolution of 1 second only
+    private void waitASecond() throws InterruptedException {
+        Thread.sleep(1000);
     }
 }
