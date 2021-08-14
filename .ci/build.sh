@@ -14,20 +14,24 @@ function build() {
         pmd_ci_openjdk_setdefault 11
     pmd_ci_log_group_end
 
-    pmd_ci_log_group_start "Install xvfb"
-        #see https://github.com/GabrielBB/xvfb-action
-        sudo apt-get install --yes xvfb
-        sudo apt-get install --yes libgtk2.0-0
-    pmd_ci_log_group_end
-
     echo
     pmd_ci_maven_display_info_banner
     pmd_ci_utils_determine_build_env pmd/pmd-eclipse-plugin
     echo
 
+    xvfb_cmd=""
+    if [ "$(pmd_ci_utils_get_os)" == "linux" ]; then
+    pmd_ci_log_group_start "Install xvfb (linux only)"
+        #see https://github.com/GabrielBB/xvfb-action
+        sudo apt-get install --yes xvfb
+        sudo apt-get install --yes libgtk2.0-0
+        xvfb_cmd="xvfb-run --auto-servernum"
+    pmd_ci_log_group_end
+    fi
+
     if pmd_ci_utils_is_fork_or_pull_request; then
         pmd_ci_log_group_start "Build with mvnw"
-            xvfb-run --auto-servernum ./mvnw clean verify \
+            ${xvfb_cmd} ./mvnw clean verify \
                 --show-version --errors --batch-mode --no-transfer-progress \
                 --toolchains .ci/files/toolchains.xml
         pmd_ci_log_group_end
@@ -36,6 +40,17 @@ function build() {
 
     # stop early for invalid maven version and branch/tag combination
     pmd_ci_maven_verify_version || exit 0
+
+    if [ "$(pmd_ci_utils_get_os)" != "linux" ]; then
+        pmd_ci_log_group_start "Build with mvnw"
+            ${xvfb_cmd} ./mvnw clean verify \
+                --show-version --errors --batch-mode --no-transfer-progress \
+                --toolchains .ci/files/toolchains.xml
+        pmd_ci_log_group_end
+
+        pmd_ci_log_info "Stopping build here, because os is not linux"
+        exit 0
+    fi
 
     # only builds on pmd/pmd-eclipse-plugin continue here
     pmd_ci_log_group_start "Setup environment"
@@ -60,12 +75,12 @@ function snapshot_build() {
         pmd_ci_log_info "This is a snapshot build on branch ${PMD_CI_BRANCH} (version: ${PMD_CI_MAVEN_PROJECT_VERSION})"
 
         # Build 1 - without signing but with tests
-        xvfb-run --auto-servernum ./mvnw clean verify \
+        ${xvfb_cmd} ./mvnw clean verify \
             --show-version --errors --batch-mode --no-transfer-progress \
             --toolchains .ci/files/toolchains.xml
 
         # Build 2 - with signing, but skipping tests, pmd, checkstyle
-        xvfb-run --auto-servernum ./mvnw clean verify \
+        ${xvfb_cmd} ./mvnw clean verify \
             --show-version --errors --batch-mode --no-transfer-progress \
             --toolchains .ci/files/toolchains.xml \
             --activate-profiles sign \
@@ -117,12 +132,12 @@ function release_build() {
         pmd_ci_log_info "This is a release build for tag ${PMD_CI_TAG} (version: ${PMD_CI_MAVEN_PROJECT_VERSION})"
 
         # Build 1 - without signing but with tests
-        xvfb-run --auto-servernum ./mvnw clean verify \
+        ${xvfb_cmd} ./mvnw clean verify \
             --show-version --errors --batch-mode --no-transfer-progress \
             --toolchains .ci/files/toolchains.xml
 
         # Build 2 - with signing, but skipping tests, pmd, checkstyle
-        xvfb-run --auto-servernum ./mvnw clean verify \
+        ${xvfb_cmd} ./mvnw clean verify \
             --show-version --errors --batch-mode --no-transfer-progress \
             --toolchains .ci/files/toolchains.xml \
             --activate-profiles sign \
