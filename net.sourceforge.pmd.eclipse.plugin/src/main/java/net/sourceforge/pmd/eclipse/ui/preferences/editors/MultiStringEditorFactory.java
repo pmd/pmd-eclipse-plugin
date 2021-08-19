@@ -98,6 +98,6 @@ public final class MultiStringEditorFactory extends AbstractMultiValueEditorFact
 
     @Override
     protected List<String> valueFrom(Control valueControl) {    // not necessary for this type
-        return null;
+        return Collections.emptyList();
     }
 }

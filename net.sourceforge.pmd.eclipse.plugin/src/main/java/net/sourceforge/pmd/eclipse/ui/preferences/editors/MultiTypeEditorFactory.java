@@ -145,6 +145,6 @@ public final class MultiTypeEditorFactory extends AbstractMultiValueEditorFactor
 
     @Override
     protected List<Class> valueFrom(Control valueControl) {    // not necessary for this type
-        return null;
+        return Collections.emptyList();
     }
 }

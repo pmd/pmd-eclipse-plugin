@@ -138,7 +138,7 @@ public final class MultiMethodEditorFactory extends AbstractMultiValueEditorFact
 
     @Override
     protected List<Method> valueFrom(Control valueControl) {    // not necessary for this type
-        return null;
+        return Collections.emptyList();
     }
 
 

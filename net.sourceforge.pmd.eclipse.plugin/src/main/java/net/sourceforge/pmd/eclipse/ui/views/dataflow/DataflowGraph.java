@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.eclipse.ui.views.dataflow;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -636,10 +637,6 @@ public class DataflowGraph extends Composite {
 
             // from every starting Node we search for a Path to the ending node
             List<PathCanvas> pathList = findPath(start, endNode, new ArrayList<DataFlowNode>());
-            if (pathList == null) {
-                continue;
-            }
-
             // we get a List of PathCanvas, that build up the searched Path
             for (PathCanvas currentPath : pathList) {
                 // if some PathCanvas are already found and
@@ -708,7 +705,7 @@ public class DataflowGraph extends Composite {
                 // the Recursion: find the Path from
                 // the current Node's children to the End
                 List<PathCanvas> isFound = findPath(node, end, visited);
-                if (isFound == null) {
+                if (isFound.isEmpty()) {
                     continue;
                 } else {
                     // if a Path (from child to end) is found
@@ -723,6 +720,6 @@ public class DataflowGraph extends Composite {
             }
         }
 
-        return null;
+        return Collections.emptyList();
     }
 }

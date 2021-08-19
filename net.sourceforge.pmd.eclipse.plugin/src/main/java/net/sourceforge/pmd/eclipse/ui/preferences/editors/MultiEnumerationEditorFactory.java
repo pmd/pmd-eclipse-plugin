@@ -107,7 +107,7 @@ public final class MultiEnumerationEditorFactory extends AbstractMultiValueEdito
 
     @Override
     protected List<Object> valueFrom(Control valueControl) {            // unreferenced method?
-        return null;
+        return Collections.emptyList();
     }
 
 
