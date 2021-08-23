@@ -31,10 +31,12 @@ public class BuildProjectCommand extends AbstractProjectCommand {
     @Override
     public void execute() {
         try {
-            project().build(IncrementalProjectBuilder.FULL_BUILD, this.getMonitor());
-
             LOG.debug("Build for Project {} triggered, setting needRebuild=false", project().getName());
+            // set needRebuild=false before triggering the build, as the build might load the properties
+            // in parallel still with needRebuild=true
             projectProperties().setNeedRebuild(false);
+
+            project().build(IncrementalProjectBuilder.FULL_BUILD, this.getMonitor());
         } catch (CoreException | PropertiesException e) {
             throw new RuntimeException(e);
         } finally {

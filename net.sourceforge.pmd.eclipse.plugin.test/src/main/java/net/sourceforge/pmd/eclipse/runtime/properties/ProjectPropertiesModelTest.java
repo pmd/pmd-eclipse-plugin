@@ -66,7 +66,7 @@ public class ProjectPropertiesModelTest {
     public void setUp() throws Exception {
 
         // 1. Create a Java project
-        this.testProject = EclipseUtils.createJavaProject("PMDTestProject");
+        this.testProject = EclipseUtils.createJavaProject("ProjectPropertiesModelTest");
         Assert.assertTrue("A test project cannot be created; the tests cannot be performed.",
                 this.testProject != null && this.testProject.exists() && this.testProject.isAccessible());
 
@@ -527,9 +527,9 @@ public class ProjectPropertiesModelTest {
     /**
      * Project structure:
      * <ul>
-     * <li>this.testProject "PMDTestProject": main project, with build path, contains lib/sample-lib3.jar</li>
+     * <li>this.testProject "ProjectPropertiesModelTest": main project, with build path, contains lib/sample-lib3.jar</li>
      * <li>otherProject "OtherProject": contains sample-lib1.jar, sample-lib2.jar</li>
-     * <li>otherProject2 "OtherProject2": PMDTestProject depends on this</li>
+     * <li>otherProject2 "OtherProject2": ProjectPropertiesModelTest depends on this</li>
      * <li>externalProject "ExternalProject": not stored within workspace, contains sample-lib4.jar</li>
      * </ul>
      *
