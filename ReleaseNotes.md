@@ -13,6 +13,8 @@ This is a minor release.
 
 ### New and noteworthy
 
+*   Updated to PMD 6.38.0
+
 ### Fixed Issues
 
 *   [#159](https://github.com/pmd/pmd-eclipse-plugin/issues/159): Error executing command ReviewCode: java.util.regex.PatternSyntaxException: Illegal/unsupported escape sequence near index (part 2)
