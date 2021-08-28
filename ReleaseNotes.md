@@ -7,7 +7,7 @@ Eclipse Update Site:
 *   Releases: <https://pmd.github.io/pmd-eclipse-plugin-p2-site/>
 *   Snapshots: <https://pmd.github.io/pmd-eclipse-plugin-p2-site/snapshot/>
 
-## ????: 4.27.0.v????
+## 28-August-2021: 4.27.0.v20210828-1623-r
 
 This is a minor release.
 
@@ -18,10 +18,6 @@ This is a minor release.
 ### Fixed Issues
 
 *   [#159](https://github.com/pmd/pmd-eclipse-plugin/issues/159): Error executing command ReviewCode: java.util.regex.PatternSyntaxException: Illegal/unsupported escape sequence near index (part 2)
-
-### API Changes
-
-### External Contributions
 
 ## 31-July-2021: 4.26.0.v20210731-1741-r
 
