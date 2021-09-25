@@ -21,7 +21,7 @@
     <java.version>1.7</java.version>
     <tycho.version>2.3.0</tycho.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <pmd.version>6.38.0</pmd.version>
+    <pmd.version>6.39.0</pmd.version>
     <maven-antrun-plugin.version>1.8</maven-antrun-plugin.version>
     <pmd.build-tools.version>16</pmd.build-tools.version>
     <checkstyle.version>8.42</checkstyle.version>
