@@ -24,7 +24,7 @@ echo "-------------------------------------------"
 echo "Releasing PMD Eclipse Plugin"
 echo "-------------------------------------------"
 
-CURRENT_VERSION=$(./mvnw org.apache.maven.plugins:maven-help-plugin:3.2.0:evaluate -Dexpression=project.version -q -DforceStdout)
+CURRENT_VERSION=$(./mvnw org.apache.maven.plugins:maven-help-plugin:3.2.0:evaluate -Dexpression=project.version -q -DforceStdout -Dtycho.mode=maven)
 RELEASE_VERSION=${CURRENT_VERSION%-SNAPSHOT}
 MAJOR=$(echo "$RELEASE_VERSION" | cut -d . -f 1)
 MINOR=$(echo "$RELEASE_VERSION" | cut -d . -f 2)
