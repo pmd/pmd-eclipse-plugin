@@ -208,8 +208,8 @@ function prepare_local_p2_site() {
         cd current-p2-site
         git init -q --initial-branch=gh-pages
         git config user.name "PMD CI (pmd-bot)"
-        git config user.email "andreas.dangel+pmd-bot@adangel.org"
-        git remote add origin git@github.com:pmd/pmd-eclipse-plugin-p2-site.git
+        git config user.email "pmd-bot@users.noreply.github.com"
+        git remote add origin git@github.com-pmd-eclipse-plugin-p2-site:pmd/pmd-eclipse-plugin-p2-site.git
         git pull --rebase origin gh-pages
     )
 }
