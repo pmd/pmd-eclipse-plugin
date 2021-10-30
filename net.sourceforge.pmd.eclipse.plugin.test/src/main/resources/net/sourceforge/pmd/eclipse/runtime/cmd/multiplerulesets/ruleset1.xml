@@ -12,6 +12,9 @@
 
     <rule ref="category/java/codestyle.xml/ClassNamingConventions">
         <priority>1</priority>
+        <properties>
+            <property name="utilityClassPattern" value="[A-Z][a-zA-Z0-9]+(Utils?|Helper|Constants)" />
+        </properties>
     </rule>
 
     <rule ref="category/java/design.xml" >
