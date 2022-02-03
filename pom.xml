@@ -19,7 +19,7 @@
     <target.platform>kepler</target.platform>
 
     <java.version>1.7</java.version>
-    <tycho.version>2.5.0</tycho.version>
+    <tycho.version>2.6.0</tycho.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <pmd.version>6.42.0</pmd.version>
     <maven-antrun-plugin.version>1.8</maven-antrun-plugin.version>
