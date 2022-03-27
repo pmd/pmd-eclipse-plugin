@@ -7,19 +7,13 @@ Eclipse Update Site:
 *   Releases: <https://pmd.github.io/pmd-eclipse-plugin-p2-site/>
 *   Snapshots: <https://pmd.github.io/pmd-eclipse-plugin-p2-site/snapshot/>
 
-## ????: 4.33.0.v????
+## 27-March-2022: 4.33.0.v20220327-1533-r
 
 This is a minor release.
 
 ### New and noteworthy
 
 *   Updated to PMD 6.44.0
-
-### Fixed Issues
-
-### API Changes
-
-### External Contributions
 
 ## 26-February-2022: 4.32.0.v20220226-1008-r
 
