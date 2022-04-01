@@ -158,6 +158,7 @@ Export-Package: ch.qos.logback.classic;x-friends:="net.sourceforge.pmd.eclipse.p
    net.sourceforge.pmd.eclipse.ui.model,
    org.eclipse.jface.viewers,
    org.eclipse.swt.widgets",
+ net.sourceforge.pmd.eclipse.util.internal;x-friends:="net.sourceforge.pmd.eclipse.plugin.test",
  net.sourceforge.pmd.lang,
  net.sourceforge.pmd.lang.java.rule,
  net.sourceforge.pmd.lang.rule,

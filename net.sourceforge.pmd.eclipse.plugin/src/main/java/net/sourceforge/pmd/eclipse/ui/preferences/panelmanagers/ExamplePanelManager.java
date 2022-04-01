@@ -18,12 +18,11 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 
-import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.eclipse.ui.editors.SyntaxManager;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.ValueChangeListener;
+import net.sourceforge.pmd.eclipse.util.internal.StringUtil;
 import net.sourceforge.pmd.lang.rule.RuleReference;
-import net.sourceforge.pmd.util.StringUtil;
 
 /**
  *
@@ -116,7 +115,7 @@ public class ExamplePanelManager extends AbstractRulePanelManager {
             lines = StringUtil.trimStartOn(lines, trimDepth);
         }
         for (String line : lines) {
-            sb.append(line).append(PMD.EOL);
+            sb.append(line).append(System.lineSeparator());
         }
     }
 
