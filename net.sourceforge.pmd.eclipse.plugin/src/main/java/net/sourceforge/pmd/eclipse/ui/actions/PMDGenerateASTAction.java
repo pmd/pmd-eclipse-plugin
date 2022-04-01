@@ -33,7 +33,6 @@ import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.runtime.writer.IAstWriter;
 import net.sourceforge.pmd.eclipse.runtime.writer.WriterException;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
-import net.sourceforge.pmd.eclipse.util.IOUtil;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
@@ -78,14 +77,12 @@ public class PMDGenerateASTAction extends AbstractUIAction implements IRunnableW
      */
     private void generateAST(IFile file) {
         LOG.info("Generating AST for file " + file.getName());
-        ByteArrayOutputStream byteArrayOutputStream = null;
-        ByteArrayInputStream astInputStream = null;
-        try (Reader reader = new InputStreamReader(file.getContents(), file.getCharset())) {
+        try (Reader reader = new InputStreamReader(file.getContents(), file.getCharset());
+                ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();) {
             Language javaLanguage = LanguageRegistry.getLanguage(JavaLanguageModule.NAME);
             LanguageVersionHandler languageVersionHandler = javaLanguage.getDefaultVersion().getLanguageVersionHandler();
             Parser parser = languageVersionHandler.getParser(languageVersionHandler.getDefaultParserOptions());
             ASTCompilationUnit compilationUnit = (ASTCompilationUnit) parser.parse(file.getName(), reader);
-            byteArrayOutputStream = new ByteArrayOutputStream();
             IAstWriter astWriter = PMDPlugin.getDefault().getAstWriter();
             astWriter.write(byteArrayOutputStream, compilationUnit);
             byteArrayOutputStream.flush();
@@ -96,8 +93,9 @@ public class PMDGenerateASTAction extends AbstractUIAction implements IRunnableW
                 if (astFile.exists()) {
                     astFile.delete(false, null);
                 }
-                astInputStream = new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
-                astFile.create(astInputStream, false, null);
+                try (ByteArrayInputStream astInputStream = new ByteArrayInputStream(byteArrayOutputStream.toByteArray())) {
+                    astFile.create(astInputStream, false, null);
+                }
             }
 
         } catch (CoreException e) {
@@ -106,9 +104,6 @@ public class PMDGenerateASTAction extends AbstractUIAction implements IRunnableW
             showErrorById(StringKeys.ERROR_PMD_EXCEPTION, e);
         } catch (IOException e) {
             showErrorById(StringKeys.ERROR_IO_EXCEPTION, e);
-        } finally {
-            IOUtil.closeQuietly(byteArrayOutputStream);
-            IOUtil.closeQuietly(astInputStream);
         }
     }
 
