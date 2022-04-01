@@ -30,7 +30,6 @@ import net.sourceforge.pmd.cpd.CPDConfiguration;
 import net.sourceforge.pmd.cpd.Language;
 import net.sourceforge.pmd.cpd.LanguageFactory;
 import net.sourceforge.pmd.cpd.Match;
-import net.sourceforge.pmd.cpd.Renderer;
 import net.sourceforge.pmd.cpd.renderer.CPDRenderer;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.runtime.PMDRuntimeConstants;
@@ -146,12 +145,12 @@ public class DetectCutAndPasteCmd extends AbstractProjectCommand {
      * @deprecated Use {@link #setCPDRenderer(CPDRenderer)} instead.
      */
     @Deprecated
-    public void setRenderer(final Renderer renderer) {
-        if (renderer != null) {
+    public void setRenderer(final net.sourceforge.pmd.cpd.Renderer theRenderer) {
+        if (theRenderer != null) {
             this.setCPDRenderer(new CPDRenderer() {
                 @Override
                 public void render(Iterator<Match> matches, Writer writer) throws IOException {
-                    writer.write(renderer.render(matches));
+                    writer.write(theRenderer.render(matches));
                 }
             });
         } else {
@@ -159,16 +158,12 @@ public class DetectCutAndPasteCmd extends AbstractProjectCommand {
         }
     }
 
-    public void setCPDRenderer(CPDRenderer renderer) {
-        this.renderer = renderer;
+    public void setCPDRenderer(CPDRenderer theRenderer) {
+        this.renderer = theRenderer;
     }
 
-    /**
-     * @param reportName
-     *            The reportName to set.
-     */
-    public void setReportName(final String reportName) {
-        this.reportName = reportName;
+    public void setReportName(final String theReportName) {
+        this.reportName = theReportName;
     }
 
     /**

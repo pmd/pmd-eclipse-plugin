@@ -12,7 +12,6 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.ui.IWorkingSet;
 
 import net.sourceforge.pmd.RuleSet;
-import net.sourceforge.pmd.RuleSets;
 
 /**
  * This interface specifies what is the model for the PMD related project
@@ -59,7 +58,7 @@ public interface IProjectProperties {
      * @deprecated Use {@link #setProjectRuleSetList(List)}
      */
     @Deprecated
-    void setProjectRuleSets(RuleSets projectRuleSets) throws PropertiesException;
+    void setProjectRuleSets(net.sourceforge.pmd.RuleSets projectRuleSets) throws PropertiesException;
     
     void setProjectRuleSetList(List<RuleSet> rulesets) throws PropertiesException;
 
@@ -68,7 +67,7 @@ public interface IProjectProperties {
      * @deprecated Use {@link #getProjectRuleSetList()}
      */
     @Deprecated
-    RuleSets getProjectRuleSets() throws PropertiesException;
+    net.sourceforge.pmd.RuleSets getProjectRuleSets() throws PropertiesException;
 
     List<RuleSet> getProjectRuleSetList() throws PropertiesException;
 

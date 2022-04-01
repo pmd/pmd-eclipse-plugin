@@ -98,7 +98,6 @@ public class PMDBuilder extends IncrementalProjectBuilder {
         if (resourceDelta != null && resourceDelta.getAffectedChildren().length != 0) {
             ReviewCodeCmd cmd = new ReviewCodeCmd();
             cmd.setResourceDelta(resourceDelta);
-            cmd.setTaskMarker(false);
             cmd.setMonitor(monitor);
             // a builder is always asynchronous;
             // execute a command synchronously
@@ -118,7 +117,6 @@ public class PMDBuilder extends IncrementalProjectBuilder {
     private void processProjectFiles(IProject project, IProgressMonitor monitor) {
         ReviewCodeCmd cmd = new ReviewCodeCmd();
         cmd.addResource(project);
-        cmd.setTaskMarker(false);
         cmd.setMonitor(monitor);
         // a builder is always asynchronous; execute a command synchronously whatever its processor
         cmd.performExecute(); 

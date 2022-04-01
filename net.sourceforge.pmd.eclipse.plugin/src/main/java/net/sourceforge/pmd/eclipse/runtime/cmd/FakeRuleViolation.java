@@ -5,9 +5,7 @@
 package net.sourceforge.pmd.eclipse.runtime.cmd;
 
 import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
+import net.sourceforge.pmd.RuleViolation;
 
 /**
  * This is an implementation of IRuleViolation. It is meant to rebuild a
@@ -18,11 +16,21 @@ import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
  * @author Brian Remedios
  */
 
-class FakeRuleViolation extends ParametricRuleViolation<Node> {
+class FakeRuleViolation implements RuleViolation {
+    private int beginLine;
+    private int beginColumn;
+    private int endLine;
+    private int endColumn;
+
+    private String filename;
+    private String packageName;
+    private String className;
+    private String methodName;
+    private String variableName;
+
+    private Rule rule;
 
     private String description = "";
-
-    private static final RuleContext DUMMY_CONTEXT = new RuleContext();
 
     /**
      * Default constructor take a rule object to initialize. All other variables
@@ -31,7 +39,7 @@ class FakeRuleViolation extends ParametricRuleViolation<Node> {
      * @param rule
      */
     FakeRuleViolation(Rule theRule) {
-        super(theRule, DUMMY_CONTEXT, null, null);
+        this.rule = theRule;
     }
 
     @Override
@@ -119,4 +127,58 @@ class FakeRuleViolation extends ParametricRuleViolation<Node> {
         this.variableName = variableName;
     }
 
+    @Override
+    public Rule getRule() {
+        return rule;
+    }
+
+    @Override
+    public boolean isSuppressed() {
+        return false;
+    }
+
+    @Override
+    public String getFilename() {
+        return filename;
+    }
+
+    @Override
+    public int getBeginLine() {
+        return beginLine;
+    }
+
+    @Override
+    public int getBeginColumn() {
+        return beginColumn;
+    }
+
+    @Override
+    public int getEndLine() {
+        return endLine;
+    }
+
+    @Override
+    public int getEndColumn() {
+        return endColumn;
+    }
+
+    @Override
+    public String getPackageName() {
+        return packageName;
+    }
+
+    @Override
+    public String getClassName() {
+        return className;
+    }
+
+    @Override
+    public String getMethodName() {
+        return methodName;
+    }
+
+    @Override
+    public String getVariableName() {
+        return variableName;
+    }
 }

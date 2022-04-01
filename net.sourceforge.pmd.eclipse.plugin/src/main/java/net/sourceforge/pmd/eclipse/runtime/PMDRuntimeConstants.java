@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.eclipse.runtime;
 
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
-import net.sourceforge.pmd.properties.IntegerProperty;
 
 /**
  * This interface groups all plugin constants
@@ -36,7 +35,8 @@ public final class PMDRuntimeConstants {
      *             which was 1000 violations.
      */
     @Deprecated
-    public static final IntegerProperty MAX_VIOLATIONS_DESCRIPTOR = new IntegerProperty("maxviolations",
+    public static final net.sourceforge.pmd.properties.IntegerProperty MAX_VIOLATIONS_DESCRIPTOR =
+        new net.sourceforge.pmd.properties.IntegerProperty("maxviolations",
             "Max allowable violations", 1, Integer.MAX_VALUE - 1, 1000, 0f);
 
     public static final String ID_PERSPECTIVE = "net.sourceforge.pmd.eclipse.ui.views.pmdPerspective";

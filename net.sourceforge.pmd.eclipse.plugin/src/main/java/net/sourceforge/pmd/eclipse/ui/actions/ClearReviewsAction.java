@@ -12,7 +12,6 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Iterator;
-import java.util.Locale;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -35,7 +34,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.eclipse.runtime.PMDRuntimeConstants;
-import net.sourceforge.pmd.eclipse.runtime.cmd.AbstractDefaultCommand;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
 
 /**
@@ -170,14 +168,6 @@ public class ClearReviewsAction extends AbstractUIAction implements IResourceVis
         monitorWorked();
     }
 
-    private static boolean isReviewable(IFile file) {
-
-        if (AbstractDefaultCommand.isJavaFile(file)) {
-            return true;
-        }
-        return file.getName().toLowerCase(Locale.ROOT).endsWith(".jsp");
-    }
-
     /**
      * remove reviews from file content
      *
@@ -185,10 +175,6 @@ public class ClearReviewsAction extends AbstractUIAction implements IResourceVis
      * @return
      */
     private String removeReviews(IFile file) {
-
-        if (!isReviewable(file)) {
-            return null;
-        }
 
         StringWriter modified = new StringWriter();
         boolean noChange = true;
@@ -200,7 +186,7 @@ public class ClearReviewsAction extends AbstractUIAction implements IResourceVis
                 String origLine = reader.readLine();
                 String line = origLine.trim();
                 if (line == null) {
-                    break;
+                    continue;
                 }
                 int index = origLine.indexOf(PMDRuntimeConstants.PMD_STYLE_REVIEW_COMMENT);
                 int quoteIndex = origLine.indexOf('"');
