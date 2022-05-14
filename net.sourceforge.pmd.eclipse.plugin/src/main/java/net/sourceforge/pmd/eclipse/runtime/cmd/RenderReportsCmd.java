@@ -105,14 +105,14 @@ public class RenderReportsCmd extends AbstractProjectCommand {
 
         LOG.debug("   Creating the report file");
         IFile reportFile = folder.getFile(reportName);
-        InputStream contentsStream = new ByteArrayInputStream(reportString.getBytes());
-        if (reportFile.exists()) {
-            reportFile.setContents(contentsStream, true, false, getMonitor());
-        } else {
-            reportFile.create(contentsStream, true, getMonitor());
+        try (InputStream contentsStream = new ByteArrayInputStream(reportString.getBytes())) {
+            if (reportFile.exists()) {
+                reportFile.setContents(contentsStream, true, false, getMonitor());
+            } else {
+                reportFile.create(contentsStream, true, getMonitor());
+            }
         }
         reportFile.refreshLocal(IResource.DEPTH_INFINITE, getMonitor());
-        contentsStream.close();
     }
 
     @Override

@@ -4,9 +4,6 @@
 
 package net.sourceforge.pmd.eclipse.ui.views;
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -36,22 +33,14 @@ import org.eclipse.ui.texteditor.ITextEditor;
 import org.eclipse.ui.themes.ITheme;
 import org.eclipse.ui.themes.IThemeManager;
 
-import net.sourceforge.pmd.PMDConfiguration;
-import net.sourceforge.pmd.PMDException;
-import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.SourceCodeProcessor;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
-import net.sourceforge.pmd.eclipse.ui.actions.RuleSetUtil;
-import net.sourceforge.pmd.eclipse.ui.actions.internal.InternalRuleSetUtil;
 import net.sourceforge.pmd.eclipse.ui.model.FileRecord;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
 import net.sourceforge.pmd.eclipse.ui.views.ast.ASTUtil;
-import net.sourceforge.pmd.lang.dfa.DFAGraphMethod;
-import net.sourceforge.pmd.lang.dfa.DFAGraphRule;
+import net.sourceforge.pmd.eclipse.ui.views.ast.XPathEvaluator;
+import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
-import net.sourceforge.pmd.lang.java.dfa.JavaDFAGraphRule;
 
 /**
  * 
@@ -62,8 +51,9 @@ public abstract class AbstractStructureInspectorPage extends Page
 
     private Combo methodSelector;
     private FileRecord resourceRecord;
+    protected Node classNode;
     private List<ASTMethodDeclaration> pmdMethodList;
-    private ITextEditor textEditor;
+    protected ITextEditor textEditor;
 
     protected AbstractStructureInspectorPage(IWorkbenchPart part, FileRecord record) {
         super();
@@ -79,6 +69,9 @@ public abstract class AbstractStructureInspectorPage extends Page
         if (resource.getType() == IResource.FILE) {
             // set a new filerecord
             resourceRecord = new FileRecord(resource);
+
+            String source = getDocument().get();
+            classNode = XPathEvaluator.INSTANCE.getCompilationUnit(source);
         }
     }
 
@@ -91,6 +84,10 @@ public abstract class AbstractStructureInspectorPage extends Page
     }
 
     protected void highlight(int beginLine, int beginColumn, int endLine, int endColumn) {
+        if (textEditor == null) {
+            return;
+        }
+
         try {
             int offset = getDocument().getLineOffset(beginLine) + beginColumn;
             int length = getDocument().getLineOffset(endLine) + endColumn - offset;
@@ -105,7 +102,6 @@ public abstract class AbstractStructureInspectorPage extends Page
     }
 
     protected void highlight(int offset, int length) {
-
         if (textEditor == null) {
             return;
         }
@@ -194,6 +190,10 @@ public abstract class AbstractStructureInspectorPage extends Page
 
     @Override
     public void selectionChanged(SelectionChangedEvent event) {
+        if (textEditor == null) {
+            return;
+        }
+
         RuleViolation violation = selectedViolationFrom(event);
         if (violation == null) {
             return;
@@ -311,38 +311,8 @@ public abstract class AbstractStructureInspectorPage extends Page
      */
     private List<ASTMethodDeclaration> getPMDMethods() {
         List<ASTMethodDeclaration> methodList = new ArrayList<>();
-
-        // we need PMD to run over the given Resource
-        // with the DFAGraphRule to get the Methods;
-        // PMD needs this Resource as a String
-        try {
-            DFAGraphRule dfaGraphRule = new JavaDFAGraphRule();
-            RuleSet rs = RuleSetUtil.newSingle(dfaGraphRule);
-
-            RuleContext ctx = new RuleContext();
-            ctx.setSourceCodeFile(new File("[scratchpad]"));
-
-            // StringReader reader = new StringReader(getDocument().get());
-            // run PMD using the DFAGraphRule and the Text of the Resource
-            // new PMDEngine().processFile(reader, rs, ctx);
-
-            byte[] bytes = getDocument().get().getBytes();
-            InputStream input = new ByteArrayInputStream(bytes);
-
-            new SourceCodeProcessor(new PMDConfiguration()).processSourceCode(input,
-                    InternalRuleSetUtil.toRuleSets(Collections.singletonList(rs)), ctx);
-
-            // the Rule then can give us the Methods
-            for (DFAGraphMethod m : dfaGraphRule.getMethods()) {
-                if (m instanceof ASTMethodDeclaration) {
-                    methodList.add((ASTMethodDeclaration) m);
-                }
-            }
-            Collections.sort(methodList, ASTUtil.METHOD_COMPARATOR);
-        } catch (PMDException pmde) {
-            logError(StringKeys.ERROR_PMD_EXCEPTION + toString(), pmde);
-        }
-
+        methodList.addAll(classNode.findDescendantsOfType(ASTMethodDeclaration.class));
+        Collections.sort(methodList, ASTUtil.METHOD_COMPARATOR);
         return methodList;
     }
 

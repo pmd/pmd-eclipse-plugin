@@ -151,6 +151,10 @@ public class DataflowViewPage extends AbstractStructureInspectorPage implements 
      */
     @Override
     protected void showMethod(final ASTMethodDeclaration pmdMethod) {
+        if (textEditor == null) {
+            return;
+        }
+
         if (pmdMethod != null) {
 
             String resourceString = getDocument().get();
@@ -202,6 +206,10 @@ public class DataflowViewPage extends AbstractStructureInspectorPage implements 
 
     @Override
     public void selectionChanged(SelectionChangedEvent event) {
+        if (textEditor == null) {
+            return;
+        }
+
         RuleViolation violation = selectedViolationFrom(event);
         if (violation == null) {
             return;

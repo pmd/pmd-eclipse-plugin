@@ -162,6 +162,7 @@ Export-Package: ch.qos.logback.classic;x-friends:="net.sourceforge.pmd.eclipse.p
  net.sourceforge.pmd.lang,
  net.sourceforge.pmd.lang.java.rule,
  net.sourceforge.pmd.lang.rule,
+ net.sourceforge.pmd.lang.rule.xpath,
  net.sourceforge.pmd.properties,
  net.sourceforge.pmd.properties.builders,
  net.sourceforge.pmd.renderers,
