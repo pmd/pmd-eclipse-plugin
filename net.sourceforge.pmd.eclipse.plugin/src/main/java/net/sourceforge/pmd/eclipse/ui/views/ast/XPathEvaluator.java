@@ -4,20 +4,18 @@
 
 package net.sourceforge.pmd.eclipse.ui.views.ast;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.PmdAnalysis;
-import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.eclipse.ui.actions.RuleSetUtil;
+import net.sourceforge.pmd.eclipse.util.internal.SpyingRule;
+import net.sourceforge.pmd.eclipse.util.internal.SpyingXPathRule;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.JavaLanguageModule;
-import net.sourceforge.pmd.lang.rule.AbstractRule;
-import net.sourceforge.pmd.lang.rule.XPathRule;
 import net.sourceforge.pmd.lang.rule.xpath.XPathVersion;
 
 /**
@@ -32,19 +30,12 @@ public final class XPathEvaluator {
     }
 
     public Node getCompilationUnit(String source) {
-
-        final List<Node> result = new ArrayList<>();
-
         PMDConfiguration configuration = new PMDConfiguration();
         configuration.setIgnoreIncrementalAnalysis(true);
         configuration.setForceLanguageVersion(getLanguageVersion());
 
-        AbstractRule rule = new XPathRule(XPathVersion.XPATH_2_0, "") {
-            @Override
-            public void apply(List<? extends Node> nodes, RuleContext ctx) {
-                result.addAll(nodes);
-            }
-        };
+        SpyingRule rule = new SpyingRule();
+        rule.setLanguage(getLanguageVersion().getLanguage());
         RuleSet ruleset = RuleSetUtil.newSingle(rule);
 
         try (PmdAnalysis pmd = PmdAnalysis.create(configuration)) {
@@ -53,10 +44,7 @@ public final class XPathEvaluator {
             pmd.performAnalysis();
         }
 
-        if (!result.isEmpty()) {
-            return result.get(0);
-        }
-        return null;
+        return rule.getRootNode();
     }
 
     private LanguageVersion getLanguageVersion() {
@@ -74,19 +62,7 @@ public final class XPathEvaluator {
      * @return
      */
     public List<Node> evaluate(String source, String xpathQuery, String xpathVersion) {
-
-        final List<Node> results = new ArrayList<>();
-
-        XPathRule xpathRule = new XPathRule(XPathVersion.ofId(xpathVersion), xpathQuery) {
-            @Override
-            public void addViolation(Object data, Node node, String arg) {
-                results.add(node);
-            }
-        };
-
-        xpathRule.setMessage("");
-        xpathRule.setLanguage(getLanguageVersion().getLanguage());
-
+        SpyingXPathRule xpathRule = new SpyingXPathRule(XPathVersion.ofId(xpathVersion), xpathQuery, getLanguageVersion().getLanguage());
         RuleSet ruleSet = RuleSetUtil.newSingle(xpathRule);
 
         PMDConfiguration configuration = new PMDConfiguration();
@@ -98,6 +74,6 @@ public final class XPathEvaluator {
             pmd.performAnalysis();
         }
 
-        return results;
+        return xpathRule.getResult();
     }
 }

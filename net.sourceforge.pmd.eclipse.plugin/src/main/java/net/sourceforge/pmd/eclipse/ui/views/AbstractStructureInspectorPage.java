@@ -61,6 +61,8 @@ public abstract class AbstractStructureInspectorPage extends Page
         resourceRecord = record;
         if (part instanceof ITextEditor) {
             textEditor = (ITextEditor) part;
+            String source = getDocument().get();
+            classNode = XPathEvaluator.INSTANCE.getCompilationUnit(source);
         }
     }
 
