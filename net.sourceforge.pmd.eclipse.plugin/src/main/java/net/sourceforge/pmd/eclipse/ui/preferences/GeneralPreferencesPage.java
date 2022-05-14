@@ -96,7 +96,7 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
     private Label logLevelValueLabel;
     private TableViewer tableViewer;
     private IPreferences preferences;
-    private BasicTableManager priorityTableMgr;
+    private BasicTableManager<?> priorityTableMgr;
     private Button determineFiletypesAutomatically;
 
     private Control[] nameFields;
@@ -254,7 +254,7 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
         };
         BasicTableLabelProvider labelProvider = new BasicTableLabelProvider(PriorityColumnUI.VISIBLE_COLUMNS);
 
-        priorityTableMgr = new BasicTableManager("prio", null, PriorityColumnUI.VISIBLE_COLUMNS);
+        priorityTableMgr = new BasicTableManager<>("prio", null, PriorityColumnUI.VISIBLE_COLUMNS);
         tableViewer = priorityTableMgr.buildTableViewer(group);
         priorityTableMgr.setupColumns(PriorityColumnUI.VISIBLE_COLUMNS);
 

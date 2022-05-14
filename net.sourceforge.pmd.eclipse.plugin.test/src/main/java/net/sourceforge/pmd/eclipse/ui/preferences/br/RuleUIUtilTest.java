@@ -11,6 +11,7 @@ import org.junit.Test;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.eclipse.ui.IndexedString;
 import net.sourceforge.pmd.lang.rule.XPathRule;
+import net.sourceforge.pmd.lang.rule.xpath.XPathVersion;
 
 public class RuleUIUtilTest {
 
@@ -19,7 +20,7 @@ public class RuleUIUtilTest {
      */
     @Test
     public void testTndexedPropertyStringFromRule() {
-        Rule rule = new XPathRule();
+        Rule rule = new XPathRule(XPathVersion.XPATH_2_0, "");
         IndexedString s = RuleUIUtil.indexedPropertyStringFrom(rule);
         assertNotNull(s);
     }

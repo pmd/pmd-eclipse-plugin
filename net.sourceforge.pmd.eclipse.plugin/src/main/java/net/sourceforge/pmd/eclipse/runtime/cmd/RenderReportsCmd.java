@@ -32,7 +32,6 @@ import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.runtime.PMDRuntimeConstants;
 import net.sourceforge.pmd.eclipse.runtime.builder.MarkerUtil;
-import net.sourceforge.pmd.eclipse.util.IOUtil;
 import net.sourceforge.pmd.renderers.Renderer;
 
 /**
@@ -87,18 +86,16 @@ public class RenderReportsCmd extends AbstractProjectCommand {
     private void render(Report report, IFolder folder, String reportName, Renderer renderer)
             throws IOException, CoreException {
 
-        StringWriter writer = new StringWriter();
         String reportString = null;
 
-        try {
+        try (StringWriter writer = new StringWriter()) {
             renderer.setWriter(writer);
             renderer.start();
             renderer.renderFileReport(report);
             renderer.end();
+            renderer.flush();
 
             reportString = writer.toString();
-        } finally {
-            IOUtil.closeQuietly(writer);
         }
 
         if (StringUtils.isBlank(reportString)) {
@@ -108,14 +105,14 @@ public class RenderReportsCmd extends AbstractProjectCommand {
 
         LOG.debug("   Creating the report file");
         IFile reportFile = folder.getFile(reportName);
-        InputStream contentsStream = new ByteArrayInputStream(reportString.getBytes());
-        if (reportFile.exists()) {
-            reportFile.setContents(contentsStream, true, false, getMonitor());
-        } else {
-            reportFile.create(contentsStream, true, getMonitor());
+        try (InputStream contentsStream = new ByteArrayInputStream(reportString.getBytes())) {
+            if (reportFile.exists()) {
+                reportFile.setContents(contentsStream, true, false, getMonitor());
+            } else {
+                reportFile.create(contentsStream, true, getMonitor());
+            }
         }
         reportFile.refreshLocal(IResource.DEPTH_INFINITE, getMonitor());
-        contentsStream.close();
     }
 
     @Override

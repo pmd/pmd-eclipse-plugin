@@ -108,18 +108,18 @@ public class ReviewCodeHandler extends AbstractHandler {
         ISelection selection = getSelection();
         if (selection instanceof IStructuredSelection) {
             IStructuredSelection structuredSelection = (IStructuredSelection) selection;
-            List resources = new ArrayList(structuredSelection.size());
+            List<IResource> resources = new ArrayList<>(structuredSelection.size());
 
             Iterator<?> e = structuredSelection.iterator();
             while (e.hasNext()) {
                 Object element = e.next();
                 if (element instanceof IResource) {
-                    resources.add(element);
+                    resources.add((IResource) element);
                 } else if (element instanceof IAdaptable) {
                     IAdaptable adaptable = (IAdaptable) element;
                     Object adapter = adaptable.getAdapter(IResource.class);
                     if (adapter instanceof IResource) {
-                        resources.add(adapter);
+                        resources.add((IResource) adapter);
                     }
                 }
             }

@@ -15,6 +15,8 @@ This is a minor release.
 
 ### Fixed Issues
 
+*   [#162](https://github.com/pmd/pmd-eclipse-plugin/pull/162): Fix deprecations
+
 ### API Changes
 
 ### External Contributions

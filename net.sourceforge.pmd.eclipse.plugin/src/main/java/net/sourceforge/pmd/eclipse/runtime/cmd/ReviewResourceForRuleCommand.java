@@ -5,29 +5,29 @@
 package net.sourceforge.pmd.eclipse.runtime.cmd;
 
 import java.io.File;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
+import org.apache.commons.io.IOUtils;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IPropertyListener;
 
-import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.PMDConfiguration;
-import net.sourceforge.pmd.PMDException;
+import net.sourceforge.pmd.PmdAnalysis;
+import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSet;
-import net.sourceforge.pmd.SourceCodeProcessor;
 import net.sourceforge.pmd.eclipse.runtime.PMDRuntimeConstants;
 import net.sourceforge.pmd.eclipse.ui.actions.RuleSetUtil;
-import net.sourceforge.pmd.eclipse.ui.actions.internal.InternalRuleSetUtil;
 
 /**
  * This command reviews a resource - a file - for a specific rule.
+ *
+ * <p>Used for the DFA table.
  *
  * @author Sven
  *
@@ -35,7 +35,6 @@ import net.sourceforge.pmd.eclipse.ui.actions.internal.InternalRuleSetUtil;
 public class ReviewResourceForRuleCommand extends AbstractDefaultCommand {
 
     private IResource resource;
-    private RuleContext context;
     private Rule rule;
     private List<IPropertyListener> listenerList;
 
@@ -80,36 +79,35 @@ public class ReviewResourceForRuleCommand extends AbstractDefaultCommand {
 
     @Override
     public void execute() {
-        // IProject project = resource.getProject();
         IFile file = (IFile) resource.getAdapter(IFile.class);
         beginTask("PMD checking for rule: " + rule.getName(), 1);
 
         if (file != null) {
             RuleSet ruleSet = RuleSetUtil.newSingle(rule);
-            // final PMDEngine pmdEngine = getPmdEngineForProject(project);
+
             File sourceCodeFile = file.getFullPath().toFile();
             if (ruleSet.applies(sourceCodeFile)) {
-                try {
-                    context = PMD.newRuleContext(file.getName(), sourceCodeFile);
+                PMDConfiguration configuration = new PMDConfiguration();
+                Report report = null;
 
-                    // Reader input = new InputStreamReader(file.getContents(),
-                    // file.getCharset());
-                    new SourceCodeProcessor(new PMDConfiguration()).processSourceCode(file.getContents(),
-                            InternalRuleSetUtil.toRuleSets(Collections.singletonList(ruleSet)),
-                            context);
-                    // input.close();
-                    // } catch (CoreException e) {
-                    // throw new CommandException(e);
-                } catch (PMDException | CoreException e) {
+                try (Reader input = new InputStreamReader(file.getContents(), file.getCharset());
+                     PmdAnalysis pmdAnalysis = PmdAnalysis.create(configuration)) {
+
+                    pmdAnalysis.addRuleSet(ruleSet);
+                    pmdAnalysis.files().addSourceFile(IOUtils.toString(input), sourceCodeFile.getAbsolutePath());
+
+                    report = pmdAnalysis.performAnalysisAndCollectReport();
+                } catch (Exception e) {
                     throw new RuntimeException(e);
                 }
 
+                final Report finalResult = report;
                 // trigger event propertyChanged for all listeners
                 Display.getDefault().asyncExec(new Runnable() {
                     @Override
                     public void run() {
                         for (IPropertyListener listener : listenerList) {
-                            listener.propertyChanged(context.getReport().getViolations().iterator(),
+                            listener.propertyChanged(finalResult.getViolations().iterator(),
                                     PMDRuntimeConstants.PROPERTY_REVIEW);
                         }
                     }

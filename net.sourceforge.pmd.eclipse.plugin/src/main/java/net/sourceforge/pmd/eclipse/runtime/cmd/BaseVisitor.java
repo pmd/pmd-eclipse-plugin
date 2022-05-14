@@ -11,7 +11,6 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
@@ -19,6 +18,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
@@ -30,15 +30,13 @@ import org.eclipse.ui.ResourceWorkingSetFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.PMDConfiguration;
-import net.sourceforge.pmd.PMDException;
+import net.sourceforge.pmd.PmdAnalysis;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Report.ConfigurationError;
 import net.sourceforge.pmd.Report.ProcessingError;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSet;
-import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.runtime.PMDRuntimeConstants;
@@ -49,9 +47,6 @@ import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.LanguageVersionDiscoverer;
 import net.sourceforge.pmd.lang.java.JavaLanguageModule;
-import net.sourceforge.pmd.renderers.Renderer;
-import net.sourceforge.pmd.util.datasource.DataSource;
-import net.sourceforge.pmd.util.datasource.ReaderDataSource;
 
 /**
  * Factor some useful features for visitors
@@ -167,27 +162,12 @@ public class BaseVisitor {
         }
     }
 
-    // /**
-    // * @return Returns the pmdEngine.
-    // */
-    // public PMDEngine getPmdEngine() {
-    // return pmdEngine;
-    // }
-    //
-    // /**
-    // * @param pmdEngine
-    // * The pmdEngine to set.
-    // */
-    // public void setPmdEngine(final PMDEngine pmdEngine) {
-    // this.pmdEngine = pmdEngine;
-    // }
-
     /**
      * @return Returns all the ruleSets.
      * @deprecated Use {@link #getRuleSetList()}
      */
     @Deprecated
-    public RuleSets getRuleSets() {
+    public net.sourceforge.pmd.RuleSets getRuleSets() {
         return InternalRuleSetUtil.toRuleSets(this.ruleSets);
     }
 
@@ -217,7 +197,7 @@ public class BaseVisitor {
      * @deprecated Use {@link #setRuleSetList(List)}
      */
     @Deprecated
-    public void setRuleSets(final RuleSets ruleSets) {
+    public void setRuleSets(final net.sourceforge.pmd.RuleSets ruleSets) {
         setRuleSetList(Arrays.asList(ruleSets.getAllRuleSets()));
     }
 
@@ -316,24 +296,24 @@ public class BaseVisitor {
 
                 long start = System.currentTimeMillis();
 
+                // need to disable multi threading, as the ruleset is
+                // not recreated and shared between threads...
+                // but as we anyway have only one file to process, it won't hurt
+                // here.
+                configuration().setThreads(0);
+
                 Report collectingReport = null;
 
                 try (Reader input = new InputStreamReader(file.getContents(), file.getCharset());
-                     DataSource dataSource = new ReaderDataSource(input, file.getRawLocation().toFile().getPath());) {
-                    
-                    // getPmdEngine().processFile(input, getRuleSet(), context);
-                    // getPmdEngine().processFile(sourceCodeFile, getRuleSet(),
-                    // context);
-                    
-                    
-                    // need to disable multi threading, as the ruleset is
-                    // not recreated and shared between threads...
-                    // but as we anyway have only one file to process, it won't hurt
-                    // here.
-                    configuration().setThreads(0);
+                     PmdAnalysis pmdAnalysis = PmdAnalysis.create(configuration());) {
+
+                    String sourceContents = IOUtils.toString(input);
+                    pmdAnalysis.files().addSourceFile(sourceContents, sourceCodeFile.getAbsolutePath());
+
+                    pmdAnalysis.addRuleSets(getRuleSetList());
+
                     LOG.debug("PMD running on file {}", file.getName());
-                    collectingReport = PMD.processFiles(configuration(), ruleSets, Arrays.asList(dataSource),
-                            Collections.<Renderer>emptyList());
+                    collectingReport = pmdAnalysis.performAnalysisAndCollectReport();
                     LOG.debug("PMD run finished.");
                 }
 
@@ -356,7 +336,7 @@ public class BaseVisitor {
                         .append("\n");
                     }
                     PMDPlugin.getDefault().logWarn(message.toString());
-                    throw new PMDException(message.toString());
+                    throw new RuntimeException(message.toString());
                 }
 
                 updateMarkers(file, collectingReport.getViolations());
@@ -370,17 +350,16 @@ public class BaseVisitor {
         } catch (CoreException e) {
             // TODO: complete message
             LOG.error("Core exception visiting " + file.getName(), e);
-        } catch (PMDException e) {
-            // TODO: complete message
-            LOG.error("PMD exception visiting " + file.getName(), e);
         } catch (IOException e) {
             // TODO: complete message
             LOG.error("IO exception visiting " + file.getName(), e);
         } catch (PropertiesException e) {
             // TODO: complete message
-            LOG.error("Properties exception visiting " + file.getName(), e);
+            LOG.error("Properties exception visiting {}", file.getName(), e);
         } catch (IllegalArgumentException e) {
             LOG.error("Illegal argument: {}", e.toString(), e);
+        } catch (RuntimeException e) {
+            LOG.error("Runtime exception visiting {}", file.getName(), e);
         }
 
     }

@@ -31,7 +31,6 @@ import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.RuleSet;
-import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.eclipse.core.internal.FileModificationUtil;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.runtime.cmd.JavaProjectClassLoader;
@@ -42,7 +41,6 @@ import net.sourceforge.pmd.eclipse.runtime.writer.IRuleSetWriter;
 import net.sourceforge.pmd.eclipse.runtime.writer.WriterException;
 import net.sourceforge.pmd.eclipse.ui.actions.RuleSetUtil;
 import net.sourceforge.pmd.eclipse.ui.actions.internal.InternalRuleSetUtil;
-import net.sourceforge.pmd.eclipse.util.IOUtil;
 
 /**
  * Implementation of a project properties information structure
@@ -146,7 +144,7 @@ public class ProjectPropertiesImpl implements IProjectProperties {
      */
     @Deprecated
     @Override
-    public RuleSets getProjectRuleSets() throws PropertiesException {
+    public net.sourceforge.pmd.RuleSets getProjectRuleSets() throws PropertiesException {
         return InternalRuleSetUtil.toRuleSets(projectRuleSets);
     }
 
@@ -170,7 +168,7 @@ public class ProjectPropertiesImpl implements IProjectProperties {
      */
     @Override
     @Deprecated
-    public void setProjectRuleSets(final RuleSets newProjectRuleSets) throws PropertiesException {
+    public void setProjectRuleSets(final net.sourceforge.pmd.RuleSets newProjectRuleSets) throws PropertiesException {
         setProjectRuleSetList(Arrays.asList(newProjectRuleSets.getAllRuleSets()));
     }
 
@@ -357,11 +355,8 @@ public class ProjectPropertiesImpl implements IProjectProperties {
     @Override
     public void createDefaultRuleSetFile() throws PropertiesException {
         LOG.info("Create a default rule set file for project " + this.project.getName());
-        ByteArrayOutputStream baos = null;
-        ByteArrayInputStream bais = null;
-        try {
+        try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
             IRuleSetWriter writer = PMDPlugin.getDefault().getRuleSetWriter();
-            baos = new ByteArrayOutputStream();
             
             // create a single ruleset from all the rulesets
             // the ruleset writer is only capable of writing one ruleset
@@ -378,14 +373,12 @@ public class ProjectPropertiesImpl implements IProjectProperties {
             if (file.exists() && file.isAccessible()) {
                 throw new PropertiesException("Project ruleset file already exists");
             } else {
-                bais = new ByteArrayInputStream(baos.toByteArray());
-                file.create(bais, true, null);
+                try (ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray())) {
+                    file.create(bais, true, null);
+                }
             }
-        } catch (WriterException | CoreException e) {
+        } catch (IOException | WriterException | CoreException e) {
             throw new PropertiesException("Error while creating default ruleset file for project " + this.project.getName(), e);
-        } finally {
-            IOUtil.closeQuietly(baos);
-            IOUtil.closeQuietly(bais);
         }
     }
 

@@ -75,7 +75,6 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
     private final List<IResource> resources = new ArrayList<>();
     private IResourceDelta resourceDelta;
     private Map<IFile, Set<MarkerInfo2>> markersByFile = new HashMap<>();
-    private boolean taskMarker;
     private boolean openPmdPerspective;
     private boolean openPmdViolationsOverviewView;
     private boolean openPmdViolationsOutlineView;
@@ -407,8 +406,12 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
         this.resourceDelta = resourceDelta;
     }
 
+    /**
+     * @deprecated not used, never implemented
+     */
+    @Deprecated
     public void setTaskMarker(boolean taskMarker) {
-        this.taskMarker = taskMarker;
+        // the flag was never used
     }
 
     public void setRunAlways(boolean runAlways) {
@@ -538,9 +541,7 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
                     visitor.setMonitor(getMonitor());
                     visitor.setRuleSetList(ruleSets);
                     visitor.setFileExtensions(fileExtensions);
-                    // visitor.setPmdEngine(pmdEngine);
                     visitor.setAccumulator(markersByFile);
-                    visitor.setUseTaskMarker(taskMarker);
                     visitor.setProjectProperties(properties);
                     resource.accept(visitor);
 
@@ -712,9 +713,7 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
                 visitor.setMonitor(getMonitor());
                 visitor.setRuleSetList(ruleSets);
                 visitor.setFileExtensions(fileExtensions);
-                // visitor.setPmdEngine(pmdEngine);
                 visitor.setAccumulator(markersByFile);
-                visitor.setUseTaskMarker(taskMarker);
                 visitor.setProjectProperties(properties);
                 resourceDelta.accept(visitor);
 

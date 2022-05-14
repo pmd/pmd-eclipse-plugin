@@ -49,7 +49,7 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
-import net.sourceforge.pmd.lang.rule.xpath.XPathRuleQuery;
+import net.sourceforge.pmd.lang.rule.xpath.XPathVersion;
 
 /**
  * A combined abstract syntax tree viewer for a whole class or selected methods
@@ -66,7 +66,6 @@ public class ASTViewPage extends AbstractStructureInspectorPage {
     private StyledText xpathField;
     private TableViewer resultsViewer;
     private Button goButton;
-    private Node classNode;
     private ASTPainterHelper helper;
     private ASTContentProvider contentProvider;
 
@@ -243,6 +242,10 @@ public class ASTViewPage extends AbstractStructureInspectorPage {
     }
 
     private void evaluateXPath() {
+        if (textEditor == null) {
+            return;
+        }
+
         if (!setupTest()) {
             return;
         }
@@ -250,7 +253,7 @@ public class ASTViewPage extends AbstractStructureInspectorPage {
         List<Node> results = null;
         try {
             results = XPathEvaluator.INSTANCE.evaluate(getDocument().get(), xpathField.getText(),
-                    XPathRuleQuery.XPATH_1_0 // TODO derive from future combo widget
+                    XPathVersion.XPATH_2_0.getXmlName() // TODO derive from future combo widget
             );
         } catch (ParseException pe) {
             // TODO showError(pe.fillInStackTrace().getMessage());
@@ -332,11 +335,6 @@ public class ASTViewPage extends AbstractStructureInspectorPage {
     }
 
     protected void showClass() {
-        if (classNode == null) {
-            String source = getDocument().get();
-            classNode = XPathEvaluator.INSTANCE.getCompilationUnit(source);
-        }
-
         astViewer.setInput(classNode);
         astViewer.expandAll();
     }
@@ -401,8 +399,6 @@ public class ASTViewPage extends AbstractStructureInspectorPage {
     @Override
     public void refresh(IResource newResource) {
         super.refresh(newResource);
-
-        classNode = null;
 
         // if (isTableShown) {
         // refreshDFATable(newResource);

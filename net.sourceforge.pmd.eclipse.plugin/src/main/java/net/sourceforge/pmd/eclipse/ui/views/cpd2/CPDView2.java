@@ -39,7 +39,7 @@ import net.sourceforge.pmd.cpd.Match;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.runtime.PMDRuntimeConstants;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
-import net.sourceforge.pmd.util.StringUtil;
+import net.sourceforge.pmd.eclipse.util.internal.StringUtil;
 
 /**
  * An updated view for Cut & Paste Detector that shows the results in a tree

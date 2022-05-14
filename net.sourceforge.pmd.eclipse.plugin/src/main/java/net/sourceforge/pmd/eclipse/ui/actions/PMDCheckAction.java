@@ -56,7 +56,6 @@ public class PMDCheckAction extends AbstractUIAction {
     }
 
     private void setupAndExecute(ReviewCodeCmd cmd) {
-        cmd.setTaskMarker(true);
         cmd.setOpenPmdPerspective(PMDPlugin.getDefault().loadPreferences().isPmdPerspectiveEnabled());
         cmd.setOpenPmdViolationsOverviewView(PMDPlugin.getDefault().loadPreferences().isPmdViolationsOverviewEnabled());
         cmd.setOpenPmdViolationsOutlineView(PMDPlugin.getDefault().loadPreferences().isPmdViolationsOutlineEnabled());
