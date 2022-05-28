@@ -13,6 +13,8 @@ This is a minor release.
 
 ### New and noteworthy
 
+*   Updated to PMD 6.46.0
+
 ### Fixed Issues
 
 *   [#162](https://github.com/pmd/pmd-eclipse-plugin/pull/162): Fix deprecations

@@ -7,7 +7,8 @@ package net.sourceforge.pmd.eclipse.runtime.properties.impl;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
@@ -26,7 +27,6 @@ import javax.xml.bind.Marshaller;
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 
-import org.apache.commons.io.IOUtils;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
@@ -46,6 +46,7 @@ import net.sourceforge.pmd.eclipse.runtime.properties.IProjectPropertiesManager;
 import net.sourceforge.pmd.eclipse.runtime.properties.PropertiesException;
 import net.sourceforge.pmd.eclipse.ui.actions.RuleSetUtil;
 import net.sourceforge.pmd.eclipse.ui.actions.internal.InternalRuleSetUtil;
+import net.sourceforge.pmd.eclipse.util.internal.IOUtil;
 
 /**
  * This class manages the persistence of the ProjectProperies information structure
@@ -191,8 +192,8 @@ public class ProjectPropertiesManagerImpl implements IProjectPropertiesManager {
 
             final IFile propertiesFile = project.getFile(ProjectPropertiesTimestampTupel.PROPERTIES_FILE);
             if (propertiesFile.exists() && propertiesFile.isAccessible()) {
-                try (InputStream in = propertiesFile.getContents()) {
-                    String properties = IOUtils.toString(in, StandardCharsets.UTF_8);
+                try (Reader in = new InputStreamReader(propertiesFile.getContents(), StandardCharsets.UTF_8)) {
+                    String properties = IOUtil.toString(in);
                     projectProperties = convertProjectPropertiesFromString(properties);
                 }
             }

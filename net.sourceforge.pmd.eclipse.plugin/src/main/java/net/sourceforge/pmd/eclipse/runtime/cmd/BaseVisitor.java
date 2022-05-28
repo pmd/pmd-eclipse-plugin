@@ -18,7 +18,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
@@ -43,6 +42,7 @@ import net.sourceforge.pmd.eclipse.runtime.PMDRuntimeConstants;
 import net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties;
 import net.sourceforge.pmd.eclipse.runtime.properties.PropertiesException;
 import net.sourceforge.pmd.eclipse.ui.actions.internal.InternalRuleSetUtil;
+import net.sourceforge.pmd.eclipse.util.internal.IOUtil;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.LanguageVersionDiscoverer;
@@ -307,7 +307,7 @@ public class BaseVisitor {
                 try (Reader input = new InputStreamReader(file.getContents(), file.getCharset());
                      PmdAnalysis pmdAnalysis = PmdAnalysis.create(configuration());) {
 
-                    String sourceContents = IOUtils.toString(input);
+                    String sourceContents = IOUtil.toString(input);
                     pmdAnalysis.files().addSourceFile(sourceContents, sourceCodeFile.getAbsolutePath());
 
                     pmdAnalysis.addRuleSets(getRuleSetList());

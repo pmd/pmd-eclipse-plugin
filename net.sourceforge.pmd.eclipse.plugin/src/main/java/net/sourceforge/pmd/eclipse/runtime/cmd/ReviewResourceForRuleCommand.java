@@ -10,7 +10,6 @@ import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.io.IOUtils;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.swt.widgets.Display;
@@ -23,6 +22,7 @@ import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.eclipse.runtime.PMDRuntimeConstants;
 import net.sourceforge.pmd.eclipse.ui.actions.RuleSetUtil;
+import net.sourceforge.pmd.eclipse.util.internal.IOUtil;
 
 /**
  * This command reviews a resource - a file - for a specific rule.
@@ -94,7 +94,7 @@ public class ReviewResourceForRuleCommand extends AbstractDefaultCommand {
                      PmdAnalysis pmdAnalysis = PmdAnalysis.create(configuration)) {
 
                     pmdAnalysis.addRuleSet(ruleSet);
-                    pmdAnalysis.files().addSourceFile(IOUtils.toString(input), sourceCodeFile.getAbsolutePath());
+                    pmdAnalysis.files().addSourceFile(IOUtil.toString(input), sourceCodeFile.getAbsolutePath());
 
                     report = pmdAnalysis.performAnalysisAndCollectReport();
                 } catch (Exception e) {
