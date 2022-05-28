@@ -23,7 +23,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <pmd.version>6.46.0</pmd.version>
     <maven-antrun-plugin.version>1.8</maven-antrun-plugin.version>
-    <pmd.build-tools.version>17</pmd.build-tools.version>
+    <pmd.build-tools.version>18</pmd.build-tools.version>
     <checkstyle.version>9.3</checkstyle.version>
     <checkstyle.plugin.version>3.1.2</checkstyle.plugin.version>
     <pmd.plugin.version>3.15.0</pmd.plugin.version>
