@@ -67,7 +67,7 @@
                 <stripVersion>true</stripVersion>
                 <prependGroupId>false</prependGroupId>
                 <outputDirectory>${project.build.directory}/lib</outputDirectory>
-                <excludeGroupIds>p2.eclipse-plugin</excludeGroupIds>
+                <excludeGroupIds>p2.eclipse-plugin,p2.eclipse.plugin</excludeGroupIds>
                 <excludeArtifactIds>net.sourceforge.pmd.eclipse.plugin,net.sourceforge.pmd.eclipse.plugin.source</excludeArtifactIds>
                 <useRepositoryLayout>false</useRepositoryLayout>
             </configuration>
