@@ -15,6 +15,8 @@ This is a minor release.
 
 ### Fixed Issues
 
+*   [#163](https://github.com/pmd/pmd-eclipse-plugin/pull/163): Bump tycho from 2.6.0 to 2.7.4
+
 ### API Changes
 
 ### External Contributions

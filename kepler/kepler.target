@@ -3,7 +3,7 @@
 <target includeMode="feature" name="Kepler (4.3)">
     <locations>
         <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
-            <repository location="http://download.eclipse.org/releases/kepler/"/>
+            <repository location="https://download.eclipse.org/releases/kepler/"/>
             <unit id="org.eclipse.jdt.feature.group" version="3.9.2.v20140221-1700"/>
             <unit id="org.eclipse.wst.xml_core.feature.feature.group" version="3.5.2.v201401062113-7C7OFvVF7RZHQXIlNxNyPh"/>
         </location>

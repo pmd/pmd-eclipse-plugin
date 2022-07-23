@@ -52,7 +52,7 @@
         <artifactId>target-platform-configuration</artifactId>
         <configuration>
           <dependency-resolution>
-            <extraRequirements>
+            <extraRequirements combine.children="append">
               <requirement>
                 <type>eclipse-plugin</type>
                 <id>net.sourceforge.pmd.eclipse.plugin.test.fragment</id>
