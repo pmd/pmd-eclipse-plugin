@@ -330,10 +330,13 @@
   </build>
 
   <profiles>
-    <!-- for some reason, tycho 2.7 doesn't always add the swt-fragments to the classpath.
-         Therefore it is added explicitly - depending on the os.
+    <!-- With tycho 2.7 the workaround (https://github.com/eclipse/tycho/issues/476)
+         for https://bugs.eclipse.org/bugs/show_bug.cgi?id=361901 has been
+         removed. Therfore, we need to declare the runtime dependencies for SWT fragments explicitly for each os.
          Otherwise the SWT classes are missing for PMD analysis and when running the tests.
-         Note: This problem only occurs with old eclipse versions like kepler.
+         This bug has been fixed with Mars (4.5 / https://download.eclipse.org/releases/mars/) and this workaround
+         might not be necessary anymore when using Mars.
+         Tycho resolves the fragments when they are properly declared, see https://github.com/eclipse/tycho/issues/626.
     -->
     <profile>
       <id>linux-swt</id>
