@@ -62,7 +62,7 @@
         <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-dependency-plugin</artifactId>
-            <version>2.7</version>
+            <version>3.3.0</version>
             <configuration>
                 <stripVersion>true</stripVersion>
                 <prependGroupId>false</prependGroupId>
@@ -87,9 +87,15 @@
                         <artifactItems>
                             <artifactItem>
                                 <groupId>net.sourceforge.pmd</groupId>
-                                <artifactId>pmd-test</artifactId>
+                                <artifactId>pmd-test-schema</artifactId>
                                 <version>${pmd.version}</version>
-                                <includes>rule-tests_1_0_0.xsd</includes>
+                                <includes>net/sourceforge/pmd/test/schema/rule-tests_1_0_0.xsd</includes>
+                                <fileMappers>
+                                    <org.codehaus.plexus.components.io.filemappers.RegExpFileMapper>
+                                        <pattern>^\Qnet/sourceforge/pmd/test/schema/\E</pattern>
+                                        <replacement>./</replacement>
+                                    </org.codehaus.plexus.components.io.filemappers.RegExpFileMapper>
+                                </fileMappers>
                             </artifactItem>
                         </artifactItems>
                         <outputDirectory>${project.build.directory}/schema</outputDirectory>
