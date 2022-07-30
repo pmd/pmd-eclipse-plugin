@@ -13,7 +13,7 @@ This is a minor release.
 
 ### New and noteworthy
 
-*   Updated to PMD 6.48.0-SNAPSHOT.
+*   Updated to PMD 6.48.0
 
 ### Fixed Issues
 
