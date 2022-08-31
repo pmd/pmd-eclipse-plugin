@@ -13,6 +13,8 @@ This is a minor release.
 
 ### New and noteworthy
 
+* [#164](https://github.com/pmd/pmd-eclipse-plugin/pull/164): Add more language modules
+
 ### Fixed Issues
 
 ### API Changes
