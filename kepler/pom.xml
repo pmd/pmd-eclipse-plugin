@@ -7,7 +7,7 @@
   <parent>
     <groupId>net.sourceforge.pmd</groupId>
     <artifactId>net.sourceforge.pmd.eclipse.parent</artifactId>
-    <version>4.39.0-SNAPSHOT</version>
+    <version>4.39.0.v20220930-1439-r</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
