@@ -20,7 +20,7 @@
 
     <java.version>1.7</java.version>
     <!-- https://github.com/eclipse/tycho/blob/master/RELEASE_NOTES.md -->
-    <tycho.version>2.7.4</tycho.version>
+    <tycho.version>3.0.0</tycho.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <pmd.version>6.50.0</pmd.version>
     <maven-antrun-plugin.version>1.8</maven-antrun-plugin.version>

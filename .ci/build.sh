@@ -8,10 +8,10 @@ SCRIPT_INCLUDES="log.bash utils.bash setup-secrets.bash openjdk.bash maven.bash 
 source "$(dirname "$0")/inc/fetch_ci_scripts.bash" && fetch_ci_scripts
 
 function build() {
-    pmd_ci_log_group_start "Install OpenJDK 8+11"
+    pmd_ci_log_group_start "Install OpenJDK 8+17"
         pmd_ci_openjdk_install_adoptopenjdk 8
-        pmd_ci_openjdk_install_adoptopenjdk 11
-        pmd_ci_openjdk_setdefault 11
+        pmd_ci_openjdk_install_adoptopenjdk 17
+        pmd_ci_openjdk_setdefault 17
     pmd_ci_log_group_end
 
     echo

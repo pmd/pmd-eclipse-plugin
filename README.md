@@ -20,7 +20,7 @@ the repository on github and create pull requests. Any contributions are welcome
 
 ### Testing the latest version
 
-The plugin builds with Java 11 but also requires Java 8. This is achieved through
+The plugin builds with Java 17 but also requires Java 8. This is achieved through
 [maven toolchains](https://maven.apache.org/guides/mini/guide-using-toolchains.html).
 You can use [toolchains.xml](.ci/files/toolchains.xml) from this repo to
 configure your own `toolchains.xml` file.

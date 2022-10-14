@@ -17,12 +17,12 @@
     <toolchain>
         <type>jdk</type>
         <provides>
-            <version>11</version>
+            <version>17</version>
             <vendor>openjdk</vendor>
-            <id>JavaSE-11</id>
+            <id>JavaSE-17</id>
         </provides>
         <configuration>
-            <jdkHome>${env.HOME}/openjdk11</jdkHome>
+            <jdkHome>${env.HOME}/openjdk17</jdkHome>
         </configuration>
     </toolchain>
 </toolchains>
