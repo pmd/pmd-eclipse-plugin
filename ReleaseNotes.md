@@ -13,7 +13,11 @@ This is a minor release.
 
 ### New and noteworthy
 
+*   Java 17 is required for building now. The plugin still works with older eclipse versions with Java 8.
+
 ### Fixed Issues
+
+*   [#165](https://github.com/pmd/pmd-eclipse-plugin/pull/165): Bump tycho from 2.7.4 to 3.0.0
 
 ### API Changes
 
