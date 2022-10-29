@@ -14,6 +14,7 @@ This is a minor release.
 ### New and noteworthy
 
 *   Java 17 is required for building now. The plugin still works with older eclipse versions with Java 8.
+*   Updated to PMD 6.51.0
 
 ### Fixed Issues
 
