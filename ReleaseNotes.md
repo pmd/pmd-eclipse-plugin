@@ -7,7 +7,7 @@ Eclipse Update Site:
 *   Releases: <https://pmd.github.io/pmd-eclipse-plugin-p2-site/>
 *   Snapshots: <https://pmd.github.io/pmd-eclipse-plugin-p2-site/snapshot/>
 
-## ????: 4.40.0.v????
+## 29-October-2022: 4.40.0.v20221029-0812-r
 
 This is a minor release.
 
@@ -19,10 +19,6 @@ This is a minor release.
 ### Fixed Issues
 
 *   [#165](https://github.com/pmd/pmd-eclipse-plugin/pull/165): Bump tycho from 2.7.4 to 3.0.0
-
-### API Changes
-
-### External Contributions
 
 ## 30-September-2022: 4.39.0.v20220930-1439-r
 
