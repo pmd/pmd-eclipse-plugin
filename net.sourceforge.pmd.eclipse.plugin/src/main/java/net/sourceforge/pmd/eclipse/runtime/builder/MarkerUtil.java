@@ -238,7 +238,7 @@ public final class MarkerUtil {
     }
 
     public static IMarker[] findAllMarkers(IResource resource) throws CoreException {
-        return findMarkers(resource, PMDRuntimeConstants.ALL_MARKER_TYPES);
+        return findMarkers(resource, PMDRuntimeConstants.PMD_MARKER);
     }
 
     public static IMarker[] findMarkers(IResource resource, String markerType) throws CoreException {
