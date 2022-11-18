@@ -31,6 +31,10 @@ jobs:
         key: ${{ runner.os }}-${{ hashFiles('**/pom.xml') }}
         restore-keys: |
           ${{ runner.os }}-
+    - name: Set up Ruby 2.7
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: 2.7
     - name: Setup Environment
       shell: bash
       run: |
