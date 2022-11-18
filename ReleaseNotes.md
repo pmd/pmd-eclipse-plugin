@@ -15,6 +15,8 @@ This is a minor release.
 
 ### Fixed Issues
 
+*   [#109](https://github.com/pmd/pmd-eclipse-plugin/issues/109): Duplicate entries in reports
+
 ### API Changes
 
 ### External Contributions
