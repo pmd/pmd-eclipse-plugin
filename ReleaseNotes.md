@@ -13,6 +13,8 @@ This is a minor release.
 
 ### New and noteworthy
 
+*   Updated to PMD 6.52.0
+
 ### Fixed Issues
 
 *   [#109](https://github.com/pmd/pmd-eclipse-plugin/issues/109): Duplicate entries in reports
