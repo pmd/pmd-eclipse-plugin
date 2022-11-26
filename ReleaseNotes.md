@@ -7,7 +7,7 @@ Eclipse Update Site:
 *   Releases: <https://pmd.github.io/pmd-eclipse-plugin-p2-site/>
 *   Snapshots: <https://pmd.github.io/pmd-eclipse-plugin-p2-site/snapshot/>
 
-## ????: 4.41.0.v????
+## 26-November-2022: 4.41.0.v20221126-1044-r
 
 This is a minor release.
 
@@ -18,10 +18,6 @@ This is a minor release.
 ### Fixed Issues
 
 *   [#109](https://github.com/pmd/pmd-eclipse-plugin/issues/109): Duplicate entries in reports
-
-### API Changes
-
-### External Contributions
 
 ## 29-October-2022: 4.40.0.v20221029-0812-r
 
