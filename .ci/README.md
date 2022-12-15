@@ -7,7 +7,7 @@ for pmd-code.org:
 
 ```
 $ export CI_SIGN_PASSPHRASE=...
-$ openssl pkcs12 -export -in Lets_Encrypt_pmd-code.org_2022-08-31.pem \
+$ openssl pkcs12 -export -in Lets_Encrypt_pmd-code.org_2022-12-15.pem \
     -name eclipse-plugin \
     -password env:CI_SIGN_PASSPHRASE \
     -out pmd-eclipse-plugin.p12 \
@@ -21,7 +21,7 @@ $ jarsigner -verbose \
   eclipse-plugin
 ```
 
-Note: The file "Lets_Encrypt_pmd-code.org_2022-08-31.pem" contains the private key, the certificate
+Note: The file "Lets_Encrypt_pmd-code.org_2022-12-15.pem" contains the private key, the certificate
 and intermediate certificates.
 
 Note: with openssl 3, the option `-legacy` is required in order to use the pkcs12 keystore with java8.
