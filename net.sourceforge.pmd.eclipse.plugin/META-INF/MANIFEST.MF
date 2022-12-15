@@ -5,18 +5,13 @@ Bundle-SymbolicName: net.sourceforge.pmd.eclipse.plugin;singleton:=true
 Bundle-Version: 4.42.0.qualifier
 Bundle-Activator: net.sourceforge.pmd.eclipse.plugin.PMDPlugin
 Require-Bundle: org.eclipse.core.resources,
- org.eclipse.core.runtime,
  org.eclipse.jdt.core,
  org.eclipse.jface.text,
- org.eclipse.ui,
  org.eclipse.ui.ide,
  org.eclipse.ui.editors,
  org.eclipse.team.core,
  org.eclipse.search,
- org.eclipse.help,
- org.eclipse.help.ui,
- org.eclipse.wst.xml.core,
- org.eclipse.ui.workbench.texteditor
+ org.eclipse.help.ui
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-Vendor: %plugin.provider
