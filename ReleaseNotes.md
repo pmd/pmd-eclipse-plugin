@@ -13,6 +13,8 @@ This is a minor release.
 
 ### New and noteworthy
 
+*   Updated to PMD 6.53.0
+
 ### Fixed Issues
 
 *   [#168](https://github.com/pmd/pmd-eclipse-plugin/issues/168): Missing constraints in runtime Eclipse workspace (e.g., in Eclipse Modeling Tool since 2022-12 R)
