@@ -1,4 +1,4 @@
-Copyright (c) 1997-2022, PMD for Eclipse Development Team
+Copyright (c) 1997-2023, PMD for Eclipse Development Team
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
