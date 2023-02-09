@@ -146,11 +146,10 @@
           <configuration>
             <source>${java.version}</source>
             <target>${java.version}</target>
-            <compilerArguments>
-              <inlineJSR />
-              <enableJavadoc />
-              <encoding>${project.build.sourceEncoding}</encoding>
-            </compilerArguments>
+            <compilerArgs>
+              <compilerArg>-inlineJSR</compilerArg>
+              <compilerArg>-enableJavadoc</compilerArg>
+            </compilerArgs>
           </configuration>
         </plugin>
         <plugin>
