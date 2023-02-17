@@ -176,6 +176,7 @@ public class PMDProjectPropertyPage extends PropertyPage {
             ruleSetStoredInProjectButton = buildStoreRuleSetInProjectButton(ruleSetPanel);
             ruleSetFileText = buildRuleSetFileText(ruleSetPanel);
             ruleSetBrowseButton = buildRuleSetBrowseButton(ruleSetPanel);
+            buildLocalRulesButton(ruleSetPanel);
 
             data = new GridData(SWT.FILL, SWT.NONE, true, false);
             ruleSetFileText.setLayoutData(data);
@@ -327,25 +328,26 @@ public class PMDProjectPropertyPage extends PropertyPage {
         return button;
     }
 
-    //    /**
-    //     * Create the radio button for storing configuration in a project file
-    //     * 
-    //     * @param parent
-    //     *            the parent composite
-    //     */
-    //    private Button buildLocalRulesButton(final Composite parent) {
-    //        Button button = newRadioButton(parent, "Use local rules");
-    //
-    //        button.setSelection(!model.isRuleSetStoredInProject());
-    //
-    //        button.addSelectionListener(new SelectionAdapter() {
-    //            public void widgetSelected(SelectionEvent e) {
-    //                adjustControls();
-    //            }
-    //        });
-    //
-    //        return button;
-    //    }
+    /**
+     * Create the radio button for storing configuration in a project file
+     * 
+     * @param parent
+     *            the parent composite
+     */
+    private Button buildLocalRulesButton(final Composite parent) {
+        Button button = newRadioButton(parent, "Use local rules");
+
+        button.setSelection(!model.isRuleSetStoredInProject());
+
+        button.addSelectionListener(new SelectionAdapter() {
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                adjustControls();
+            }
+        });
+
+        return button;
+    }
 
     /**
      * Create the the rule set file name text.

@@ -331,15 +331,16 @@ public class ProjectPropertiesManagerImpl implements IProjectPropertiesManager {
      */
     private ProjectPropertiesTO fillTransferObject(IProjectProperties projectProperties) throws PropertiesException {
         final ProjectPropertiesTO bean = new ProjectPropertiesTO();
-        bean.setRuleSetStoredInProject(projectProperties.isRuleSetStoredInProject());
-        bean.setRuleSetFile(projectProperties.getRuleSetFile());
         bean.setWorkingSetName(projectProperties.getProjectWorkingSet() == null ? null
                 : projectProperties.getProjectWorkingSet().getName());
         bean.setIncludeDerivedFiles(projectProperties.isIncludeDerivedFiles());
         bean.setViolationsAsErrors(projectProperties.violationsAsErrors());
         bean.setFullBuildEnabled(projectProperties.isFullBuildEnabled());
 
-        if (!projectProperties.isRuleSetStoredInProject()) {
+        bean.setRuleSetStoredInProject(projectProperties.isRuleSetStoredInProject());
+        if (projectProperties.isRuleSetStoredInProject()) {
+            bean.setRuleSetFile(projectProperties.getRuleSetFile());
+        } else {
             final List<RuleSet> ruleSets = projectProperties.getProjectRuleSetList();
             final List<RuleSpecTO> rules = new ArrayList<>();
             List<String> excludePatterns = new ArrayList<>();
