@@ -20,7 +20,7 @@
 
     <java.version>1.7</java.version>
     <!-- https://github.com/eclipse/tycho/blob/master/RELEASE_NOTES.md -->
-    <tycho.version>3.0.1</tycho.version>
+    <tycho.version>3.0.2</tycho.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <pmd.version>6.54.0</pmd.version>
     <pmd.build-tools.version>20</pmd.build-tools.version>
