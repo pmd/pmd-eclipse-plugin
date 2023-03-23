@@ -1,0 +1,16 @@
+target "2022-12 (4.26)"
+with source requirements environment JavaSE-11
+location "https://download.eclipse.org/releases/2022-12/" {
+	org.eclipse.platform.feature.group
+	org.eclipse.jdt.feature.group
+	org.eclipse.wst.xml_core.feature.feature.group
+}
+
+location "https://download.eclipse.org/tools/orbit/downloads/2022-12/" {
+	org.apache.commons.io
+	org.apache.commons.io.source
+	org.apache.commons.lang
+	org.apache.commons.lang.source
+	org.junit
+	org.junit.source
+}

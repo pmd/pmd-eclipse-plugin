@@ -13,31 +13,82 @@
     name="pmd-eclipse-plugin"
     label="PMD Eclipse Plugin">
   <setupTask
-      xsi:type="jdt:JRETask"
-      version="JavaSE-1.8"
-      location="${jre.location-1.8}">
-    <description>Define the JRE needed to compile and run the Java projects of ${scope.project.label}</description>
+      xsi:type="setup:CompoundTask"
+      name="org.eclipse.m2e.core">
+    <setupTask
+        xsi:type="setup:PreferenceTask"
+        key="/instance/org.eclipse.m2e.core/eclipse.m2.problem.notCoveredMojoExecution"
+        value="ignore"/>
   </setupTask>
   <setupTask
-      xsi:type="setup:EclipseIniTask"
-      option="-Xmx"
-      value="1024m"
-      vm="true">
-    <description>Set the heap space needed to work with the projects of ${scope.project.label}</description>
+      xsi:type="jdt:JRETask"
+      version="JavaSE-11"
+      location="${jre.location-11}"
+      name="JRE for JavaSE-11">
+    <description>Define the JRE needed to compile and run the Java projects of ${scope.project.label}</description>
   </setupTask>
   <setupTask
       xsi:type="setup:VariableTask"
       name="eclipse.target.platform"
-      defaultValue="Neon"
-      storageURI="scope://Workspace"/>
+      defaultValue="${eclipse.target.platform.latest}"
+      storageURI="scope://Workspace"
+      label="Target Platform">
+    <description>Choose the compatibility level of the target platform</description>
+  </setupTask>
   <setupTask
       xsi:type="setup.p2:P2Task"
-      label="Tycho">
+      label="Eclipse Dev Dependencies">
     <requirement
-        name="org.sonatype.tycho.m2e.feature.feature.group"/>
+        name="org.eclipse.jdt.feature.group"/>
+    <requirement
+        name="org.eclipse.egit.feature.group"/>
+    <requirement
+        name="org.eclipse.pde.feature.group"/>
+    <requirement
+        name="org.eclipse.m2e.feature.feature.group"/>
+    <requirement
+        name="org.eclipse.m2e.pde.feature.feature.group"/>
+    <requirement
+        name="org.eclipse.cbi.targetplatform.feature.feature.group"/>
+    <requirement
+        name="org.eclipse.swtbot.feature.group"/>
+    <requirement
+        name="org.eclipse.swtbot.eclipse.feature.group"/>
+    <requirement
+        name="org.eclipse.swtbot.generator.feature.feature.group"/>
+    <requirement
+        name="org.eclipse.swtbot.ide.feature.group"/>
+    <requirement
+        name="org.eclipse.swtbot.forms.feature.group"/>
     <repository
-        url="https://repo.maven.apache.org/maven2/.m2e/connectors/m2eclipse-tycho/0.9.0/N/0.9.0.201609252021/"/>
+        url="https://download.eclipse.org/releases/${eclipse.target.platform.latest}"/>
+    <repository
+        url="https://download.eclipse.org/cbi/updates/tpd/nightly"/>
     <description>Install the tools needed in the IDE to work with the source code for ${scope.project.label}</description>
+  </setupTask>
+  <setupTask
+      xsi:type="setup.p2:P2Task"
+      label="Other Dev Dependencies">
+    <requirement
+        name="net.sf.eclipsecs.feature.group"/>
+    <requirement
+        name="net.sourceforge.pmd.eclipse.feature.group"/>
+    <requirement
+        name="com.github.spotbugs.plugin.eclipse.feature.group"/>
+    <requirement
+        name="com.basistech.m2e.code.quality.checkstyle.feature.feature.group"/>
+    <requirement
+        name="com.basistech.m2e.code.quality.pmd.feature.feature.group"/>
+    <requirement
+        name="com.basistech.m2e.code.quality.spotbugs.feature.feature.group"/>
+    <repository
+        url="https://checkstyle.org/eclipse-cs-update-site"/>
+    <repository
+        url="https://pmd.github.io/pmd-eclipse-plugin-p2-site/"/>
+    <repository
+        url="https://spotbugs.github.io/eclipse/"/>
+    <repository
+        url="https://m2e-code-quality.github.io/m2e-code-quality-p2-site/"/>
   </setupTask>
   <setupTask
       xsi:type="git:GitCloneTask"
@@ -74,46 +125,11 @@
           rootFolder="${git.clone.location}"
           locateNestedProjects="true"/>
       <repositoryList
-          name="Oxygen">
+          name="">
         <repository
-            url="http://download.eclipse.org/releases/oxygen"/>
+            url="https://download.eclipse.org/releases/${eclipse.target.platform.latest}"/>
         <repository
-            url="http://download.eclipse.org/cbi/updates/license"/>
-      </repositoryList>
-      <repositoryList
-          name="Neon">
-        <repository
-            url="http://download.eclipse.org/releases/neon"/>
-        <repository
-            url="http://download.eclipse.org/cbi/updates/license"/>
-      </repositoryList>
-      <repositoryList
-          name="Mars">
-        <repository
-            url="http://download.eclipse.org/releases/mars"/>
-        <repository
-            url="http://download.eclipse.org/cbi/updates/license"/>
-      </repositoryList>
-      <repositoryList
-          name="Luna">
-        <repository
-            url="http://download.eclipse.org/releases/luna"/>
-        <repository
-            url="http://download.eclipse.org/cbi/updates/license"/>
-      </repositoryList>
-      <repositoryList
-          name="Kepler">
-        <repository
-            url="http://download.eclipse.org/releases/kepler"/>
-        <repository
-            url="http://download.eclipse.org/cbi/updates/license"/>
-      </repositoryList>
-      <repositoryList
-          name="Juno">
-        <repository
-            url="http://download.eclipse.org/releases/juno"/>
-        <repository
-            url="http://download.eclipse.org/cbi/updates/license"/>
+            url="https://download.eclipse.org/tools/orbit/downloads/latest-R/"/>
       </repositoryList>
     </targlet>
   </setupTask>
