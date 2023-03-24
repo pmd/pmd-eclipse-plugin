@@ -79,6 +79,14 @@
             <configuration>
               <argLine>-XstartOnFirstThread</argLine>
             </configuration>
+            <dependencies combine.children="append">
+              <!-- make sure to detect a default JVM -->
+              <dependency>
+                <type>eclipse-plugin</type>
+                <artifactId>org.eclipse.jdt.launching.macosx</artifactId>
+                <version>0.0.0</version>
+              </dependency>
+            </dependencies>
           </plugin>
         </plugins>
       </build>
