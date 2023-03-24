@@ -9,6 +9,7 @@ import java.io.IOException;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jdt.launching.IVMInstall;
 import org.eclipse.jdt.launching.IVMInstallType;
@@ -16,7 +17,6 @@ import org.eclipse.jdt.launching.JavaRuntime;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.slf4j.LoggerFactory;
 
-import net.sourceforge.pmd.eclipse.WaitingMonitor;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 
 import ch.qos.logback.classic.Level;
@@ -57,10 +57,8 @@ public class TestActivator extends AbstractUIPlugin {
                 IVMInstall vm = vmInstallType.createVMInstall("net.sourceforge.pmd.eclipse.plugin.test.openjdk8");
                 vm.setInstallLocation(openjdk8Path);
                 vm.setName("openjdk8");
-                WaitingMonitor monitor = new WaitingMonitor();
-                JavaRuntime.setDefaultVMInstall(vm, monitor);
-                monitor.await();
-            } catch (IOException | CoreException | InterruptedException e) {
+                JavaRuntime.setDefaultVMInstall(vm, new NullProgressMonitor());
+            } catch (IOException | CoreException e) {
                 mainPlugin.getLog().log(new Status(IStatus.ERROR, PMDPlugin.PLUGIN_ID,
                         "Error setting up default JVM " + openjdk8Path, e));
                 Thread.currentThread().interrupt();
