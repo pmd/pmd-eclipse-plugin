@@ -18,8 +18,8 @@
     <target.platform>2023-03</target.platform>
 
     <java.version>1.7</java.version>
-    <!-- https://github.com/eclipse/tycho/blob/master/RELEASE_NOTES.md -->
-    <tycho.version>3.0.2</tycho.version>
+    <!-- https://github.com/eclipse/tycho/blob/master/RELEASE_NOTES.md and https://github.com/eclipse-tycho/tycho/releases -->
+    <tycho.version>3.0.4</tycho.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <pmd.version>6.55.0</pmd.version>
     <pmd.build-tools.version>20</pmd.build-tools.version>
