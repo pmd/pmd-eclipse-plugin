@@ -254,6 +254,30 @@
           <groupId>org.eclipse.tycho</groupId>
           <artifactId>tycho-surefire-plugin</artifactId>
           <version>${tycho.version}</version>
+          <configuration>
+              <useUIHarness>true</useUIHarness>
+              <useUIThread>false</useUIThread>
+              <showEclipseLog>true</showEclipseLog>
+              <trimStackTrace>false</trimStackTrace>
+              <!-- http://wiki.eclipse.org/Eclipse4/RCP/FAQ#Why_won.27t_my_application_start.3F -->
+              <bundleStartLevel>
+                <bundle>
+                  <id>org.eclipse.core.runtime</id>
+                  <level>2</level>
+                  <autoStart>true</autoStart>
+                </bundle>
+                <bundle>
+                  <id>org.eclipse.equinox.ds</id>
+                  <level>3</level>
+                  <autoStart>true</autoStart>
+                </bundle>
+                <bundle>
+                  <id>org.eclipse.equinox.event</id>
+                  <level>3</level>
+                  <autoStart>true</autoStart>
+                </bundle>
+              </bundleStartLevel>
+          </configuration>
         </plugin>
         <plugin>
           <groupId>org.eclipse.tycho</groupId>
@@ -440,6 +464,37 @@
               <artifactId>maven-pmd-plugin</artifactId>
               <configuration>
                 <skipPmdError>true</skipPmdError>
+              </configuration>
+            </plugin>
+          </plugins>
+        </pluginManagement>
+      </build>
+    </profile>
+
+    <profile>
+      <id>osx</id>
+      <activation>
+        <os>
+          <family>mac</family>
+        </os>
+      </activation>
+      <build>
+        <pluginManagement>
+          <plugins>
+            <plugin>
+              <groupId>org.eclipse.tycho</groupId>
+              <artifactId>tycho-surefire-plugin</artifactId>
+              <configuration>
+                <argLine>-XstartOnFirstThread</argLine>
+                <dependencies combine.children="append">
+                  <!--this dependency is needed to detect and set the default VM correctly on Mac OS,
+                  https://github.com/eclipse-jdt/eclipse.jdt.debug/tree/master/org.eclipse.jdt.launching.macosx -->
+                  <dependency>
+                    <artifactId>org.eclipse.jdt.launching.macosx</artifactId>
+                    <type>eclipse-plugin</type>
+                    <version>0.0.0</version>
+                  </dependency>
+                </dependencies>
               </configuration>
             </plugin>
           </plugins>
