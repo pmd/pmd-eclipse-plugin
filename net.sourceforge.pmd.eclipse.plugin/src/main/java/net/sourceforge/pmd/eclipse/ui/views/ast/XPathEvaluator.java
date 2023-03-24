@@ -42,7 +42,7 @@ public final class XPathEvaluator {
 
         try (PmdAnalysis pmd = PmdAnalysis.create(configuration)) {
             pmd.addRuleSet(ruleset);
-            pmd.files().addSourceFile(source, "[snippet]");
+            pmd.files().addSourceFile("snippet.java", source);
             pmd.performAnalysis();
         }
 
@@ -72,7 +72,7 @@ public final class XPathEvaluator {
         configuration.setForceLanguageVersion(getLanguageVersion());
         try (PmdAnalysis pmd = PmdAnalysis.create(configuration)) {
             pmd.addRuleSet(ruleSet);
-            pmd.files().addSourceFile(source, "[snippet]");
+            pmd.files().addSourceFile("snippet.java", source);
             Report report = pmd.performAnalysisAndCollectReport();
             return report.getViolations();
         }
