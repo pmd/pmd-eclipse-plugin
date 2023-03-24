@@ -79,14 +79,22 @@
             <configuration>
               <argLine>-XstartOnFirstThread</argLine>
             </configuration>
-            <dependencies combine.children="append">
-              <!-- make sure to detect a default JVM -->
-              <dependency>
-                <type>eclipse-plugin</type>
-                <artifactId>org.eclipse.jdt.launching.macosx</artifactId>
-                <version>0.0.0</version>
-              </dependency>
-            </dependencies>
+          </plugin>
+          <plugin>
+            <groupId>org.eclipse.tycho</groupId>
+            <artifactId>target-platform-configuration</artifactId>
+            <configuration>
+              <dependency-resolution>
+                <extraRequirements combine.children="append">
+                  <!-- make sure to detect a default JVM -->
+                  <requirement>
+                    <type>eclipse-plugin</type>
+                    <id>org.eclipse.jdt.launching.macosx</id>
+                    <versionRange>0.0.0</versionRange>
+                  </requirement>
+                </extraRequirements>
+              </dependency-resolution>
+            </configuration>
           </plugin>
         </plugins>
       </build>
