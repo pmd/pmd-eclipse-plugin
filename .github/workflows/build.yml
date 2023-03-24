@@ -14,44 +14,49 @@ on:
   workflow_dispatch:
 
 jobs:
+  # verify build on one node before multiple builds on different os are started
+  fail-fast-build:
+    name: fail-fast verify (ubuntu-latest, 2023-03)
+    timeout-minutes: 60
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - uses: ./.github/actions/setup
+
+      - uses: ./.github/actions/build
+        with:
+          targetPlatform: 2023-03
+          pmdCiSecretPassphrase: ${{ secrets.PMD_CI_SECRET_PASSPHRASE }}
+          githubToken: ${{ secrets.GITHUB_TOKEN }}
+
+
   build:
-    runs-on: ${{ matrix.os }}
+    needs: fail-fast-build
+    name: verify (${{ matrix.os }}, ${{ matrix.targetPlatform }})
+    timeout-minutes: 60
     continue-on-error: false
+
     strategy:
       matrix:
         os: [ ubuntu-latest, windows-latest, macos-latest ]
-    if: ${{ !contains(github.event.head_commit.message, '[skip ci]') }}
+        targetPlatform: [ 2023-03, 2022-12, 2022-09, 2022-06 ]
+        exclude:
+          # exclude the fail-fast-build, which already ran
+          - os: ubuntu-latest
+            targetPlatform: 2023-03
+      fail-fast: true
+
+    runs-on: ${{ matrix.os }}
     steps:
-    - uses: actions/checkout@v3
-    - uses: actions/cache@v3
-      with:
-        path: |
-          ~/.m2/repository
-          ~/.cache
-        key: ${{ runner.os }}-${{ hashFiles('**/pom.xml') }}
-        restore-keys: |
-          ${{ runner.os }}-
-    - name: Set up Ruby 2.7
-      uses: ruby/setup-ruby@v1
-      with:
-        ruby-version: 2.7
-    - name: Setup Environment
-      shell: bash
-      run: |
-        echo "LANG=en_US.UTF-8" >> $GITHUB_ENV
-        echo "MAVEN_OPTS=-Dmaven.wagon.httpconnectionManager.ttlSeconds=180 -Dmaven.wagon.http.retryHandler.count=3" >> $GITHUB_ENV
-        echo "PMD_CI_SCRIPTS_URL=https://raw.githubusercontent.com/pmd/build-tools/20/scripts" >> $GITHUB_ENV
-    - name: Check Environment
-      shell: bash
-      run: |
-        f=check-environment.sh; \
-        mkdir -p .ci && \
-        ( [ -e .ci/$f ] || curl -sSL "${PMD_CI_SCRIPTS_URL}/$f" > ".ci/$f" ) && \
-        chmod 755 .ci/$f && \
-        .ci/$f
-    - name: Build
-      run: .ci/build.sh
-      shell: bash
-      env:
-        PMD_CI_SECRET_PASSPHRASE: ${{ secrets.PMD_CI_SECRET_PASSPHRASE }}
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - uses: ./.github/actions/setup
+
+      - uses: ./.github/actions/build
+        with:
+          targetPlatform: ${{ matrix.targetPlatform }}
+          pmdCiSecretPassphrase: ${{ secrets.PMD_CI_SECRET_PASSPHRASE }}
+          githubToken: ${{ secrets.GITHUB_TOKEN }}
