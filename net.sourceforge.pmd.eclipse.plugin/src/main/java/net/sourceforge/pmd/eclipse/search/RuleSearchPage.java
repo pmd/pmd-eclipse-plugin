@@ -23,6 +23,7 @@ import org.eclipse.swt.widgets.Text;
 
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
+import net.sourceforge.pmd.lang.java.JavaLanguageModule;
 
 /**
  * 
@@ -57,11 +58,11 @@ public class RuleSearchPage extends DialogPage implements ISearchPage {
 
     public void buildLanguageCombo(Composite parent) {
 
-        final Collection<Language> languages = LanguageRegistry.getLanguages();
+        final Collection<Language> languages = LanguageRegistry.PMD.getLanguages();
 
         Combo languageCombo = new Combo(parent, SWT.READ_ONLY);
 
-        Language defaultLanguage = LanguageRegistry.getDefaultLanguage();
+        Language defaultLanguage = LanguageRegistry.PMD.getLanguageById(JavaLanguageModule.TERSE_NAME);
         int selectionIndex = -1;
         int i = 0;
 

@@ -55,7 +55,6 @@ import net.sourceforge.pmd.eclipse.runtime.writer.IRuleSetWriter;
 import net.sourceforge.pmd.eclipse.runtime.writer.WriterException;
 import net.sourceforge.pmd.eclipse.ui.actions.RuleSetUtil;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
-import net.sourceforge.pmd.util.designer.Designer;
 
 /**
  * This page is used to modify preferences only. They are stored in the
@@ -242,7 +241,6 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
         Button importRuleSetButton = buildImportRuleSetButton(composite);
         Button exportRuleSetButton = buildExportRuleSetButton(composite);
         Button clearAllButton = buildClearAllButton(composite);
-        Button ruleDesignerButton = buildRuleDesignerButton(composite);
 
         GridData data = new GridData();
         data.horizontalAlignment = GridData.FILL;
@@ -267,12 +265,6 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
         data = new GridData();
         data.horizontalAlignment = GridData.FILL;
         clearAllButton.setLayoutData(data);
-
-        data = new GridData();
-        data.horizontalAlignment = GridData.FILL;
-        data.grabExcessVerticalSpace = true;
-        data.verticalAlignment = GridData.END;
-        ruleDesignerButton.setLayoutData(data);
 
         return composite;
     }
@@ -577,30 +569,6 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
                     setModified(true);
                     refresh();
                 }
-            }
-        });
-
-        return button;
-    }
-
-    /**
-     * Build the Rule Designer button.
-     */
-    private Button buildRuleDesignerButton(Composite parent) {
-        Button button = new Button(parent, SWT.PUSH | SWT.LEFT);
-        button.setText(getMessage(StringKeys.PREF_RULESET_BUTTON_RULEDESIGNER));
-        button.setEnabled(true);
-        button.addSelectionListener(new SelectionAdapter() {
-            @Override
-            public void widgetSelected(SelectionEvent event) {
-                // TODO Is this cool from Eclipse? Is there a nicer way to spawn
-                // a J2SE Application?
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Designer.main(new String[] { "-noexitonclose" });
-                    }
-                }).start();
             }
         });
 

@@ -16,8 +16,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
 
-import net.sourceforge.pmd.util.ClassUtil;
-
 /**
  * A custom control intended to display and accept Type values. New values are validated when the widget loses focus, if
  * the text represents a recognized class then it is re-rendered with its full package name. If it isn't recognized or
@@ -114,7 +112,13 @@ public class TypeText extends Composite {
             return null;
         }
 
-        Class<?> cls = ClassUtil.getTypeFor(typeStr);
+        Class<?> cls = null;
+        try {
+            cls = TypeText.class.getClassLoader().loadClass(typeStr);
+        } catch (ClassNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
         if (cls != null && cls.isPrimitive() && !acceptPrimitives) {
             cls = null;
         }

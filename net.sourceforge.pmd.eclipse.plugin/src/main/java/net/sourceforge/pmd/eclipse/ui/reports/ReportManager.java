@@ -56,7 +56,7 @@ public final class ReportManager {
     public Renderer[] availableRenderers2() {
         List<Renderer> renderers = new ArrayList<>();
 
-        for (String reportName : RendererFactory.REPORT_FORMAT_TO_RENDERER.keySet()) {
+        for (String reportName : RendererFactory.supportedRenderers()) {
             renderers.add(RendererFactory.createRenderer(reportName, new Properties()));
         }
 

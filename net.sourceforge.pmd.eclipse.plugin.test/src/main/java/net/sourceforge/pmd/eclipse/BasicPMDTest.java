@@ -8,21 +8,20 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Test;
 
-import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.PMDConfiguration;
+import net.sourceforge.pmd.PmdAnalysis;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetLoader;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.lang.LanguageRegistry;
-import net.sourceforge.pmd.renderers.Renderer;
+import net.sourceforge.pmd.lang.java.JavaLanguageModule;
 import net.sourceforge.pmd.util.datasource.DataSource;
 
 /**
@@ -69,24 +68,24 @@ public class BasicPMDTest {
 
     private void runPmd(String javaVersion) {
         PMDConfiguration configuration = new PMDConfiguration();
-        configuration.setDefaultLanguageVersion(LanguageRegistry.findLanguageByTerseName("java").getVersion(javaVersion));
-        configuration.setRuleSets("category/java/codestyle.xml/UnnecessaryReturn");
+        configuration.setDefaultLanguageVersion(
+                LanguageRegistry.PMD.getLanguageById(JavaLanguageModule.TERSE_NAME).getVersion(javaVersion));
+        configuration.setRuleSets(Arrays.asList("category/java/codestyle.xml/UnnecessaryReturn"));
         configuration.setIgnoreIncrementalAnalysis(true);
-        RuleSetLoader rulesetLoader = RuleSetLoader.fromPmdConfig(configuration);
-        List<RuleSet> rulesets = rulesetLoader.loadFromResources(configuration.getRuleSets());
 
-        List<DataSource> files = new ArrayList<>();
         final String sourceCode = "public class Foo {\n public void foo() {\nreturn;\n}}";
-        files.add(new StringDataSource(sourceCode));
 
-        Report result = PMD.processFiles(configuration, rulesets, files,
-                Collections.<Renderer>emptyList());
+        try (PmdAnalysis pmd = PmdAnalysis.create(configuration)) {
+            pmd.files().addSourceFile("Foo.java", sourceCode);
+            Report result = pmd.performAnalysisAndCollectReport();
 
-        Assert.assertFalse("There should be at least one violation", result.getViolations().isEmpty());
+            Assert.assertFalse("There should be at least one violation", result.getViolations().isEmpty());
 
-        final RuleViolation violation = result.getViolations().get(0);
-        Assert.assertEquals(violation.getRule().getName(), "UnnecessaryReturn");
-        Assert.assertEquals(3, violation.getBeginLine());
+            final RuleViolation violation = result.getViolations().get(0);
+            Assert.assertEquals(violation.getRule().getName(), "UnnecessaryReturn");
+            Assert.assertEquals(3, violation.getBeginLine());
+        }
+        
     }
 
     /**

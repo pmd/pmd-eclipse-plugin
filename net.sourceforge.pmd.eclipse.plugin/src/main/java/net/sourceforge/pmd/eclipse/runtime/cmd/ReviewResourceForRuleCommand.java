@@ -86,7 +86,7 @@ public class ReviewResourceForRuleCommand extends AbstractDefaultCommand {
             RuleSet ruleSet = RuleSetUtil.newSingle(rule);
 
             File sourceCodeFile = file.getFullPath().toFile();
-            if (ruleSet.applies(sourceCodeFile)) {
+            if (ruleSet.applies(sourceCodeFile.toString())) {
                 PMDConfiguration configuration = new PMDConfiguration();
                 Report report = null;
 

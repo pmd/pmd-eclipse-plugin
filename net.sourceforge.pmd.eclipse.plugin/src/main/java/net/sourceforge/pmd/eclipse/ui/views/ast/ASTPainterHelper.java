@@ -14,10 +14,9 @@ import org.eclipse.swt.graphics.TextStyle;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.TreeItem;
 
-import net.sourceforge.pmd.lang.ast.AbstractNode;
+import net.sourceforge.pmd.lang.ast.impl.AbstractNode;
 import net.sourceforge.pmd.lang.java.ast.ASTBooleanLiteral;
-import net.sourceforge.pmd.lang.java.ast.Comment;
-import net.sourceforge.pmd.lang.java.ast.JavadocElement;
+import net.sourceforge.pmd.lang.java.ast.JavadocComment;
 
 /**
  * 
@@ -44,7 +43,7 @@ public class ASTPainterHelper {
         derivedStyle = new TextStyle(italicFont, display.getSystemColor(SWT.COLOR_GRAY), null);
     }
 
-    private String lineTextFor(Comment comment) {
+    private String lineTextFor(ASTContentProvider.CommentNode comment) {
 
         StringBuilder sb = new StringBuilder();
 
@@ -76,7 +75,7 @@ public class ASTPainterHelper {
         return sb.toString();
     }
 
-    private TextLayout layoutFor(Comment comment) {
+    private TextLayout layoutFor(ASTContentProvider.CommentNode comment) {
         String label = comment.getClass().getSimpleName();
         int labelLength = label.length();
 
@@ -86,8 +85,8 @@ public class ASTPainterHelper {
         return textLayout;
     }
 
-    private TextLayout layoutFor(JavadocElement javadoc) {
-        String label = "@" + javadoc.tag().label;
+    private TextLayout layoutFor(JavadocComment javadoc) {
+        String label = "@" + javadoc.getText();
         // int labelLength = label.length();
 
         textLayout.setText(label);
@@ -113,12 +112,12 @@ public class ASTPainterHelper {
     public TextLayout layoutFor(TreeItem item) {
 
         Object data = item.getData();
-        if (data instanceof Comment) {
-            return layoutFor((Comment) data);
+        if (data instanceof ASTContentProvider.CommentNode) {
+            return layoutFor((ASTContentProvider.CommentNode) data);
         }
 
-        if (data instanceof JavadocElement) {
-            return layoutFor((JavadocElement) data);
+        if (data instanceof JavadocComment) {
+            return layoutFor((JavadocComment) data);
         }
 
         AbstractNode node = (AbstractNode) data;

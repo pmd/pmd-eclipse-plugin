@@ -16,7 +16,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTThrowStatement;
-import net.sourceforge.pmd.lang.java.ast.Comment;
+import net.sourceforge.pmd.lang.java.ast.JavaComment;
 
 /**
  * For nodes higher in the tree that don't have any identifying information we
@@ -98,9 +98,9 @@ public class NodeImageDeriver {
     }
 
     private static void dumpComments(ASTCompilationUnit node) {
-        for (Comment comment : node.getComments()) {
+        for (JavaComment comment : node.getComments()) {
             System.out.println(comment.getClass().getName());
-            System.out.println(comment.getImage());
+            System.out.println(comment.getText());
         }
     }
 

@@ -54,6 +54,7 @@ import net.sourceforge.pmd.eclipse.runtime.writer.WriterException;
 import net.sourceforge.pmd.eclipse.ui.ColumnDescriptor;
 import net.sourceforge.pmd.eclipse.ui.PMDUiConstants;
 import net.sourceforge.pmd.eclipse.ui.actions.RuleSetUtil;
+import net.sourceforge.pmd.eclipse.ui.actions.internal.InternalRuleSetUtil;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
 import net.sourceforge.pmd.eclipse.ui.preferences.RuleDupeChecker;
 import net.sourceforge.pmd.eclipse.ui.preferences.RuleSetSelectionDialog;
@@ -61,10 +62,9 @@ import net.sourceforge.pmd.eclipse.ui.preferences.editors.SWTUtil;
 import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.CreateRuleWizard;
 import net.sourceforge.pmd.eclipse.util.ResourceManager;
 import net.sourceforge.pmd.eclipse.util.Util;
+import net.sourceforge.pmd.internal.util.FileUtil;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertySource;
-import net.sourceforge.pmd.util.FileUtil;
-import net.sourceforge.pmd.util.designer.Designer;
 
 /**
  * Instantiates and manages a tree table widget holding all the rules in a
@@ -485,8 +485,8 @@ public class RuleTableManager extends AbstractTreeTableManager<Rule> implements 
             added(rule);
         }
 
-        ruleSet = RuleSetUtil.addExcludePatterns(ruleSet, incomingRuleSet.getExcludePatterns());
-        ruleSet = RuleSetUtil.addIncludePatterns(ruleSet, incomingRuleSet.getIncludePatterns());
+        ruleSet = InternalRuleSetUtil.addFileExclusions(ruleSet, incomingRuleSet.getFileExclusions());
+        ruleSet = InternalRuleSetUtil.addFileInclusions(ruleSet, incomingRuleSet.getFileInclusions());
     }
 
     private void doImport(RuleSet selectedRuleSet, boolean doByReference) {
@@ -498,8 +498,8 @@ public class RuleTableManager extends AbstractTreeTableManager<Rule> implements 
                 filteredRS = RuleSetUtil.addRules(filteredRS, selectedRuleSet.getRules());
 
                 ruleSet = RuleSetUtil.addRuleSetByReference(ruleSet, filteredRS, false);
-                ruleSet = RuleSetUtil.addExcludePatterns(ruleSet, selectedRuleSet.getExcludePatterns());
-                ruleSet = RuleSetUtil.addIncludePatterns(ruleSet, selectedRuleSet.getIncludePatterns());
+                ruleSet = InternalRuleSetUtil.addFileExclusions(ruleSet, selectedRuleSet.getFileExclusions());
+                ruleSet = InternalRuleSetUtil.addFileInclusions(ruleSet, selectedRuleSet.getFileInclusions());
             } else {
                 add(selectedRuleSet);
             }
@@ -548,34 +548,6 @@ public class RuleTableManager extends AbstractTreeTableManager<Rule> implements 
     }
 
     /**
-     * Build the Rule Designer button.
-     * 
-     * @param parent
-     *            Composite
-     * @return Button
-     */
-    private Button buildRuleDesignerButton(Composite parent) {
-        Button button = newImageButton(parent, PMDUiConstants.ICON_BUTTON_EDITOR,
-                StringKeys.PREF_RULESET_BUTTON_RULEDESIGNER);
-
-        button.addSelectionListener(new SelectionAdapter() {
-            @Override
-            public void widgetSelected(SelectionEvent event) {
-                // TODO Is this cool from Eclipse? Is there a nicer way to spawn
-                // a J2SE Application?
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Designer.main(new String[] { "-noexitonclose" });
-                    }
-                }).start();
-            }
-        });
-
-        return button;
-    }
-
-    /**
      * Create buttons for rule table management.
      * 
      * @param parent
@@ -593,7 +565,6 @@ public class RuleTableManager extends AbstractTreeTableManager<Rule> implements 
         removeRuleButton = buildRemoveRuleButton(composite);
         Button importRuleSetButton = buildImportRuleSetButton(composite);
         exportRuleSetButton = buildExportRuleSetButton(composite);
-        Button ruleDesignerButton = buildRuleDesignerButton(composite);
 
         GridData data = new GridData();
         addRuleButton.setLayoutData(data);
@@ -603,12 +574,6 @@ public class RuleTableManager extends AbstractTreeTableManager<Rule> implements 
 
         data = new GridData();
         exportRuleSetButton.setLayoutData(data);
-
-        data = new GridData();
-        data.horizontalAlignment = GridData.FILL;
-        data.grabExcessVerticalSpace = true;
-        data.verticalAlignment = GridData.END;
-        ruleDesignerButton.setLayoutData(data);
 
         return composite;
     }

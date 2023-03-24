@@ -30,8 +30,6 @@ public interface RuleTableColumns {
             SWT.LEFT, 80, RuleFieldAccessor.PRIORITY_NAME, true, null);
     RuleColumnDescriptor SINCE = new TextColumnDescriptor("tSince", StringKeys.PREF_RULESET_COLUMN_SINCE, SWT.RIGHT, 46,
             RuleFieldAccessor.SINCE, false, null);
-    RuleColumnDescriptor USES_DFA = new TextColumnDescriptor("tUsesDFA", StringKeys.PREF_RULESET_COLUMN_DATAFLOW,
-            SWT.LEFT, 60, RuleFieldAccessor.USES_DFA, false, null);
     RuleColumnDescriptor EXTERNAL_URL = new TextColumnDescriptor("tExtURL", StringKeys.PREF_RULESET_COLUMN_URL, SWT.LEFT,
             100, RuleFieldAccessor.URL, true, null);
     RuleColumnDescriptor PROOPERTIES = new TextColumnDescriptor("tProps", StringKeys.PREF_RULESET_COLUMN_PROPERTIES,

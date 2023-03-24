@@ -11,9 +11,8 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import net.sourceforge.pmd.RuleSet;
-import net.sourceforge.pmd.RuleSetFactory;
-import net.sourceforge.pmd.RuleSetNotFoundException;
-import net.sourceforge.pmd.RulesetsFactoryUtils;
+import net.sourceforge.pmd.RuleSetLoadException;
+import net.sourceforge.pmd.RuleSetLoader;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 
 /**
@@ -30,16 +29,16 @@ public class RuleSetsExtensionProcessorTest {
      * 
      */
     @Test
-    public void testAdditionalDefaultRuleSetsRegistered() throws RuleSetNotFoundException {
+    public void testAdditionalDefaultRuleSetsRegistered() throws RuleSetLoadException {
         final Collection<RuleSet> registeredRuleSets = PMDPlugin.getDefault().getRuleSetManager().getDefaultRuleSets();
         Assert.assertFalse("No registered default rulesets!", registeredRuleSets.isEmpty());
 
-        final RuleSetFactory factory = RulesetsFactoryUtils.defaultFactory();
-        RuleSet ruleSet = factory.createRuleSet("rulesets/extra1.xml");
+        RuleSetLoader ruleSetLoader = new RuleSetLoader();
+        RuleSet ruleSet = ruleSetLoader.loadFromResource("rulesets/extra1.xml");
         Assert.assertTrue("RuleSet \"rulesets/extra1.xml\" has not been registered",
                 ruleSetRegistered(ruleSet, registeredRuleSets));
 
-        ruleSet = factory.createRuleSet("rulesets/extra2.xml");
+        ruleSet = ruleSetLoader.loadFromResource("rulesets/extra2.xml");
         Assert.assertTrue("RuleSet \"rulesets/extra2.xml\" has not been registered",
                 ruleSetRegistered(ruleSet, registeredRuleSets));
     }
@@ -50,17 +49,17 @@ public class RuleSetsExtensionProcessorTest {
      * 
      */
     @Test
-    public void testAdditionalRuleSetsRegistered() throws RuleSetNotFoundException {
+    public void testAdditionalRuleSetsRegistered() throws RuleSetLoadException {
         final Collection<RuleSet> registeredRuleSets = PMDPlugin.getDefault().getRuleSetManager()
                 .getRegisteredRuleSets();
         Assert.assertFalse("No registered rulesets!", registeredRuleSets.isEmpty());
 
-        final RuleSetFactory factory = RulesetsFactoryUtils.defaultFactory();
-        RuleSet ruleSet = factory.createRuleSet("rulesets/extra1.xml");
+        RuleSetLoader ruleSetLoader = new RuleSetLoader();
+        RuleSet ruleSet = ruleSetLoader.loadFromResource("rulesets/extra1.xml");
         Assert.assertTrue("RuleSet \"rulesets/extra1.xml\" has not been registered",
                 ruleSetRegistered(ruleSet, registeredRuleSets));
 
-        ruleSet = factory.createRuleSet("rulesets/extra2.xml");
+        ruleSet = ruleSetLoader.loadFromResource("rulesets/extra2.xml");
         Assert.assertTrue("RuleSet \"rulesets/extra2.xml\" has not been registered",
                 ruleSetRegistered(ruleSet, registeredRuleSets));
     }

@@ -270,7 +270,7 @@ public class BaseVisitor {
 
             prepareMarkerAccumulator(file);
 
-            LanguageVersionDiscoverer languageDiscoverer = new LanguageVersionDiscoverer();
+            LanguageVersionDiscoverer languageDiscoverer = new LanguageVersionDiscoverer(LanguageRegistry.PMD);
             LanguageVersion languageVersion = languageDiscoverer.getDefaultLanguageVersionForFile(file.getName());
             // in case it is java, select the correct java version
             if (languageVersion != null

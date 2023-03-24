@@ -9,9 +9,8 @@ import java.util.Set;
 import org.eclipse.core.runtime.IStatus;
 
 import net.sourceforge.pmd.RuleSet;
-import net.sourceforge.pmd.RuleSetFactory;
-import net.sourceforge.pmd.RuleSetNotFoundException;
-import net.sourceforge.pmd.RulesetsFactoryUtils;
+import net.sourceforge.pmd.RuleSetLoadException;
+import net.sourceforge.pmd.RuleSetLoader;
 import net.sourceforge.pmd.eclipse.core.IRuleSetsExtension;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 
@@ -40,7 +39,7 @@ public class RuleSetsExtension implements IRuleSetsExtension {
             // registeredRuleSets.clear(); // to remove all rulesets already registered
             registeredRuleSets.add(ruleSet1);
             registeredRuleSets.add(ruleSet2);
-        } catch (RuleSetNotFoundException e) {
+        } catch (RuleSetLoadException e) {
             PMDPlugin.getDefault().log(IStatus.ERROR, "Unable to load rulesets", e);
         }
     }
@@ -59,7 +58,7 @@ public class RuleSetsExtension implements IRuleSetsExtension {
             // registeredRuleSets.clear(); // to remove all rulesets already registered
             defaultRuleSets.add(ruleSet1);
             defaultRuleSets.add(ruleSet2);
-        } catch (RuleSetNotFoundException e) {
+        } catch (RuleSetLoadException e) {
             PMDPlugin.getDefault().log(IStatus.ERROR, "Unable to load rulesets", e);
         }
     }
@@ -67,12 +66,12 @@ public class RuleSetsExtension implements IRuleSetsExtension {
     /**
      * Load the 1st ruleset
      * @return the 1st ruleset
-     * @throws RuleSetNotFoundException
+     * @throws RuleSetLoadException
      */
-    private RuleSet getRuleSet1() throws RuleSetNotFoundException {
+    private RuleSet getRuleSet1() throws RuleSetLoadException {
         if (this.ruleSet1 == null) {
-            RuleSetFactory factory = RulesetsFactoryUtils.defaultFactory();
-            this.ruleSet1 = factory.createRuleSets("rulesets/extra1.xml").getAllRuleSets()[0];
+            RuleSetLoader ruleSetLoader = new RuleSetLoader();
+            this.ruleSet1 = ruleSetLoader.loadFromResource("rulesets/extra1.xml");
         }
 
         return this.ruleSet1;
@@ -81,12 +80,12 @@ public class RuleSetsExtension implements IRuleSetsExtension {
     /**
      * Load the 2nd ruleset
      * @return the 2nd ruleset
-     * @throws RuleSetNotFoundException
+     * @throws RuleSetLoadException
      */
-    private RuleSet getRuleSet2() throws RuleSetNotFoundException {
+    private RuleSet getRuleSet2() throws RuleSetLoadException {
         if (this.ruleSet2 == null) {
-            RuleSetFactory factory = RulesetsFactoryUtils.defaultFactory();
-            this.ruleSet2 = factory.createRuleSets("rulesets/extra2.xml").getAllRuleSets()[0];
+            RuleSetLoader ruleSetLoader = new RuleSetLoader();
+            this.ruleSet2 = ruleSetLoader.loadFromResource("rulesets/extra2.xml");
         }
 
         return this.ruleSet2;

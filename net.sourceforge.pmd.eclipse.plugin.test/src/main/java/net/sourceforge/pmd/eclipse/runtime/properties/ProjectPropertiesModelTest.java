@@ -41,9 +41,8 @@ import org.junit.Test;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSet;
-import net.sourceforge.pmd.RuleSetFactory;
-import net.sourceforge.pmd.RuleSetNotFoundException;
-import net.sourceforge.pmd.RulesetsFactoryUtils;
+import net.sourceforge.pmd.RuleSetLoadException;
+import net.sourceforge.pmd.RuleSetLoader;
 import net.sourceforge.pmd.eclipse.EclipseUtils;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.runtime.builder.PMDNature;
@@ -140,7 +139,7 @@ public class ProjectPropertiesModelTest {
      * Bug: when a user deselect a project rule it is not saved
      */
     @Test
-    public void testBug() throws PropertiesException, RuleSetNotFoundException, CoreException {
+    public void testBug() throws PropertiesException, RuleSetLoadException, CoreException {
         // First ensure that the plugin initial ruleset is equal to the project
         // ruleset
         final IProjectPropertiesManager mgr = PMDPlugin.getDefault().getPropertiesManager();
@@ -235,15 +234,15 @@ public class ProjectPropertiesModelTest {
      * Set another ruleset.
      */
     @Test
-    public void testProjectRuleSet1() throws PropertiesException, RuleSetNotFoundException, CoreException {
+    public void testProjectRuleSet1() throws PropertiesException, RuleSetLoadException, CoreException {
         final IProjectPropertiesManager mgr = PMDPlugin.getDefault().getPropertiesManager();
         final IProjectProperties model = mgr.loadProjectProperties(this.testProject);
 
-        final RuleSetFactory factory = RulesetsFactoryUtils.defaultFactory();
+        final RuleSetLoader ruleSetLoader = new RuleSetLoader();
 
         // use the best practices ruleset because it should be included in the plugin
         // ruleset.
-        final RuleSet bestPracticesRuleSet = factory.createRuleSet("category/java/bestpractices.xml");
+        final RuleSet bestPracticesRuleSet = ruleSetLoader.loadFromResource("category/java/bestpractices.xml");
 
         // First set the project rulesets
         model.setProjectRuleSet(bestPracticesRuleSet);
@@ -262,7 +261,7 @@ public class ProjectPropertiesModelTest {
      */
     @Test
     @Ignore("implementation is not finished - maybe the behavior would even be wrong")
-    public void testProjectRuleSet2() throws PropertiesException, RuleSetNotFoundException, CoreException {
+    public void testProjectRuleSet2() throws PropertiesException, RuleSetLoadException, CoreException {
         // First ensure that the plugin initial ruleset is equal to the project
         // // ruleset IProjectPropertiesManager
         final IProjectPropertiesManager mgr = PMDPlugin.getDefault().getPropertiesManager();
@@ -272,11 +271,11 @@ public class ProjectPropertiesModelTest {
         Assert.assertEquals("The project ruleset is not equal to the plugin ruleset",
                 this.initialPluginRuleSet.getRules(), projectRuleSet.getRules());
 
-        final RuleSetFactory factory = RulesetsFactoryUtils.defaultFactory();
+        final RuleSetLoader ruleSetLoader = new RuleSetLoader();
 
         // use the best practices ruleset because it should be included in the
         // plugin ruleset.
-        final RuleSet bestPracticesRuleSet = factory.createRuleSet("category/java/bestpractices.xml");
+        final RuleSet bestPracticesRuleSet = ruleSetLoader.loadFromResource("category/java/bestpractices.xml");
 
         IPreferencesManager pmgr = PMDPlugin.getDefault().getPreferencesManager();
         pmgr.setRuleSet(bestPracticesRuleSet);
@@ -293,7 +292,7 @@ public class ProjectPropertiesModelTest {
      * When rules are added to the plugin preferences, these rules should also be added to the project
      */
     @Test
-    public void testProjectRuleSet3() throws PropertiesException, RuleSetNotFoundException, CoreException {
+    public void testProjectRuleSet3() throws PropertiesException, RuleSetLoadException, CoreException {
         // First ensure that the plugin initial ruleset is equal to the project
         // ruleset
         final IProjectPropertiesManager mgr = PMDPlugin.getDefault().getPropertiesManager();
@@ -403,12 +402,12 @@ public class ProjectPropertiesModelTest {
      * 
      */
     @Test
-    public void testRuleSetStoredInProjectFALSE() throws PropertiesException, RuleSetNotFoundException {
+    public void testRuleSetStoredInProjectFALSE() throws PropertiesException, RuleSetLoadException {
         final IProjectPropertiesManager mgr = PMDPlugin.getDefault().getPropertiesManager();
         final IProjectProperties model = mgr.loadProjectProperties(this.testProject);
 
-        final RuleSetFactory factory = RulesetsFactoryUtils.defaultFactory();
-        final RuleSet bestPracticesRuleSet = factory.createRuleSet("category/java/bestpractices.xml");
+        final RuleSetLoader ruleSetLoader = new RuleSetLoader();
+        final RuleSet bestPracticesRuleSet = ruleSetLoader.loadFromResource("category/java/bestpractices.xml");
         model.setPmdEnabled(true);
         model.setRuleSetStoredInProject(false);
         model.setProjectWorkingSet(null);
@@ -429,12 +428,12 @@ public class ProjectPropertiesModelTest {
      * A project may have its ruleset stored in the project own directory. Test set to TRUE.
      */
     @Test
-    public void testRuleSetStoredInProjectTRUE() throws PropertiesException, RuleSetNotFoundException {
+    public void testRuleSetStoredInProjectTRUE() throws PropertiesException, RuleSetLoadException {
         final IProjectPropertiesManager mgr = PMDPlugin.getDefault().getPropertiesManager();
         final IProjectProperties model = mgr.loadProjectProperties(this.testProject);
 
-        final RuleSetFactory factory = RulesetsFactoryUtils.defaultFactory();
-        final RuleSet basicRuleSet = factory.createRuleSet("category/java/bestpractices.xml");
+        final RuleSetLoader ruleSetLoader = new RuleSetLoader();
+        final RuleSet basicRuleSet = ruleSetLoader.loadFromResource("category/java/bestpractices.xml");
         model.setPmdEnabled(true);
         model.setRuleSetStoredInProject(false);
         model.setProjectWorkingSet(null);
@@ -447,7 +446,7 @@ public class ProjectPropertiesModelTest {
 
         final boolean b = model.isRuleSetStoredInProject();
         final IFile file = this.testProject.getFile(".ruleset");
-        final RuleSet projectRuleSet = factory.createRuleSet(file.getLocation().toOSString());
+        final RuleSet projectRuleSet = ruleSetLoader.loadFromResource(file.getLocation().toOSString());
         RuleSet pRuleSet = model.getProjectRuleSet();
         Assert.assertTrue("the ruleset should be stored in the project", b);
         Assert.assertTrue("The project ruleset must be equal to the one found in the project",
@@ -463,7 +462,7 @@ public class ProjectPropertiesModelTest {
      * still be able to load the properties.
      */
     @Test
-    public void testNoRulesInProperties() throws PropertiesException, RuleSetNotFoundException, CoreException {
+    public void testNoRulesInProperties() throws PropertiesException, RuleSetLoadException, CoreException {
         final IProjectPropertiesManager mgr = PMDPlugin.getDefault().getPropertiesManager();
         IProjectProperties model = mgr.loadProjectProperties(this.testProject);
         // remove PMD's cached project properties, so that we reload it from disk again
@@ -496,7 +495,7 @@ public class ProjectPropertiesModelTest {
      * as a PropertiesException.
      */
     @Test(expected = PropertiesException.class)
-    public void testInvalidProperties() throws PropertiesException, RuleSetNotFoundException, CoreException {
+    public void testInvalidProperties() throws PropertiesException, RuleSetLoadException, CoreException {
         final IProjectPropertiesManager mgr = PMDPlugin.getDefault().getPropertiesManager();
         // load the project properties to fill the cache
         mgr.loadProjectProperties(this.testProject);

@@ -11,7 +11,6 @@ import org.eclipse.swt.graphics.Image;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.ui.PMDUiConstants;
-import net.sourceforge.pmd.lang.java.rule.errorprone.DaaRuleViolation;
 
 /**
  * 
@@ -38,7 +37,8 @@ public class DataflowAnomalyTableLabelProvider extends LabelProvider implements 
             switch (columnIndex) {
             case 0:
                 // show the Type of Anomaly which is saved as message here
-                return ((DaaRuleViolation) violation).getType(); 
+                //return ((DaaRuleViolation) violation).getType();
+                return "daa rule violation";
 
             case 1:
                 // show the (first and last) Line

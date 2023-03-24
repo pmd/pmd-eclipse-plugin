@@ -4,8 +4,12 @@
 
 package net.sourceforge.pmd.eclipse.runtime.cmd;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.lang.document.FileLocation;
 
 /**
  * This is an implementation of IRuleViolation. It is meant to rebuild a
@@ -133,11 +137,6 @@ class FakeRuleViolation implements RuleViolation {
     }
 
     @Override
-    public boolean isSuppressed() {
-        return false;
-    }
-
-    @Override
     public String getFilename() {
         return filename;
     }
@@ -180,5 +179,20 @@ class FakeRuleViolation implements RuleViolation {
     @Override
     public String getVariableName() {
         return variableName;
+    }
+
+    @Override
+    public FileLocation getLocation() {
+        return FileLocation.caret(filename, beginLine, beginColumn);
+    }
+
+    @Override
+    public Map<String, String> getAdditionalInfo() {
+        Map<String, String> additionalInfo = new HashMap<>();
+        additionalInfo.put(CLASS_NAME, className);
+        additionalInfo.put(METHOD_NAME, methodName);
+        additionalInfo.put(PACKAGE_NAME, packageName);
+        additionalInfo.put(VARIABLE_NAME, variableName);
+        return additionalInfo;
     }
 }

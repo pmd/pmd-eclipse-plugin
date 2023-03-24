@@ -24,7 +24,7 @@ import net.sourceforge.pmd.cpd.CSVRenderer;
 import net.sourceforge.pmd.cpd.LanguageFactory;
 import net.sourceforge.pmd.cpd.SimpleRenderer;
 import net.sourceforge.pmd.cpd.XMLRenderer;
-import net.sourceforge.pmd.cpd.renderer.CPDRenderer;
+import net.sourceforge.pmd.cpd.renderer.CPDReportRenderer;
 import net.sourceforge.pmd.eclipse.runtime.PMDRuntimeConstants;
 import net.sourceforge.pmd.eclipse.runtime.cmd.DetectCutAndPasteCmd;
 import net.sourceforge.pmd.eclipse.ui.PMDUiConstants;
@@ -96,7 +96,7 @@ public class CPDCheckProjectAction extends AbstractUIAction {
         final String selectedLanguage = dialog.getSelectedLanguage();
         final int tilesize = dialog.getTileSize();
         final boolean createReport = dialog.isCreateReportSelected();
-        final CPDRenderer selectedRenderer = this.createRenderer(dialog.getSelectedFormat());
+        final CPDReportRenderer selectedRenderer = this.createRenderer(dialog.getSelectedFormat());
         final String fileName = this.createFileName(dialog.getSelectedFormat());
         final CPDView2 view = showView();
 
@@ -136,8 +136,8 @@ public class CPDCheckProjectAction extends AbstractUIAction {
      * @param rendererKey xml, simple or cvs key
      * @return Renderer
      */
-    private CPDRenderer createRenderer(final String rendererKey) {
-        CPDRenderer renderer = null;
+    private CPDReportRenderer createRenderer(final String rendererKey) {
+        CPDReportRenderer renderer = null;
         if (XML_KEY.equals(rendererKey)) {
             renderer = new XMLRenderer();
         } else if (SIMPLE_KEY.equals(rendererKey)) {

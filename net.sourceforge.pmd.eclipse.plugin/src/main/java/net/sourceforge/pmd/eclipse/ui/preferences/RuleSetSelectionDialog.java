@@ -36,9 +36,8 @@ import org.eclipse.swt.widgets.TableItem;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSet;
-import net.sourceforge.pmd.RuleSetFactory;
-import net.sourceforge.pmd.RuleSetNotFoundException;
-import net.sourceforge.pmd.RulesetsFactoryUtils;
+import net.sourceforge.pmd.RuleSetLoadException;
+import net.sourceforge.pmd.RuleSetLoader;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.ui.actions.RuleSetUtil;
 import net.sourceforge.pmd.eclipse.ui.actions.internal.InternalRuleSetUtil;
@@ -437,10 +436,10 @@ public class RuleSetSelectionDialog extends Dialog {
             importedRuleSetName = inputCombo.getText();
             if (StringUtils.isNotBlank(importedRuleSetName)) {
                 try {
-                    RuleSetFactory factory = RulesetsFactoryUtils.defaultFactory();
-                    return factory.createRuleSet(importedRuleSetName);
-                } catch (RuleSetNotFoundException rsnfe) {
-                    warningField.setText(rsnfe.getMessage());
+                    RuleSetLoader ruleSetLoader = new RuleSetLoader();
+                    return ruleSetLoader.loadFromResource(importedRuleSetName);
+                } catch (RuleSetLoadException e) {
+                    warningField.setText(e.getMessage());
                     return null;
                 }
             }

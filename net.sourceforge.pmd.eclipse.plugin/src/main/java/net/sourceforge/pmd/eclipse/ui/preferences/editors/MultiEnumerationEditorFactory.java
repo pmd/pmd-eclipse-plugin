@@ -19,7 +19,6 @@ import net.sourceforge.pmd.eclipse.ui.preferences.br.ValueChangeListener;
 import net.sourceforge.pmd.properties.EnumeratedPropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertySource;
-import net.sourceforge.pmd.util.CollectionUtil;
 
 /**
  * Behaviour: Provide a set of widgets that allows the user to select any number of items from a fixed set of choices.
@@ -53,8 +52,11 @@ public final class MultiEnumerationEditorFactory extends AbstractMultiValueEdito
         String newValue = ((Combo) widget).getItem(idx);
 
         List<Object> currentValues = valueFor(source, desc);
-        int nAdded = CollectionUtil.addWithoutDuplicates(Collections.singleton((Object) newValue), currentValues);
-        return nAdded == 0 ? null : newValue;
+        if (!currentValues.contains(newValue)) {
+            currentValues.add(newValue);
+            return newValue;
+        }
+        return null;
     }
 
 

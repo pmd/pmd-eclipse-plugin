@@ -48,6 +48,7 @@ import net.sourceforge.pmd.eclipse.ui.preferences.editors.TypeText;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.lang.java.JavaLanguageModule;
 import net.sourceforge.pmd.lang.rule.XPathRule;
 
 /**
@@ -201,14 +202,6 @@ public class RulePanelManager extends AbstractRulePanelManager {
         return priority == null ? null : UISettings.labelFor(priority);
     }
 
-    private boolean allRulesUseTypeResolution() {
-        return rules != null && RuleUtil.allUseTypeResolution(rules);
-    }
-
-    private boolean allRulesUseDfa() {
-        return rules != null && RuleUtil.allUseDfa(rules);
-    }
-
     @Override
     protected void adapt() {
         show(ruleSetNameField, RuleUtil.commonRuleset(rules));
@@ -226,9 +219,6 @@ public class RulePanelManager extends AbstractRulePanelManager {
 
         show(priorityCombo, commonPriorityName());
         priorityDisplay.setItems(uniquePriorities().toArray());
-
-        show(usesTypeResolutionButton, allRulesUseTypeResolution());
-        show(usesDfaButton, allRulesUseDfa());
 
         showLanguageVersionFields(language);
 
@@ -497,11 +487,11 @@ public class RulePanelManager extends AbstractRulePanelManager {
     }
 
     private Combo buildLanguageCombo(Composite parent) {
-        final List<Language> languages = LanguageRegistry.findWithRuleSupport();
+        final List<Language> languages = new ArrayList<>(LanguageRegistry.PMD.getLanguages());
 
         final Combo combo = new Combo(parent, SWT.READ_ONLY);
 
-        Language deflt = LanguageRegistry.getDefaultLanguage();
+        Language deflt = LanguageRegistry.PMD.getLanguageById(JavaLanguageModule.TERSE_NAME);
         int selectionIndex = -1;
 
         for (int i = 0; i < languages.size(); i++) {
@@ -545,7 +535,8 @@ public class RulePanelManager extends AbstractRulePanelManager {
         if (index < 0) {
             return null; // should never happen!
         }
-        return LanguageRegistry.findWithRuleSupport().get(index);
+        final List<Language> languages = new ArrayList<>(LanguageRegistry.PMD.getLanguages());
+        return languages.get(index);
     }
 
     private LanguageVersion selectedVersionIn(Combo versionCombo) {
@@ -760,13 +751,6 @@ public class RulePanelManager extends AbstractRulePanelManager {
         rule.setLanguage(language);
 
         rule.setPriority(RulePriority.valueOf(priorityCombo.getSelectionIndex() + 1));
-        if (usesTypeResolutionButton.getSelection()) {
-            rule.setTypeResolution(true);
-        }
-        if (usesDfaButton.getSelection()) {
-            rule.setDfa(true);
-        }
-
         rule.setMinimumLanguageVersion(selectedVersionIn(minLanguageVersionCombo));
         rule.setMaximumLanguageVersion(selectedVersionIn(maxLanguageVersionCombo));
     }

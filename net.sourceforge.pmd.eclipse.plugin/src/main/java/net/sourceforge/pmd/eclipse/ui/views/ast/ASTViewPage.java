@@ -7,6 +7,9 @@ package net.sourceforge.pmd.eclipse.ui.views.ast;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
 
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.core.resources.IResource;
@@ -34,19 +37,17 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.IWorkbenchPart;
-import org.jaxen.BaseXPath;
-import org.jaxen.JaxenException;
-import org.jaxen.XPathSyntaxException;
 
+import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.eclipse.ui.BasicTableLabelProvider;
 import net.sourceforge.pmd.eclipse.ui.editors.SyntaxManager;
 import net.sourceforge.pmd.eclipse.ui.model.FileRecord;
 import net.sourceforge.pmd.eclipse.ui.preferences.AbstractStructuredContentProvider;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.BasicTableManager;
 import net.sourceforge.pmd.eclipse.ui.views.AbstractStructureInspectorPage;
-import net.sourceforge.pmd.lang.ast.AbstractNode;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.ParseException;
+import net.sourceforge.pmd.lang.ast.impl.AbstractNode;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.rule.xpath.XPathVersion;
@@ -226,14 +227,12 @@ public class ASTViewPage extends AbstractStructureInspectorPage {
     }
 
     private void validateXPath(String xpathString) {
+        XPath newXPath = XPathFactory.newInstance().newXPath();
         try {
-            new BaseXPath(xpathString, null);
-        } catch (XPathSyntaxException ex) {
+            newXPath.compile(xpathString);
+        } catch (XPathExpressionException ex) {
             // TODO add error marker to editor, red-underlining on offending text
-            System.out.println(ex.getPosition() + "  " + ex.getMessage());
-            goButton.setEnabled(false);
-            return;
-        } catch (JaxenException ex) {
+            System.out.println(ex.getMessage());
             goButton.setEnabled(false);
             return;
         }
@@ -250,7 +249,7 @@ public class ASTViewPage extends AbstractStructureInspectorPage {
             return;
         }
 
-        List<Node> results = null;
+        List<RuleViolation> results = null;
         try {
             results = XPathEvaluator.INSTANCE.evaluate(getDocument().get(), xpathField.getText(),
                     XPathVersion.XPATH_2_0.getXmlName() // TODO derive from future combo widget
@@ -271,7 +270,7 @@ public class ASTViewPage extends AbstractStructureInspectorPage {
         return !StringUtils.isBlank(xpathField.getText());
     }
 
-    private void show(List<Node> results) {
+    private void show(List<RuleViolation> results) {
         if (results.isEmpty()) {
             // outputField.setText("No matching nodes found");
             return;

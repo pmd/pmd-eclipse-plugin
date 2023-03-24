@@ -26,12 +26,10 @@ import org.eclipse.ui.IWorkbenchPart;
 
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.eclipse.runtime.PMDRuntimeConstants;
-import net.sourceforge.pmd.eclipse.runtime.cmd.ReviewResourceForRuleCommand;
 import net.sourceforge.pmd.eclipse.ui.model.FileRecord;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
 import net.sourceforge.pmd.eclipse.ui.views.AbstractStructureInspectorPage;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
-import net.sourceforge.pmd.lang.java.rule.errorprone.DataflowAnomalyAnalysisRule;
 
 /**
  * A page for the dataflow - view.
@@ -167,7 +165,7 @@ public class DataflowViewPage extends AbstractStructureInspectorPage implements 
                     int row = (int) ((double) e.y / DataflowGraphViewer.ROW_HEIGHT);
                     graphViewer.getGraph().demark();
                     graphViewer.getGraph().markNode(row);
-                    highlightLine(pmdMethod.getDataFlowNode().getFlow().get(row).getLine() - 1);
+                    //highlightLine(pmdMethod.getDataFlowNode().getFlow().get(row).getLine() - 1);
                     tableViewer.getTable().deselectAll();
                 }
             });
@@ -273,14 +271,14 @@ public class DataflowViewPage extends AbstractStructureInspectorPage implements 
     public void refreshDFATable(IResource newResource) {
         isTableRefreshed = true;
         try {
-            ReviewResourceForRuleCommand cmd = new ReviewResourceForRuleCommand();
-            DataflowAnomalyAnalysisRule rule = new DataflowAnomalyAnalysisRule();
-            rule.setUsesDFA();
-            cmd.setUserInitiated(false);
-            cmd.setRule(rule);
-            cmd.setResource(newResource);
-            cmd.addPropertyListener(this);
-            cmd.performExecute();
+            //ReviewResourceForRuleCommand cmd = new ReviewResourceForRuleCommand();
+            //DataflowAnomalyAnalysisRule rule = new DataflowAnomalyAnalysisRule();
+            //rule.setUsesDFA();
+            //cmd.setUserInitiated(false);
+            //cmd.setRule(rule);
+            //cmd.setResource(newResource);
+            //cmd.addPropertyListener(this);
+            //cmd.performExecute();
         } catch (RuntimeException e) {
             logErrorByKey(StringKeys.ERROR_PMD_EXCEPTION, e);
         }

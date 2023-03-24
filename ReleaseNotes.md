@@ -20,6 +20,11 @@ This is a major release.
   For Bugfixes in the PMD Eclipse Plugin only, a new version is released with the same major, minor, and patch,
   but a new qualifier only.
 
+* The minimum required Java version is Java 8.
+
+* The PMD Designer can't be started from within the plugin anymore. Please install
+  [PMD Designer](https://github.com/pmd/pmd-designer) separately when needed.
+
 ### Fixed Issues
 
 * [#122](https://github.com/pmd/pmd-eclipse-plugin/issues/122): Update PMD 7 Logo in eclipse pmd plugin

@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-import net.sourceforge.pmd.lang.ast.AbstractNode;
+import net.sourceforge.pmd.lang.ast.impl.AbstractNode;
 import net.sourceforge.pmd.lang.ecmascript.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
@@ -17,10 +17,10 @@ import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType;
-import net.sourceforge.pmd.lang.java.ast.ASTResultType;
 import net.sourceforge.pmd.lang.java.ast.ASTType;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.AccessNode;
+import net.sourceforge.pmd.lang.java.ast.JavaNode;
 
 /**
  * 
@@ -39,7 +39,7 @@ public final class ASTUtil {
     }
 
     public static String getAnnotationLabel(ASTAnnotation annotation) {
-        AbstractNode name = annotation.getFirstChildOfType(ASTName.class);
+        ASTName name = annotation.getFirstChildOfType(ASTName.class);
         return name == null ? "??" : name.getImage();
     }
 
@@ -145,7 +145,7 @@ public final class ASTUtil {
         StringBuilder sb = new StringBuilder();
 
         for (ASTFormalParameter formalParam : node.getFormalParameters()) {
-            AbstractNode param = formalParam.getFirstDescendantOfType(ASTClassOrInterfaceType.class);
+            JavaNode param = formalParam.getFirstDescendantOfType(ASTClassOrInterfaceType.class);
             if (param == null) {
                 param = formalParam.getFirstDescendantOfType(ASTPrimitiveType.class);
             }
@@ -160,7 +160,7 @@ public final class ASTUtil {
     }
 
     public static String returnType(ASTMethodDeclaration node) {
-        ASTResultType resultType = node.getResultType();
+        ASTType resultType = node.getResultTypeNode();
         if (resultType.isVoid()) {
             return "void";
         }
