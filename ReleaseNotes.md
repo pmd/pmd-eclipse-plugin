@@ -13,7 +13,14 @@ This is a major release.
 
 ### New and noteworthy
 
+* Beginning with version 7 of this plugin, only the last for eclipse releases are supported. The plugin
+  might still work with older version, but it's developed against the newer versions.
+
+* The version number of the PMD Eclipse Plugin now is synchronized with the supported and used PMD version.
+
 ### Fixed Issues
+
+* [#172](https://github.com/pmd/pmd-eclipse-plugin/issues/172): Only support the last 4 eclipse releases
 
 ### API Changes
 
