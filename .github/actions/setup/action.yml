@@ -10,7 +10,14 @@ runs:
       with:
         distribution: temurin
         java-version: '17'
-        cache: 'maven'
+    - name: Cache local Maven repository
+      uses: actions/cache@v3
+      with:
+        path: ~/.m2/repository
+        # re-cache on changes in the pom and target files
+        key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml', '**/*.target') }}
+        restore-keys: |
+          ${{ runner.os }}-maven-
     - name: Set up Ruby 2.7
       uses: ruby/setup-ruby@v1
       with:
