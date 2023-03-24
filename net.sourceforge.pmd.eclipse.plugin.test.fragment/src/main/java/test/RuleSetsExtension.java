@@ -6,13 +6,18 @@ package test;
 
 import java.util.Set;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.slf4j.event.Level;
 
+import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetLoadException;
 import net.sourceforge.pmd.RuleSetLoader;
 import net.sourceforge.pmd.eclipse.core.IRuleSetsExtension;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
+import net.sourceforge.pmd.util.log.MessageReporter;
 
 /**
  * Sample of an RuleSets extension.
@@ -70,7 +75,9 @@ public class RuleSetsExtension implements IRuleSetsExtension {
      */
     private RuleSet getRuleSet1() throws RuleSetLoadException {
         if (this.ruleSet1 == null) {
-            RuleSetLoader ruleSetLoader = new RuleSetLoader();
+            PMDConfiguration configuration = new PMDConfiguration();
+            configuration.setReporter(new RulesetLoaderMessageReporter());
+            RuleSetLoader ruleSetLoader = RuleSetLoader.fromPmdConfig(configuration);
             this.ruleSet1 = ruleSetLoader.loadFromResource("rulesets/extra1.xml");
         }
 
@@ -84,11 +91,38 @@ public class RuleSetsExtension implements IRuleSetsExtension {
      */
     private RuleSet getRuleSet2() throws RuleSetLoadException {
         if (this.ruleSet2 == null) {
-            RuleSetLoader ruleSetLoader = new RuleSetLoader();
+            PMDConfiguration configuration = new PMDConfiguration();
+            configuration.setReporter(new RulesetLoaderMessageReporter());
+            RuleSetLoader ruleSetLoader = RuleSetLoader.fromPmdConfig(configuration);
             this.ruleSet2 = ruleSetLoader.loadFromResource("rulesets/extra2.xml");
         }
 
         return this.ruleSet2;
     }
 
+    private static class RulesetLoaderMessageReporter implements MessageReporter {
+        private int errors = 0;
+
+        @Override
+        public int numErrors() {
+            return errors;
+        }
+
+        @Override
+        public void logEx(Level level, @Nullable String message, Object[] formatArgs, @Nullable Throwable error) {
+            if (Level.ERROR == level) {
+                errors++;
+                PMDPlugin.getDefault().logError(Status.error(message));
+            } else if (Level.WARN == level) {
+                PMDPlugin.getDefault().logWarn(message);
+            } else {
+                PMDPlugin.getDefault().logInformation(message);
+            }
+        }
+
+        @Override
+        public boolean isLoggable(Level level) {
+            return true;
+        }
+    }
 }
