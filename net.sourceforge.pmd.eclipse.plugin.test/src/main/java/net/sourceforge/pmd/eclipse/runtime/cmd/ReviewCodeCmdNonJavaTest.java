@@ -61,7 +61,8 @@ public class ReviewCodeCmdNonJavaTest {
 
         // explicitly request full build to prevent automatic (parallel) building later on
         testProject.build(IncrementalProjectBuilder.FULL_BUILD, new NullProgressMonitor());
-        EclipseUtils.waitForJobs();
+        // the build triggers already a ReviewCodeCmd, so wait, until that is done.
+        EclipseUtils.waitForPMDJobs();
 
         ReviewCodeCmd cmd = new ReviewCodeCmd();
         cmd.addResource(testProject);

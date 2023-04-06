@@ -364,16 +364,22 @@ public final class EclipseUtils {
         }
     }
 
-    public static void waitForJobs() throws InterruptedException {
+    public static void waitForPMDJobs() throws InterruptedException {
         long start = System.currentTimeMillis();
-        Thread.sleep(500);
-
-        while (!Job.getJobManager().isIdle()) {
+        while (hasPMDJob(Job.getJobManager().find(null))) {
             Thread.sleep(500);
-
             if (System.currentTimeMillis() - start > TimeUnit.SECONDS.toMillis(30)) {
                 Assert.fail("Timeout while waiting for Jobs to finish");
             }
         }
+    }
+
+    private static boolean hasPMDJob(Job[] jobs) {
+        for (Job job : jobs) {
+            if (job.getClass().getName().startsWith("net.sourceforge.pmd.eclipse.runtime.cmd.JobCommandProcessor")) {
+                return true;
+            }
+        }
+        return false;
     }
 }
