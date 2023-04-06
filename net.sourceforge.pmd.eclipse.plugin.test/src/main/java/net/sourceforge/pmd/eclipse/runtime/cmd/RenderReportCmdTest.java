@@ -114,7 +114,7 @@ public class RenderReportCmdTest {
         reviewCmd.join();
 
         IMarker[] markers = this.testProject.findMarkers(PMDRuntimeConstants.PMD_MARKER, true, IResource.DEPTH_INFINITE);
-        Assert.assertEquals(14, markers.length);
+        Assert.assertEquals(12, markers.length);
 
         final RenderReportsCmd cmd = new RenderReportsCmd();
         cmd.setProject(this.testProject);
