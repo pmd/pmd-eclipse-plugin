@@ -19,8 +19,12 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
+import java.util.TreeMap;
+import java.util.regex.Pattern;
 
 import org.apache.commons.io.IOUtils;
 import org.eclipse.core.resources.IFile;
@@ -48,7 +52,9 @@ import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.runtime.builder.PMDNature;
 import net.sourceforge.pmd.eclipse.runtime.preferences.IPreferencesManager;
 import net.sourceforge.pmd.eclipse.ui.actions.RuleSetUtil;
+import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
+import net.sourceforge.pmd.properties.PropertyDescriptor;
 
 /**
  * Test the project properties model.
@@ -84,7 +90,36 @@ public class ProjectPropertiesModelTest {
         }
         Assert.assertEquals(ruleCount, this.initialPluginRuleSet.getRules().size());
         RuleSet cloned = RuleSetUtil.newCopyOf(this.initialPluginRuleSet);
-        Assert.assertEquals(cloned.getRules(), this.initialPluginRuleSet.getRules());
+        Assert.assertEquals(cloned.getRules().size(), this.initialPluginRuleSet.getRules().size());
+        Iterator<Rule> clonedIterator = cloned.getRules().iterator();
+        Iterator<Rule> initialIterator = this.initialPluginRuleSet.getRules().iterator();
+        for (int i = 0; i < cloned.getRules().size(); i++) {
+            System.out.println("Comparing rule " + i);
+            Rule clonedRule = clonedIterator.next();
+            Rule initialRule = initialIterator.next();
+            Assert.assertSame(clonedRule.getClass(), initialRule.getClass());
+            Assert.assertEquals(clonedRule.getName(), initialRule.getName());
+            Assert.assertEquals(clonedRule.getPriority(), initialRule.getPriority());
+            Map<PropertyDescriptor<?>, Object> clonedProperties = new TreeMap<>((a, b) -> a.name().compareTo(b.name()));
+            clonedProperties.putAll(clonedRule.getPropertiesByPropertyDescriptor());
+            Map<PropertyDescriptor<?>, Object> initialProperties = new TreeMap<>((a, b) -> a.name().compareTo(b.name()));
+            initialProperties.putAll(initialRule.getPropertiesByPropertyDescriptor());
+            Assert.assertEquals(clonedProperties.size(), initialProperties.size());
+            Iterator<Entry<PropertyDescriptor<?>, Object>> clonedPropertiesIterator = clonedProperties.entrySet().iterator();
+            Iterator<Entry<PropertyDescriptor<?>, Object>> initialPropertiesIterator = initialProperties.entrySet().iterator();
+            for (int j = 0; j < clonedProperties.size(); j++) {
+                Entry<PropertyDescriptor<?>, Object> clonedProperty = clonedPropertiesIterator.next();
+                Entry<PropertyDescriptor<?>, Object> initialProperty = initialPropertiesIterator.next();
+                Assert.assertEquals(clonedProperty.getKey(), initialProperty.getKey());
+                if (clonedProperty.getValue() instanceof Pattern) {
+                    Pattern clonedPattern = (Pattern) clonedProperty.getValue();
+                    Pattern initialPattern = (Pattern) initialProperty.getValue();
+                    Assert.assertEquals(clonedPattern.pattern(), initialPattern.pattern());
+                } else {
+                    Assert.assertEquals(clonedProperty.getValue(), initialProperty.getValue());
+                }
+            }
+        }
 
         PMDPlugin.getDefault().getPreferencesManager().setRuleSet(this.initialPluginRuleSet);
 
@@ -309,6 +344,7 @@ public class ProjectPropertiesModelTest {
                 return "MyRule";
             }
         };
+        myRule.setLanguage(LanguageRegistry.PMD.getLanguageById("java"));
 
         RuleSet newRuleSet = RuleSetUtil.newEmpty("foo", "bar");
         newRuleSet = RuleSetUtil.addRules(newRuleSet, this.initialPluginRuleSet.getRules());
@@ -592,7 +628,7 @@ public class ProjectPropertiesModelTest {
             urls.add(url.toURI());
         }
 
-        Assert.assertEquals(6, urls.size());
+        Assert.assertEquals("Found these URIs: " + urls, 6, urls.size());
 
         // own project's output folder
         Assert.assertTrue(urls.remove(
