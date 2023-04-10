@@ -22,6 +22,7 @@ This is a major release.
 
 ### Fixed Issues
 
+* [#122](https://github.com/pmd/pmd-eclipse-plugin/issues/122): Update PMD 7 Logo in eclipse pmd plugin
 * [#172](https://github.com/pmd/pmd-eclipse-plugin/issues/172): Only support the last 4 eclipse releases
 
 ### API Changes

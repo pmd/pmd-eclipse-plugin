@@ -2,7 +2,7 @@
 <?NLS TYPE="org.eclipse.help.toc"?>
 
 <toc label="PMD Plugin Documentation">
-    <topic label="PMD Documentation (remote)" href="http://pmd.sourceforge.net" />
+    <topic label="PMD Documentation (remote)" href="https://docs.pmd-code.org/latest/" />
     <topic label="How to... (maybe out of date)">
         <topic label="use the PMD plugin" href="doc/howto/usepmd.html" />
         <topic label="use the PMD plugin with large projects" href="doc/howto/usepmdlarge.html" />
