@@ -20,7 +20,7 @@ the repository on github and create pull requests. Any contributions are welcome
 
 ### Testing the latest version
 
-The plugin builds with Java 17.
+The plugin requires Java 17 for building.
 
 Then simply build the plugin locally using maven:
 

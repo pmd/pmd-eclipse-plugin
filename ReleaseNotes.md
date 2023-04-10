@@ -13,10 +13,12 @@ This is a major release.
 
 ### New and noteworthy
 
-* Beginning with version 7 of this plugin, only the last for eclipse releases are supported. The plugin
-  might still work with older version, but it's developed against the newer versions.
+* Beginning with version 7 of this plugin, only the last four eclipse releases are supported. The plugin
+  might still work with older versions, but it's only developed and tested against the newer versions.
 
 * The version number of the PMD Eclipse Plugin now is synchronized with the supported and used PMD version.
+  For Bugfixes in the PMD Eclipse Plugin only, a new version is released with the same major, minor, and patch,
+  but a new qualifier only.
 
 ### Fixed Issues
 
