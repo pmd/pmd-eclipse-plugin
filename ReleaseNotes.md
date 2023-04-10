@@ -7,13 +7,22 @@ Eclipse Update Site:
 *   Releases: <https://pmd.github.io/pmd-eclipse-plugin-p2-site/>
 *   Snapshots: <https://pmd.github.io/pmd-eclipse-plugin-p2-site/snapshot/>
 
-## ????: 4.45.0.v????
+## ????: 7.0.0.v????
 
-This is a minor release.
+This is a major release.
 
 ### New and noteworthy
 
+* Beginning with version 7 of this plugin, only the last four eclipse releases are supported. The plugin
+  might still work with older versions, but it's only developed and tested against the newer versions.
+
+* The version number of the PMD Eclipse Plugin now is synchronized with the supported and used PMD version.
+  For Bugfixes in the PMD Eclipse Plugin only, a new version is released with the same major, minor, and patch,
+  but a new qualifier only.
+
 ### Fixed Issues
+
+* [#172](https://github.com/pmd/pmd-eclipse-plugin/issues/172): Only support the last 4 eclipse releases
 
 ### API Changes
 

@@ -5,8 +5,6 @@
 package net.sourceforge.pmd.eclipse.runtime.cmd;
 
 import java.nio.charset.StandardCharsets;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.io.IOUtils;
 import org.eclipse.core.resources.IFolder;
@@ -108,16 +106,8 @@ public class MultipleRulesetsTest {
      */
     @Test
     public void testReviewCmdBasic() throws CoreException, InterruptedException {
-        final CountDownLatch latch = new CountDownLatch(1);
         // build first to avoid automatic build jumping in and wait until finished
-        this.testProject.build(IncrementalProjectBuilder.FULL_BUILD, new NullProgressMonitor() {
-            @Override
-            public void done() {
-                super.done();
-                latch.countDown();
-            }
-        });
-        latch.await(30, TimeUnit.SECONDS);
+        this.testProject.build(IncrementalProjectBuilder.FULL_BUILD, new NullProgressMonitor());
         EclipseUtils.waitForJobs();
 
         final ReviewCodeCmd cmd = new ReviewCodeCmd();

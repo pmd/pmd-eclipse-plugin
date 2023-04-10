@@ -33,6 +33,8 @@ import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
+import org.eclipse.jdt.launching.AbstractVMInstall;
+import org.eclipse.jdt.launching.IVMInstall;
 import org.eclipse.jdt.launching.JavaRuntime;
 import org.junit.Assert;
 
@@ -222,9 +224,12 @@ public final class EclipseUtils {
                             null);
 
             Hashtable<String, String> javaOptions = JavaCore.getOptions();
-            javaOptions.put(JavaCore.COMPILER_COMPLIANCE, JavaCore.VERSION_1_5);
-            javaOptions.put(JavaCore.COMPILER_CODEGEN_TARGET_PLATFORM, JavaCore.VERSION_1_5);
-            javaOptions.put(JavaCore.COMPILER_SOURCE, JavaCore.VERSION_1_5);
+
+            IVMInstall defaultVMInstall = JavaRuntime.getDefaultVMInstall();
+            if (defaultVMInstall instanceof AbstractVMInstall) {
+                String javaVersion = ((AbstractVMInstall) defaultVMInstall).getJavaVersion();
+                JavaCore.setComplianceOptions(javaVersion, javaOptions);
+            }
             javaProject.setOptions(javaOptions);
         }
     }

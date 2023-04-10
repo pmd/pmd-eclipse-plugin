@@ -22,6 +22,7 @@ import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -31,7 +32,6 @@ import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.eclipse.EclipseUtils;
 import net.sourceforge.pmd.eclipse.LoggingRule;
-import net.sourceforge.pmd.eclipse.WaitingMonitor;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.runtime.PMDRuntimeConstants;
 import net.sourceforge.pmd.eclipse.runtime.preferences.IPreferences;
@@ -122,14 +122,8 @@ public class ReviewCmdTest {
               + "  }\n"
               + "}");
 
-        WaitingMonitor monitor;
-        monitor = new WaitingMonitor();
-        project.refreshLocal(IResource.DEPTH_INFINITE, monitor);
-        monitor.await();
-
-        monitor = new WaitingMonitor();
-        project.build(IncrementalProjectBuilder.FULL_BUILD, monitor);
-        monitor.await();
+        project.refreshLocal(IResource.DEPTH_INFINITE, new NullProgressMonitor());
+        project.build(IncrementalProjectBuilder.FULL_BUILD, new NullProgressMonitor());
 
         return sourceFile;
     }

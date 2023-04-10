@@ -12,12 +12,12 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jdt.core.JavaCore;
 import org.junit.Assert;
 import org.junit.Test;
 
 import net.sourceforge.pmd.eclipse.EclipseUtils;
-import net.sourceforge.pmd.eclipse.WaitingMonitor;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.runtime.builder.PMDNature;
 import net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties;
@@ -60,9 +60,7 @@ public class ReviewCodeCmdNonJavaTest {
         properties.setPmdEnabled(true);
 
         // explicitly request full build to prevent automatic (parallel) building later on
-        WaitingMonitor waitingMonitor = new WaitingMonitor();
-        testProject.build(IncrementalProjectBuilder.FULL_BUILD, waitingMonitor);
-        waitingMonitor.await();
+        testProject.build(IncrementalProjectBuilder.FULL_BUILD, new NullProgressMonitor());
         EclipseUtils.waitForJobs();
 
         ReviewCodeCmd cmd = new ReviewCodeCmd();

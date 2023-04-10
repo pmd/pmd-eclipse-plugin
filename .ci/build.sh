@@ -8,12 +8,6 @@ SCRIPT_INCLUDES="log.bash utils.bash setup-secrets.bash openjdk.bash maven.bash 
 source "$(dirname "$0")/inc/fetch_ci_scripts.bash" && fetch_ci_scripts
 
 function build() {
-    pmd_ci_log_group_start "Install OpenJDK 8+17"
-        pmd_ci_openjdk_install_adoptopenjdk 8
-        pmd_ci_openjdk_install_adoptopenjdk 17
-        pmd_ci_openjdk_setdefault 17
-    pmd_ci_log_group_end
-
     echo
     pmd_ci_maven_display_info_banner
     pmd_ci_utils_determine_build_env pmd/pmd-eclipse-plugin
@@ -33,7 +27,7 @@ function build() {
         pmd_ci_log_group_start "Build with mvnw"
             ${xvfb_cmd} ./mvnw clean verify \
                 --show-version --errors --batch-mode --no-transfer-progress \
-                --toolchains .ci/files/toolchains.xml
+                -Dtarget.platform=${TARGET_PLATFORM}
         pmd_ci_log_group_end
         exit 0
     fi
@@ -45,7 +39,7 @@ function build() {
         pmd_ci_log_group_start "Build with mvnw"
             ${xvfb_cmd} ./mvnw clean verify \
                 --show-version --errors --batch-mode --no-transfer-progress \
-                --toolchains .ci/files/toolchains.xml
+                -Dtarget.platform=${TARGET_PLATFORM}
         pmd_ci_log_group_end
 
         pmd_ci_log_info "Stopping build here, because os is not linux"
@@ -77,13 +71,13 @@ function snapshot_build() {
         # Build 1 - without signing but with tests
         ${xvfb_cmd} ./mvnw clean verify \
             --show-version --errors --batch-mode --no-transfer-progress \
-            --toolchains .ci/files/toolchains.xml
+            -Dtarget.platform=${TARGET_PLATFORM}
 
         # Build 2 - with signing, but skipping tests, pmd, checkstyle
         ${xvfb_cmd} ./mvnw clean verify \
             --show-version --errors --batch-mode --no-transfer-progress \
-            --toolchains .ci/files/toolchains.xml \
             --activate-profiles sign \
+            -Dtarget.platform=${TARGET_PLATFORM} \
             -Dpmd.skip=true -DskipTests -Dcheckstyle.skip
 
         # Upload update site to sourceforge
@@ -134,13 +128,13 @@ function release_build() {
         # Build 1 - without signing but with tests
         ${xvfb_cmd} ./mvnw clean verify \
             --show-version --errors --batch-mode --no-transfer-progress \
-            --toolchains .ci/files/toolchains.xml
+            -Dtarget.platform=${TARGET_PLATFORM}
 
         # Build 2 - with signing, but skipping tests, pmd, checkstyle
         ${xvfb_cmd} ./mvnw clean verify \
             --show-version --errors --batch-mode --no-transfer-progress \
-            --toolchains .ci/files/toolchains.xml \
             --activate-profiles sign \
+            -Dtarget.platform=${TARGET_PLATFORM} \
             -Dpmd.skip=true -DskipTests -Dcheckstyle.skip
 
     pmd_ci_log_group_end

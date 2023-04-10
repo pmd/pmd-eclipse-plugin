@@ -1,0 +1,23 @@
+name: 'Build'
+description: 'Runs the build script'
+inputs:
+  targetPlatform:
+    description: 'The eclipse target platform to build the plugins against'
+    required: true
+  pmdCiSecretPassphrase:
+    description: 'Secret needed for releases'
+    required: false
+  githubToken:
+    description: 'The GitHub Token used for releases'
+    required: false
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Build
+      run: .ci/build.sh
+      shell: bash
+      env:
+        TARGET_PLATFORM: ${{ inputs.targetPlatform }}
+        PMD_CI_SECRET_PASSPHRASE: ${{ inputs.pmdCiSecretPassphrase }}
+        GITHUB_TOKEN: ${{ inputs.githubToken }}
