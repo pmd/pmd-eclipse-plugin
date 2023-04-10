@@ -23,9 +23,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - uses: ./.github/actions/setup
+      - name: Setup Environment
+        uses: .github/actions/setup
 
-      - uses: ./.github/actions/build
+      - name: Build
+        uses: .github/actions/build
         with:
           targetPlatform: 2023-03
           pmdCiSecretPassphrase: ${{ secrets.PMD_CI_SECRET_PASSPHRASE }}
@@ -61,9 +63,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - uses: ./.github/actions/setup
+      - name: Setup Environment
+        uses: .github/actions/setup
 
-      - uses: ./.github/actions/build
+      - name: Build
+        uses: .github/actions/build
         with:
           targetPlatform: ${{ matrix.targetPlatform }}
           pmdCiSecretPassphrase: ${{ secrets.PMD_CI_SECRET_PASSPHRASE }}
