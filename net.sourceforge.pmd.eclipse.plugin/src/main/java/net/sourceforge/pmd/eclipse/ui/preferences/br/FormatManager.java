@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.eclipse.ui.preferences.br;
 
-import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -39,9 +38,6 @@ public final class FormatManager {
         FORMATTERS_BY_TYPE.put(Character.class, ValueFormatter.OBJECT_FORMATTER);
         FORMATTERS_BY_TYPE.put(Character[].class, ValueFormatter.OBJECT_ARRAY_FORMATTER);
         FORMATTERS_BY_TYPE.put(Class.class, ValueFormatter.TYPE_FORMATTER);
-        FORMATTERS_BY_TYPE.put(Class[].class, ValueFormatter.MULTI_TYPE_FORMATTER);
-        FORMATTERS_BY_TYPE.put(Method.class, ValueFormatter.METHOD_FORMATTER);
-        FORMATTERS_BY_TYPE.put(Method[].class, ValueFormatter.MULTI_METHOD_FORMATTER);
         FORMATTERS_BY_TYPE.put(Object[].class, ValueFormatter.OBJECT_ARRAY_FORMATTER);
 
         FORMATTERS_BY_TYPE.put(RulePriority.class, ValueFormatter.PRIORITY_FORMATTER);

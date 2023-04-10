@@ -4,21 +4,15 @@
 
 package net.sourceforge.pmd.eclipse.runtime.writer.impl;
 
+import java.io.IOException;
 import java.io.OutputStream;
-import javax.xml.parsers.FactoryConfigurationError;
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
-
-import org.w3c.dom.DOMException;
-import org.w3c.dom.Document;
+import java.io.PrintStream;
+import java.nio.charset.StandardCharsets;
 
 import net.sourceforge.pmd.eclipse.runtime.writer.IAstWriter;
 import net.sourceforge.pmd.eclipse.runtime.writer.WriterException;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
+import net.sourceforge.pmd.util.treeexport.XmlTreeRenderer;
 
 /**
  * Implements a default AST Writer
@@ -30,11 +24,9 @@ class AstWriterImpl implements IAstWriter {
     @Override
     public void write(OutputStream outputStream, ASTCompilationUnit compilationUnit) throws WriterException {
         try {
-            Document doc = compilationUnit.getAsDocument();
-            Transformer transformer = TransformerFactory.newInstance().newTransformer();
-            transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-            transformer.transform(new DOMSource(doc), new StreamResult(outputStream));
-        } catch (DOMException | FactoryConfigurationError | TransformerException e) {
+            XmlTreeRenderer renderer = new XmlTreeRenderer();
+            renderer.renderSubtree(compilationUnit, new PrintStream(outputStream, true, StandardCharsets.UTF_8.name()));
+        } catch (IOException e) {
             throw new WriterException(e);
         }
     }

@@ -21,7 +21,6 @@ import net.sourceforge.pmd.eclipse.ui.StringArranger;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.ValueChangeListener;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
-import net.sourceforge.pmd.util.ClassUtil;
 
 /**
  * 
@@ -40,8 +39,8 @@ public class SummaryPanelManager extends AbstractRulePanelManager {
 
     public static String asLabel(Class<?> type) {
 
-        return type.isArray() ? ClassUtil.asShortestName(type.getComponentType()) + "[]"
-                : ClassUtil.asShortestName(type);
+        return type.isArray() ? type.getComponentType().getSimpleName() + "[]"
+                : type.getSimpleName();
     }
 
     public static int longestNameIn(Map<PropertyDescriptor<?>, Object> valuesByDescriptor) {

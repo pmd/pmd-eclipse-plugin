@@ -19,7 +19,6 @@ import net.sourceforge.pmd.eclipse.ui.preferences.br.ValueChangeListener;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
 import net.sourceforge.pmd.properties.PropertySource;
-import net.sourceforge.pmd.util.CollectionUtil;
 
 /**
  * @author Brian Remedios
@@ -92,8 +91,11 @@ public final class MultiStringEditorFactory extends AbstractMultiValueEditorFact
         }
 
         List<String> currentValues = valueFor(source, desc);
-        int nAdded = CollectionUtil.addWithoutDuplicates(Collections.singleton(newValue), currentValues);
-        return (nAdded == 0) ? null : newValue;
+        if (!currentValues.contains(newValue)) {
+            currentValues.add(newValue);
+            return newValue;
+        }
+        return null;
     }
 
     @Override

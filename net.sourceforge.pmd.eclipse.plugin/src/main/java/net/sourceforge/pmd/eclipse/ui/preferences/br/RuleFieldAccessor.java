@@ -32,8 +32,6 @@ public interface RuleFieldAccessor {
 
     String[] RULE_TYPE_GENERIC = new String[] { "-", "Generic" };
     String[] RULE_TYPE_XPATH = new String[] { "X", "XPath" };
-    String[] RULE_TYPE_DATAFLOW = new String[] { "D", "Dataflow" };
-    String[] RULE_TYPE_TYPERESOLUTION = new String[] { "T", "Type resolving" };
 
     RuleFieldAccessor SINCE = new BasicRuleFieldAccessor() {
         @Override
@@ -87,18 +85,6 @@ public interface RuleFieldAccessor {
         }
     };
 
-    RuleFieldAccessor USES_DFA = new BasicRuleFieldAccessor() {
-        @Override
-        public Comparable<Boolean> valueFor(Rule rule) {
-            return rule.isDfa();
-        }
-
-        @Override
-        public Comparable<?> valueFor(RuleCollection collection) {
-            return RuleUtil.allUseDfa(collection);
-        }
-    };
-
     RuleFieldAccessor MESSAGE = new BasicRuleFieldAccessor() {
         @Override
         public Comparable<String> valueFor(Rule rule) {
@@ -124,15 +110,9 @@ public interface RuleFieldAccessor {
     RuleFieldAccessor RULE_TYPE = new BasicRuleFieldAccessor() {
         @Override
         public Comparable<String> valueFor(Rule rule) {
-            StringBuilder sb = new StringBuilder(3);
+            StringBuilder sb = new StringBuilder();
             if (RuleUtil.isXPathRule(rule)) {
                 sb.append(RULE_TYPE_XPATH[0]);
-            }
-            if (rule.isDfa()) {
-                sb.append(RULE_TYPE_DATAFLOW[0]);
-            }
-            if (rule.isTypeResolution()) {
-                sb.append(RULE_TYPE_TYPERESOLUTION[0]);
             }
             if (sb.length() == 0) {
                 sb.append(RULE_TYPE_GENERIC[0]);
@@ -143,17 +123,11 @@ public interface RuleFieldAccessor {
         @Override
         public String labelFor(Rule rule) {
             final int labelTypeIdx = 0; // just show the letter codes
-            List<String> types = new ArrayList<>(3);
+            List<String> types = new ArrayList<>();
             if (RuleUtil.isXPathRule(rule)) {
                 types.add(RULE_TYPE_XPATH[labelTypeIdx]);
             }
             // if (if (RuleUtil.isXPathRule(rule)) TODO
-            if (rule.isDfa()) {
-                types.add(RULE_TYPE_DATAFLOW[labelTypeIdx]);
-            }
-            if (rule.isTypeResolution()) {
-                types.add(RULE_TYPE_TYPERESOLUTION[labelTypeIdx]);
-            }
             if (types.isEmpty()) {
                 types.add(RULE_TYPE_GENERIC[labelTypeIdx]);
             }

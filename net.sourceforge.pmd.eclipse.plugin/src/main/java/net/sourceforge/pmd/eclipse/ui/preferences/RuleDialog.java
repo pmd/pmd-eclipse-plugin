@@ -8,6 +8,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Iterator;
 
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
@@ -36,7 +37,6 @@ import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.RuleUtil;
 import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.lang.rule.XPathRule;
-import net.sourceforge.pmd.util.StringUtil;
 
 /**
  * Implements a dialog for adding or editing a rule. When editing, the rule is
@@ -60,8 +60,6 @@ public class RuleDialog extends Dialog {
     private Text nameText;
     private Text messageText;
     private Combo priorityCombo;
-    protected Button usesTypeResolutionButton;
-    protected Button usesDfaButton;
     private Text descriptionText;
     private Text externalInfoUrlText;
     protected Button openExternalInfoUrlButton;
@@ -189,10 +187,6 @@ public class RuleDialog extends Dialog {
         data.horizontalSpan = 1;
         data.grabExcessHorizontalSpace = true;
         priorityCombo.setLayoutData(data);
-
-        usesTypeResolutionButton = buildUsesTypeResolutionButton(dlgArea);
-
-        usesDfaButton = buildUsesDfaButton(dlgArea);
 
         Label descriptionLabel = buildLabel(dlgArea, StringKeys.PREF_RULEEDIT_LABEL_DESCRIPTION);
         data = new GridData();
@@ -382,19 +376,11 @@ public class RuleDialog extends Dialog {
                         implementationClassText.setText(XPathRule.class.getName());
                         implementationClassText.setEnabled(false);
                         xpathText.setEnabled(true);
-                        usesTypeResolutionButton.setEnabled(false);
-                        usesTypeResolutionButton.setSelection(true);
-                        usesDfaButton.setEnabled(false);
-                        usesDfaButton.setSelection(false);
                     } else {
                         implementationClassText.setText("");
                         implementationClassText.setEnabled(true);
                         xpathText.setText("");
                         xpathText.setEnabled(false);
-                        usesTypeResolutionButton.setEnabled(true);
-                        usesTypeResolutionButton.setSelection(true);
-                        usesDfaButton.setEnabled(true);
-                        usesDfaButton.setSelection(false);
                     }
                 }
             });
@@ -468,50 +454,6 @@ public class RuleDialog extends Dialog {
             combo.setEnabled(true);
         }
         return combo;
-    }
-
-    /**
-     * Build the uses type resolution button
-     */
-    private Button buildUsesTypeResolutionButton(Composite parent) {
-        final Button button = new Button(parent, SWT.CHECK);
-        button.setText(getMessage(StringKeys.PREF_RULEEDIT_BUTTON_USES_TYPE_RESOLUTION));
-
-        if (mode == MODE_VIEW) {
-            button.setVisible(false);
-        } else {
-            if (mode == MODE_EDIT) {
-                button.setEnabled(false);
-                button.setSelection(editedRule.usesTypeResolution());
-            } else {
-                button.setEnabled(false);
-                button.setSelection(true);
-            }
-        }
-
-        return button;
-    }
-
-    /**
-     * Build the uses dfa button
-     */
-    private Button buildUsesDfaButton(Composite parent) {
-        final Button button = new Button(parent, SWT.CHECK);
-        button.setText(getMessage(StringKeys.PREF_RULEEDIT_BUTTON_USES_DFA));
-
-        if (mode == MODE_VIEW) {
-            button.setVisible(false);
-        } else {
-            if (mode == MODE_EDIT) {
-                button.setEnabled(false);
-                button.setSelection(editedRule.usesDFA());
-            } else {
-                button.setEnabled(false);
-                button.setSelection(false);
-            }
-        }
-
-        return button;
     }
 
     /**
@@ -713,7 +655,7 @@ public class RuleDialog extends Dialog {
         boolean flValid = true;
 
         String name = nameText.getText();
-        if (StringUtil.isEmpty(name)) {
+        if (StringUtils.isEmpty(name)) {
             MessageDialog.openWarning(getShell(), getMessage(StringKeys.WARNING_TITLE),
                     getMessage(StringKeys.WARNING_NAME_MANDATORY));
             nameText.setFocus();
@@ -746,7 +688,7 @@ public class RuleDialog extends Dialog {
         boolean flValid = true;
 
         String message = messageText.getText();
-        if (StringUtil.isEmpty(message)) {
+        if (StringUtils.isEmpty(message)) {
             MessageDialog.openWarning(getShell(), getMessage(StringKeys.WARNING_TITLE),
                     getMessage(StringKeys.WARNING_MESSAGE_MANDATORY));
             messageText.setFocus();
@@ -777,12 +719,6 @@ public class RuleDialog extends Dialog {
                     rule.getExamples().add(exampleText.getText());
                     rule.setPriority(RulePriority.valueOf(priorityCombo.getSelectionIndex() + 1));
                     rule.setExternalInfoUrl(externalInfoUrlText.getText());
-                    if (usesTypeResolutionButton.getSelection()) {
-                        rule.setUsesTypeResolution();
-                    }
-                    if (usesDfaButton.getSelection()) {
-                        rule.setUsesDFA();
-                    }
                     if (rule instanceof XPathRule) {
                         String xpath = xpathText.getText().trim();
                         if (xpath.length() != 0) {

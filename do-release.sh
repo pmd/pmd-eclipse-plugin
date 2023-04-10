@@ -17,7 +17,6 @@ if [ ! -f pom.xml ] || [ ! -d ${PMD_GITHUB_IO_DIR} ]; then
 fi
 
 RELEASE_VERSION=
-DEVELOPMENT_VERSION=
 CURRENT_BRANCH=
 
 echo "-------------------------------------------"
@@ -37,12 +36,18 @@ else
     NEXT_MINOR="${MINOR}"
     NEXT_PATCH=$(("${PATCH}" + 1))
 fi
-DEVELOPMENT_VERSION="$MAJOR.$NEXT_MINOR.$NEXT_PATCH"
-DEVELOPMENT_VERSION="${DEVELOPMENT_VERSION}"
 
-# allow to override the next version, e.g. via "NEXT_VERSION=7.0.0 ./do-release.sh"
-if [ "$NEXT_VERSION" != "" ]; then
-    DEVELOPMENT_VERSION="${NEXT_VERSION}"
+# allow to override the next version, e.g. via "DEVELOPMENT_VERSION=7.0.0-SNAPSHOT ./do-release.sh"
+if [ "$DEVELOPMENT_VERSION" = "" ]; then
+    DEVELOPMENT_VERSION="$MAJOR.$NEXT_MINOR.$NEXT_PATCH-SNAPSHOT"
+fi
+
+# allow to override the build qualifier, e.g. via "BUILDQUALIFIER="$(date -u +v%Y%m%d-%H%M)-rc1" ./do-release.sh"
+if [ "$BUILDQUALIFIER" = "" ]; then
+    # Pick a release BUILDQUALIFIER (e.g. v20170401-0001-r) and update versions
+    # E.g. version is: "4.0.13" and BUILDQUALIFIER is "v20170401-0001-r".
+    # The complete version of the plugin will be "4.0.13.v20170401-0001-r
+    BUILDQUALIFIER="$(date -u +v%Y%m%d-%H%M)-r"
 fi
 
 # http://stackoverflow.com/questions/1593051/how-to-programmatically-determine-the-current-checked-out-git-branch
@@ -50,17 +55,18 @@ CURRENT_BRANCH=$(git symbolic-ref -q HEAD)
 CURRENT_BRANCH=${CURRENT_BRANCH##refs/heads/}
 CURRENT_BRANCH=${CURRENT_BRANCH:-HEAD}
 
-# Pick a release BUILDQUALIFIER (e.g. v20170401-0001-r) and update versions
-# E.g. version is: "4.0.13" and BUILDQUALIFIER is "v20170401-0001-r".
-# The complete version of the plugin will be "4.0.13.v20170401-0001-r
-BUILDQUALIFIER="$(date -u +v%Y%m%d-%H%M)-r"
+export DEVELOPMENT_VERSION
 export BUILDQUALIFIER
 
 echo "RELEASE_VERSION: ${RELEASE_VERSION}.${BUILDQUALIFIER} (this release)"
 echo "DEVELOPMENT_VERSION: ${DEVELOPMENT_VERSION} (the next version after the release)"
 echo "CURRENT_BRANCH: ${CURRENT_BRANCH}"
 
-
+echo
+echo "Is this correct?"
+echo
+echo "Press enter to continue... (or CTRL+C to cancel)"
+read -r
 
 echo Update the ReleaseNotes with the release date and version:
 echo 

@@ -270,7 +270,7 @@ public class BaseVisitor {
 
             prepareMarkerAccumulator(file);
 
-            LanguageVersionDiscoverer languageDiscoverer = new LanguageVersionDiscoverer();
+            LanguageVersionDiscoverer languageDiscoverer = new LanguageVersionDiscoverer(LanguageRegistry.PMD);
             LanguageVersion languageVersion = languageDiscoverer.getDefaultLanguageVersionForFile(file.getName());
             // in case it is java, select the correct java version
             if (languageVersion != null
@@ -308,7 +308,7 @@ public class BaseVisitor {
                      PmdAnalysis pmdAnalysis = PmdAnalysis.create(configuration());) {
 
                     String sourceContents = IOUtil.toString(input);
-                    pmdAnalysis.files().addSourceFile(sourceContents, sourceCodeFile.getAbsolutePath());
+                    pmdAnalysis.files().addSourceFile(sourceCodeFile.getAbsolutePath(), sourceContents);
 
                     pmdAnalysis.addRuleSets(getRuleSetList());
 

@@ -30,7 +30,6 @@ import net.sourceforge.pmd.eclipse.ui.Shape;
 import net.sourceforge.pmd.eclipse.ui.ShapePainter;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.CellPainterBuilder;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.RuleFieldAccessor;
-import net.sourceforge.pmd.util.ClassUtil;
 
 public final class Util {
 
@@ -184,7 +183,7 @@ public final class Util {
     }
 
     private static void signatureFor(Class<?> type, String[] unwantedPrefixes, StringBuilder sb) {
-        String typeName = ClassUtil.asShortestName(type.isArray() ? type.getComponentType() : type);
+        String typeName = type.isArray() ? type.getComponentType().getSimpleName() : type.getSimpleName();
         typeName = filteredPrefixFrom(typeName, unwantedPrefixes);
 
         sb.append(typeName);

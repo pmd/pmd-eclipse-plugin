@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
@@ -308,14 +307,8 @@ public class FormArranger implements ValueChangeListener {
     }
 
     private void adjustEnabledStates() {
-        Set<PropertyDescriptor<?>> ignoreds = propertySource.ignoredProperties();
-
         for (Map.Entry<PropertyDescriptor<?>, Control[]> entry : controlsByProperty.entrySet()) {
-            if (ignoreds.contains(entry.getKey())) {
-                SWTUtil.setEnabled(entry.getValue(), false);
-            } else {
-                SWTUtil.setEnabled(entry.getValue(), true);
-            }
+            SWTUtil.setEnabled(entry.getValue(), true);
         }
     }
 

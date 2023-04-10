@@ -10,12 +10,11 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSet;
-import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetReference;
-import net.sourceforge.pmd.RulesetsFactoryUtils;
 import net.sourceforge.pmd.eclipse.ui.actions.internal.InternalRuleSetUtil;
 import net.sourceforge.pmd.lang.rule.RuleReference;
 
@@ -29,8 +28,7 @@ public final class RuleSetUtil {
     }
 
     public static RuleSet newCopyOf(RuleSet original) {
-        RuleSetFactory factory = RulesetsFactoryUtils.defaultFactory();
-        return factory.createRuleSetCopy(original);
+        return RuleSet.copy(original);
     }
 
     public static final String DEFAULT_RULESET_NAME = "pmd-eclipse";
@@ -45,10 +43,11 @@ public final class RuleSetUtil {
      * @return
      */
     public static RuleSet retainOnly(RuleSet ruleSet, Collection<Rule> wantedRules) {
-        RuleSetFactory factory = RulesetsFactoryUtils.defaultFactory();
-        return factory.createNewRuleSet(ruleSet.getName(), ruleSet.getDescription(), ruleSet.getFileName(),
-                InternalRuleSetUtil.convert(ruleSet.getFileExclusions()),
-                InternalRuleSetUtil.convert(ruleSet.getFileInclusions()), wantedRules);
+        return RuleSet.create(ruleSet.getName(), ruleSet.getDescription(),
+                ruleSet.getFileName(),
+                ruleSet.getFileExclusions(),
+                ruleSet.getFileInclusions(),
+                wantedRules);
     }
 
     /**
@@ -72,9 +71,12 @@ public final class RuleSetUtil {
         newExcludePatterns.addAll(buildPathExcludePatterns);
         Set<String> newIncludePatterns = new HashSet<>(InternalRuleSetUtil.convert(ruleSet.getFileInclusions()));
 
-        RuleSetFactory factory = RulesetsFactoryUtils.defaultFactory();
-        return factory.createNewRuleSet(ruleSet.getName(), ruleSet.getDescription(), ruleSet.getFileName(),
-                newExcludePatterns, newIncludePatterns, ruleSet.getRules());
+        return RuleSet.create(ruleSet.getName(),
+                ruleSet.getDescription(),
+                ruleSet.getFileName(),
+                InternalRuleSetUtil.convertStringPatterns(newExcludePatterns),
+                InternalRuleSetUtil.convertStringPatterns(newIncludePatterns),
+                ruleSet.getRules());
     }
 
     @Deprecated
@@ -85,21 +87,21 @@ public final class RuleSetUtil {
         newIncludePatterns.addAll(activeInclusionPatterns);
         newIncludePatterns.addAll(buildPathIncludePatterns);
 
-        RuleSetFactory factory = RulesetsFactoryUtils.defaultFactory();
-        return factory.createNewRuleSet(ruleSet.getName(), ruleSet.getDescription(), ruleSet.getFileName(),
-                newExcludePatterns, newIncludePatterns, ruleSet.getRules());
+        return RuleSet.create(ruleSet.getName(), ruleSet.getDescription(),
+                ruleSet.getFileName(),
+                InternalRuleSetUtil.convertStringPatterns(newExcludePatterns),
+                InternalRuleSetUtil.convertStringPatterns(newIncludePatterns),
+                ruleSet.getRules());
     }
 
     public static RuleSet newSingle(Rule rule) {
-        RuleSetFactory factory = RulesetsFactoryUtils.defaultFactory();
-        return factory.createSingleRuleRuleSet(rule);
+        return RuleSet.forSingleRule(rule);
     }
 
     public static RuleSet newEmpty(String name, String description) {
-        RuleSetFactory factory = RulesetsFactoryUtils.defaultFactory();
-        Set<String> emptySet = Collections.emptySet();
+        Set<Pattern> emptySet = Collections.emptySet();
         Set<Rule> emptyRules = Collections.emptySet();
-        return factory.createNewRuleSet(name, description, null, emptySet, emptySet, emptyRules);
+        return RuleSet.create(name, description, null, emptySet, emptySet, emptyRules);
     }
 
     public static RuleSet addRuleSetByReference(RuleSet ruleSet, RuleSet sourceRuleSet, boolean allRules) {
@@ -109,20 +111,22 @@ public final class RuleSetUtil {
             RuleReference ruleRef = new RuleReference(rule, reference);
             rules.add(ruleRef);
         }
-        RuleSetFactory factory = RulesetsFactoryUtils.defaultFactory();
-        return factory.createNewRuleSet(ruleSet.getName(), ruleSet.getDescription(), ruleSet.getFileName(),
-                InternalRuleSetUtil.convert(ruleSet.getFileExclusions()),
-                InternalRuleSetUtil.convert(ruleSet.getFileInclusions()), rules);
+        return RuleSet.create(ruleSet.getName(), ruleSet.getDescription(),
+                ruleSet.getFileName(),
+                ruleSet.getFileExclusions(),
+                ruleSet.getFileInclusions(),
+                rules);
     }
 
     public static RuleSet addRules(RuleSet ruleSet, Collection<Rule> newRules) {
-        RuleSetFactory factory = RulesetsFactoryUtils.defaultFactory();
         Collection<Rule> allRules = new ArrayList<>();
         allRules.addAll(ruleSet.getRules());
         allRules.addAll(newRules);
-        return factory.createNewRuleSet(ruleSet.getName(), ruleSet.getDescription(), ruleSet.getFileName(),
-                InternalRuleSetUtil.convert(ruleSet.getFileExclusions()),
-                InternalRuleSetUtil.convert(ruleSet.getFileInclusions()), allRules);
+        return RuleSet.create(ruleSet.getName(), ruleSet.getDescription(),
+                ruleSet.getFileName(),
+                ruleSet.getFileExclusions(),
+                ruleSet.getFileInclusions(),
+                allRules);
     }
 
     public static RuleSet addRule(RuleSet ruleSet, Rule newRule) {
@@ -131,31 +135,35 @@ public final class RuleSetUtil {
 
     @Deprecated
     public static RuleSet setExcludePatterns(RuleSet ruleSet, Collection<String> excludePatterns) {
-        RuleSetFactory factory = RulesetsFactoryUtils.defaultFactory();
-        return factory.createNewRuleSet(ruleSet.getName(), ruleSet.getDescription(), ruleSet.getFileName(),
-                excludePatterns,
-                InternalRuleSetUtil.convert(ruleSet.getFileInclusions()), ruleSet.getRules());
+        return RuleSet.create(ruleSet.getName(), ruleSet.getDescription(),
+                ruleSet.getFileName(),
+                InternalRuleSetUtil.convertStringPatterns(excludePatterns),
+                ruleSet.getFileInclusions(),
+                ruleSet.getRules());
     }
 
     @Deprecated
     public static RuleSet setIncludePatterns(RuleSet ruleSet, Collection<String> includePatterns) {
-        RuleSetFactory factory = RulesetsFactoryUtils.defaultFactory();
-        return factory.createNewRuleSet(ruleSet.getName(), ruleSet.getDescription(), ruleSet.getFileName(),
-                InternalRuleSetUtil.convert(ruleSet.getFileExclusions()), includePatterns, ruleSet.getRules());
+        return RuleSet.create(ruleSet.getName(), ruleSet.getDescription(),
+                ruleSet.getFileName(),
+                ruleSet.getFileExclusions(),
+                InternalRuleSetUtil.convertStringPatterns(includePatterns),
+                ruleSet.getRules());
     }
 
     public static RuleSet setNameDescription(RuleSet ruleSet, String name, String description) {
-        RuleSetFactory factory = RulesetsFactoryUtils.defaultFactory();
-        return factory.createNewRuleSet(name, description, ruleSet.getFileName(),
-                InternalRuleSetUtil.convert(ruleSet.getFileExclusions()),
-                InternalRuleSetUtil.convert(ruleSet.getFileInclusions()), ruleSet.getRules());
+        return RuleSet.create(name, description, ruleSet.getFileName(),
+                ruleSet.getFileExclusions(),
+                ruleSet.getFileInclusions(),
+                ruleSet.getRules());
     }
 
     public static RuleSet setFileName(RuleSet ruleSet, String fileName) {
-        RuleSetFactory factory = RulesetsFactoryUtils.defaultFactory();
-        return factory.createNewRuleSet(ruleSet.getName(), ruleSet.getDescription(), fileName,
-                InternalRuleSetUtil.convert(ruleSet.getFileExclusions()),
-                InternalRuleSetUtil.convert(ruleSet.getFileInclusions()), ruleSet.getRules());
+        return RuleSet.create(ruleSet.getName(), ruleSet.getDescription(),
+                fileName,
+                ruleSet.getFileExclusions(),
+                ruleSet.getFileInclusions(),
+                ruleSet.getRules());
     }
 
     @Deprecated
@@ -169,11 +177,12 @@ public final class RuleSetUtil {
     }
 
     public static RuleSet clearRules(RuleSet ruleSet) {
-        RuleSetFactory factory = RulesetsFactoryUtils.defaultFactory();
         Set<Rule> emptySet = Collections.emptySet();
-        return factory.createNewRuleSet(ruleSet.getName(), ruleSet.getDescription(), ruleSet.getFileName(),
-                InternalRuleSetUtil.convert(ruleSet.getFileExclusions()),
-                InternalRuleSetUtil.convert(ruleSet.getFileInclusions()), emptySet);
+        return RuleSet.create(ruleSet.getName(), ruleSet.getDescription(),
+                ruleSet.getFileName(),
+                ruleSet.getFileExclusions(),
+                ruleSet.getFileInclusions(),
+                emptySet);
     }
 
     @SuppressWarnings("PMD.CompareObjectsWithEquals")

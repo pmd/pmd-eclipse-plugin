@@ -9,16 +9,19 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
 
-import net.sourceforge.pmd.lang.ast.AbstractNode;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.ast.impl.AbstractNode;
+import net.sourceforge.pmd.lang.document.TextRegion;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
-import net.sourceforge.pmd.lang.java.ast.Comment;
+import net.sourceforge.pmd.lang.java.ast.JavaComment;
+import net.sourceforge.pmd.lang.java.ast.JavaNode;
 
 /**
  * 
@@ -66,14 +69,34 @@ public class ASTContentProvider implements ITreeContentProvider {
         // TODO
     }
 
+    static class CommentNode extends AbstractNode<CommentNode, JavaNode> {
+        private final JavaComment comment;
+
+        CommentNode(JavaComment comment) {
+            this.comment = comment;
+        }
+
+        @Override
+        public TextRegion getTextRegion() {
+            return comment.getReportLocation().getRegionInFile();
+        }
+
+        @Override
+        public String getXPathNodeName() {
+            return "comment";
+        }
+    }
+
     private List<Node> withoutHiddenOnes(Object parent) {
         List<Node> kids = new ArrayList<>();
 
         if (includeComments && parent instanceof ASTCompilationUnit) {
             // if (!hiddenNodeTypes.contains(Comment.class)) {
 
-            List<Comment> comments = ((ASTCompilationUnit) parent).getComments();
-            kids.addAll(comments);
+            List<JavaComment> comments = ((ASTCompilationUnit) parent).getComments();
+
+
+            kids.addAll(comments.stream().map(comment -> new CommentNode(comment)).collect(Collectors.toList()));
             // }
         }
 
@@ -85,7 +108,7 @@ public class ASTContentProvider implements ITreeContentProvider {
             if (!includeImports && kid instanceof ASTImportDeclaration) {
                 continue;
             }
-            if (!includeComments && kid instanceof Comment) {
+            if (!includeComments && kid instanceof CommentNode) {
                 continue;
             }
             kids.add(kid);

@@ -6,14 +6,14 @@ package net.sourceforge.pmd.eclipse.core;
 
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Test;
 
 import net.sourceforge.pmd.RuleSet;
-import net.sourceforge.pmd.RuleSetFactory;
-import net.sourceforge.pmd.RuleSetNotFoundException;
-import net.sourceforge.pmd.RulesetsFactoryUtils;
+import net.sourceforge.pmd.RuleSetLoadException;
+import net.sourceforge.pmd.RuleSetLoader;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 
 /**
@@ -30,14 +30,13 @@ public class PMDCorePluginTest {
      * 
      */
     @Test
-    public void testDefaultPMDRuleSetsRegistered() throws RuleSetNotFoundException {
-        final Collection<RuleSet> defaultRuleSets = PMDPlugin.getDefault().getRuleSetManager().getRegisteredRuleSets();
+    public void testDefaultPMDRuleSetsRegistered() throws RuleSetLoadException {
+        final Collection<RuleSet> defaultRuleSets = PMDPlugin.getDefault().getRuleSetManager().getDefaultRuleSets();
         Assert.assertFalse("No registered default rulesets!", defaultRuleSets.isEmpty());
 
-        final RuleSetFactory factory = RulesetsFactoryUtils.defaultFactory();
-        final Iterator<RuleSet> iterator = factory.getRegisteredRuleSets();
-        while (iterator.hasNext()) {
-            final RuleSet ruleSet = iterator.next();
+        final RuleSetLoader ruleSetLoader = new RuleSetLoader();
+        final List<RuleSet> standardRuleSets = ruleSetLoader.getStandardRuleSets();
+        for (RuleSet ruleSet : standardRuleSets) {
             Assert.assertTrue("RuleSet \"" + ruleSet.getName() + "\" has not been registered",
                     ruleSetRegistered(ruleSet, defaultRuleSets));
         }
@@ -67,15 +66,14 @@ public class PMDCorePluginTest {
      * 
      */
     @Test
-    public void testStandardPMDRuleSetsRegistered() throws RuleSetNotFoundException {
+    public void testStandardPMDRuleSetsRegistered() throws RuleSetLoadException {
         final Collection<RuleSet> registeredRuleSets = PMDPlugin.getDefault().getRuleSetManager()
                 .getRegisteredRuleSets();
         Assert.assertFalse("No registered rulesets!", registeredRuleSets.isEmpty());
 
-        final RuleSetFactory factory = RulesetsFactoryUtils.defaultFactory();
-        final Iterator<RuleSet> iterator = factory.getRegisteredRuleSets();
-        while (iterator.hasNext()) {
-            final RuleSet ruleSet = iterator.next();
+        final RuleSetLoader ruleSetLoader = new RuleSetLoader();
+        final List<RuleSet> standardRuleSets = ruleSetLoader.getStandardRuleSets();
+        for (RuleSet ruleSet : standardRuleSets) {
             Assert.assertTrue("RuleSet \"" + ruleSet.getName() + "\" has not been registered",
                     ruleSetRegistered(ruleSet, registeredRuleSets));
         }

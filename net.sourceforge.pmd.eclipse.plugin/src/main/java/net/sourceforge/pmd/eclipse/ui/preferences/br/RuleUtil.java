@@ -21,7 +21,6 @@ import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.lang.rule.XPathRule;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertySource;
-import net.sourceforge.pmd.util.CollectionUtil;
 
 /**
  * 
@@ -75,7 +74,7 @@ public final class RuleUtil {
         }
 
         if (value.getClass().getComponentType() != null) {
-            return CollectionUtil.arraysAreEqual(value, otherValue);
+            return Objects.deepEquals(value, otherValue);
         }
 
         if (value instanceof Float || value instanceof Double) {
@@ -171,37 +170,7 @@ public final class RuleUtil {
         RuleVisitor visitor = new RuleVisitor() {
             @Override
             public boolean accept(Rule rule) {
-                return rule.usesDefaultValues();
-            }
-        };
-
-        return collection.rulesDo(visitor);
-    }
-
-    public static boolean allUseDfa(RuleCollection collection) {
-        if (collection.isEmpty()) {
-            return false;
-        }
-
-        RuleVisitor visitor = new RuleVisitor() {
-            @Override
-            public boolean accept(Rule rule) {
-                return rule.isDfa();
-            }
-        };
-
-        return collection.rulesDo(visitor);
-    }
-
-    public static boolean allUseTypeResolution(RuleCollection collection) {
-        if (collection.isEmpty()) {
-            return false;
-        }
-
-        RuleVisitor visitor = new RuleVisitor() {
-            @Override
-            public boolean accept(Rule rule) {
-                return rule.isTypeResolution();
+                return rule.getOverriddenPropertyDescriptors().isEmpty();
             }
         };
 

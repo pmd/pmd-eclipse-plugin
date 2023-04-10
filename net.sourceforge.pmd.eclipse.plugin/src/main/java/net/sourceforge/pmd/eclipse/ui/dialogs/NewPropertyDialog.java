@@ -34,7 +34,6 @@ import net.sourceforge.pmd.eclipse.ui.preferences.br.EditorFactory;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.RuleUIUtil;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.SizeChangeListener;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.ValueChangeListener;
-import net.sourceforge.pmd.eclipse.ui.preferences.editors.MethodEditorFactory;
 import net.sourceforge.pmd.eclipse.ui.preferences.editors.SWTUtil;
 import net.sourceforge.pmd.eclipse.util.Util;
 import net.sourceforge.pmd.lang.rule.RuleReference;
@@ -218,7 +217,7 @@ public class NewPropertyDialog extends TitleAreaDialog implements SizeChangeList
     }
 
     private static String labelFor(Class<?> type) {
-        return Util.signatureFor(type, MethodEditorFactory.UNWANTED_PREFIXES);
+        return Util.signatureFor(type, new String[0]);
     }
 
     /**

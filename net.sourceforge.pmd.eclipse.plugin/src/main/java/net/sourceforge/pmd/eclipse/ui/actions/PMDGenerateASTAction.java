@@ -34,12 +34,18 @@ import net.sourceforge.pmd.eclipse.runtime.writer.IAstWriter;
 import net.sourceforge.pmd.eclipse.runtime.writer.WriterException;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
 import net.sourceforge.pmd.lang.Language;
+import net.sourceforge.pmd.lang.LanguageProcessor;
+import net.sourceforge.pmd.lang.LanguageProcessorRegistry;
 import net.sourceforge.pmd.lang.LanguageRegistry;
-import net.sourceforge.pmd.lang.LanguageVersionHandler;
-import net.sourceforge.pmd.lang.Parser;
 import net.sourceforge.pmd.lang.ast.ParseException;
+import net.sourceforge.pmd.lang.ast.Parser;
+import net.sourceforge.pmd.lang.ast.Parser.ParserTask;
+import net.sourceforge.pmd.lang.ast.SemanticErrorReporter;
+import net.sourceforge.pmd.lang.document.TextDocument;
+import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.lang.java.JavaLanguageModule;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
+import net.sourceforge.pmd.lang.java.internal.JavaLanguageProperties;
 
 /**
  * Process PMDGenerateAST action menu. Generate a AST from the selected file.
@@ -77,12 +83,15 @@ public class PMDGenerateASTAction extends AbstractUIAction implements IRunnableW
      */
     private void generateAST(IFile file) {
         LOG.info("Generating AST for file " + file.getName());
+        Language javaLanguage = LanguageRegistry.PMD.getLanguageById(JavaLanguageModule.TERSE_NAME);
         try (Reader reader = new InputStreamReader(file.getContents(), file.getCharset());
-                ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();) {
-            Language javaLanguage = LanguageRegistry.getLanguage(JavaLanguageModule.NAME);
-            LanguageVersionHandler languageVersionHandler = javaLanguage.getDefaultVersion().getLanguageVersionHandler();
-            Parser parser = languageVersionHandler.getParser(languageVersionHandler.getDefaultParserOptions());
-            ASTCompilationUnit compilationUnit = (ASTCompilationUnit) parser.parse(file.getName(), reader);
+                ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+                LanguageProcessor javaProcessor = javaLanguage.createProcessor(new JavaLanguageProperties());
+                TextDocument textDocument = TextDocument.create(TextFile.forReader(reader, file.getName(), javaLanguage.getDefaultVersion()));) {
+
+            Parser parser = javaProcessor.services().getParser();
+            ParserTask parserTask = new ParserTask(textDocument, SemanticErrorReporter.noop(), LanguageProcessorRegistry.singleton(javaProcessor));
+            ASTCompilationUnit compilationUnit = (ASTCompilationUnit) parser.parse(parserTask);
             IAstWriter astWriter = PMDPlugin.getDefault().getAstWriter();
             astWriter.write(byteArrayOutputStream, compilationUnit);
             byteArrayOutputStream.flush();
@@ -104,6 +113,8 @@ public class PMDGenerateASTAction extends AbstractUIAction implements IRunnableW
             showErrorById(StringKeys.ERROR_PMD_EXCEPTION, e);
         } catch (IOException e) {
             showErrorById(StringKeys.ERROR_IO_EXCEPTION, e);
+        } catch (Exception e) {
+            showErrorById(StringKeys.ERROR_PMD_EXCEPTION, e);
         }
     }
 

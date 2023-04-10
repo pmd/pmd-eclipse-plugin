@@ -21,7 +21,6 @@ import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
 import net.sourceforge.pmd.properties.PropertySource;
 import net.sourceforge.pmd.properties.constraints.NumericConstraints;
-import net.sourceforge.pmd.util.CollectionUtil;
 
 /**
  * Behaviour: Provide a set of widgets that allows the user to pick a range of integer values. The selected values can
@@ -117,7 +116,10 @@ public final class MultiIntegerEditorFactory extends AbstractMultiValueEditorFac
         Integer newValue = ((Spinner) widget).getSelection();
 
         List<Integer> currentValues = valueFor(source, desc);
-        int nAdded = CollectionUtil.addWithoutDuplicates(Collections.singleton(newValue), currentValues);
-        return nAdded == 0 ? null : newValue;
+        if (!currentValues.contains(newValue)) {
+            currentValues.add(newValue);
+            return newValue;
+        }
+        return null;
     }
 }

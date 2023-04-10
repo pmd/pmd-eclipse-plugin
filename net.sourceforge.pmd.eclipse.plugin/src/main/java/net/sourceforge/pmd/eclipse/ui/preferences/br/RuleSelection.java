@@ -135,7 +135,7 @@ public class RuleSelection implements RuleCollection {
         RuleVisitor visitor = new RuleVisitor() {
             @Override
             public boolean accept(Rule rule) {
-                return rule.usesDefaultValues();
+                return rule.getOverriddenPropertyDescriptors().isEmpty();
             }
         };
 
@@ -185,7 +185,7 @@ public class RuleSelection implements RuleCollection {
 
     private static void useDefaultValues(Rule rule) {
         for (Map.Entry<PropertyDescriptor<?>, Object> entry : Configuration.filteredPropertiesOf(rule).entrySet()) {
-            rule.useDefaultValueFor(entry.getKey());
+            rule.setProperty((PropertyDescriptor) entry.getKey(), entry.getKey().defaultValue());
         }
     }
 

@@ -16,26 +16,26 @@ import java.util.regex.Pattern;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.RuleSet;
-import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetLoader;
-import net.sourceforge.pmd.RuleSetNotFoundException;
 import net.sourceforge.pmd.RuleSets;
-import net.sourceforge.pmd.RulesetsFactoryUtils;
 
 public final class InternalRuleSetUtil {
     private InternalRuleSetUtil() {}
 
     public static RuleSet setFileExclusions(RuleSet ruleSet, Collection<Pattern> excludePatterns) {
-        RuleSetFactory factory = RulesetsFactoryUtils.defaultFactory();
-        return factory.createNewRuleSet(ruleSet.getName(), ruleSet.getDescription(), ruleSet.getFileName(),
-                convert(excludePatterns), convert(ruleSet.getFileInclusions()), ruleSet.getRules());
+        return RuleSet.create(ruleSet.getName(), ruleSet.getDescription(),
+                ruleSet.getFileName(),
+                excludePatterns,
+                ruleSet.getFileInclusions(),
+                ruleSet.getRules());
     }
 
     public static RuleSet setFileInclusions(RuleSet ruleSet, Collection<Pattern> includePatterns) {
-        RuleSetFactory factory = RulesetsFactoryUtils.defaultFactory();
-        return factory.createNewRuleSet(ruleSet.getName(), ruleSet.getDescription(), ruleSet.getFileName(),
-                InternalRuleSetUtil.convert(ruleSet.getFileExclusions()),
-                InternalRuleSetUtil.convert(includePatterns), ruleSet.getRules());
+        return RuleSet.create(ruleSet.getName(), ruleSet.getDescription(),
+                ruleSet.getFileName(),
+                ruleSet.getFileExclusions(),
+                includePatterns,
+                ruleSet.getRules());
     }
 
     public static RuleSet addFileExclusions(RuleSet rs, Collection<Pattern> excludePatterns) {
@@ -53,10 +53,10 @@ public final class InternalRuleSetUtil {
         newExcludePatterns.addAll(buildPathExcludePatterns);
         Set<Pattern> newIncludePatterns = new HashSet<>(ruleSet.getFileInclusions());
 
-        RuleSetFactory factory = RulesetsFactoryUtils.defaultFactory();
-        return factory.createNewRuleSet(ruleSet.getName(), ruleSet.getDescription(), ruleSet.getFileName(),
-                convert(newExcludePatterns),
-                convert(newIncludePatterns),
+        return RuleSet.create(ruleSet.getName(), ruleSet.getDescription(),
+                ruleSet.getFileName(),
+                newExcludePatterns,
+                newIncludePatterns,
                 ruleSet.getRules());
     }
 
@@ -67,10 +67,10 @@ public final class InternalRuleSetUtil {
         newIncludePatterns.addAll(activeInclusionPatterns);
         newIncludePatterns.addAll(buildPathIncludePatterns);
 
-        RuleSetFactory factory = RulesetsFactoryUtils.defaultFactory();
-        return factory.createNewRuleSet(ruleSet.getName(), ruleSet.getDescription(), ruleSet.getFileName(),
-                convert(newExcludePatterns),
-                convert(newIncludePatterns),
+        return RuleSet.create(ruleSet.getName(), ruleSet.getDescription(),
+                ruleSet.getFileName(),
+                newExcludePatterns,
+                newIncludePatterns,
                 ruleSet.getRules());
     }
 
@@ -92,7 +92,7 @@ public final class InternalRuleSetUtil {
 
     public static boolean ruleSetsApplies(List<RuleSet> rulesets, File file) {
         for (RuleSet ruleSet : rulesets) {
-            if (ruleSet.applies(file)) {
+            if (ruleSet.applies(file.toString())) {
                 return true;
             }
         }
@@ -116,20 +116,7 @@ public final class InternalRuleSetUtil {
     }
 
     public static RuleSets toRuleSets(List<RuleSet> rulesets) {
-        RuleSets result = new RuleSets();
-        for (RuleSet ruleSet : rulesets) {
-            result.addRuleSet(ruleSet);
-        }
-        return result;
-    }
-
-    public static RuleSetFactory createFactoryFromRuleSets(final List<RuleSet> rulesets) {
-        return new RuleSetFactory() {
-            @Override
-            public RuleSets createRuleSets(String referenceString) throws RuleSetNotFoundException {
-                return toRuleSets(rulesets);
-            }
-        };
+        return new RuleSets(rulesets);
     }
 
     public static RuleSetLoader getDefaultRuleSetLoader() {

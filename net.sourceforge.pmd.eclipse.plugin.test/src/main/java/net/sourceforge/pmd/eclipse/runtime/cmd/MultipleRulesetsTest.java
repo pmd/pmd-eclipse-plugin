@@ -108,7 +108,8 @@ public class MultipleRulesetsTest {
     public void testReviewCmdBasic() throws CoreException, InterruptedException {
         // build first to avoid automatic build jumping in and wait until finished
         this.testProject.build(IncrementalProjectBuilder.FULL_BUILD, new NullProgressMonitor());
-        EclipseUtils.waitForJobs();
+        // the build triggers already a ReviewCodeCmd, so wait, until that is done.
+        EclipseUtils.waitForPMDJobs();
 
         final ReviewCodeCmd cmd = new ReviewCodeCmd();
         cmd.addResource(this.testProject);

@@ -9,7 +9,6 @@ import java.util.Map;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.lang.rule.XPathRule;
-import net.sourceforge.pmd.lang.rule.stat.StatisticalRule;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertySource;
 
@@ -23,7 +22,7 @@ public final class Configuration {
     // properties that should not be shown in the PerRuleProperty page
     public static final PropertyDescriptor<?>[] EXCLUDED_RULE_PROPERTIES = new PropertyDescriptor<?>[] {
         Rule.VIOLATION_SUPPRESS_REGEX_DESCRIPTOR, Rule.VIOLATION_SUPPRESS_XPATH_DESCRIPTOR, XPathRule.XPATH_DESCRIPTOR,
-        XPathRule.VERSION_DESCRIPTOR, StatisticalRule.SIGMA_DESCRIPTOR, StatisticalRule.TOP_SCORE_DESCRIPTOR };
+        XPathRule.VERSION_DESCRIPTOR, };
 
     public static Map<PropertyDescriptor<?>, Object> filteredPropertiesOf(PropertySource source) {
         Map<PropertyDescriptor<?>, Object> valuesByProp = new HashMap<>(source.getPropertiesByPropertyDescriptor());

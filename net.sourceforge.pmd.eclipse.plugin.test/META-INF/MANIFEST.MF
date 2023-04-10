@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Version: 7.0.0.qualifier
 Bundle-Name: PMD Test Plugin
 Bundle-SymbolicName: net.sourceforge.pmd.eclipse.plugin.test;singleton:=true
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-Vendor: PMD Development Team
 Require-Bundle: org.eclipse.ui,
  net.sourceforge.pmd.eclipse.plugin,

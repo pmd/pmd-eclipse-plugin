@@ -31,7 +31,8 @@ import net.sourceforge.pmd.eclipse.ui.preferences.editors.EnumerationEditorFacto
 import net.sourceforge.pmd.eclipse.ui.preferences.editors.SWTUtil;
 import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.lang.rule.XPathRule;
-import net.sourceforge.pmd.properties.EnumeratedProperty;
+import net.sourceforge.pmd.lang.rule.xpath.XPathVersion;
+import net.sourceforge.pmd.properties.PropertyDescriptor;
 
 /**
  *
@@ -150,7 +151,7 @@ public class XPathPanelManager extends AbstractRulePanelManager {
         gridData.grabExcessHorizontalSpace = false;
         versionLabel.setLayoutData(gridData);
 
-        final EnumeratedProperty<String> ep = XPathRule.VERSION_DESCRIPTOR;
+        final PropertyDescriptor<XPathVersion> ep = XPathRule.VERSION_DESCRIPTOR;
         xpathVersionField = new Combo(panel, SWT.READ_ONLY);
         gridData = new GridData();
         gridData.horizontalSpan = 1;
@@ -163,7 +164,7 @@ public class XPathPanelManager extends AbstractRulePanelManager {
             public void widgetSelected(SelectionEvent e) {
                 Rule rule = soleRule();
                 int selectionIdx = xpathVersionField.getSelectionIndex();
-                String newValue = (String) EnumerationEditorFactory.choices(ep)[selectionIdx][1];
+                XPathVersion newValue = (XPathVersion) EnumerationEditorFactory.choices(ep)[selectionIdx][1];
                 if (newValue.equals(rule.getProperty(ep))) {
                     return;
                 }

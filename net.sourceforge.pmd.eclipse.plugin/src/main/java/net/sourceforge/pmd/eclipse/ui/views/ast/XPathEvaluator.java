@@ -8,14 +8,16 @@ import java.util.List;
 
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.PmdAnalysis;
+import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.RuleSet;
+import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.eclipse.ui.actions.RuleSetUtil;
 import net.sourceforge.pmd.eclipse.util.internal.SpyingRule;
-import net.sourceforge.pmd.eclipse.util.internal.SpyingXPathRule;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.JavaLanguageModule;
+import net.sourceforge.pmd.lang.rule.XPathRule;
 import net.sourceforge.pmd.lang.rule.xpath.XPathVersion;
 
 /**
@@ -40,7 +42,7 @@ public final class XPathEvaluator {
 
         try (PmdAnalysis pmd = PmdAnalysis.create(configuration)) {
             pmd.addRuleSet(ruleset);
-            pmd.files().addSourceFile(source, "[snippet]");
+            pmd.files().addSourceFile("snippet.java", source);
             pmd.performAnalysis();
         }
 
@@ -61,19 +63,18 @@ public final class XPathEvaluator {
      * @param xpathVersion
      * @return
      */
-    public List<Node> evaluate(String source, String xpathQuery, String xpathVersion) {
-        SpyingXPathRule xpathRule = new SpyingXPathRule(XPathVersion.ofId(xpathVersion), xpathQuery, getLanguageVersion().getLanguage());
-        RuleSet ruleSet = RuleSetUtil.newSingle(xpathRule);
+    public List<RuleViolation> evaluate(String source, String xpathQuery, String xpathVersion) {
+        XPathRule xpathRule = new XPathRule(XPathVersion.ofId(xpathVersion), xpathQuery);
+        RuleSet ruleSet = RuleSet.forSingleRule(xpathRule);
 
         PMDConfiguration configuration = new PMDConfiguration();
         configuration.setIgnoreIncrementalAnalysis(true);
         configuration.setForceLanguageVersion(getLanguageVersion());
         try (PmdAnalysis pmd = PmdAnalysis.create(configuration)) {
             pmd.addRuleSet(ruleSet);
-            pmd.files().addSourceFile(source, "[snippet]");
-            pmd.performAnalysis();
+            pmd.files().addSourceFile("snippet.java", source);
+            Report report = pmd.performAnalysisAndCollectReport();
+            return report.getViolations();
         }
-
-        return xpathRule.getResult();
     }
 }

@@ -27,10 +27,10 @@ import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.cpd.CPD;
 import net.sourceforge.pmd.cpd.CPDConfiguration;
+import net.sourceforge.pmd.cpd.CPDReport;
 import net.sourceforge.pmd.cpd.Language;
 import net.sourceforge.pmd.cpd.LanguageFactory;
-import net.sourceforge.pmd.cpd.Match;
-import net.sourceforge.pmd.cpd.renderer.CPDRenderer;
+import net.sourceforge.pmd.cpd.renderer.CPDReportRenderer;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.runtime.PMDRuntimeConstants;
 import net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties;
@@ -46,7 +46,7 @@ public class DetectCutAndPasteCmd extends AbstractProjectCommand {
 
     private Language language;
     private int minTileSize;
-    private CPDRenderer renderer;
+    private CPDReportRenderer renderer;
     private String reportName;
     private boolean createReport;
     private List<IPropertyListener> listeners;
@@ -65,13 +65,13 @@ public class DetectCutAndPasteCmd extends AbstractProjectCommand {
         listeners = new ArrayList<>();
     }
 
-    private void notifyListeners(final CPD cpd) {
+    private void notifyListeners(final CPDReport cpdResult) {
         // trigger event propertyChanged for all listeners
         Display.getDefault().asyncExec(new Runnable() {
             @Override
             public void run() {
                 for (IPropertyListener listener : listeners) {
-                    listener.propertyChanged(cpd.getMatches(), PMDRuntimeConstants.PROPERTY_CPD);
+                    listener.propertyChanged(cpdResult.getMatches(), PMDRuntimeConstants.PROPERTY_CPD);
                 }
             }
         });
@@ -91,13 +91,13 @@ public class DetectCutAndPasteCmd extends AbstractProjectCommand {
             beginTask("Finding suspect Cut And Paste", getStepCount() * 2);
 
             if (!isCanceled()) {
-                final CPD cpd = detectCutAndPaste(files);
+                final CPDReport cpdResult = detectCutAndPaste(files);
 
                 if (!isCanceled()) {
                     if (createReport) {
-                        renderReport(cpd.getMatches());
+                        renderReport(cpdResult);
                     }
-                    notifyListeners(cpd);
+                    notifyListeners(cpdResult);
                 }
             }
         } catch (CoreException e) {
@@ -141,24 +141,7 @@ public class DetectCutAndPasteCmd extends AbstractProjectCommand {
         minTileSize = tilesize;
     }
 
-    /**
-     * @deprecated Use {@link #setCPDRenderer(CPDRenderer)} instead.
-     */
-    @Deprecated
-    public void setRenderer(final net.sourceforge.pmd.cpd.Renderer theRenderer) {
-        if (theRenderer != null) {
-            this.setCPDRenderer(new CPDRenderer() {
-                @Override
-                public void render(Iterator<Match> matches, Writer writer) throws IOException {
-                    writer.write(theRenderer.render(matches));
-                }
-            });
-        } else {
-            this.setCPDRenderer(null);
-        }
-    }
-
-    public void setCPDRenderer(CPDRenderer theRenderer) {
+    public void setCPDRenderer(CPDReportRenderer theRenderer) {
         this.renderer = theRenderer;
     }
 
@@ -223,7 +206,7 @@ public class DetectCutAndPasteCmd extends AbstractProjectCommand {
      * @return the CPD itself for retrieving the matches.
      * @throws CoreException
      */
-    private CPD detectCutAndPaste(final List<File> files) {
+    private CPDReport detectCutAndPaste(final List<File> files) {
         LOG.debug("Searching for project files");
 
         final CPD cpd = newCPD();
@@ -247,14 +230,14 @@ public class DetectCutAndPasteCmd extends AbstractProjectCommand {
             worked(getStepCount());
         }
 
-        return cpd;
+        return cpd.toReport();
     }
 
     private CPD newCPD() {
         CPDConfiguration config = new CPDConfiguration();
         config.setMinimumTileSize(minTileSize);
         config.setLanguage(language);
-        config.setEncoding(System.getProperty("file.encoding"));
+        config.setSourceEncoding(System.getProperty("file.encoding"));
         return new CPD(config);
     }
 
@@ -265,7 +248,7 @@ public class DetectCutAndPasteCmd extends AbstractProjectCommand {
      * @param matches
      *            matches of the CPD
      */
-    private void renderReport(Iterator<Match> matches) {
+    private void renderReport(CPDReport cpdResult) {
         try {
             LOG.debug("Rendering CPD report");
             subTask("Rendering CPD report");
@@ -283,7 +266,8 @@ public class DetectCutAndPasteCmd extends AbstractProjectCommand {
             byte[] data = new byte[0];
             try (ByteArrayOutputStream renderedReport = new ByteArrayOutputStream();
                  Writer writer = new OutputStreamWriter(renderedReport);) {
-                renderer.render(matches, writer);
+                renderer.render(cpdResult, writer);
+                writer.flush();
                 data = renderedReport.toByteArray();
             } catch (IOException e) {
                 LOG.error("Error while renderering CPD Report", e);
