@@ -21,7 +21,7 @@ This is a minor release.
 
 ## 10-April-2023: 7.0.0.v20230410-1305-rc1
 
-This is a release candiate for the next major release.
+This is a release candidate for the next major release.
 
 ### New and noteworthy
 
