@@ -37,7 +37,7 @@ else
     NEXT_PATCH=$(("${PATCH}" + 1))
 fi
 
-# allow to override the next version, e.g. via "DEVELOPMENT_VERSION=7.0.0-SNAPSHOT ./do-release.sh"
+# allow to override the next version, e.g. via "DEVELOPMENT_VERSION=7.0.0 ./do-release.sh"
 if [ "$DEVELOPMENT_VERSION" = "" ]; then
     DEVELOPMENT_VERSION="$MAJOR.$NEXT_MINOR.$NEXT_PATCH-SNAPSHOT"
 fi
@@ -59,7 +59,7 @@ export DEVELOPMENT_VERSION
 export BUILDQUALIFIER
 
 echo "RELEASE_VERSION: ${RELEASE_VERSION}.${BUILDQUALIFIER} (this release)"
-echo "DEVELOPMENT_VERSION: ${DEVELOPMENT_VERSION} (the next version after the release)"
+echo "DEVELOPMENT_VERSION: ${DEVELOPMENT_VERSION}-SNAPSHOT (the next version after the release)"
 echo "CURRENT_BRANCH: ${CURRENT_BRANCH}"
 
 echo
