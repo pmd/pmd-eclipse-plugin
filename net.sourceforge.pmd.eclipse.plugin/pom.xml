@@ -23,6 +23,13 @@
         <artifactId>pmd-dist</artifactId> <!-- pmd-dist depends on all modules of pmd, so we'll get everything -->
         <version>${pmd.version}</version>
         <type>pom</type>
+        <exclusions>
+          <!-- exclude pmd-ui, since that is a SNAPSHOT dependency which is not allowed in releases -->
+          <exclusion>
+            <groupId>net.sourceforge.pmd</groupId>
+            <artifactId>pmd-ui</artifactId>
+          </exclusion>
+        </exclusions>
     </dependency>
     <dependency>
         <groupId>javax.xml.bind</groupId>
