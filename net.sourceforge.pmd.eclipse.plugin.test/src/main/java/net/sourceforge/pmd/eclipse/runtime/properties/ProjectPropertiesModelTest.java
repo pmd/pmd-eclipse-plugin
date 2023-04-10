@@ -16,15 +16,10 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
-import java.util.TreeMap;
-import java.util.regex.Pattern;
 
 import org.apache.commons.io.IOUtils;
 import org.eclipse.core.resources.IFile;
@@ -48,13 +43,13 @@ import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetLoadException;
 import net.sourceforge.pmd.RuleSetLoader;
 import net.sourceforge.pmd.eclipse.EclipseUtils;
+import net.sourceforge.pmd.eclipse.internal.RuleSetAssertUtil;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.runtime.builder.PMDNature;
 import net.sourceforge.pmd.eclipse.runtime.preferences.IPreferencesManager;
 import net.sourceforge.pmd.eclipse.ui.actions.RuleSetUtil;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
-import net.sourceforge.pmd.properties.PropertyDescriptor;
 
 /**
  * Test the project properties model.
@@ -89,40 +84,11 @@ public class ProjectPropertiesModelTest {
             Assert.assertEquals(expectedCount, this.initialPluginRuleSet.getRules().size());
         }
         Assert.assertEquals(ruleCount, this.initialPluginRuleSet.getRules().size());
+
         RuleSet cloned = RuleSetUtil.newCopyOf(this.initialPluginRuleSet);
-        Assert.assertEquals(cloned.getRules().size(), this.initialPluginRuleSet.getRules().size());
-        Iterator<Rule> clonedIterator = cloned.getRules().iterator();
-        Iterator<Rule> initialIterator = this.initialPluginRuleSet.getRules().iterator();
-        for (int i = 0; i < cloned.getRules().size(); i++) {
-            System.out.println("Comparing rule " + i);
-            Rule clonedRule = clonedIterator.next();
-            Rule initialRule = initialIterator.next();
-            Assert.assertSame(clonedRule.getClass(), initialRule.getClass());
-            Assert.assertEquals(clonedRule.getName(), initialRule.getName());
-            Assert.assertEquals(clonedRule.getPriority(), initialRule.getPriority());
-            Map<PropertyDescriptor<?>, Object> clonedProperties = new TreeMap<>((a, b) -> a.name().compareTo(b.name()));
-            clonedProperties.putAll(clonedRule.getPropertiesByPropertyDescriptor());
-            Map<PropertyDescriptor<?>, Object> initialProperties = new TreeMap<>((a, b) -> a.name().compareTo(b.name()));
-            initialProperties.putAll(initialRule.getPropertiesByPropertyDescriptor());
-            Assert.assertEquals(clonedProperties.size(), initialProperties.size());
-            Iterator<Entry<PropertyDescriptor<?>, Object>> clonedPropertiesIterator = clonedProperties.entrySet().iterator();
-            Iterator<Entry<PropertyDescriptor<?>, Object>> initialPropertiesIterator = initialProperties.entrySet().iterator();
-            for (int j = 0; j < clonedProperties.size(); j++) {
-                Entry<PropertyDescriptor<?>, Object> clonedProperty = clonedPropertiesIterator.next();
-                Entry<PropertyDescriptor<?>, Object> initialProperty = initialPropertiesIterator.next();
-                Assert.assertEquals(clonedProperty.getKey(), initialProperty.getKey());
-                if (clonedProperty.getValue() instanceof Pattern) {
-                    Pattern clonedPattern = (Pattern) clonedProperty.getValue();
-                    Pattern initialPattern = (Pattern) initialProperty.getValue();
-                    Assert.assertEquals(clonedPattern.pattern(), initialPattern.pattern());
-                } else {
-                    Assert.assertEquals(clonedProperty.getValue(), initialProperty.getValue());
-                }
-            }
-        }
+        RuleSetAssertUtil.assertEqualsRules(cloned, initialPluginRuleSet);
 
         PMDPlugin.getDefault().getPreferencesManager().setRuleSet(this.initialPluginRuleSet);
-
     }
 
     @After
@@ -150,26 +116,6 @@ public class ProjectPropertiesModelTest {
         }
     }
 
-    public static void compareTwoRuleSets(RuleSet ruleSet1, RuleSet ruleSet2) {
-        if (!ruleSet1.getRules().equals(ruleSet2.getRules())) {
-            System.out.println("###################################################");
-            System.out.println("RuleSet1: " + ruleSet1 + " (count " + ruleSet1.size() + ") RuleSet2: " + ruleSet2 + " (count " + ruleSet2.size() + ")");
-            Iterator<Rule> it1 = ruleSet1.getRules().iterator();
-            Iterator<Rule> it2 = ruleSet2.getRules().iterator();
-            for (int i = 0; i < ruleSet2.getRules().size(); i++) {
-                Rule pluginRule = it1.next();
-                Rule projectRule = it2.next();
-
-                if (!Objects.equals(pluginRule, projectRule)) {
-                    System.out.println("i=" + i + ": pluginRule=" + pluginRule + " projectRule=" + projectRule);
-                    System.out.println("plugin: " + pluginRule.getName() + " (" + pluginRule.getLanguage() + ")");
-                    System.out.println("project: " + projectRule.getName() + " (" + projectRule.getLanguage() + ")");
-                }
-            }
-            System.out.println("###################################################");
-        }
-    }
-
     /**
      * Bug: when a user deselect a project rule it is not saved
      */
@@ -187,7 +133,7 @@ public class ProjectPropertiesModelTest {
 
         RuleSet projectRuleSet = model.getProjectRuleSet();
         Assert.assertEquals(this.initialPluginRuleSet.getRules().size(), projectRuleSet.getRules().size());
-        compareTwoRuleSets(initialPluginRuleSet, projectRuleSet);
+        RuleSetAssertUtil.compareTwoRuleSets(initialPluginRuleSet, projectRuleSet);
         Assert.assertEquals("The project ruleset is not equal to the plugin ruleset",
                 this.initialPluginRuleSet.getRules(), projectRuleSet.getRules());
         int ruleCountBefore = projectRuleSet.getRules().size();
