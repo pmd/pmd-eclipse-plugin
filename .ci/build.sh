@@ -35,7 +35,7 @@ function build() {
     # stop early for invalid maven version and branch/tag combination
     pmd_ci_maven_verify_version || exit 0
 
-    if [ "$(pmd_ci_utils_get_os)" != "linux" ]; then
+    if [[ "$(pmd_ci_utils_get_os)" != "linux" || "${DEPLOY}" != "true" ]]; then
         pmd_ci_log_group_start "Build with mvnw"
             ${xvfb_cmd} ./mvnw clean verify \
                 --show-version --errors --batch-mode --no-transfer-progress \

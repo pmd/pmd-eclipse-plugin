@@ -4,6 +4,9 @@ inputs:
   targetPlatform:
     description: 'The eclipse target platform to build the plugins against'
     required: true
+  deploy:
+    description: 'Whether to build only or also deploy the update site'
+    required: true
   pmdCiSecretPassphrase:
     description: 'Secret needed for releases'
     required: false
@@ -19,5 +22,6 @@ runs:
       shell: bash
       env:
         TARGET_PLATFORM: ${{ inputs.targetPlatform }}
+        DEPLOY: ${{ inputs.deploy }}
         PMD_CI_SECRET_PASSPHRASE: ${{ inputs.pmdCiSecretPassphrase }}
         GITHUB_TOKEN: ${{ inputs.githubToken }}

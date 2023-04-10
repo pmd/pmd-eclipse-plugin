@@ -30,6 +30,7 @@ jobs:
         uses: ./.github/actions/build
         with:
           targetPlatform: 2023-03
+          deploy: true
           pmdCiSecretPassphrase: ${{ secrets.PMD_CI_SECRET_PASSPHRASE }}
           githubToken: ${{ secrets.GITHUB_TOKEN }}
 
@@ -70,5 +71,6 @@ jobs:
         uses: ./.github/actions/build
         with:
           targetPlatform: ${{ matrix.targetPlatform }}
+          deploy: false
           pmdCiSecretPassphrase: ${{ secrets.PMD_CI_SECRET_PASSPHRASE }}
           githubToken: ${{ secrets.GITHUB_TOKEN }}
