@@ -308,7 +308,7 @@ public class BaseVisitor {
                      PmdAnalysis pmdAnalysis = PmdAnalysis.create(configuration());) {
 
                     String sourceContents = IOUtil.toString(input);
-                    pmdAnalysis.files().addSourceFile(sourceCodeFile.getAbsolutePath(), sourceContents);
+                    pmdAnalysis.files().addSourceFile(sourceContents, sourceCodeFile.getAbsolutePath());
 
                     pmdAnalysis.addRuleSets(getRuleSetList());
 

@@ -25,6 +25,7 @@ import net.sourceforge.pmd.lang.rule.xpath.XPathVersion;
  * @author Brian Remedios
  */
 public final class XPathEvaluator {
+    private static final String SNIPPET_FILENAME = "snippet.java";
 
     public static final XPathEvaluator INSTANCE = new XPathEvaluator();
 
@@ -42,7 +43,7 @@ public final class XPathEvaluator {
 
         try (PmdAnalysis pmd = PmdAnalysis.create(configuration)) {
             pmd.addRuleSet(ruleset);
-            pmd.files().addSourceFile("snippet.java", source);
+            pmd.files().addSourceFile(source, SNIPPET_FILENAME);
             pmd.performAnalysis();
         }
 
@@ -50,7 +51,7 @@ public final class XPathEvaluator {
     }
 
     private LanguageVersion getLanguageVersion() {
-        return LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getDefaultVersion();
+        return LanguageRegistry.PMD.getLanguageByFullName(JavaLanguageModule.NAME).getDefaultVersion();
     }
 
     /**
@@ -72,7 +73,7 @@ public final class XPathEvaluator {
         configuration.setForceLanguageVersion(getLanguageVersion());
         try (PmdAnalysis pmd = PmdAnalysis.create(configuration)) {
             pmd.addRuleSet(ruleSet);
-            pmd.files().addSourceFile("snippet.java", source);
+            pmd.files().addSourceFile(source, SNIPPET_FILENAME);
             Report report = pmd.performAnalysisAndCollectReport();
             return report.getViolations();
         }

@@ -76,7 +76,7 @@ public class BasicPMDTest {
         final String sourceCode = "public class Foo {\n public void foo() {\nreturn;\n}}";
 
         try (PmdAnalysis pmd = PmdAnalysis.create(configuration)) {
-            pmd.files().addSourceFile("Foo.java", sourceCode);
+            pmd.files().addSourceFile(sourceCode, "Foo.java");
             Report result = pmd.performAnalysisAndCollectReport();
 
             Assert.assertFalse("There should be at least one violation", result.getViolations().isEmpty());

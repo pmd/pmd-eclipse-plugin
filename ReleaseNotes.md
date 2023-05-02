@@ -13,7 +13,11 @@ This is a minor release.
 
 ### New and noteworthy
 
+* Updated to PMD 7.0.0-rc2
+
 ### Fixed Issues
+
+* [#176](https://github.com/pmd/pmd-eclipse-plugin/pull/176): Update to pmd 7.0.0-rc2
 
 ### API Changes
 
