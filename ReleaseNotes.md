@@ -21,6 +21,22 @@ This is a minor release.
 
 ### API Changes
 
+The following PMD packages from pmd-core are exported and can be used by other plugins:
+* net.sourceforge.pmd
+* net.sourceforge.pmd.cpd
+* net.sourceforge.pmd.cpd.renderer
+* net.sourceforge.pmd.lang
+* net.sourceforge.pmd.lang.ast
+* net.sourceforge.pmd.lang.document
+* net.sourceforge.pmd.lang.metrics
+* net.sourceforge.pmd.lang.rule
+* net.sourceforge.pmd.lang.rule.xpath
+* net.sourceforge.pmd.properties
+* net.sourceforge.pmd.properties.constraints
+* net.sourceforge.pmd.renderers
+* net.sourceforge.pmd.reporting
+* net.sourceforge.pmd.util
+
 ### External Contributions
 
 ## 10-April-2023: 7.0.0.v20230410-1321-rc1
