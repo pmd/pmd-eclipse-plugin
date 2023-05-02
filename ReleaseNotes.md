@@ -7,9 +7,9 @@ Eclipse Update Site:
 *   Releases: <https://pmd.github.io/pmd-eclipse-plugin-p2-site/>
 *   Snapshots: <https://pmd.github.io/pmd-eclipse-plugin-p2-site/snapshot/>
 
-## ????: 7.0.0.v????
+## 02-May-2023: 7.0.0.v20230502-1028-rc2
 
-This is a minor release.
+This is a release candidate for the next major release.
 
 ### New and noteworthy
 
@@ -37,8 +37,6 @@ The following PMD packages from pmd-core are exported and can be used by other p
 * net.sourceforge.pmd.renderers
 * net.sourceforge.pmd.reporting
 * net.sourceforge.pmd.util
-
-### External Contributions
 
 ## 10-April-2023: 7.0.0.v20230410-1321-rc1
 
