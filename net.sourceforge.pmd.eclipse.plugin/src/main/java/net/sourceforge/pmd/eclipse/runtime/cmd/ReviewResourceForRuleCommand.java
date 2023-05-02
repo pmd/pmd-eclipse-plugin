@@ -94,7 +94,7 @@ public class ReviewResourceForRuleCommand extends AbstractDefaultCommand {
                      PmdAnalysis pmdAnalysis = PmdAnalysis.create(configuration)) {
 
                     pmdAnalysis.addRuleSet(ruleSet);
-                    pmdAnalysis.files().addSourceFile(sourceCodeFile.getAbsolutePath(), IOUtil.toString(input));
+                    pmdAnalysis.files().addSourceFile(IOUtil.toString(input), sourceCodeFile.getAbsolutePath());
 
                     report = pmdAnalysis.performAnalysisAndCollectReport();
                 } catch (Exception e) {
