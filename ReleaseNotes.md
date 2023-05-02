@@ -13,6 +13,8 @@ This is a minor release.
 
 ### New and noteworthy
 
+* Updated to PMD 7.0.0-rc2
+
 ### Fixed Issues
 
 ### API Changes
