@@ -4,10 +4,6 @@
 
 package net.sourceforge.pmd.eclipse;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
 
@@ -20,41 +16,13 @@ import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetLoader;
 import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.lang.LanguageRegistry;
-import net.sourceforge.pmd.lang.java.JavaLanguageModule;
-import net.sourceforge.pmd.util.datasource.DataSource;
 
 /**
- * Test if PMD can be run correctly
+ * Test if PMD can be run correctly.
  * 
  * @author Philippe Herlin
- * 
  */
 public class BasicPMDTest {
-
-    static class StringDataSource implements DataSource {
-        private final ByteArrayInputStream is;
-
-        StringDataSource(final String source) {
-            this.is = new ByteArrayInputStream(source.getBytes(StandardCharsets.UTF_8));
-        }
-
-        @Override
-        public InputStream getInputStream() {
-            return is;
-        }
-
-        @Override
-        public String getNiceFileName(final boolean shortNames, final String inputFileName) {
-            return "somefile.txt";
-        }
-
-        @Override
-        public void close() throws IOException {
-            // no-op
-        }
-    }
-
     /**
      * Try to load all the plugin known rulesets.
      * 
@@ -66,10 +34,8 @@ public class BasicPMDTest {
         Assert.assertFalse("No Rulesets found", standardRuleSets.isEmpty());
     }
 
-    private void runPmd(String javaVersion) {
+    private void runPmd() {
         PMDConfiguration configuration = new PMDConfiguration();
-        configuration.setDefaultLanguageVersion(
-                LanguageRegistry.PMD.getLanguageById(JavaLanguageModule.TERSE_NAME).getVersion(javaVersion));
         configuration.setRuleSets(Arrays.asList("category/java/codestyle.xml/UnnecessaryReturn"));
         configuration.setIgnoreIncrementalAnalysis(true);
 
@@ -93,25 +59,7 @@ public class BasicPMDTest {
      * 
      */
     @Test
-    public void testRunPmdJdk13() {
-        runPmd("1.3");
-    }
-
-    /**
-     * Let see with Java 1.4.
-     * 
-     */
-    @Test
-    public void testRunPmdJdk14() {
-        runPmd("1.4");
-    }
-
-    /**
-     * Let see with Java 1.5.
-     * 
-     */
-    @Test
-    public void testRunPmdJdk15() {
-        runPmd("1.5");
+    public void testRunPmd() {
+        runPmd();
     }
 }

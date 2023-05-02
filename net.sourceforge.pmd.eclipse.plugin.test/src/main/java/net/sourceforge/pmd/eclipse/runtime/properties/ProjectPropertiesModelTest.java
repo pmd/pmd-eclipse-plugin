@@ -39,6 +39,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetLoadException;
 import net.sourceforge.pmd.RuleSetLoader;
@@ -49,7 +50,8 @@ import net.sourceforge.pmd.eclipse.runtime.builder.PMDNature;
 import net.sourceforge.pmd.eclipse.runtime.preferences.IPreferencesManager;
 import net.sourceforge.pmd.eclipse.ui.actions.RuleSetUtil;
 import net.sourceforge.pmd.lang.LanguageRegistry;
-import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
+import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.rule.AbstractRule;
 
 /**
  * Test the project properties model.
@@ -270,7 +272,7 @@ public class ProjectPropertiesModelTest {
     }
 
     /**
-     * When rules are added to the plugin preferences, these rules should also be added to the project
+     * When rules are added to the plugin preferences, these rules should also be added to the project.
      */
     @Test
     public void testProjectRuleSet3() throws PropertiesException, RuleSetLoadException, CoreException {
@@ -284,10 +286,15 @@ public class ProjectPropertiesModelTest {
                 this.initialPluginRuleSet.getRules(), projectRuleSet.getRules());
 
         // 2. add a rule to the plugin rule set
-        final Rule myRule = new AbstractJavaRule() {
+        final Rule myRule = new AbstractRule() {
             @Override
             public String getName() {
                 return "MyRule";
+            }
+
+            @Override
+            public void apply(Node target, RuleContext ctx) {
+                // do nothing
             }
         };
         myRule.setLanguage(LanguageRegistry.PMD.getLanguageById("java"));
