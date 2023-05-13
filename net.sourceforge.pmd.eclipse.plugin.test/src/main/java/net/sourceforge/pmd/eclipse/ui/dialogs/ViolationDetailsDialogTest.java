@@ -16,6 +16,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotView;
+import org.eclipse.swtbot.swt.finder.exceptions.WidgetNotFoundException;
 import org.eclipse.swtbot.swt.finder.waits.DefaultCondition;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotShell;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTableItem;
@@ -83,9 +84,27 @@ public class ViolationDetailsDialogTest extends AbstractSWTBotTest {
         openJavaPerspective();
 
         SWTBotView problemsView = bot.viewByPartName("Problems");
-        problemsView.bot().tree().getTreeItem("Warnings (4 items)").expand();
-        SWTBotTreeItem item = problemsView.bot().tree().getTreeItem("Warnings (4 items)").getNode("UnnecessaryModifier: Unnecessary modifier 'public' on method 'run': the method is declared in an interface type").select();
-        item.contextMenu("Show details...").click();
+        SWTBotTreeItem item = problemsView.bot().tree().getTreeItem("Warnings (4 items)").expand();
+        String markerText = "UnnecessaryModifier: Unnecessary modifier 'public' on method 'run': the method is declared in an interface type";
+
+        bot.waitUntil(new DefaultCondition() {
+            @Override
+            public boolean test() throws Exception {
+                try {
+                    item.getNode(markerText);
+                } catch (WidgetNotFoundException e) {
+                    return false;
+                }
+                return true;
+            }
+
+            @Override
+            public String getFailureMessage() {
+                return "Marker not found";
+            }
+        });
+        SWTBotTreeItem markerItem = item.getNode(markerText).select();
+        markerItem.contextMenu("Show details...").click();
 
         assertDialog();
     }
