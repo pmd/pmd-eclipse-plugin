@@ -15,6 +15,8 @@ This is a minor release.
 
 ### Fixed Issues
 
+* [#178](https://github.com/pmd/pmd-eclipse-plugin/issues/178): Message not interpolated in "Show details..." dialog
+
 ### API Changes
 
 The following packages are no longer public API and are not exported anymore:
