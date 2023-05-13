@@ -17,6 +17,16 @@ This is a minor release.
 
 ### API Changes
 
+The following packages are no longer public API and are not exported anymore:
+* name.herlin.command
+* net.sourceforge.pmd.eclipse.core.impl
+* net.sourceforge.pmd.eclipse.ui
+* net.sourceforge.pmd.eclipse.ui.actions
+* net.sourceforge.pmd.eclipse.ui.model
+* net.sourceforge.pmd.eclipse.ui.preferences.br
+* net.sourceforge.pmd.eclipse.ui.properties
+* net.sourceforge.pmd.eclipse.ui.views.actions
+
 The following classes have finally been removed. Most of them have been deprecated before:
 * net.sourceforge.pmd.eclipse.ui.preferences.PMDPreferencePage
 * net.sourceforge.pmd.eclipse.ui.preferences.RuleCellModifier
