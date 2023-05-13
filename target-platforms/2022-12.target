@@ -1,12 +1,17 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?pde?>
 <!-- generated with https://github.com/eclipse-cbi/targetplatform-dsl -->
-<target name="2022-12 (4.26)" sequenceNumber="1679646190">
+<target name="2022-12 (4.26)" sequenceNumber="1683993262">
   <locations>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
       <unit id="org.eclipse.platform.feature.group" version="4.26.0.v20221123-2302"/>
       <unit id="org.eclipse.jdt.feature.group" version="3.18.1400.v20221123-1800"/>
       <unit id="org.eclipse.wst.xml_core.feature.feature.group" version="3.28.0.v202211200019"/>
+      <unit id="org.eclipse.pde.feature.group" version="3.14.1400.v20221123-1800"/>
+      <unit id="org.eclipse.swtbot.eclipse.feature.group" version="4.0.0.202206011610"/>
+      <unit id="org.eclipse.swtbot.feature.group" version="4.0.0.202206011610"/>
+      <unit id="org.eclipse.swtbot.ide.feature.group" version="4.0.0.202206011610"/>
+      <unit id="org.eclipse.swtbot.generator.feature.feature.group" version="4.0.0.202206011610"/>
       <repository location="https://download.eclipse.org/releases/2022-12/"/>
     </location>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
