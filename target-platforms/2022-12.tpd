@@ -4,6 +4,11 @@ location "https://download.eclipse.org/releases/2022-12/" {
 	org.eclipse.platform.feature.group
 	org.eclipse.jdt.feature.group
 	org.eclipse.wst.xml_core.feature.feature.group
+	org.eclipse.pde.feature.group
+	org.eclipse.swtbot.eclipse.feature.group
+	org.eclipse.swtbot.feature.group
+	org.eclipse.swtbot.ide.feature.group
+	org.eclipse.swtbot.generator.feature.feature.group
 }
 
 location "https://download.eclipse.org/tools/orbit/downloads/2022-12/" {

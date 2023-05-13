@@ -43,7 +43,6 @@ import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.ui.actions.RuleSetUtil;
 import net.sourceforge.pmd.eclipse.ui.actions.internal.InternalRuleSetUtil;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
-import net.sourceforge.pmd.eclipse.ui.preferences.PMDPreferencePage;
 import net.sourceforge.pmd.eclipse.ui.preferences.RuleLabelProvider;
 import net.sourceforge.pmd.eclipse.ui.preferences.RuleSetContentProvider;
 import net.sourceforge.pmd.eclipse.ui.preferences.RuleTableViewerSorter;
@@ -57,6 +56,12 @@ import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.SummaryPanelMana
  * @author Brian Remedios
  */
 public class PMDProjectPropertyPage extends PropertyPage {
+    private static final String PROPERTY_LANGUAGE = "language";
+    private static final String PROPERTY_RULESET_NAME = "ruleSetname";
+    private static final String PROPERTY_RULE_NAME = "ruleName";
+    //private static final String PROPERTY_SINCE = "since";
+    private static final String PROPERTY_PRIORITY = "priority";
+    //private static final String PROPERTY_DESCRIPTION = "description";
 
     private PMDPropertyPageController controller;
     private PMDPropertyPageBean model;
@@ -433,11 +438,11 @@ public class PMDProjectPropertyPage extends PropertyPage {
         availableRulesTableViewer.setContentProvider(new RuleSetContentProvider());
         availableRulesTableViewer.setLabelProvider(new RuleLabelProvider());
         availableRulesTableViewer.setComparator(availableRuleTableViewerSorter);
-        availableRulesTableViewer.setColumnProperties(new String[] { PMDPreferencePage.PROPERTY_LANGUAGE,
-            PMDPreferencePage.PROPERTY_RULESET_NAME, PMDPreferencePage.PROPERTY_RULE_NAME,
-            // PMDPreferencePage.PROPERTY_SINCE,
-            PMDPreferencePage.PROPERTY_PRIORITY,
-            // PMDPreferencePage.PROPERTY_DESCRIPTION
+        availableRulesTableViewer.setColumnProperties(new String[] { PROPERTY_LANGUAGE,
+            PROPERTY_RULESET_NAME, PROPERTY_RULE_NAME,
+            // PROPERTY_SINCE,
+            PROPERTY_PRIORITY,
+            // PROPERTY_DESCRIPTION
         });
 
         availableRulesTableViewer.addSelectionChangedListener(new ISelectionChangedListener() {

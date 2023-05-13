@@ -13,6 +13,9 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.jdt.core,
  org.eclipse.jdt.launching,
  org.junit,
- org.apache.commons.io
+ org.apache.commons.io,
+ org.eclipse.swtbot.go,
+ org.eclipse.jdt.ui,
+ org.eclipse.ui.navigator.resources
 Bundle-Activator: net.sourceforge.pmd.eclipse.internal.TestActivator
 Bundle-ActivationPolicy: lazy

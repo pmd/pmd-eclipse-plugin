@@ -303,10 +303,6 @@
                id="net.sourceforge.pmd.eclipse.ui.keywords.pmd">
          </keywordReference>
       </page>
-<!--
-      <page name="PMD - Original" category="net.sourceforge.pmd.ui.preferences.generalPreferencesPage" class="net.sourceforge.pmd.eclipse.ui.preferences.PMDPreferencePage" id="net.sourceforge.pmd.ui.preferences.pmdPreferencePage">
-      </page>
--->
       <page
             name="%preferences.cpd"
             category="net.sourceforge.pmd.eclipse.ui.preferences.generalPreferencesPage"
@@ -828,6 +824,52 @@
             properties="isPMDMarker"
             type="org.eclipse.core.resources.IMarker">
       </propertyTester>
+   </extension>
+
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            id="net.sourceforge.pmd.eclipse.plugin.showViolationDetailsCommand"
+            name="%action.show_details">
+      </command>
+   </extension>
+
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            locationURI="popup:org.eclipse.ui.ide.MarkersView">
+         <command
+               commandId="net.sourceforge.pmd.eclipse.plugin.showViolationDetailsCommand"
+               icon="icons/pmd-icon-32.gif"
+               label="%action.show_details"
+               style="push">
+         </command>
+      </menuContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.handlers">
+      <handler
+            class="net.sourceforge.pmd.eclipse.ui.views.actions.ShowViolationDetailsHandler"
+            commandId="net.sourceforge.pmd.eclipse.plugin.showViolationDetailsCommand">
+         <enabledWhen>
+            <with
+                  variable="selection">
+               <count
+                     value="1">
+               </count>
+               <iterate
+                     ifEmpty="false">
+                     <adapt
+                           type="org.eclipse.core.resources.IMarker">
+	                     <test
+	                           property="net.sourceforge.pmd.eclipse.plugin.isPMDMarker">
+	                     </test>
+                     </adapt>
+               </iterate>
+            </with>
+         </enabledWhen>
+      </handler>
    </extension>
 
 </plugin>

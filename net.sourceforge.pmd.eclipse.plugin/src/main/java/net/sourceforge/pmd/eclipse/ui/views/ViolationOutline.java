@@ -37,7 +37,7 @@ import net.sourceforge.pmd.eclipse.ui.views.actions.PriorityFilterAction;
 import net.sourceforge.pmd.eclipse.ui.views.actions.QuickFixAction;
 import net.sourceforge.pmd.eclipse.ui.views.actions.RemoveViolationAction;
 import net.sourceforge.pmd.eclipse.ui.views.actions.ReviewAction;
-import net.sourceforge.pmd.eclipse.ui.views.actions.ShowRuleAction;
+import net.sourceforge.pmd.eclipse.ui.views.actions.ShowViolationDetailsAction;
 
 /**
  * A View to show a list of PMD-Violations for a file
@@ -142,9 +142,9 @@ public class ViolationOutline extends AbstractPMDPagebookView implements ISelect
     }
 
     private void buildMenu(IMenuManager manager, TableViewer viewer) {
-        // show the Rule Dialog
-        Action showRuleAction = new ShowRuleAction(viewer, getSite().getShell());
-        manager.add(showRuleAction);
+        // show the Violation Details Dialog
+        Action showViolationDetailsAction = new ShowViolationDetailsAction(this.getSite().getShell(), viewer);
+        manager.add(showViolationDetailsAction);
 
         // add Review Comment
         ReviewAction reviewAction = new ReviewAction(viewer);
