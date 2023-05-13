@@ -18,8 +18,9 @@ import net.sourceforge.pmd.eclipse.ui.preferences.RuleDialog;
  * Implements the call of the rule dialog to show rule data.
  *
  * @author Philippe Herlin
- *
+ * @deprecated
  */
+@Deprecated
 public class ShowRuleAction extends AbstractViolationSelectionAction {
 
     private Shell shell;

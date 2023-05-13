@@ -251,6 +251,16 @@ public final class StringKeys {
     public static final String VIEW_MENU_PACKFILES = "view.menu.show_pack_files";
     public static final String VIEW_MENU_PRESENTATION_TYPE = "view.menu.show_type";
 
+    public static final String DIALOG_VIOLATION_DETAILS_TITLE = "dialog.violation_details.title";
+    public static final String DIALOG_VIOLATION_DETAILS_LOCATION = "dialog.violation_details.location";
+    public static final String DIALOG_VIOLATION_DETAILS_EXAMPLES = "dialog.violation_details.examples";
+    public static final String DIALOG_VIOLATION_DETAILS_MESSAGE = "dialog.violation_details.message";
+    public static final String DIALOG_VIOLATION_DETAILS_RULENAME = "dialog.violation_details.rulename";
+    public static final String DIALOG_VIOLATION_DETAILS_CATEGORY = "dialog.violation_details.category";
+    public static final String DIALOG_VIOLATION_DETAILS_PRIORITY = "dialog.violation_details.priority";
+    public static final String DIALOG_VIOLATION_DETAILS_DESCRIPTION = "dialog.violation_details.description";
+    public static final String DIALOG_VIOLATION_DETAILS_INFOURL = "dialog.violation_details.infourl";
+
     public static final String DIALOG_PREFS_ADD_NEW_PROPERTY = "dialog.preferences.add_new_property";
 
     public static final String RULEEDIT_LABEL_MIN = "preference.ruleedit.label.min";
