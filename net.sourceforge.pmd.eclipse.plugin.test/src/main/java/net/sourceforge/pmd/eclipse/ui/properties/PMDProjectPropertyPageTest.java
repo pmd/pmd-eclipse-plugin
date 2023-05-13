@@ -11,57 +11,23 @@ import static org.junit.Assert.assertTrue;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.jdt.ui.JavaUI;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swtbot.eclipse.finder.SWTWorkbenchBot;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotView;
 import org.eclipse.swtbot.swt.finder.SWTBot;
-import org.eclipse.swtbot.swt.finder.junit.SWTBotJunit4ClassRunner;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotCheckBox;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotShell;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
-import org.eclipse.ui.IWorkbench;
-import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.WorkbenchException;
-import org.eclipse.ui.navigator.resources.ProjectExplorer;
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
+import net.sourceforge.pmd.eclipse.AbstractSWTBotTest;
 import net.sourceforge.pmd.eclipse.EclipseUtils;
 import net.sourceforge.pmd.eclipse.internal.ResourceUtil;
 
-@RunWith(SWTBotJunit4ClassRunner.class)
-public class PMDProjectPropertyPageTest {
-    private static SWTWorkbenchBot bot;
-    private static final String PROJECT_NAME = PMDProjectPropertyPageTest.class.getName();
+public class PMDProjectPropertyPageTest extends AbstractSWTBotTest {
+    private static final String PROJECT_NAME = PMDProjectPropertyPageTest.class.getSimpleName();
 
     private IProject testProject;
-
-    @BeforeClass
-    public static void initBot() throws InterruptedException {
-        bot = new SWTWorkbenchBot();
-        for (SWTBotView view : bot.views()) {
-            if ("Welcome".equals(view.getTitle())) {
-                view.close();
-            }
-        }
-        openJavaPerspective();
-    }
-
-    @AfterClass
-    public static void afterClass() {
-        try {
-            bot.resetWorkbench();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 
     @Before
     public void setUp() throws Exception {
@@ -134,22 +100,5 @@ public class PMDProjectPropertyPageTest {
         SWTBotShell dialog = bot.shell("Properties for " + PROJECT_NAME);
         dialog.bot().tree().getTreeItem("PMD").select();
         return dialog.bot();
-    }
-
-    private static void openJavaPerspective() throws InterruptedException {
-        Display.getDefault().syncExec(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    IWorkbench workbench = PlatformUI.getWorkbench();
-                    IWorkbenchWindow activeWorkbenchWindow = workbench.getActiveWorkbenchWindow();
-                    workbench.showPerspective(JavaUI.ID_PERSPECTIVE, activeWorkbenchWindow);
-                    IWorkbenchPage activePage = activeWorkbenchWindow.getActivePage();
-                    activePage.showView(ProjectExplorer.VIEW_ID);
-                } catch (WorkbenchException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
     }
 }
