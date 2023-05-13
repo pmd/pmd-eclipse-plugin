@@ -62,6 +62,7 @@ import net.sourceforge.pmd.eclipse.ui.ShapePicker;
 import net.sourceforge.pmd.eclipse.ui.model.RootRecord;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.BasicTableManager;
+import net.sourceforge.pmd.eclipse.ui.preferences.br.PMDPreferencePage2;
 import net.sourceforge.pmd.eclipse.ui.priority.PriorityColumnUI;
 import net.sourceforge.pmd.eclipse.ui.priority.PriorityDescriptor;
 import net.sourceforge.pmd.eclipse.ui.priority.PriorityDescriptorCache;
@@ -71,7 +72,7 @@ import net.sourceforge.pmd.eclipse.ui.priority.PriorityDescriptorIcon;
  * The top-level page for PMD preferences
  *
  * @see CPDPreferencePage
- * @see PMDPreferencePage
+ * @see PMDPreferencePage2
  *
  * @author Philippe Herlin
  * @author Brian Remedios

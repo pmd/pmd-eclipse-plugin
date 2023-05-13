@@ -17,6 +17,16 @@ This is a minor release.
 
 ### API Changes
 
+The following classes have finally been removed. Most of them have been deprecated before:
+* net.sourceforge.pmd.eclipse.ui.preferences.PMDPreferencePage
+* net.sourceforge.pmd.eclipse.ui.preferences.RuleCellModifier
+* net.sourceforge.pmd.eclipse.ui.preferences.RuleDialog
+* net.sourceforge.pmd.eclipse.ui.preferences.RulePropertyCellModifier (was not deprecated)
+* net.sourceforge.pmd.eclipse.ui.preferences.RuleSetExcludeIncludePatternCellModifier (was not deprecated)
+* net.sourceforge.pmd.eclipse.ui.properties.PMDPropertyPage
+* net.sourceforge.pmd.eclipse.ui.views.actions.ShowRuleAction (was not deprecated)
+* net.sourceforge.pmd.eclipse.ui.views.rules.RuleEditorView
+
 ### External Contributions
 
 ## 02-May-2023: 7.0.0.v20230502-1028-rc2
