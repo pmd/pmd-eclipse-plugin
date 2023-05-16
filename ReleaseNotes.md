@@ -15,6 +15,7 @@ This is a minor release.
 
 ### Fixed Issues
 
+* [#171](https://github.com/pmd/pmd-eclipse-plugin/pull/171):   Radio button for local rules in project properties dialog is missing
 * [#178](https://github.com/pmd/pmd-eclipse-plugin/issues/178): Message not interpolated in "Show details..." dialog
 
 ### API Changes

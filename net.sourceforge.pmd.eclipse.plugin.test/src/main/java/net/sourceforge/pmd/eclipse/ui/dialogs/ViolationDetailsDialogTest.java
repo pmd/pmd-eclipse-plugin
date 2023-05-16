@@ -14,61 +14,33 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.jdt.ui.JavaUI;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swtbot.eclipse.finder.SWTWorkbenchBot;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotView;
-import org.eclipse.swtbot.swt.finder.junit.SWTBotJunit4ClassRunner;
+import org.eclipse.swtbot.swt.finder.exceptions.WidgetNotFoundException;
 import org.eclipse.swtbot.swt.finder.waits.DefaultCondition;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotShell;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTableItem;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTree;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
 import org.eclipse.ui.IWorkbench;
-import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.WorkbenchException;
-import org.eclipse.ui.navigator.resources.ProjectExplorer;
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
+import net.sourceforge.pmd.eclipse.AbstractSWTBotTest;
 import net.sourceforge.pmd.eclipse.EclipseUtils;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.runtime.PMDRuntimeConstants;
 import net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties;
 
-@RunWith(SWTBotJunit4ClassRunner.class)
-public class ViolationDetailsDialogTest {
-    private static SWTWorkbenchBot bot;
+public class ViolationDetailsDialogTest extends AbstractSWTBotTest {
     private static final String PROJECT_NAME = ViolationDetailsDialogTest.class.getSimpleName();
 
     private IProject testProject;
-
-    @BeforeClass
-    public static void initBot() throws InterruptedException {
-        bot = new SWTWorkbenchBot();
-        for (SWTBotView view : bot.views()) {
-            if ("Welcome".equals(view.getTitle())) {
-                view.close();
-            }
-        }
-    }
-
-    @AfterClass
-    public static void afterClass() {
-        try {
-            bot.resetWorkbench();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
 
     @Before
     public void setUp() throws Exception {
@@ -112,9 +84,28 @@ public class ViolationDetailsDialogTest {
         openJavaPerspective();
 
         SWTBotView problemsView = bot.viewByPartName("Problems");
-        problemsView.bot().tree().getTreeItem("Warnings (4 items)").expand();
-        SWTBotTreeItem item = problemsView.bot().tree().getTreeItem("Warnings (4 items)").getNode("UnnecessaryModifier: Unnecessary modifier 'public' on method 'run': the method is declared in an interface type").select();
-        item.contextMenu("Show details...").click();
+        String markerText = "UnnecessaryModifier: Unnecessary modifier 'public' on method 'run': the method is declared in an interface type";
+
+        problemsView.bot().waitUntil(new DefaultCondition() {
+            @Override
+            public boolean test() throws Exception {
+                try {
+                    SWTBotTreeItem item = bot.tree().getTreeItem("Warnings (4 items)").expand();
+                    item.getNode(markerText);
+                } catch (WidgetNotFoundException e) {
+                    return false;
+                }
+                return true;
+            }
+
+            @Override
+            public String getFailureMessage() {
+                return "Marker not found";
+            }
+        });
+        SWTBotTreeItem item = problemsView.bot().tree().getTreeItem("Warnings (4 items)").expand();
+        SWTBotTreeItem markerItem = item.getNode(markerText).select();
+        markerItem.contextMenu("Show details...").click();
 
         assertDialog();
     }
@@ -173,23 +164,6 @@ public class ViolationDetailsDialogTest {
                     IWorkbench workbench = PlatformUI.getWorkbench();
                     IWorkbenchWindow activeWorkbenchWindow = workbench.getActiveWorkbenchWindow();
                     workbench.showPerspective(PMDRuntimeConstants.ID_PERSPECTIVE, activeWorkbenchWindow);
-                } catch (WorkbenchException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-    }
-
-    private static void openJavaPerspective() throws InterruptedException {
-        Display.getDefault().syncExec(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    IWorkbench workbench = PlatformUI.getWorkbench();
-                    IWorkbenchWindow activeWorkbenchWindow = workbench.getActiveWorkbenchWindow();
-                    workbench.showPerspective(JavaUI.ID_PERSPECTIVE, activeWorkbenchWindow);
-                    IWorkbenchPage activePage = activeWorkbenchWindow.getActivePage();
-                    activePage.showView(ProjectExplorer.VIEW_ID);
                 } catch (WorkbenchException e) {
                     e.printStackTrace();
                 }
