@@ -84,13 +84,13 @@ public class ViolationDetailsDialogTest extends AbstractSWTBotTest {
         openJavaPerspective();
 
         SWTBotView problemsView = bot.viewByPartName("Problems");
-        SWTBotTreeItem item = problemsView.bot().tree().getTreeItem("Warnings (4 items)").expand();
         String markerText = "UnnecessaryModifier: Unnecessary modifier 'public' on method 'run': the method is declared in an interface type";
 
-        bot.waitUntil(new DefaultCondition() {
+        problemsView.bot().waitUntil(new DefaultCondition() {
             @Override
             public boolean test() throws Exception {
                 try {
+                    SWTBotTreeItem item = bot.tree().getTreeItem("Warnings (4 items)").expand();
                     item.getNode(markerText);
                 } catch (WidgetNotFoundException e) {
                     return false;
@@ -103,6 +103,7 @@ public class ViolationDetailsDialogTest extends AbstractSWTBotTest {
                 return "Marker not found";
             }
         });
+        SWTBotTreeItem item = problemsView.bot().tree().getTreeItem("Warnings (4 items)").expand();
         SWTBotTreeItem markerItem = item.getNode(markerText).select();
         markerItem.contextMenu("Show details...").click();
 
