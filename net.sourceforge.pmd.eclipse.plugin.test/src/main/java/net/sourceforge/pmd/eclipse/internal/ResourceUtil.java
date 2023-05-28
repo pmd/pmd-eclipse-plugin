@@ -17,6 +17,8 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 
 public final class ResourceUtil {
+    private static final int BUFFER_SIZE = 8192;
+
     private ResourceUtil() {
         // utility
     }
@@ -24,12 +26,14 @@ public final class ResourceUtil {
     public static void copyResource(Object context, String resource, File target) throws IOException {
         File parent = target.getParentFile();
         if (parent != null && !parent.exists()) {
-            parent.mkdirs();
+            if (!parent.mkdirs()) {
+                throw new IOException("Couldn't mkdirs " + parent);
+            }
         }
         try (OutputStream out = Files.newOutputStream(target.toPath());
              InputStream in = context.getClass().getResourceAsStream(resource)) {
             int count;
-            byte[] buffer = new byte[8192];
+            byte[] buffer = new byte[BUFFER_SIZE];
             count = in.read(buffer);
             while (count > -1) {
                 out.write(buffer, 0, count);
@@ -41,7 +45,7 @@ public final class ResourceUtil {
     public static String getResourceAsString(IProject project, String resourceName) throws IOException, CoreException {
         IFile file = project.getFile(resourceName);
         String charset = file.getCharset();
-        char[] buffer = new char[1024];
+        char[] buffer = new char[BUFFER_SIZE];
         StringBuilder result = new StringBuilder();
         try (Reader in = new InputStreamReader(file.getContents(), charset)) {
             int count = in.read(buffer);

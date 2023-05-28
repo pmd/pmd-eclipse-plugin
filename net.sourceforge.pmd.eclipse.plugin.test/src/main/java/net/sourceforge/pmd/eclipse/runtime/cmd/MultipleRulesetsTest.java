@@ -45,7 +45,6 @@ public class MultipleRulesetsTest {
                 this.testProject != null && this.testProject.exists() && this.testProject.isAccessible());
 
         // 2. Setup test folder
-        this.testProject.getFolder("src/main/java").getFullPath().toFile().mkdirs();
         IFolder folder = this.testProject.getFolder("/src/main");
         folder.create(true, true, null);
         folder = folder.getFolder("java");
