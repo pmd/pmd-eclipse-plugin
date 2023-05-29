@@ -23,6 +23,7 @@ import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.eclipse.runtime.PMDRuntimeConstants;
 import net.sourceforge.pmd.eclipse.ui.actions.RuleSetUtil;
 import net.sourceforge.pmd.eclipse.util.internal.IOUtil;
+import net.sourceforge.pmd.lang.document.FileId;
 
 /**
  * This command reviews a resource - a file - for a specific rule.
@@ -86,7 +87,8 @@ public class ReviewResourceForRuleCommand extends AbstractDefaultCommand {
             RuleSet ruleSet = RuleSetUtil.newSingle(rule);
 
             File sourceCodeFile = file.getFullPath().toFile();
-            if (ruleSet.applies(sourceCodeFile.toString())) {
+            FileId fileId = FileId.fromPathLikeString(sourceCodeFile.toString());
+            if (ruleSet.applies(fileId)) {
                 PMDConfiguration configuration = new PMDConfiguration();
                 Report report = null;
 
@@ -94,7 +96,7 @@ public class ReviewResourceForRuleCommand extends AbstractDefaultCommand {
                      PmdAnalysis pmdAnalysis = PmdAnalysis.create(configuration)) {
 
                     pmdAnalysis.addRuleSet(ruleSet);
-                    pmdAnalysis.files().addSourceFile(IOUtil.toString(input), sourceCodeFile.getAbsolutePath());
+                    pmdAnalysis.files().addSourceFile(fileId, IOUtil.toString(input));
 
                     report = pmdAnalysis.performAnalysisAndCollectReport();
                 } catch (Exception e) {

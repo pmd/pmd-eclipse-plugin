@@ -32,6 +32,7 @@ import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.runtime.PMDRuntimeConstants;
 import net.sourceforge.pmd.eclipse.runtime.builder.MarkerUtil;
+import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.renderers.Renderer;
 
 /**
@@ -206,7 +207,8 @@ public class RenderReportsCmd extends AbstractProjectCommand {
         ruleViolation.setBeginLine(marker.getAttribute(IMarker.LINE_NUMBER, 0));
         ruleViolation.setEndLine(marker.getAttribute(PMDRuntimeConstants.KEY_MARKERATT_LINE2, 0));
         ruleViolation.setVariableName(marker.getAttribute(PMDRuntimeConstants.KEY_MARKERATT_LINE2, ""));
-        ruleViolation.setFilename(marker.getResource().getProjectRelativePath().toString());
+        FileId fileId = FileId.fromPathLikeString(marker.getResource().getProjectRelativePath().toString());
+        ruleViolation.setFileId(fileId);
         ruleViolation.setDescription(marker.getAttribute(IMarker.MESSAGE, rule.getMessage()));
         return ruleViolation;
     }

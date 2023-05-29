@@ -46,6 +46,7 @@ import net.sourceforge.pmd.eclipse.util.internal.IOUtil;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.LanguageVersionDiscoverer;
+import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.java.JavaLanguageModule;
 
 /**
@@ -290,6 +291,7 @@ public class BaseVisitor {
             configuration().setIgnoreIncrementalAnalysis(true);
 
             final File sourceCodeFile = file.getRawLocation().toFile();
+            final FileId fileId = FileId.fromPathLikeString(sourceCodeFile.getAbsolutePath());
             if (included && InternalRuleSetUtil.ruleSetsApplies(ruleSets, sourceCodeFile) && isFileInWorkingSet(file)
                     && languageVersion != null) {
                 subTask("PMD checking: " + file.getProject() + ": " + file.getName());
@@ -308,7 +310,7 @@ public class BaseVisitor {
                      PmdAnalysis pmdAnalysis = PmdAnalysis.create(configuration());) {
 
                     String sourceContents = IOUtil.toString(input);
-                    pmdAnalysis.files().addSourceFile(sourceContents, sourceCodeFile.getAbsolutePath());
+                    pmdAnalysis.files().addSourceFile(fileId, sourceContents);
 
                     pmdAnalysis.addRuleSets(getRuleSetList());
 
@@ -331,7 +333,7 @@ public class BaseVisitor {
                 if (!collectingReport.getProcessingErrors().isEmpty()) {
                     StringBuilder message = new StringBuilder("There were processing errors!\n");
                     for (ProcessingError error : collectingReport.getProcessingErrors()) {
-                        message.append(error.getFile()).append(": ").append(error.getMsg()).append(' ')
+                        message.append(error.getFileId().getOriginalPath()).append(": ").append(error.getMsg()).append(' ')
                         .append(error.getDetail())
                         .append("\n");
                     }

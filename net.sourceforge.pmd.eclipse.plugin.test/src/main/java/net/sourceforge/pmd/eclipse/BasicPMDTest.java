@@ -16,6 +16,7 @@ import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetLoader;
 import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.lang.document.FileId;
 
 /**
  * Test if PMD can be run correctly.
@@ -42,7 +43,7 @@ public class BasicPMDTest {
         final String sourceCode = "public class Foo {\n public void foo() {\nreturn;\n}}";
 
         try (PmdAnalysis pmd = PmdAnalysis.create(configuration)) {
-            pmd.files().addSourceFile(sourceCode, "Foo.java");
+            pmd.files().addSourceFile(FileId.fromPathLikeString("Foo.java"), sourceCode);
             Report result = pmd.performAnalysisAndCollectReport();
 
             Assert.assertFalse("There should be at least one violation", result.getViolations().isEmpty());

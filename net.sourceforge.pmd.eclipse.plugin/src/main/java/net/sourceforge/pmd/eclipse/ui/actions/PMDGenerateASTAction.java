@@ -41,6 +41,7 @@ import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.ast.Parser;
 import net.sourceforge.pmd.lang.ast.Parser.ParserTask;
 import net.sourceforge.pmd.lang.ast.SemanticErrorReporter;
+import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.document.TextDocument;
 import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.lang.java.JavaLanguageModule;
@@ -87,7 +88,7 @@ public class PMDGenerateASTAction extends AbstractUIAction implements IRunnableW
         try (Reader reader = new InputStreamReader(file.getContents(), file.getCharset());
                 ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
                 LanguageProcessor javaProcessor = javaLanguage.createProcessor(new JavaLanguageProperties());
-                TextDocument textDocument = TextDocument.create(TextFile.forReader(reader, file.getName(), javaLanguage.getDefaultVersion()));) {
+                TextDocument textDocument = TextDocument.create(TextFile.forReader(reader, FileId.fromPathLikeString(file.getName()), javaLanguage.getDefaultVersion()));) {
 
             Parser parser = javaProcessor.services().getParser();
             ParserTask parserTask = new ParserTask(textDocument, SemanticErrorReporter.noop(), LanguageProcessorRegistry.singleton(javaProcessor));

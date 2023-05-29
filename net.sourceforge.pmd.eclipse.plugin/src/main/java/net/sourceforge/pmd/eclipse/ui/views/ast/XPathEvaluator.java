@@ -16,6 +16,7 @@ import net.sourceforge.pmd.eclipse.util.internal.SpyingRule;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.java.JavaLanguageModule;
 import net.sourceforge.pmd.lang.rule.XPathRule;
 import net.sourceforge.pmd.lang.rule.xpath.XPathVersion;
@@ -25,7 +26,7 @@ import net.sourceforge.pmd.lang.rule.xpath.XPathVersion;
  * @author Brian Remedios
  */
 public final class XPathEvaluator {
-    private static final String SNIPPET_FILENAME = "snippet.java";
+    private static final FileId SNIPPET_FILENAME = FileId.fromPathLikeString("snippet.java");
 
     public static final XPathEvaluator INSTANCE = new XPathEvaluator();
 
@@ -43,7 +44,7 @@ public final class XPathEvaluator {
 
         try (PmdAnalysis pmd = PmdAnalysis.create(configuration)) {
             pmd.addRuleSet(ruleset);
-            pmd.files().addSourceFile(source, SNIPPET_FILENAME);
+            pmd.files().addSourceFile(SNIPPET_FILENAME, source);
             pmd.performAnalysis();
         }
 
@@ -73,7 +74,7 @@ public final class XPathEvaluator {
         configuration.setForceLanguageVersion(getLanguageVersion());
         try (PmdAnalysis pmd = PmdAnalysis.create(configuration)) {
             pmd.addRuleSet(ruleSet);
-            pmd.files().addSourceFile(source, SNIPPET_FILENAME);
+            pmd.files().addSourceFile(SNIPPET_FILENAME, source);
             Report report = pmd.performAnalysisAndCollectReport();
             return report.getViolations();
         }

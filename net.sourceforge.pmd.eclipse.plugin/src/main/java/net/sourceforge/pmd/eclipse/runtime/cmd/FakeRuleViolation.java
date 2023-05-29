@@ -9,6 +9,7 @@ import java.util.Map;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.document.FileLocation;
 
 /**
@@ -26,7 +27,7 @@ class FakeRuleViolation implements RuleViolation {
     private int endLine;
     private int endColumn;
 
-    private String filename;
+    private FileId fileId;
     private String packageName;
     private String className;
     private String methodName;
@@ -99,12 +100,12 @@ class FakeRuleViolation implements RuleViolation {
         this.endLine = endLine;
     }
 
+    
     /**
-     * @param filename
-     *            The filename to set.
+     * @param fileId the fileId to set
      */
-    public void setFilename(String filename) {
-        this.filename = filename;
+    public void setFileId(FileId fileId) {
+        this.fileId = fileId;
     }
 
     /**
@@ -137,8 +138,8 @@ class FakeRuleViolation implements RuleViolation {
     }
 
     @Override
-    public String getFilename() {
-        return filename;
+    public FileId getFileId() {
+        return fileId;
     }
 
     @Override
@@ -183,7 +184,7 @@ class FakeRuleViolation implements RuleViolation {
 
     @Override
     public FileLocation getLocation() {
-        return FileLocation.caret(filename, beginLine, beginColumn);
+        return FileLocation.caret(fileId, beginLine, beginColumn);
     }
 
     @Override

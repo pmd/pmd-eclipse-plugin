@@ -18,6 +18,7 @@ import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetLoader;
 import net.sourceforge.pmd.RuleSets;
+import net.sourceforge.pmd.lang.document.FileId;
 
 public final class InternalRuleSetUtil {
     private InternalRuleSetUtil() {}
@@ -91,8 +92,9 @@ public final class InternalRuleSetUtil {
     }
 
     public static boolean ruleSetsApplies(List<RuleSet> rulesets, File file) {
+        FileId fileId = FileId.fromPathLikeString(file.toString());
         for (RuleSet ruleSet : rulesets) {
-            if (ruleSet.applies(file.toString())) {
+            if (ruleSet.applies(fileId)) {
                 return true;
             }
         }

@@ -29,7 +29,7 @@ import org.eclipse.ui.IWorkingSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.PmdAnalysis;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.eclipse.core.internal.FileModificationUtil;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
@@ -484,7 +484,7 @@ public class ProjectPropertiesImpl implements IProjectProperties {
                 if (auxclasspath == null) {
                     PMDPlugin.getDefault()
                             .logInformation("Creating new auxclasspath class loader for project " + project.getName());
-                    auxclasspath = new JavaProjectClassLoader(PMD.class.getClassLoader(), project);
+                    auxclasspath = new JavaProjectClassLoader(PmdAnalysis.class.getClassLoader(), project);
                 }
                 return auxclasspath;
             }
