@@ -13,6 +13,8 @@ This is a minor release.
 
 ### New and noteworthy
 
+* Updated to PMD 7.0.0-rc3
+
 ### Fixed Issues
 
 * [#171](https://github.com/pmd/pmd-eclipse-plugin/pull/171):   Radio button for local rules in project properties dialog is missing
