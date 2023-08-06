@@ -15,7 +15,7 @@
   </modules>
 
   <properties>
-    <target.platform>2023-03</target.platform>
+    <target.platform>2023-06</target.platform>
 
     <java.version>1.8</java.version>
     <!-- https://github.com/eclipse/tycho/blob/master/RELEASE_NOTES.md and https://github.com/eclipse-tycho/tycho/releases -->
@@ -438,39 +438,6 @@
   </build>
 
   <profiles>
-    <profile>
-      <!--
-        This makes sure to ignore PMD processing errors: The two bundles org.eclipse.ui.ide-3.19.0.v20220511-1638.jar
-        and org.eclipse.ui.workbench-3.125.100.v20220524-1304.jar are both containing classes in package
-        "org.eclipse.ui". But those two jar-files are signed with different certificates, which leads to the following
-        exception during PMD analysis: java.lang.SecurityException: class "org.eclipse.ui.IMarkerHelpRegistry"'s
-        signer information does not match signer information of other classes in the same package.
-        
-        org.eclipse.ui.ide-3.19.0.v20220511-1638.jar is signed with a certificate that expires on 2022-05-19.
-        org.eclipse.ui.workbench-3.125.100.v20220524-1304.jar is signed with a certificate that expires on 2024-05-22.
-      -->
-      <id>2022-06</id>
-      <activation>
-        <property>
-          <name>target.platform</name>
-          <value>2022-06</value>
-        </property>
-      </activation>
-      <build>
-        <pluginManagement>
-          <plugins>
-            <plugin>
-              <groupId>org.apache.maven.plugins</groupId>
-              <artifactId>maven-pmd-plugin</artifactId>
-              <configuration>
-                <skipPmdError>true</skipPmdError>
-              </configuration>
-            </plugin>
-          </plugins>
-        </pluginManagement>
-      </build>
-    </profile>
-
     <profile>
       <id>osx</id>
       <activation>
