@@ -18,6 +18,8 @@ This is a minor release.
 
 ### Fixed Issues
 
+* [#181](https://github.com/pmd/pmd-eclipse-plugin/pull/181): Support eclipse 2023-06
+
 ### API Changes
 
 ### External Contributions
