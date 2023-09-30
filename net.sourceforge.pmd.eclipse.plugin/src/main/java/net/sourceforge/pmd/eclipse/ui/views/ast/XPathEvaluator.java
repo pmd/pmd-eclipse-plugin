@@ -13,7 +13,6 @@ import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.eclipse.ui.actions.RuleSetUtil;
 import net.sourceforge.pmd.eclipse.util.internal.SpyingRule;
-import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.document.FileId;
@@ -52,7 +51,7 @@ public final class XPathEvaluator {
     }
 
     private LanguageVersion getLanguageVersion() {
-        return LanguageRegistry.PMD.getLanguageByFullName(JavaLanguageModule.NAME).getDefaultVersion();
+        return JavaLanguageModule.getInstance().getDefaultVersion();
     }
 
     /**

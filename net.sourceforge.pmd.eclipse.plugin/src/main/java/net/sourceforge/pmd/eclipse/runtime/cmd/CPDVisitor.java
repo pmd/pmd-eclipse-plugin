@@ -17,7 +17,7 @@ import org.eclipse.ui.ResourceWorkingSetFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.sourceforge.pmd.cpd.Language;
+import net.sourceforge.pmd.cpd.CpdCapableLanguage;
 import net.sourceforge.pmd.eclipse.runtime.properties.PropertiesException;
 
 /**
@@ -32,7 +32,7 @@ public class CPDVisitor implements IResourceVisitor {
     private static final Logger LOG = LoggerFactory.getLogger(CPDVisitor.class);
     private boolean includeDerivedFiles;
     private ResourceWorkingSetFilter workingSetFilter;
-    private Language language;
+    private CpdCapableLanguage language;
     private List<File> files;
 
     /**
@@ -56,7 +56,7 @@ public class CPDVisitor implements IResourceVisitor {
      * @param language
      *            Only add files with that language
      */
-    public void setLanguage(Language language) {
+    public void setLanguage(CpdCapableLanguage language) {
         this.language = language;
     }
 
@@ -88,7 +88,8 @@ public class CPDVisitor implements IResourceVisitor {
             File ioFile = file.getLocation().toFile();
             try {
                 if (StringUtils.isNotBlank(file.getFileExtension())
-                        && language.getFileFilter().accept(ioFile, file.getName()) && isFileInWorkingSet(file)
+                        && language.hasExtension(file.getFileExtension())
+                        && isFileInWorkingSet(file)
                         && (includeDerivedFiles || !file.isDerived())) {
                     LOG.debug("Add file " + resource.getName());
                     files.add(ioFile);

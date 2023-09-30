@@ -12,7 +12,7 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 
 import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.properties.StringProperty;
+import net.sourceforge.pmd.properties.PropertyDescriptor;
 
 /**
  * Holds a collection of rules as assembled by the tree widget manager.
@@ -106,15 +106,16 @@ public class RuleGroup<T extends Comparable<T>> implements RuleCollection, Compa
      * @return String
      */
     // TODO make this into a Generic method
-    public String commonStringProperty(StringProperty desc) {
+    public <P> String commonStringProperty(PropertyDescriptor<P> desc) {
 
         if (rules.isEmpty()) {
             return null;
         }
 
-        String value = rules.get(0).getProperty(desc);
+        String value = desc.serializer().toString(rules.get(0).getProperty(desc));
         for (int i = 1; i < rules.size(); i++) {
-            if (!StringUtils.equals(StringUtils.stripToNull(rules.get(i).getProperty(desc)),
+            String other = desc.serializer().toString(rules.get(i).getProperty(desc));
+            if (!StringUtils.equals(StringUtils.stripToNull(other),
                     StringUtils.stripToNull(value))) {
                 return null;
             }

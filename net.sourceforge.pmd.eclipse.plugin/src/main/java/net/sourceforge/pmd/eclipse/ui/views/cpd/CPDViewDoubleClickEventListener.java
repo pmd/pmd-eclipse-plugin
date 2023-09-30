@@ -21,10 +21,13 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.texteditor.ITextEditor;
 
+import net.sourceforge.pmd.cpd.Mark;
 import net.sourceforge.pmd.cpd.Match;
-import net.sourceforge.pmd.cpd.TokenEntry;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
+import net.sourceforge.pmd.eclipse.runtime.cmd.internal.CpdMarkWithSourceCode;
+import net.sourceforge.pmd.eclipse.runtime.cmd.internal.CpdMatchWithSourceCode;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
+import net.sourceforge.pmd.lang.document.FileLocation;
 
 /**
  * 
@@ -49,7 +52,7 @@ public class CPDViewDoubleClickEventListener implements IDoubleClickListener {
         final Object value = node.getValue();
         final TreeViewer treeViewer = view.getTreeViewer();
 
-        if (value instanceof Match) {
+        if (value instanceof CpdMatchWithSourceCode) {
             if (treeViewer.getExpandedState(node)) {
                 // the node is expanded, so collapse
                 treeViewer.collapseToLevel(node, TreeViewer.ALL_LEVELS);
@@ -57,17 +60,20 @@ public class CPDViewDoubleClickEventListener implements IDoubleClickListener {
                 // the node is collapsed, so expand
                 treeViewer.expandToLevel(node, 1);
             }
-        } else if (value instanceof TokenEntry) {
-            final TokenEntry entry = (TokenEntry) value;
-            final Match match = (Match) node.getParent().getValue();
+        } else if (value instanceof CpdMarkWithSourceCode) {
+            final CpdMarkWithSourceCode entry = (CpdMarkWithSourceCode) value;
+            final CpdMatchWithSourceCode match = (CpdMatchWithSourceCode) node.getParent().getValue();
             highlightText(match, entry);
         }
     }
 
-    private void highlightText(Match match, TokenEntry entry) {
+    private void highlightText(CpdMatchWithSourceCode matchWithSource, CpdMarkWithSourceCode markWithSource) {
         // open file and jump to the startline
+        Match match = matchWithSource.getMatch();
+        Mark entry = markWithSource.getMark();
+        FileLocation location = entry.getLocation();
 
-        final IPath path = Path.fromOSString(entry.getTokenSrcID());
+        final IPath path = Path.fromOSString(location.getFileId().getOriginalPath());
         final IFile file = ResourcesPlugin.getWorkspace().getRoot().getFileForLocation(path);
         if (file == null) {
             return;
@@ -81,8 +87,8 @@ public class CPDViewDoubleClickEventListener implements IDoubleClickListener {
                 // select text
                 final ITextEditor textEditor = (ITextEditor) part;
                 final IDocument document = textEditor.getDocumentProvider().getDocument(textEditor.getEditorInput());
-                final int offset = document.getLineOffset(entry.getBeginLine() - 1);
-                final int length = document.getLineOffset(entry.getBeginLine() - 1 + match.getLineCount()) - offset - 1;
+                final int offset = document.getLineOffset(location.getStartLine() - 1);
+                final int length = document.getLineOffset(location.getStartLine() - 1 + match.getLineCount()) - offset - 1;
                 textEditor.selectAndReveal(offset, length);
             }
         } catch (PartInitException | BadLocationException pie) {

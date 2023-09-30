@@ -30,15 +30,6 @@ public final class PMDRuntimeConstants {
     public static final String[] ALL_MARKER_TYPES = new String[] { PMD_MARKER, PMD_DFA_MARKER, PMD_TASKMARKER,
         PMD_MARKER_1, PMD_MARKER_2, PMD_MARKER_3, PMD_MARKER_4, PMD_MARKER_5 };
 
-    /**
-     * @deprecated not useful, as the property cannot occur on rules anyway. The default was used always,
-     *             which was 1000 violations.
-     */
-    @Deprecated
-    public static final net.sourceforge.pmd.properties.IntegerProperty MAX_VIOLATIONS_DESCRIPTOR =
-        new net.sourceforge.pmd.properties.IntegerProperty("maxviolations",
-            "Max allowable violations", 1, Integer.MAX_VALUE - 1, 1000, 0f);
-
     public static final String ID_PERSPECTIVE = "net.sourceforge.pmd.eclipse.ui.views.pmdPerspective";
 
     public static final String KEY_MARKERATT_RULENAME = "rulename";

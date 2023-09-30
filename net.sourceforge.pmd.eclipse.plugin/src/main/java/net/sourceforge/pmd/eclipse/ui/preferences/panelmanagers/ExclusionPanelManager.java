@@ -25,7 +25,7 @@ import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.ValueChangeListener;
 import net.sourceforge.pmd.eclipse.ui.preferences.editors.SWTUtil;
 import net.sourceforge.pmd.eclipse.util.ColourManager;
-import net.sourceforge.pmd.properties.StringProperty;
+import net.sourceforge.pmd.properties.PropertyDescriptor;
 
 /**
  * Manages the UI form for rule exclusion fields for a designated property rule.
@@ -74,7 +74,7 @@ public class ExclusionPanelManager extends AbstractRulePanelManager {
         return Collections.emptyList();
     }
 
-    private void addListeners(final Text control, final StringProperty desc, final Control colourWindow) {
+    private void addListeners(final Text control, final PropertyDescriptor<?> desc, final Control colourWindow) {
         addTextListeners(control, desc);
 
         control.addModifyListener(new ModifyListener() {
@@ -89,7 +89,7 @@ public class ExclusionPanelManager extends AbstractRulePanelManager {
         });
     }
 
-    private void addListeners(final StyledText control, final StringProperty desc, final Control colourWindow) {
+    private void addListeners(final StyledText control, final PropertyDescriptor<?> desc, final Control colourWindow) {
         addTextListeners(control, desc);
 
         control.addModifyListener(new ModifyListener() {

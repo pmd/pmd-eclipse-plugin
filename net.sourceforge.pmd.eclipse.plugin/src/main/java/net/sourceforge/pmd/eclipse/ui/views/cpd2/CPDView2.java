@@ -35,9 +35,12 @@ import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.ViewPart;
 
+import net.sourceforge.pmd.cpd.Mark;
 import net.sourceforge.pmd.cpd.Match;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.runtime.PMDRuntimeConstants;
+import net.sourceforge.pmd.eclipse.runtime.cmd.internal.CpdMatchWithSourceCode;
+import net.sourceforge.pmd.eclipse.runtime.cmd.internal.CpdResult;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
 import net.sourceforge.pmd.eclipse.util.internal.StringUtil;
 
@@ -89,9 +92,10 @@ public class CPDView2 extends ViewPart implements IPropertyListener {
         return new String[] { fullName.substring(0, pos + 1), fullName.substring(pos + 1) };
     }
 
-    public static String[] sourceLinesFrom(Match match, boolean trimLeadingWhitespace) {
+    public static String[] sourceLinesFrom(CpdMatchWithSourceCode match, boolean trimLeadingWhitespace) {
+        Mark firstMark = match.getMatch().getFirstMark();
 
-        final String text = match.getSourceCodeSlice().replaceAll("\t", TAB_EQUIVALENT);
+        final String text = match.getSourceCodeSlices().get(firstMark).toString().replaceAll("\t", TAB_EQUIVALENT);
         final StringTokenizer lines = new StringTokenizer(text, "\n");
 
         List<String> sourceLines = new ArrayList<>();
@@ -344,30 +348,28 @@ public class CPDView2 extends ViewPart implements IPropertyListener {
     /**
      * Sets input for the table.
      * 
-     * @param matches
-     *            CPD Command that contain the matches from the CPD
+     * @param result CPD results with matches and source code from CPD
      */
-    public void setData(Iterator<Match> matches) {
+    public void setData(CpdResult result) {
         List<TreeNode> elements = new ArrayList<>();
-        if (matches != null) {
-            for (Match match : asList(matches)) {
-                // create a treenode for the match and add to the list
-                TreeNode matchNode = new TreeNode(match);
-                elements.add(matchNode);
+        for (Match match : asList(result.getMatches().iterator())) {
+            CpdMatchWithSourceCode matchWithSource = new CpdMatchWithSourceCode(result, match);
+            // create a treenode for the match and add to the list
+            TreeNode matchNode = new TreeNode(matchWithSource);
+            elements.add(matchNode);
 
-                String[] lines = sourceLinesFrom(match, true);
-                TreeNode[] children = new TreeNode[lines.length];
+            String[] lines = sourceLinesFrom(matchWithSource, true);
+            TreeNode[] children = new TreeNode[lines.length];
 
-                for (int j = 0; j < lines.length; j++) {
-                    String line = lines[j];
-                    if (line == null) {
-                        System.out.println();
-                    }
-                    children[j] = new TreeNode(line);
-                    children[j].setParent(matchNode);
+            for (int j = 0; j < lines.length; j++) {
+                String line = lines[j];
+                if (line == null) {
+                    System.out.println();
                 }
-                matchNode.setChildren(children);
+                children[j] = new TreeNode(line);
+                children[j].setParent(matchNode);
             }
+            matchNode.setChildren(children);
         }
 
         // set the children of the rootnode: the matches
@@ -380,11 +382,11 @@ public class CPDView2 extends ViewPart implements IPropertyListener {
      */
     @Override
     public void propertyChanged(Object source, int propId) {
-        if (propId == PMDRuntimeConstants.PROPERTY_CPD && source instanceof Iterator<?>) {
-            Iterator<Match> iter = (Iterator<Match>) source;
+        if (propId == PMDRuntimeConstants.PROPERTY_CPD && source instanceof CpdResult) {
+            CpdResult result = (CpdResult) source;
             // after setdata(iter) iter.hasNext will always return false
-            boolean hasResults = iter.hasNext();
-            setData(iter);
+            boolean hasResults = !result.getMatches().isEmpty();
+            setData(result);
             if (!hasResults) {
                 // no entries
                 MessageBox box = new MessageBox(this.treeViewer.getControl().getShell());

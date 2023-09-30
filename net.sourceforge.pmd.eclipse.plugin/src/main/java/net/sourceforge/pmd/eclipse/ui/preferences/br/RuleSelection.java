@@ -25,7 +25,6 @@ import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.lang.rule.XPathRule;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
-import net.sourceforge.pmd.properties.StringProperty;
 
 /**
  * Represents a set of selected rules in a rule selection widget. Provides
@@ -210,8 +209,12 @@ public class RuleSelection implements RuleCollection {
         }
     }
 
-    public static String commonStringValueFor(Object item, StringProperty desc) {
-        return item instanceof Rule ? ((Rule) item).getProperty(desc) : ((RuleGroup) item).commonStringProperty(desc);
+    public static <T> String commonStringValueFor(Object item, PropertyDescriptor<T> desc) {
+        if (item instanceof Rule) {
+            T value = ((Rule) item).getProperty(desc);
+            return desc.serializer().toString(value);
+        }
+        return ((RuleGroup) item).commonStringProperty(desc);
     }
 
     public void setLanguage(final Language language) {
@@ -326,7 +329,7 @@ public class RuleSelection implements RuleCollection {
         return rules;
     }
 
-    public String commonStringValue(StringProperty desc) {
+    public String commonStringValue(PropertyDescriptor<?> desc) {
         if (ruleItems == null || ruleItems.length == 0 || desc == null) {
             return null;
         }
@@ -346,7 +349,7 @@ public class RuleSelection implements RuleCollection {
         return value;
     }
 
-    public void setValue(final StringProperty desc, final String value) {
+    public <T> void setValue(final PropertyDescriptor<T> desc, final String value) {
         if (ruleItems == null || ruleItems.length == 0) {
             return;
         }
@@ -354,7 +357,7 @@ public class RuleSelection implements RuleCollection {
         RuleVisitor visitor = new RuleVisitor() {
             @Override
             public boolean accept(Rule rule) {
-                rule.setProperty(desc, value);
+                rule.setProperty(desc, desc.serializer().fromString(value));
                 return true;
             }
         };

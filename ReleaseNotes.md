@@ -13,14 +13,26 @@ This is a minor release.
 
 ### New and noteworthy
 
+* Updated to PMD 7.0.0-rc4
 * Support for Eclipse 2023-06 added
 * Support for Eclipse 2022-06 removed
 
 ### Fixed Issues
 
 * [#181](https://github.com/pmd/pmd-eclipse-plugin/pull/181): Support eclipse 2023-06
+* [#182](https://github.com/pmd/pmd-eclipse-plugin/pull/182): Update to PMD 7.0.0-rc4
 
 ### API Changes
+
+* The deprecated field net.sourceforge.pmd.eclipse.runtime.PMDRuntimeConstants.MAX_VIOLATIONS_DESCRIPTOR has been
+  removed.
+* The following deprecated classes have been removed
+  * net.sourceforge.pmd.eclipse.ui.preferences.br.FilterManager
+  * net.sourceforge.pmd.eclipse.ui.preferences.editors.FileEditorFactory
+  * net.sourceforge.pmd.eclipse.ui.preferences.editors.FloatEditorFactory
+* The following packages are not exported anymore, as they don't exist anymore:
+  * net.sourceforge.pmd.cpd.renderer
+  * net.sourceforge.pmd.properties.constraints
 
 ### External Contributions
 

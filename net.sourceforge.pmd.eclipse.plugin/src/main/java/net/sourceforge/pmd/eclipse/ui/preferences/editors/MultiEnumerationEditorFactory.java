@@ -16,7 +16,6 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Text;
 
 import net.sourceforge.pmd.eclipse.ui.preferences.br.ValueChangeListener;
-import net.sourceforge.pmd.properties.EnumeratedPropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertySource;
 
@@ -66,10 +65,7 @@ public final class MultiEnumerationEditorFactory extends AbstractMultiValueEdito
     @Override
     protected boolean canAddNewRowFor(PropertyDescriptor<List<Object>> desc, PropertySource source) {
 
-        EnumeratedPropertyDescriptor<Object, List<Object>> multi
-            = (EnumeratedPropertyDescriptor<Object, List<Object>>) desc;
-
-        Object[] choices = choices(multi);
+        Object[] choices = choices(desc);
         List<Object> values = source.getProperty(desc);
 
         return choices.length > values.size();
@@ -81,12 +77,9 @@ public final class MultiEnumerationEditorFactory extends AbstractMultiValueEdito
 
         final Combo combo = new Combo(parent, SWT.READ_ONLY);
 
-        final EnumeratedPropertyDescriptor<Object, List<Object>> ep
-            = (EnumeratedPropertyDescriptor<Object, List<Object>>) desc;
-
         // TODO remove all choices already chosen by previous widgets
-        combo.setItems(SWTUtil.labelsIn(choices(ep), 0));
-        int selectionIdx = EnumerationEditorFactory.indexOf(value, choices(ep));
+        combo.setItems(SWTUtil.labelsIn(choices(desc), 0));
+        int selectionIdx = EnumerationEditorFactory.indexOf(value, choices(desc));
         if (selectionIdx >= 0) {
             combo.select(selectionIdx);
         }

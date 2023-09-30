@@ -7,6 +7,7 @@ package net.sourceforge.pmd.eclipse.ui.preferences.br;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.eclipse.plugin.UISettings;
@@ -164,14 +165,17 @@ public interface RuleFieldAccessor {
     RuleFieldAccessor VIOLATION_REGEX = new BasicRuleFieldAccessor() {
         @Override
         public Comparable<String> valueFor(Rule rule) {
-            return rule.getProperty(Rule.VIOLATION_SUPPRESS_REGEX_DESCRIPTOR);
+            return rule.getProperty(Rule.VIOLATION_SUPPRESS_REGEX_DESCRIPTOR)
+                    .map(Pattern::toString)
+                    .orElse("");
         }
     };
 
     RuleFieldAccessor VIOLATION_XPATH = new BasicRuleFieldAccessor() {
         @Override
         public Comparable<String> valueFor(Rule rule) {
-            return rule.getProperty(Rule.VIOLATION_SUPPRESS_XPATH_DESCRIPTOR);
+            return rule.getProperty(Rule.VIOLATION_SUPPRESS_XPATH_DESCRIPTOR)
+                    .orElse("");
         }
     };
 

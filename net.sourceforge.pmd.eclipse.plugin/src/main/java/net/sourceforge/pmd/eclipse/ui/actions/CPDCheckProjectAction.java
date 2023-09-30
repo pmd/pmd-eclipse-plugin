@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.eclipse.ui.actions;
 
 import java.util.Iterator;
+import java.util.stream.Collectors;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IAdaptable;
@@ -20,17 +21,18 @@ import org.eclipse.ui.PartInitException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.sourceforge.pmd.cpd.CPDReportRenderer;
 import net.sourceforge.pmd.cpd.CSVRenderer;
-import net.sourceforge.pmd.cpd.LanguageFactory;
 import net.sourceforge.pmd.cpd.SimpleRenderer;
 import net.sourceforge.pmd.cpd.XMLRenderer;
-import net.sourceforge.pmd.cpd.renderer.CPDReportRenderer;
 import net.sourceforge.pmd.eclipse.runtime.PMDRuntimeConstants;
 import net.sourceforge.pmd.eclipse.runtime.cmd.DetectCutAndPasteCmd;
 import net.sourceforge.pmd.eclipse.ui.PMDUiConstants;
 import net.sourceforge.pmd.eclipse.ui.dialogs.CPDCheckDialog;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
 import net.sourceforge.pmd.eclipse.ui.views.cpd2.CPDView2;
+import net.sourceforge.pmd.lang.Language;
+import net.sourceforge.pmd.lang.LanguageRegistry;
 
 /**
  * Process CPD action menu. Run CPD against the selected project.
@@ -52,8 +54,11 @@ public class CPDCheckProjectAction extends AbstractUIAction {
         final IWorkbenchPartSite site = targetPartSite();
         final ISelection sel = targetSelection();
         final Shell shell = site.getShell();
-        final String[] languages = LanguageFactory.supportedLanguages;
-        
+        final String[] languages = LanguageRegistry.CPD.getLanguages().stream()
+                .map(Language::getId)
+                .collect(Collectors.toList())
+                .toArray(new String[0]);
+
         final String[] formats = {
             SIMPLE_KEY,
             XML_KEY,

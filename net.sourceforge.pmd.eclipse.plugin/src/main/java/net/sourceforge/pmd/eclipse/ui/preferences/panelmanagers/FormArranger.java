@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+import java.util.regex.Pattern;
 
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
@@ -38,6 +39,7 @@ import net.sourceforge.pmd.eclipse.util.Util;
 import net.sourceforge.pmd.lang.rule.XPathRule;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertySource;
+import net.sourceforge.pmd.properties.PropertyTypeId;
 
 /**
  * Takes in a property source instance, extracts its properties, creates a series of type-specific editors for each, and
@@ -98,8 +100,62 @@ public class FormArranger implements ValueChangeListener {
     }
 
     private EditorFactory<?> factoryFor(PropertyDescriptor<?> desc) {
-        Class<?> type = desc.type();
-        if (desc.isMultiValue()) {
+        PropertyTypeId typeId = desc.getTypeId();
+        boolean multivalued;
+        Class<?> type;
+        switch (typeId) {
+        case BOOLEAN:
+            type = Boolean.class;
+            multivalued = false;
+            break;
+        case CHARACTER:
+            type = Character.class;
+            multivalued = false;
+            break;
+        case CHARACTER_LIST:
+            type = Character.class;
+            multivalued = true;
+            break;
+        case DOUBLE:
+            type = Double.class;
+            multivalued = false;
+            break;
+        case DOUBLE_LIST:
+            type = Double.class;
+            multivalued = true;
+            break;
+        case INTEGER:
+            type = Integer.class;
+            multivalued = false;
+            break;
+        case INTEGER_LIST:
+            type = Integer.class;
+            multivalued = true;
+            break;
+        case LONG:
+            type = Long.class;
+            multivalued = false;
+            break;
+        case LONG_LIST:
+            type = Long.class;
+            multivalued = true;
+            break;
+        case STRING:
+            type = String.class;
+            multivalued = false;
+            break;
+        case STRING_LIST:
+            type = String.class;
+            multivalued = true;
+            break;
+        case REGEX:
+            type = Pattern.class;
+            multivalued = false;
+            break;
+        default:
+            throw new IllegalStateException("Unsupported type: " + typeId);
+        }
+        if (multivalued) {
             // assume it is a array type (type[])
             type = Array.newInstance(type, 0).getClass();
         }

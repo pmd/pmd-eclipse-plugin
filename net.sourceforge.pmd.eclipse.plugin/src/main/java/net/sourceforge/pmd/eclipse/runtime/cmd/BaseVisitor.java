@@ -275,7 +275,7 @@ public class BaseVisitor {
             LanguageVersion languageVersion = languageDiscoverer.getDefaultLanguageVersionForFile(file.getName());
             // in case it is java, select the correct java version
             if (languageVersion != null
-                    && LanguageRegistry.getLanguage(JavaLanguageModule.NAME).equals(languageVersion.getLanguage())) {
+                    && JavaLanguageModule.getInstance().equals(languageVersion.getLanguage())) {
                 languageVersion = PMDPlugin.javaVersionFor(file.getProject());
             }
             if (languageVersion != null) {

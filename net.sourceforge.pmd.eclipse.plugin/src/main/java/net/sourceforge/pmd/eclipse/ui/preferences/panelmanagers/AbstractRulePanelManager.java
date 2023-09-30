@@ -32,7 +32,6 @@ import net.sourceforge.pmd.eclipse.ui.preferences.editors.TypeText;
 import net.sourceforge.pmd.eclipse.util.ColourManager;
 import net.sourceforge.pmd.eclipse.util.ResourceManager;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
-import net.sourceforge.pmd.properties.StringProperty;
 
 /**
  * Concrete subclasses can also be used as tab folders outside of a wizard
@@ -220,7 +219,7 @@ public abstract class AbstractRulePanelManager extends WizardPage implements Rul
         return rules.soleRule();
     }
 
-    protected void addTextListeners(final Text control, final StringProperty desc) {
+    protected void addTextListeners(final Text control, final PropertyDescriptor<?> desc) {
         control.addListener(SWT.FocusOut, new Listener() {
             @Override
             public void handleEvent(Event event) {
@@ -229,7 +228,7 @@ public abstract class AbstractRulePanelManager extends WizardPage implements Rul
         });
     }
 
-    protected void addTextListeners(final StyledText control, final StringProperty desc) {
+    protected void addTextListeners(final StyledText control, final PropertyDescriptor<?> desc) {
         control.addListener(SWT.FocusOut, new Listener() {
             @Override
             public void handleEvent(Event event) {
@@ -259,7 +258,7 @@ public abstract class AbstractRulePanelManager extends WizardPage implements Rul
     // changeListener.changed(rules, null, "");
     // }
 
-    protected void changed(StringProperty property, String newValue) {
+    protected void changed(PropertyDescriptor<?> property, String newValue) {
         if (rules == null) {
             return;
         }

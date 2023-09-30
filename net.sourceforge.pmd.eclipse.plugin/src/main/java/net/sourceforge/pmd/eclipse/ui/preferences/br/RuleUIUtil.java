@@ -4,11 +4,13 @@
 
 package net.sourceforge.pmd.eclipse.ui.preferences.br;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.VerifyEvent;
@@ -21,6 +23,7 @@ import net.sourceforge.pmd.eclipse.ui.Shape;
 import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.Configuration;
 import net.sourceforge.pmd.eclipse.util.FontBuilder;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.properties.PropertyTypeId;
 
 /**
  * 
@@ -108,7 +111,48 @@ public final class RuleUIUtil {
             String modifiedTag) {
 
         Object value = entry.getValue();
-        Class<?> datatype = entry.getKey().type();
+        Class<?> datatype = null;
+        PropertyTypeId typeId = entry.getKey().getTypeId();
+        switch (typeId) {
+        case BOOLEAN:
+            datatype = Boolean.class;
+            break;
+        case CHARACTER:
+            datatype = Character.class;
+            break;
+        case CHARACTER_LIST:
+            datatype = Array.newInstance(Character.class, 0).getClass();
+            break;
+        case DOUBLE:
+            datatype = Double.class;
+            break;
+        case DOUBLE_LIST:
+            datatype = Array.newInstance(Double.class, 0).getClass();
+            break;
+        case INTEGER:
+            datatype = Integer.class;
+            break;
+        case INTEGER_LIST:
+            datatype = Array.newInstance(Integer.class, 0).getClass();
+            break;
+        case LONG:
+            datatype = Long.class;
+            break;
+        case LONG_LIST:
+            datatype = Array.newInstance(Long.class, 0).getClass();
+            break;
+        case REGEX:
+            datatype = Pattern.class;
+            break;
+        case STRING:
+            datatype = String.class;
+            break;
+        case STRING_LIST:
+            datatype = Array.newInstance(String.class, 0).getClass();
+            break;
+        default:
+            throw new IllegalStateException("Unsupported type: " + typeId);
+        }
 
         boolean isModified = !RuleUtil.isDefaultValue(entry);
         if (isModified) {
