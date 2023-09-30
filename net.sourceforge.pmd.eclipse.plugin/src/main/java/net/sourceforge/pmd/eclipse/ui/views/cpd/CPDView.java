@@ -25,6 +25,9 @@ import net.sourceforge.pmd.cpd.Mark;
 import net.sourceforge.pmd.cpd.Match;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.runtime.PMDRuntimeConstants;
+import net.sourceforge.pmd.eclipse.runtime.cmd.internal.CpdMarkWithSourceCode;
+import net.sourceforge.pmd.eclipse.runtime.cmd.internal.CpdMatchWithSourceCode;
+import net.sourceforge.pmd.eclipse.runtime.cmd.internal.CpdResult;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
 
 /**
@@ -120,29 +123,28 @@ public class CPDView extends ViewPart implements IPropertyListener {
 
     /**
      * Sets input for the table.
-     * @param matches CPD Command that contain the matches from the CPD
+     * @param result CPD results with matches and source code slices from the CPD
      */
-    public void setData(Iterator<Match> matches) {
+    public void setData(CpdResult result) {
         List<TreeNode> elements = new ArrayList<>();
-        if (matches != null) {
-            // iterate the matches
-            for (int count = 0; matches.hasNext() && count < MAX_MATCHES; count++) {
-                Match match = matches.next();
+        // iterate the matches
+        for (int count = 0; count < result.getMatches().size() && count < MAX_MATCHES; count++) {
+            Match match = result.getMatches().get(count);
+            CpdMatchWithSourceCode data = new CpdMatchWithSourceCode(result, match);
 
-                // create a treenode for the match and add to the list
-                TreeNode matchNode = new TreeNode(match); // NOPMD by Sven on 02.11.06 11:27
-                elements.add(matchNode);
+            // create a treenode for the match and add to the list
+            TreeNode matchNode = new TreeNode(data); // NOPMD by Sven on 02.11.06 11:27
+            elements.add(matchNode);
 
-                // create the children of the match
-                TreeNode[] children = new TreeNode[match.getMarkCount()]; // NOPMD by Sven on 02.11.06 11:28
-                Iterator<Mark> entryIterator = match.getMarkSet().iterator();
-                for (int j = 0; entryIterator.hasNext(); j++) {
-                    final Mark entry = entryIterator.next();
-                    children[j] = new TreeNode(entry); // NOPMD by Sven on 02.11.06 11:28
-                    children[j].setParent(matchNode);
-                }
-                matchNode.setChildren(children);
+            // create the children of the match
+            TreeNode[] children = new TreeNode[match.getMarkCount()]; // NOPMD by Sven on 02.11.06 11:28
+            Iterator<Mark> entryIterator = match.getMarkSet().iterator();
+            for (int j = 0; entryIterator.hasNext(); j++) {
+                final CpdMarkWithSourceCode entry = new CpdMarkWithSourceCode(result, entryIterator.next());
+                children[j] = new TreeNode(entry); // NOPMD by Sven on 02.11.06 11:28
+                children[j].setParent(matchNode);
             }
+            matchNode.setChildren(children);
         }
 
         // set the children of the rootnode: the matches
@@ -154,11 +156,11 @@ public class CPDView extends ViewPart implements IPropertyListener {
      */
     @Override
     public void propertyChanged(Object source, int propId) {
-        if (propId == PMDRuntimeConstants.PROPERTY_CPD && source instanceof Iterator<?>) {
-            Iterator<Match> iter = (Iterator<Match>) source;
+        if (propId == PMDRuntimeConstants.PROPERTY_CPD && source instanceof CpdResult) {
+            CpdResult result = (CpdResult) source;
             // after setdata(iter) iter.hasNext will always return false
-            boolean hasResults = iter.hasNext();
-            setData(iter);
+            boolean hasResults = !result.getMatches().isEmpty();
+            setData(result);
             if (!hasResults) {
                 // no entries
                 MessageBox box = new MessageBox(this.treeViewer.getControl().getShell());

@@ -491,7 +491,7 @@ public class RulePanelManager extends AbstractRulePanelManager {
 
         final Combo combo = new Combo(parent, SWT.READ_ONLY);
 
-        Language deflt = LanguageRegistry.PMD.getLanguageById(JavaLanguageModule.TERSE_NAME);
+        Language deflt = JavaLanguageModule.getInstance();
         int selectionIndex = -1;
 
         for (int i = 0; i < languages.size(); i++) {

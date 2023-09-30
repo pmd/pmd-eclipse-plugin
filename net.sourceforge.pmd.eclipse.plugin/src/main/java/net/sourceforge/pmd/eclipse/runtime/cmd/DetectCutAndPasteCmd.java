@@ -11,9 +11,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Consumer;
 
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.core.resources.IFile;
@@ -25,16 +28,17 @@ import org.eclipse.ui.IPropertyListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.sourceforge.pmd.cpd.CPD;
 import net.sourceforge.pmd.cpd.CPDConfiguration;
 import net.sourceforge.pmd.cpd.CPDReport;
-import net.sourceforge.pmd.cpd.Language;
-import net.sourceforge.pmd.cpd.LanguageFactory;
-import net.sourceforge.pmd.cpd.renderer.CPDReportRenderer;
+import net.sourceforge.pmd.cpd.CPDReportRenderer;
+import net.sourceforge.pmd.cpd.CpdAnalysis;
+import net.sourceforge.pmd.cpd.CpdCapableLanguage;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.runtime.PMDRuntimeConstants;
+import net.sourceforge.pmd.eclipse.runtime.cmd.internal.CpdResult;
 import net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties;
 import net.sourceforge.pmd.eclipse.runtime.properties.PropertiesException;
+import net.sourceforge.pmd.lang.LanguageRegistry;
 
 /**
  * This command produces a report of the Cut And Paste detector.
@@ -44,7 +48,7 @@ import net.sourceforge.pmd.eclipse.runtime.properties.PropertiesException;
  */
 public class DetectCutAndPasteCmd extends AbstractProjectCommand {
 
-    private Language language;
+    private CpdCapableLanguage language;
     private int minTileSize;
     private CPDReportRenderer renderer;
     private String reportName;
@@ -65,13 +69,13 @@ public class DetectCutAndPasteCmd extends AbstractProjectCommand {
         listeners = new ArrayList<>();
     }
 
-    private void notifyListeners(final CPDReport cpdResult) {
+    private void notifyListeners(final CpdResult cpdResult) {
         // trigger event propertyChanged for all listeners
         Display.getDefault().asyncExec(new Runnable() {
             @Override
             public void run() {
                 for (IPropertyListener listener : listeners) {
-                    listener.propertyChanged(cpdResult.getMatches(), PMDRuntimeConstants.PROPERTY_CPD);
+                    listener.propertyChanged(cpdResult, PMDRuntimeConstants.PROPERTY_CPD);
                 }
             }
         });
@@ -90,13 +94,15 @@ public class DetectCutAndPasteCmd extends AbstractProjectCommand {
             setStepCount(files.size());
             beginTask("Finding suspect Cut And Paste", getStepCount() * 2);
 
+            Consumer<CPDReport> renderer = null;
+            if (createReport) {
+                renderer = this::renderReport;
+            }
+            
             if (!isCanceled()) {
-                final CPDReport cpdResult = detectCutAndPaste(files);
+                final CpdResult cpdResult = detectCutAndPaste(files, renderer);
 
                 if (!isCanceled()) {
-                    if (createReport) {
-                        renderReport(cpdResult);
-                    }
                     notifyListeners(cpdResult);
                 }
             }
@@ -130,7 +136,7 @@ public class DetectCutAndPasteCmd extends AbstractProjectCommand {
      *            The language to set.
      */
     public void setLanguage(String theLanguage) {
-        language = LanguageFactory.createLanguage(theLanguage);
+        language = (CpdCapableLanguage) LanguageRegistry.CPD.getLanguageById(theLanguage);
     }
 
     /**
@@ -206,39 +212,41 @@ public class DetectCutAndPasteCmd extends AbstractProjectCommand {
      * @return the CPD itself for retrieving the matches.
      * @throws CoreException
      */
-    private CPDReport detectCutAndPaste(final List<File> files) {
+    private CpdResult detectCutAndPaste(final List<File> files, final Consumer<CPDReport> renderer) {
         LOG.debug("Searching for project files");
 
-        final CPD cpd = newCPD();
+        final AtomicReference<CpdResult> reportResult = new AtomicReference<>();
 
-        subTask("Collecting files for CPD");
-        final Iterator<File> fileIterator = files.iterator();
-        while (fileIterator.hasNext() && !isCanceled()) {
-            final File file = fileIterator.next();
-            try {
-                cpd.add(file);
-                worked(1);
-            } catch (IOException e) {
-                LOG.warn("IOException when adding file " + file.getName() + " to CPD. Continuing.", e);
-            }
-        }
-
-        if (!isCanceled()) {
-            subTask("Performing CPD");
-            LOG.debug("Performing CPD");
-            cpd.go();
-            worked(getStepCount());
-        }
-
-        return cpd.toReport();
-    }
-
-    private CPD newCPD() {
         CPDConfiguration config = new CPDConfiguration();
         config.setMinimumTileSize(minTileSize);
-        config.setLanguage(language);
-        config.setSourceEncoding(System.getProperty("file.encoding"));
-        return new CPD(config);
+        config.setOnlyRecognizeLanguage(language);
+        config.setSourceEncoding(Charset.defaultCharset());
+
+        try (CpdAnalysis cpd = CpdAnalysis.create(config)) {
+            subTask("Collecting files for CPD");
+            final Iterator<File> fileIterator = files.iterator();
+            while (fileIterator.hasNext() && !isCanceled()) {
+                final File file = fileIterator.next();
+                cpd.files().addFile(file.toPath());
+                worked(1);
+            }
+
+            if (!isCanceled()) {
+                subTask("Performing CPD");
+                LOG.debug("Performing CPD");
+                cpd.performAnalysis(r -> {
+                    if (renderer != null) {
+                        renderer.accept(r);
+                    }
+                    reportResult.set(new CpdResult(r));
+                });
+                worked(getStepCount());
+            }
+        } catch (IOException e) {
+            LOG.error("IOException while executing CPD", e);
+        }
+
+        return reportResult.get();
     }
 
     /**

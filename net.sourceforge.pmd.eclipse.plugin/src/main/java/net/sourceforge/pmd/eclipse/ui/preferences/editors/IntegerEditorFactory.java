@@ -12,10 +12,10 @@ import org.eclipse.swt.widgets.Spinner;
 
 import net.sourceforge.pmd.eclipse.ui.preferences.br.SizeChangeListener;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.ValueChangeListener;
+import net.sourceforge.pmd.properties.NumericConstraints;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
 import net.sourceforge.pmd.properties.PropertySource;
-import net.sourceforge.pmd.properties.constraints.NumericConstraints;
 
 /**
  * @author Brian Remedios

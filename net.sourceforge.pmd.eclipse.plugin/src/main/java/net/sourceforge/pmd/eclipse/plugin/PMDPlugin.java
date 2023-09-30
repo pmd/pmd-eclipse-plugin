@@ -84,7 +84,6 @@ import net.sourceforge.pmd.eclipse.ui.nls.StringTable;
 import net.sourceforge.pmd.eclipse.ui.priority.PriorityDescriptorCache;
 import net.sourceforge.pmd.eclipse.ui.views.PriorityFilter;
 import net.sourceforge.pmd.eclipse.util.ResourceManager;
-import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.java.JavaLanguageModule;
 import net.sourceforge.pmd.lang.rule.RuleReference;
@@ -172,7 +171,7 @@ public class PMDPlugin extends AbstractUIPlugin {
 
         if (jProject.exists()) {
             String compilerCompliance = jProject.getOption(JavaCore.COMPILER_COMPLIANCE, true);
-            return LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion(compilerCompliance);
+            return JavaLanguageModule.getInstance().getVersion(compilerCompliance);
         }
         return null;
     }

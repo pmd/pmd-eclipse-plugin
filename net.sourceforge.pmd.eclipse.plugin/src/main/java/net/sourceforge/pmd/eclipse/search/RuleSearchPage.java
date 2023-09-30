@@ -62,7 +62,7 @@ public class RuleSearchPage extends DialogPage implements ISearchPage {
 
         Combo languageCombo = new Combo(parent, SWT.READ_ONLY);
 
-        Language defaultLanguage = LanguageRegistry.PMD.getLanguageById(JavaLanguageModule.TERSE_NAME);
+        Language defaultLanguage = JavaLanguageModule.getInstance();
         int selectionIndex = -1;
         int i = 0;
 

@@ -33,10 +33,9 @@ import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.runtime.writer.IAstWriter;
 import net.sourceforge.pmd.eclipse.runtime.writer.WriterException;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
-import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageProcessor;
 import net.sourceforge.pmd.lang.LanguageProcessorRegistry;
-import net.sourceforge.pmd.lang.LanguageRegistry;
+import net.sourceforge.pmd.lang.PmdCapableLanguage;
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.ast.Parser;
 import net.sourceforge.pmd.lang.ast.Parser.ParserTask;
@@ -84,7 +83,7 @@ public class PMDGenerateASTAction extends AbstractUIAction implements IRunnableW
      */
     private void generateAST(IFile file) {
         LOG.info("Generating AST for file " + file.getName());
-        Language javaLanguage = LanguageRegistry.PMD.getLanguageById(JavaLanguageModule.TERSE_NAME);
+        PmdCapableLanguage javaLanguage = JavaLanguageModule.getInstance();
         try (Reader reader = new InputStreamReader(file.getContents(), file.getCharset());
                 ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
                 LanguageProcessor javaProcessor = javaLanguage.createProcessor(new JavaLanguageProperties());

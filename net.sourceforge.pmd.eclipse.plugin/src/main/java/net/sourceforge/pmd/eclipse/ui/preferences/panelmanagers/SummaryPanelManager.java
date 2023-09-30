@@ -96,7 +96,7 @@ public class SummaryPanelManager extends AbstractRulePanelManager {
             int longest = longestNameIn(valuesByDescriptor);
             for (Map.Entry<PropertyDescriptor<?>, Object> entry : valuesByDescriptor.entrySet()) {
                 PropertyDescriptor<?> desc = entry.getKey();
-                pb.addText(pad(desc.name(), longest, ' ') + '\t' + asLabel(desc.type()));
+                pb.addText(pad(desc.name(), longest, ' ') + '\t' + asLabel(entry.getValue().getClass()));
             }
         }
 

@@ -30,6 +30,7 @@ import net.sourceforge.pmd.cpd.Mark;
 import net.sourceforge.pmd.cpd.Match;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
+import net.sourceforge.pmd.lang.document.FileLocation;
 
 /**
  * 
@@ -54,8 +55,9 @@ public class CPDViewTooltipListener2 implements Listener {
 
     // open file and jump to the startline
     private void highlight(Match match, Mark entry) {
+        FileLocation location = entry.getLocation();
 
-        IPath path = Path.fromOSString(entry.getFilename());
+        IPath path = Path.fromOSString(location.getFileId().getOriginalPath());
         IFile file = ResourcesPlugin.getWorkspace().getRoot().getFileForLocation(path);
         if (file == null) {
             return;
@@ -69,8 +71,8 @@ public class CPDViewTooltipListener2 implements Listener {
                 // select text
                 ITextEditor textEditor = (ITextEditor) part;
                 IDocument document = textEditor.getDocumentProvider().getDocument(textEditor.getEditorInput());
-                int offset = document.getLineOffset(entry.getBeginLine() - 1);
-                int length = document.getLineOffset(entry.getBeginLine() - 1 + match.getLineCount()) - offset - 1;
+                int offset = document.getLineOffset(location.getStartLine() - 1);
+                int length = document.getLineOffset(location.getStartLine() - 1 + match.getLineCount()) - offset - 1;
                 textEditor.selectAndReveal(offset, length);
             }
         } catch (PartInitException | BadLocationException pie) {

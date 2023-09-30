@@ -22,7 +22,8 @@ import org.eclipse.ui.ide.IDE.SharedImages;
 
 import net.sourceforge.pmd.cpd.Mark;
 import net.sourceforge.pmd.cpd.Match;
-import net.sourceforge.pmd.cpd.TokenEntry;
+import net.sourceforge.pmd.eclipse.runtime.cmd.internal.CpdMarkWithSourceCode;
+import net.sourceforge.pmd.eclipse.runtime.cmd.internal.CpdMatchWithSourceCode;
 
 /**
  * 
@@ -42,10 +43,10 @@ public class CPDViewLabelProvider2 extends LabelProvider implements ITableLabelP
         // the second Column gets an Image depending on,
         // if the Element is a Match or TokenEntry
         if (columnIndex == 0) {
-            if (value instanceof Match) {
+            if (value instanceof CpdMatchWithSourceCode) {
                 // image =
                 // PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJS_ERROR_TSK);
-            } else if (value instanceof TokenEntry) {
+            } else if (value instanceof CpdMarkWithSourceCode) {
                 image = PlatformUI.getWorkbench().getSharedImages().getImage(SharedImages.IMG_OPEN_MARKER);
             }
         }
@@ -67,7 +68,7 @@ public class CPDViewLabelProvider2 extends LabelProvider implements ITableLabelP
     }
 
     public static String pathFor(Mark entry) {
-        final IPath path = Path.fromOSString(entry.getFilename());
+        final IPath path = Path.fromOSString(entry.getLocation().getFileId().getOriginalPath());
         final IResource resource = ResourcesPlugin.getWorkspace().getRoot().getContainerForLocation(path);
         if (resource != null) {
             return resource.getProjectRelativePath().removeFileExtension().toString().replace(IPath.SEPARATOR, '.');

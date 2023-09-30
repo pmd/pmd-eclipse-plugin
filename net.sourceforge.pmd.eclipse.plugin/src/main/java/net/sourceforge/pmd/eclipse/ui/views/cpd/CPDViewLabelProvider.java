@@ -16,8 +16,11 @@ import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE.SharedImages;
 
+import net.sourceforge.pmd.cpd.Mark;
 import net.sourceforge.pmd.cpd.Match;
-import net.sourceforge.pmd.cpd.TokenEntry;
+import net.sourceforge.pmd.eclipse.runtime.cmd.internal.CpdMarkWithSourceCode;
+import net.sourceforge.pmd.eclipse.runtime.cmd.internal.CpdMatchWithSourceCode;
+import net.sourceforge.pmd.lang.document.FileLocation;
 
 /**
  * 
@@ -37,9 +40,9 @@ public class CPDViewLabelProvider extends LabelProvider implements ITableLabelPr
         // the second Column gets an Image depending on,
         // if the Element is a Match or TokenEntry
         if (columnIndex == 1) {
-            if (value instanceof Match) {
+            if (value instanceof CpdMatchWithSourceCode) {
                 image = PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJS_ERROR_TSK);
-            } else if (value instanceof TokenEntry) {
+            } else if (value instanceof CpdMarkWithSourceCode) {
                 image = PlatformUI.getWorkbench().getSharedImages().getImage(SharedImages.IMG_OPEN_MARKER);
             }
         }
@@ -58,8 +61,9 @@ public class CPDViewLabelProvider extends LabelProvider implements ITableLabelPr
         switch (columnIndex) {
         // show the message 
         case 2:
-            if (value instanceof Match) {
-                final Match match = (Match) value;
+            if (value instanceof CpdMatchWithSourceCode) {
+                final CpdMatchWithSourceCode data = (CpdMatchWithSourceCode) value;
+                final Match match = data.getMatch();
                 final StringBuilder buffer = new StringBuilder(50);
                 buffer.append("Found suspect cut & paste (");
                 buffer.append(match.getMarkCount()).append(" matches,");
@@ -70,12 +74,14 @@ public class CPDViewLabelProvider extends LabelProvider implements ITableLabelPr
                     buffer.append(" lines)");
                 }
                 result = buffer.toString();
-            } else if (value instanceof TokenEntry) {
-                final TokenEntry entry = (TokenEntry) value;
-                final Match match = (Match) node.getParent().getValue();
-                final int startLine = entry.getBeginLine();
-                final int endLine = entry.getBeginLine() + match.getLineCount() - 1;
-                final IPath path = Path.fromOSString(entry.getTokenSrcID());
+            } else if (value instanceof CpdMarkWithSourceCode) {
+                final CpdMarkWithSourceCode data = (CpdMarkWithSourceCode) value;
+                final Mark entry = data.getMark();
+                final FileLocation location = entry.getLocation();
+                final Match match = ((CpdMatchWithSourceCode) node.getParent().getValue()).getMatch();
+                final int startLine = location.getStartLine();
+                final int endLine = location.getStartLine() + match.getLineCount() - 1;
+                final IPath path = Path.fromOSString(location.getFileId().getOriginalPath());
                 final StringBuilder buffer = new StringBuilder(100);
                 if (startLine == endLine) {
                     buffer.append("line ").append(startLine);
@@ -87,9 +93,9 @@ public class CPDViewLabelProvider extends LabelProvider implements ITableLabelPr
             }
             break;
         case 3:
-            if (value instanceof TokenEntry) {
-                final TokenEntry entry = (TokenEntry) value;
-                final IPath path = Path.fromOSString(entry.getTokenSrcID());
+            if (value instanceof CpdMarkWithSourceCode) {
+                final CpdMarkWithSourceCode data = (CpdMarkWithSourceCode) value;
+                final IPath path = Path.fromOSString(data.getMark().getLocation().getFileId().getOriginalPath());
                 final IResource resource = ResourcesPlugin.getWorkspace().getRoot().getContainerForLocation(path);
                 if (resource != null) {
                     result = resource.getProjectRelativePath().removeFileExtension().toString().replace(IPath.SEPARATOR, '.');

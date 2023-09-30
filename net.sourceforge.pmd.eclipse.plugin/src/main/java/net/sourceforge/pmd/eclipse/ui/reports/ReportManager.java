@@ -132,7 +132,7 @@ public final class ReportManager {
             for (PropertyDescriptor pDesc : renderer.getPropertyDescriptors()) {
                 String key = keyOf(renderer, pDesc);
                 if (props.containsKey(key)) {
-                    Object value = pDesc.valueFrom((String) props.get(key));
+                    Object value = pDesc.serializer().fromString(props.getProperty(key));
                     renderer.setProperty(pDesc, value);
                 }
             }
@@ -154,7 +154,7 @@ public final class ReportManager {
             Map<PropertyDescriptor<?>, Object> valuesByProp = renderer.getPropertiesByPropertyDescriptor();
             for (Map.Entry<PropertyDescriptor<?>, Object> entry : valuesByProp.entrySet()) {
                 PropertyDescriptor desc = entry.getKey();
-                props.put(keyOf(renderer, desc), desc.asDelimitedString(entry.getValue()));
+                props.put(keyOf(renderer, desc), desc.serializer().toString(entry.getValue()));
 
             }
         }
