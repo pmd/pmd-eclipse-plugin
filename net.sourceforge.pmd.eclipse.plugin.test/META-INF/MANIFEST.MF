@@ -1,6 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Version: 7.0.0.qualifier
+Import-Package: org.apache.commons.io
 Bundle-Name: PMD Test Plugin
 Bundle-SymbolicName: net.sourceforge.pmd.eclipse.plugin.test;singleton:=true
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
@@ -13,7 +14,6 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.jdt.core,
  org.eclipse.jdt.launching,
  org.junit,
- org.apache.commons.io,
  org.eclipse.swtbot.go,
  org.eclipse.jdt.ui,
  org.eclipse.ui.navigator.resources
