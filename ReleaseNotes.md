@@ -13,12 +13,15 @@ This is a minor release.
 
 ### New and noteworthy
 
+* Support for Eclipse 2023-09 added
 * Support for Eclipse 2023-06 added
+* Support for Eclipse 2022-09 removed
 * Support for Eclipse 2022-06 removed
 
 ### Fixed Issues
 
 * [#181](https://github.com/pmd/pmd-eclipse-plugin/pull/181): Support eclipse 2023-06
+* [#183](https://github.com/pmd/pmd-eclipse-plugin/pull/183): Support eclipse 2023-09
 
 ### API Changes
 
