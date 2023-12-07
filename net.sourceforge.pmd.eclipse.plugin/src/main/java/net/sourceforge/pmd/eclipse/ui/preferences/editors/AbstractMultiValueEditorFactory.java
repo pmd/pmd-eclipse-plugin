@@ -92,7 +92,7 @@ public abstract class AbstractMultiValueEditorFactory<T> extends AbstractEditorF
         butt.setText("...");    // TODO use triangle icon & rotate 90deg when clicked
         butt.addListener(SWT.Selection, new Listener() {
             boolean itemsVisible = false;
-            List<Control> items = new ArrayList<Control>();
+            List<Control> items = new ArrayList<>();
 
             @Override
             public void handleEvent(Event event) {

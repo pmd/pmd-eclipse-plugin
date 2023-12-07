@@ -23,16 +23,19 @@ import net.sourceforge.pmd.eclipse.util.Util;
  * 
  * @author Brian Remedios
  */
-public interface MarkerColumnsUI {
+public final class MarkerColumnsUI {
+    private MarkerColumnsUI() {
+        // utility / constants class
+    }
 
-    Comparator<RulePriority> COMP_PRIORITY = new Comparator<RulePriority>() {
+    public static final Comparator<RulePriority> COMP_PRIORITY = new Comparator<RulePriority>() {
         @Override
         public int compare(RulePriority a, RulePriority b) {
             return a.compareTo(b);
         }
     };
 
-    ItemFieldAccessor<RulePriority, IMarker> PRIORITY_ACC = new ItemFieldAccessorAdapter<RulePriority, IMarker>(
+    public static final ItemFieldAccessor<RulePriority, IMarker> PRIORITY_ACC = new ItemFieldAccessorAdapter<RulePriority, IMarker>(
             COMP_PRIORITY) {
         @Override
         public RulePriority valueFor(IMarker marker) {
@@ -41,7 +44,8 @@ public interface MarkerColumnsUI {
         }
     };
 
-    ItemFieldAccessor<Image, IMarker> PRIORITY_IMG_ACC = new ItemFieldAccessorAdapter<Image, IMarker>(null) {
+    public static final ItemFieldAccessor<Image, IMarker> PRIORITY_IMG_ACC = new ItemFieldAccessorAdapter<Image, IMarker>(
+            null) {
         @Override
         public Image imageFor(IMarker marker) {
             RulePriority rp = PRIORITY_ACC.valueFor(marker);
@@ -49,52 +53,57 @@ public interface MarkerColumnsUI {
         }
     };
 
-    ItemFieldAccessor<Integer, IMarker> LINE_NO_ACC = new ItemFieldAccessorAdapter<Integer, IMarker>(Util.COMP_INT) {
+    public static final ItemFieldAccessor<Integer, IMarker> LINE_NO_ACC = new ItemFieldAccessorAdapter<Integer, IMarker>(
+            Util.COMP_INT) {
         @Override
         public Integer valueFor(IMarker marker) {
             return (Integer) marker.getAttribute(IMarker.LINE_NUMBER, 0);
         }
     };
 
-    ItemFieldAccessor<Long, IMarker> CREATED_ACC = new ItemFieldAccessorAdapter<Long, IMarker>(Util.COMP_LONG) {
+    public static final ItemFieldAccessor<Long, IMarker> CREATED_ACC = new ItemFieldAccessorAdapter<Long, IMarker>(
+            Util.COMP_LONG) {
         @Override
         public Long valueFor(IMarker marker) {
             return MarkerUtil.createdOn(marker, -1);
         }
     };
 
-    ItemFieldAccessor<Boolean, IMarker> DONE_ACC = new ItemFieldAccessorAdapter<Boolean, IMarker>(Util.COMP_BOOL) {
+    public static final ItemFieldAccessor<Boolean, IMarker> DONE_ACC = new ItemFieldAccessorAdapter<Boolean, IMarker>(
+            Util.COMP_BOOL) {
         @Override
         public Boolean valueFor(IMarker marker) {
             return MarkerUtil.doneState(marker, false);
         }
     };
 
-    ItemFieldAccessor<String, IMarker> RULE_NAME_ACC = new ItemFieldAccessorAdapter<String, IMarker>(Util.COMP_STR) {
+    public static final ItemFieldAccessor<String, IMarker> RULE_NAME_ACC = new ItemFieldAccessorAdapter<String, IMarker>(
+            Util.COMP_STR) {
         @Override
         public String valueFor(IMarker marker) {
             return MarkerUtil.ruleNameFor(marker);
         }
     };
 
-    ItemFieldAccessor<String, IMarker> MESSAGE_ACC = new ItemFieldAccessorAdapter<String, IMarker>(Util.COMP_STR) {
+    public static final ItemFieldAccessor<String, IMarker> MESSAGE_ACC = new ItemFieldAccessorAdapter<String, IMarker>(
+            Util.COMP_STR) {
         @Override
         public String valueFor(IMarker marker) {
             return MarkerUtil.messageFor(marker, "??");
         }
     };
 
-    ItemColumnDescriptor<Image, IMarker> PRIORITY = new ItemColumnDescriptor<>("tPriority", "Priority",
-            SWT.CENTER, 20, false, PRIORITY_IMG_ACC);
-    ItemColumnDescriptor<Boolean, IMarker> DONE = new ItemColumnDescriptor<>("tDone", "done", SWT.LEFT,
-            50, false, DONE_ACC);
-    ItemColumnDescriptor<Long, IMarker> CREATED = new ItemColumnDescriptor<>("tCreated", "created",
+    public static final ItemColumnDescriptor<Image, IMarker> PRIORITY = new ItemColumnDescriptor<>("tPriority",
+            "Priority", SWT.CENTER, 20, false, PRIORITY_IMG_ACC);
+    public static final ItemColumnDescriptor<Boolean, IMarker> DONE = new ItemColumnDescriptor<>("tDone", "done",
+            SWT.LEFT, 50, false, DONE_ACC);
+    public static final ItemColumnDescriptor<Long, IMarker> CREATED = new ItemColumnDescriptor<>("tCreated", "created",
             SWT.LEFT, 130, true, CREATED_ACC, ValueFormatter.TIME_FORMATTERS);
-    ItemColumnDescriptor<String, IMarker> RULE_NAME = new ItemColumnDescriptor<>("tRuleName", "Rule",
-            SWT.LEFT, 190, true, RULE_NAME_ACC);
-    ItemColumnDescriptor<String, IMarker> MESSAGE = new ItemColumnDescriptor<>("tMsg",
+    public static final ItemColumnDescriptor<String, IMarker> RULE_NAME = new ItemColumnDescriptor<>("tRuleName",
+            "Rule", SWT.LEFT, 190, true, RULE_NAME_ACC);
+    public static final ItemColumnDescriptor<String, IMarker> MESSAGE = new ItemColumnDescriptor<>("tMsg",
             StringKeys.VIEW_OUTLINE_COLUMN_MESSAGE, SWT.LEFT, 260, true, MESSAGE_ACC);
-    ItemColumnDescriptor<Integer, IMarker> LINE_NUMBER = new ItemColumnDescriptor<>("tLineNo",
+    public static final ItemColumnDescriptor<Integer, IMarker> LINE_NUMBER = new ItemColumnDescriptor<>("tLineNo",
             StringKeys.VIEW_OUTLINE_COLUMN_LINE, SWT.LEFT, 50, false, LINE_NO_ACC);
 
 }

@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.eclipse.core.ext;
 
 import java.util.LinkedHashSet;
+import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
@@ -54,12 +55,12 @@ public class RuleSetsExtensionProcessor {
         if (object instanceof IRuleSetsExtension) {
             final IRuleSetsExtension extension = (IRuleSetsExtension) object;
 
-            LinkedHashSet<RuleSet> registeredRulesets = new LinkedHashSet<>(ruleSetManager.getRegisteredRuleSets());
+            Set<RuleSet> registeredRulesets = new LinkedHashSet<>(ruleSetManager.getRegisteredRuleSets());
             extension.registerRuleSets(registeredRulesets);
             ruleSetManager.getRegisteredRuleSets().clear();
             ruleSetManager.getRegisteredRuleSets().addAll(registeredRulesets);
 
-            LinkedHashSet<RuleSet> defaultRegisteredRulesets = new LinkedHashSet<>(ruleSetManager.getDefaultRuleSets());
+            Set<RuleSet> defaultRegisteredRulesets = new LinkedHashSet<>(ruleSetManager.getDefaultRuleSets());
             extension.registerDefaultRuleSets(defaultRegisteredRulesets);
             ruleSetManager.getDefaultRuleSets().clear();
             ruleSetManager.getDefaultRuleSets().addAll(defaultRegisteredRulesets);

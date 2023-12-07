@@ -56,7 +56,7 @@ public abstract class AbstractPMDRecord {
      * @return an ArrayList with the child-Elements
      */
     public List<AbstractPMDRecord> getChildrenAsList() {
-        return new ArrayList<AbstractPMDRecord>(Arrays.asList(getChildren()));
+        return new ArrayList<>(Arrays.asList(getChildren()));
     }
 
     /**

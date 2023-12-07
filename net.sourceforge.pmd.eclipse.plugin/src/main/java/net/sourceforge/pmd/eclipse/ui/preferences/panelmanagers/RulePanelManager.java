@@ -651,7 +651,7 @@ public class RulePanelManager extends AbstractRulePanelManager {
 
         priorityCombo = buildPriorityCombo(parent);
 
-        priorityDisplay = new ShapePicker(parent, SWT.NONE, 14);
+        priorityDisplay = new ShapePicker<>(parent, SWT.NONE, 14);
         priorityDisplay.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false, 4, 1));
         priorityDisplay.setShapeMap(UISettings.shapesByPriority());
         priorityDisplay.tooltipProvider(new LabelProvider() {

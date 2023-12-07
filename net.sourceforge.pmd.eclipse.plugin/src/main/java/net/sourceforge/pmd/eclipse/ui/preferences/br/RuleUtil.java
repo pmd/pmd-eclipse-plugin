@@ -50,14 +50,8 @@ public final class RuleUtil {
         // return rule.hasDescriptor(XPathRule.XPATH_DESCRIPTOR); // not
         // reliable since it may not have it yet
 
-        if (source instanceof XPathRule) {
-            return true;
-        }
-        if (source instanceof RuleReference) {
-            return ((RuleReference) source).getRule() instanceof XPathRule;
-        }
-
-        return false;
+        return source instanceof XPathRule
+                || source instanceof RuleReference && ((RuleReference) source).getRule() instanceof XPathRule;
     }
 
     // TODO move elsewhere
@@ -109,7 +103,7 @@ public final class RuleUtil {
 
     public static Set<PropertyDescriptor<?>> modifiedPropertiesIn(Rule rule) {
 
-        Set<PropertyDescriptor<?>> descs = new HashSet<PropertyDescriptor<?>>();
+        Set<PropertyDescriptor<?>> descs = new HashSet<>();
 
         for (Map.Entry<PropertyDescriptor<?>, Object> entry : Configuration.filteredPropertiesOf(rule).entrySet()) {
             if (isDefaultValue(entry)) {
@@ -124,7 +118,7 @@ public final class RuleUtil {
     public static Set<Comparable<?>> uniqueItemsIn(Object item, RuleFieldAccessor getter) {
 
         if (item instanceof Rule) {
-            Set<Comparable<?>> values = new HashSet<Comparable<?>>(1);
+            Set<Comparable<?>> values = new HashSet<>(1);
             values.add(getter.valueFor((Rule) item));
             return values;
         }
@@ -369,7 +363,7 @@ public final class RuleUtil {
             return Collections.emptySet();
         }
 
-        final Set<Comparable<?>> aspects = new HashSet<Comparable<?>>();
+        final Set<Comparable<?>> aspects = new HashSet<>();
 
         RuleVisitor visitor = new RuleVisitor() {
             @Override

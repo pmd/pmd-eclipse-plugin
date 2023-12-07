@@ -52,7 +52,7 @@ public class PerRulePropertyPanelManager extends AbstractRulePanelManager implem
     public static final Map<Class<?>, EditorFactory<?>> EDITOR_FACTORIES_BY_PROPERTY_TYPE;
 
     static {
-        Map<Class<?>, EditorFactory<?>> factoriesByPropertyType = new HashMap<Class<?>, EditorFactory<?>>();
+        Map<Class<?>, EditorFactory<?>> factoriesByPropertyType = new HashMap<>();
 
         factoriesByPropertyType.put(Boolean.class, BooleanEditorFactory.INSTANCE);
         factoriesByPropertyType.put(Character.class, CharacterEditorFactory.INSTANCE);
@@ -84,11 +84,7 @@ public class PerRulePropertyPanelManager extends AbstractRulePanelManager implem
 
     @Override
     protected boolean canWorkWith(Rule rule) {
-        if (RuleUtil.isXPathRule(rule)) {
-            return true;
-        }
-
-        return !Configuration.filteredPropertiesOf(rule).isEmpty();
+        return RuleUtil.isXPathRule(rule) || !Configuration.filteredPropertiesOf(rule).isEmpty();
     }
 
     @Override

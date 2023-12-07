@@ -52,17 +52,11 @@ public abstract class AbstractDefaultCommand {
      * @deprecated we support multiple languages now
      */
     public static boolean isJavaFile(IFile file) {
-        if (file == null) {
-            return false;
-        }
-        return "JAVA".equalsIgnoreCase(file.getFileExtension());
+        return file != null && "JAVA".equalsIgnoreCase(file.getFileExtension());
     }
 
     public static boolean isLanguageFile(IFile file, Language language) {
-        if (file == null) {
-            return false;
-        }
-        return language.hasExtension(file.getFileExtension());
+        return file != null && language.hasExtension(file.getFileExtension());
     }
 
     /**

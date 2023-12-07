@@ -125,17 +125,11 @@ public class StyleExtractor {
     }
 
     private boolean atVarnameReference(String text, int position) {
-        if (syntaxData.varnameReference == null) {
-            return false;
-        }
-        return text.indexOf(syntaxData.varnameReference, position) == position;
+        return syntaxData.varnameReference != null && text.indexOf(syntaxData.varnameReference, position) == position;
     }
 
     private boolean atSingleLineComment(String text, int position) {
-        if (syntaxData.getComment() == null) {
-            return false;
-        }
-        return text.indexOf(syntaxData.getComment(), position) == position;
+        return syntaxData.getComment() != null && text.indexOf(syntaxData.getComment(), position) == position;
     }
 
     private int getKeywordEnd(String lineText, int start) {

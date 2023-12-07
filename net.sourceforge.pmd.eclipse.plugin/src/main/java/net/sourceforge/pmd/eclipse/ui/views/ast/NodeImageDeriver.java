@@ -84,7 +84,7 @@ public class NodeImageDeriver {
         methodDeclarationDeriver, localVariableDeclarationDeriver, fieldDeclarationDeriver, annotationDeriver,
         compilationUnitDeriver, throwStatementDeriver };
 
-    private static final Map<Class<?>, NodeImageDeriver> DERIVERS_BY_TYPE = new HashMap<Class<?>, NodeImageDeriver>(
+    private static final Map<Class<?>, NodeImageDeriver> DERIVERS_BY_TYPE = new HashMap<>(
             NodeImageDeriver.ALL_DERIVERS.length);
 
     public final Class<?> target;

@@ -198,7 +198,7 @@ public class DetectCutAndPasteCmd extends AbstractProjectCommand {
         visitor.setWorkingSet(properties.getProjectWorkingSet());
         visitor.setIncludeDerivedFiles(properties.isIncludeDerivedFiles());
         visitor.setLanguage(language);
-        visitor.setFiles(new ArrayList<File>());
+        visitor.setFiles(new ArrayList<>());
         visitProjectResourcesWith(visitor);
         return visitor.getFiles();
     }

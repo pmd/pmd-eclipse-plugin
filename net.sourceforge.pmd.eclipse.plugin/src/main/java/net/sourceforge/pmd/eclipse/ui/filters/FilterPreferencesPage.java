@@ -439,7 +439,7 @@ public class FilterPreferencesPage extends AbstractPMDPreferencePage
 
         Set<FilterHolder> holders = new HashSet<>();
         for (Object tItem : tableViewer.getTable().getSelection()) {
-            holders.add((FilterHolder) (((TableItem) tItem).getData()));
+            holders.add((FilterHolder) ((TableItem) tItem).getData());
         }
         return holders;
     }

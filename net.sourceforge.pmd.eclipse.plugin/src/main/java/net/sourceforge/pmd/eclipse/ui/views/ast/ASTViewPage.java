@@ -75,7 +75,7 @@ public class ASTViewPage extends AbstractStructureInspectorPage {
     private static Set<Class<?>> hiddenNodeTypes;
 
     static {
-        hiddenNodeTypes = new HashSet<Class<?>>();
+        hiddenNodeTypes = new HashSet<>();
         hiddenNodeTypes.add(ASTImportDeclaration.class);
     }
 
@@ -192,7 +192,7 @@ public class ASTViewPage extends AbstractStructureInspectorPage {
         // outputField.setLayoutData(gridData);
         // SyntaxManager.adapt(outputField, "xpath", null);
 
-        BasicTableManager tableMgr = new BasicTableManager("ast", null, NodeColumnUI.VISIBLE_COLUMNS);
+        BasicTableManager<Object> tableMgr = new BasicTableManager<>("ast", null, NodeColumnUI.VISIBLE_COLUMNS);
         resultsViewer = tableMgr.buildTableViewer(xpathTestPanel);
         tableMgr.setupColumns(NodeColumnUI.VISIBLE_COLUMNS);
 

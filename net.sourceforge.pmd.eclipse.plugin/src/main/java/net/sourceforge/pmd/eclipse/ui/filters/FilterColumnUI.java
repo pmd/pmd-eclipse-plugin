@@ -16,30 +16,36 @@ import net.sourceforge.pmd.eclipse.util.Util;
  *
  * @author Brian Remedios
  */
-public interface FilterColumnUI {
+public final class FilterColumnUI {
+    private FilterColumnUI() {
+        // utility / constants class
+    }
 
-    ItemFieldAccessor<String, FilterHolder> INCLUDE_ACCESSOR = new ItemFieldAccessorAdapter<String, FilterHolder>(null) {
+    public static final ItemFieldAccessor<String, FilterHolder> INCLUDE_ACCESSOR = new ItemFieldAccessorAdapter<String, FilterHolder>(
+            null) {
         @Override
         public Image imageFor(FilterHolder holder) {
             return FilterPreferencesPage.typeIconFor(holder);
         }
     };
 
-    ItemFieldAccessor<String, FilterHolder> PMD_ACCESSOR = new ItemFieldAccessorAdapter<String, FilterHolder>(Util.COMP_STR) {
+    public static final ItemFieldAccessor<String, FilterHolder> PMD_ACCESSOR = new ItemFieldAccessorAdapter<String, FilterHolder>(
+            Util.COMP_STR) {
         @Override
         public String valueFor(FilterHolder holder) {
             return holder.forPMD ? "Y" : "";
         }
     };
 
-    ItemFieldAccessor<String, FilterHolder> CPD_ACCESSOR = new ItemFieldAccessorAdapter<String, FilterHolder>(Util.COMP_STR) {
+    public static final ItemFieldAccessor<String, FilterHolder> CPD_ACCESSOR = new ItemFieldAccessorAdapter<String, FilterHolder>(
+            Util.COMP_STR) {
         @Override
         public String valueFor(FilterHolder holder) {
             return holder.forCPD ? "Y" : "";
         }
     };
 
-    ItemFieldAccessor<String, FilterHolder> PATTERN_ACCESSOR = new ItemFieldAccessorAdapter<String, FilterHolder>(
+    public static final ItemFieldAccessor<String, FilterHolder> PATTERN_ACCESSOR = new ItemFieldAccessorAdapter<String, FilterHolder>(
             Util.COMP_STR) {
         @Override
         public String valueFor(FilterHolder holder) {
@@ -47,17 +53,17 @@ public interface FilterColumnUI {
         }
     };
 
-    ItemColumnDescriptor<String, FilterHolder> INCLUDE_DESCRIPTOR = new ItemColumnDescriptor<>("", "   Type",
-            SWT.LEFT, 85, false, INCLUDE_ACCESSOR);
-    ItemColumnDescriptor<String, FilterHolder> PMD_DESCRIPTOR = new ItemColumnDescriptor<>("", "PMD",
-            SWT.CENTER, 55, false, PMD_ACCESSOR);
-    ItemColumnDescriptor<String, FilterHolder> CPD_DESCRIPTOR = new ItemColumnDescriptor<>("", "CPD",
-            SWT.CENTER, 55, false, CPD_ACCESSOR);
-    ItemColumnDescriptor<String, FilterHolder> PATTERN_DESCRIPTOR = new ItemColumnDescriptor<>("", "Pattern",
-            SWT.LEFT, 55, true, PATTERN_ACCESSOR);
+    public static final ItemColumnDescriptor<String, FilterHolder> INCLUDE_DESCRIPTOR = new ItemColumnDescriptor<>("",
+            "   Type", SWT.LEFT, 85, false, INCLUDE_ACCESSOR);
+    public static final ItemColumnDescriptor<String, FilterHolder> PMD_DESCRIPTOR = new ItemColumnDescriptor<>("",
+            "PMD", SWT.CENTER, 55, false, PMD_ACCESSOR);
+    public static final ItemColumnDescriptor<String, FilterHolder> CPD_DESCRIPTOR = new ItemColumnDescriptor<>("",
+            "CPD", SWT.CENTER, 55, false, CPD_ACCESSOR);
+    public static final ItemColumnDescriptor<String, FilterHolder> PATTERN_DESCRIPTOR = new ItemColumnDescriptor<>("",
+            "Pattern", SWT.LEFT, 55, true, PATTERN_ACCESSOR);
 
     @SuppressWarnings("rawtypes")
-    ItemColumnDescriptor[] VISIBLE_COLUMNS = new ItemColumnDescriptor[] { INCLUDE_DESCRIPTOR,
+    public static final ItemColumnDescriptor[] VISIBLE_COLUMNS = new ItemColumnDescriptor[] { INCLUDE_DESCRIPTOR,
         // pmd, cpd,
         PATTERN_DESCRIPTOR };
 }

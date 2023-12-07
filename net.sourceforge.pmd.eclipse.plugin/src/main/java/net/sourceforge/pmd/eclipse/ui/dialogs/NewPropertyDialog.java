@@ -99,7 +99,7 @@ public class NewPropertyDialog extends TitleAreaDialog implements SizeChangeList
 
     public static Map<Class<?>, EditorFactory<?>> withOnly(Map<Class<?>, EditorFactory<?>> factoriesByType,
             Class<?>[] legalTypeKeys) {
-        Map<Class<?>, EditorFactory<?>> results = new HashMap<Class<?>, EditorFactory<?>>(legalTypeKeys.length);
+        Map<Class<?>, EditorFactory<?>> results = new HashMap<>(legalTypeKeys.length);
 
         for (Class<?> type : legalTypeKeys) {
             if (factoriesByType.containsKey(type)) {

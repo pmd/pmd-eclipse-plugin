@@ -68,7 +68,7 @@ public class FormArranger implements ValueChangeListener {
         changeListener = chain(listener, this);
         sizeChangeListener = sizeListener;
 
-        controlsByProperty = new HashMap<PropertyDescriptor<?>, Control[]>();
+        controlsByProperty = new HashMap<>();
     }
 
     /**
@@ -203,8 +203,7 @@ public class FormArranger implements ValueChangeListener {
             return 0;
         }
 
-        PropertyDescriptor<?>[] orderedDescs = valuesByDescriptor.keySet()
-                .toArray(new PropertyDescriptor[valuesByDescriptor.size()]);
+        PropertyDescriptor<?>[] orderedDescs = valuesByDescriptor.keySet().toArray(new PropertyDescriptor[0]);
         Arrays.sort(orderedDescs);
 
         int rowCount = 0; // count up the actual rows with widgets needed, not all have editors yet

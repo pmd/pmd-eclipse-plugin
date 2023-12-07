@@ -9,14 +9,15 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Deque;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
-import java.util.Stack;
 
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.core.resources.IFile;
@@ -404,7 +405,7 @@ public class BaseVisitor {
     private void prepareMarkerAccumulator(IFile file) {
         Map<IFile, Set<MarkerInfo2>> accumulator = getAccumulator();
         if (accumulator != null) {
-            accumulator.put(file, new HashSet<MarkerInfo2>());
+            accumulator.put(file, new HashSet<>());
         }
     }
 
@@ -462,7 +463,7 @@ public class BaseVisitor {
         int lineNumber = 0;
         boolean findLine = false;
         boolean comment = false;
-        final Stack<String> pendingReviews = new Stack<>();
+        final Deque<String> pendingReviews = new ArrayDeque<>();
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(file.getContents()))) {
             while (reader.ready()) {
                 String line = reader.readLine();
@@ -480,7 +481,7 @@ public class BaseVisitor {
                         findLine = true;
                     } else if (!comment && findLine && StringUtils.isNotBlank(line) && !line.startsWith("//")) {
                         findLine = false;
-                        while (!pendingReviews.empty()) {
+                        while (!pendingReviews.isEmpty()) {
                             // @PMD:REVIEWED:AvoidInstantiatingObjectsInLoops:
                             // by Herlin on 01/05/05 18:36
                             final Review review = new Review();
@@ -547,7 +548,7 @@ public class BaseVisitor {
     /**
      * Private inner type to handle reviews.
      */
-    private class Review {
+    private final class Review {
         public String ruleName;
         public int lineNumber;
 

@@ -42,7 +42,7 @@ public abstract class AbstractCellPainterBuilder implements CellPainterBuilder {
 
         control.addListener(eventType, listener);
         if (!listenersByEventCode.containsKey(eventCode)) {
-            listenersByEventCode.put(eventCode, new ArrayList<Listener>());
+            listenersByEventCode.put(eventCode, new ArrayList<>());
         }
 
         listenersByEventCode.get(eventCode).add(listener);

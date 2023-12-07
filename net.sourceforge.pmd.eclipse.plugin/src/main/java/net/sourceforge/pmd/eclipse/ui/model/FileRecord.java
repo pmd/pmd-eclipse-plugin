@@ -173,7 +173,7 @@ public class FileRecord extends AbstractPMDRecord {
                 }
             }
 
-            children = allMarkerMap.values().toArray(new MarkerRecord[allMarkerMap.size()]);
+            children = allMarkerMap.values().toArray(new MarkerRecord[0]);
         } catch (CoreException e) {
             PMDPlugin.getDefault().logError(StringKeys.ERROR_CORE_EXCEPTION + this.toString(), e);
         }

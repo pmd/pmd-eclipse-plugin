@@ -281,10 +281,8 @@ public class DescriptionPanelManager extends AbstractRulePanelManager {
 
     private boolean hasValidURL() {
         String url = externalURLField.getText().trim();
-        if (StringUtils.isBlank(url)) {
-            return true; // not required
-        }
-        return isValidURL(url);
+        // empty url is allowed, the URL is not required
+        return StringUtils.isBlank(url) || isValidURL(url);
     }
 
     private void adjustBrowseButton(boolean hasValidURL) {

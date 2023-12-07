@@ -15,81 +15,97 @@ import net.sourceforge.pmd.eclipse.ui.ItemFieldAccessorAdapter;
 import net.sourceforge.pmd.eclipse.ui.Shape;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
 
-public interface PriorityColumnUI {
+public final class PriorityColumnUI {
+    private PriorityColumnUI() {
+        // utility / constants class
+    }
 
-    ItemFieldAccessor<String, RulePriority> NAME_ACC = new ItemFieldAccessorAdapter<String, RulePriority>(null) {
+    public static final ItemFieldAccessor<String, RulePriority> NAME_ACC = new ItemFieldAccessorAdapter<String, RulePriority>(
+            null) {
         @Override
         public String valueFor(RulePriority priority) {
             return PriorityDescriptorCache.INSTANCE.descriptorFor(priority).label;
         }
     };
 
-    ItemFieldAccessor<String, RulePriority> PMD_NAME_ACC = new ItemFieldAccessorAdapter<String, RulePriority>(null) {
+    public static final ItemFieldAccessor<String, RulePriority> PMD_NAME_ACC = new ItemFieldAccessorAdapter<String, RulePriority>(
+            null) {
         @Override
         public String valueFor(RulePriority priority) {
             return priority.getName();
         }
     };
 
-    ItemFieldAccessor<String, RulePriority> DESCRIPTION_ACC = new ItemFieldAccessorAdapter<String, RulePriority>(null) {
+    public static final ItemFieldAccessor<String, RulePriority> DESCRIPTION_ACC = new ItemFieldAccessorAdapter<String, RulePriority>(
+            null) {
         @Override
         public String valueFor(RulePriority priority) {
             return PriorityDescriptorCache.INSTANCE.descriptorFor(priority).description;
         }
     };
 
-    ItemFieldAccessor<Shape, RulePriority> SHAPE_ACC = new ItemFieldAccessorAdapter<Shape, RulePriority>(null) {
+    public static final ItemFieldAccessor<Shape, RulePriority> SHAPE_ACC = new ItemFieldAccessorAdapter<Shape, RulePriority>(
+            null) {
         @Override
         public Shape valueFor(RulePriority priority) {
             return PriorityDescriptorCache.INSTANCE.descriptorFor(priority).shape.shape;
         }
     };
 
-    ItemFieldAccessor<RGB, RulePriority> COLOR_ACC = new ItemFieldAccessorAdapter<RGB, RulePriority>(null) {
+    public static final ItemFieldAccessor<RGB, RulePriority> COLOR_ACC = new ItemFieldAccessorAdapter<RGB, RulePriority>(
+            null) {
         @Override
         public RGB valueFor(RulePriority priority) {
             return PriorityDescriptorCache.INSTANCE.descriptorFor(priority).shape.rgbColor;
         }
     };
 
-    ItemFieldAccessor<Integer, RulePriority> SIZE_ACC = new ItemFieldAccessorAdapter<Integer, RulePriority>(null) {
+    public static final ItemFieldAccessor<Integer, RulePriority> SIZE_ACC = new ItemFieldAccessorAdapter<Integer, RulePriority>(
+            null) {
         @Override
         public Integer valueFor(RulePriority priority) {
             return PriorityDescriptorCache.INSTANCE.descriptorFor(priority).shape.size;
         }
     };
 
-    ItemFieldAccessor<Integer, RulePriority> VALUE_ACC = new ItemFieldAccessorAdapter<Integer, RulePriority>(null) {
+    public static final ItemFieldAccessor<Integer, RulePriority> VALUE_ACC = new ItemFieldAccessorAdapter<Integer, RulePriority>(
+            null) {
         @Override
         public Integer valueFor(RulePriority priority) {
             return priority.getPriority();
         }
     };
 
-    ItemFieldAccessor<Image, RulePriority> IMAGE_ACC = new ItemFieldAccessorAdapter<Image, RulePriority>(null) {
+    public static final ItemFieldAccessor<Image, RulePriority> IMAGE_ACC = new ItemFieldAccessorAdapter<Image, RulePriority>(
+            null) {
         @Override
         public Image imageFor(RulePriority priority) {
-            // Note: Not using the cached annotation image, but create a new image based on the
+            // Note: Not using the cached annotation image, but create a new
+            // image based on the
             // current priority descriptor settings.
             return PriorityDescriptorCache.INSTANCE.descriptorFor(priority).createImage();
         }
     };
 
-    ItemColumnDescriptor<String, RulePriority> NAME = new ItemColumnDescriptor<>("",
+    public static final ItemColumnDescriptor<String, RulePriority> NAME = new ItemColumnDescriptor<>("",
             StringKeys.PRIORITY_COLUMN_NAME, SWT.LEFT, 25, true, NAME_ACC);
-    ItemColumnDescriptor<String, RulePriority> PMD_NAME = new ItemColumnDescriptor<>("",
+    public static final ItemColumnDescriptor<String, RulePriority> PMD_NAME = new ItemColumnDescriptor<>("",
             StringKeys.PRIORITY_COLUMN_PMD_NAME, SWT.LEFT, 25, true, PMD_NAME_ACC);
-    ItemColumnDescriptor<Integer, RulePriority> VALUE = new ItemColumnDescriptor<>("",
+    public static final ItemColumnDescriptor<Integer, RulePriority> VALUE = new ItemColumnDescriptor<>("",
             StringKeys.PRIORITY_COLUMN_VALUE, SWT.CENTER, 25, true, VALUE_ACC);
-    // PriorityColumnDescriptor size = new PriorityColumnDescriptor("", StringKeys.PRIORITY_COLUMN_SIZE, SWT.RIGHT, 25,
+    // PriorityColumnDescriptor size = new PriorityColumnDescriptor("",
+    // StringKeys.PRIORITY_COLUMN_SIZE, SWT.RIGHT, 25,
     // true, sizeAcc);
-    ItemColumnDescriptor<Image, RulePriority> IMAGE = new ItemColumnDescriptor<>("",
+    public static final ItemColumnDescriptor<Image, RulePriority> IMAGE = new ItemColumnDescriptor<>("",
             StringKeys.PRIORITY_COLUMN_SYMBOL, SWT.CENTER, 25, true, IMAGE_ACC).disposeImage();
-    // PriorityColumnDescriptor color = new PriorityColumnDescriptor("", StringKeys.PRIORITY_COLUMN_COLOR, SWT.RIGHT,
+    // PriorityColumnDescriptor color = new PriorityColumnDescriptor("",
+    // StringKeys.PRIORITY_COLUMN_COLOR, SWT.RIGHT,
     // 25, true, colorAcc);
-    // PriorityColumnDescriptor description = new PriorityColumnDescriptor("", StringKeys.PRIORITY_COLUMN_DESC,
+    // PriorityColumnDescriptor description = new PriorityColumnDescriptor("",
+    // StringKeys.PRIORITY_COLUMN_DESC,
     // SWT.LEFT, 25, true, descriptionAcc);
 
-    ItemColumnDescriptor[] VISIBLE_COLUMNS = new ItemColumnDescriptor[] { IMAGE, VALUE, NAME, PMD_NAME }; // , description
+    public static final ItemColumnDescriptor[] VISIBLE_COLUMNS = new ItemColumnDescriptor[] { IMAGE, VALUE, NAME,
+        PMD_NAME }; // , description
 
 }

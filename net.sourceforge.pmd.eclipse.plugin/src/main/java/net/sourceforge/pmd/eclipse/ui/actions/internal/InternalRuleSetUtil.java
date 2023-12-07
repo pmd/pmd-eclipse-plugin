@@ -40,11 +40,11 @@ public final class InternalRuleSetUtil {
     }
 
     public static RuleSet addFileExclusions(RuleSet rs, Collection<Pattern> excludePatterns) {
-        return addExcludePatterns(rs, excludePatterns, new HashSet<Pattern>());
+        return addExcludePatterns(rs, excludePatterns, new HashSet<>());
     }
 
     public static RuleSet addFileInclusions(RuleSet rs, Collection<Pattern> includePatterns) {
-        return addIncludePatterns(rs, includePatterns, new HashSet<Pattern>());
+        return addIncludePatterns(rs, includePatterns, new HashSet<>());
     }
 
     public static RuleSet addExcludePatterns(RuleSet ruleSet, Collection<Pattern> activeExclusionPatterns,
