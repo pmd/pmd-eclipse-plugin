@@ -13,9 +13,13 @@ This is a minor release.
 
 ### New and noteworthy
 
+* Support for Eclipse 2023-12 added
+* Support for Eclipse 2022-12 removed
+
 ### Fixed Issues
 
 * [#185](https://github.com/pmd/pmd-eclipse-plugin/pull/185): Bump ch.qos.logback:logback-classic from 1.2.3 to 1.2.13
+* [#186](https://github.com/pmd/pmd-eclipse-plugin/pull/186): Support eclipse 2023-12
 
 ### API Changes
 
