@@ -100,7 +100,7 @@ public class RuleSetsExtension implements IRuleSetsExtension {
         return this.ruleSet2;
     }
 
-    private static class RulesetLoaderMessageReporter implements MessageReporter {
+    private static final class RulesetLoaderMessageReporter implements MessageReporter {
         private int errors = 0;
 
         @Override

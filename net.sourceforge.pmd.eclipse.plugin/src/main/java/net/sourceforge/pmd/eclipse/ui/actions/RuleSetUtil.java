@@ -168,12 +168,12 @@ public final class RuleSetUtil {
 
     @Deprecated
     public static RuleSet addExcludePatterns(RuleSet rs, Collection<String> excludePatterns) {
-        return addExcludePatterns(rs, excludePatterns, new HashSet<String>());
+        return addExcludePatterns(rs, excludePatterns, new HashSet<>());
     }
 
     @Deprecated
     public static RuleSet addIncludePatterns(RuleSet rs, Collection<String> includePatterns) {
-        return addIncludePatterns(rs, includePatterns, new HashSet<String>());
+        return addIncludePatterns(rs, includePatterns, new HashSet<>());
     }
 
     public static RuleSet clearRules(RuleSet ruleSet) {

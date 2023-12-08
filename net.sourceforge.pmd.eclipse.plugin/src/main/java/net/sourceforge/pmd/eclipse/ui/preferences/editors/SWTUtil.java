@@ -69,7 +69,7 @@ public final class SWTUtil {
     // TODO move this to to Collections utility
     public static Set<String> asStringSet(String input, char separator) {
         List<String> values = Arrays.asList(input.split("" + separator));
-        return new HashSet<String>(values);
+        return new HashSet<>(values);
     }
 
     // TODO move this to to Collections utility

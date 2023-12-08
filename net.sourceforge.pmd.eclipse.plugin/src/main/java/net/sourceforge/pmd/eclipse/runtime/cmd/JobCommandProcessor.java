@@ -10,6 +10,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Queue;
 import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -30,10 +31,9 @@ import org.slf4j.LoggerFactory;
  */
 public class JobCommandProcessor {
     private static final Logger LOG = LoggerFactory.getLogger(JobCommandProcessor.class);
-    private final Map<AbstractDefaultCommand, Job> jobs = Collections
-            .synchronizedMap(new HashMap<AbstractDefaultCommand, Job>());
+    private final Map<AbstractDefaultCommand, Job> jobs = Collections.synchronizedMap(new HashMap<>());
 
-    private static ConcurrentLinkedQueue<Job> outstanding = new ConcurrentLinkedQueue<>();
+    private static Queue<Job> outstanding = new ConcurrentLinkedQueue<>();
     private static AtomicInteger count = new AtomicInteger();
     
     private static final JobCommandProcessor INSTANCE = new JobCommandProcessor();

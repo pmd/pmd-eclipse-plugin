@@ -91,7 +91,7 @@ public class RuleSetTreeItemProvider implements ITreeContentProvider {
             }
         }
 
-        RuleGroup[] groups = ruleGroups.values().toArray(new RuleGroup[ruleGroups.size()]);
+        RuleGroup[] groups = ruleGroups.values().toArray(new RuleGroup[0]);
 
         // TODO sort within groups
         for (RuleGroup group : groups) {
@@ -148,14 +148,10 @@ public class RuleSetTreeItemProvider implements ITreeContentProvider {
 
         if (element instanceof RuleSet) {
             RuleSet ruleSet = (RuleSet) element;
-            return ruleSet.getRules().size() > 0;
+            return !ruleSet.getRules().isEmpty();
         }
 
-        if (element instanceof RuleGroup) {
-            return ((RuleGroup) element).hasRules();
-        }
-
-        return false;
+        return element instanceof RuleGroup && ((RuleGroup) element).hasRules();
     }
 
     @Override

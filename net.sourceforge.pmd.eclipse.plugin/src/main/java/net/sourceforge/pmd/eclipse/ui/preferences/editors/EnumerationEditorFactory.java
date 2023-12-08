@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.eclipse.ui.preferences.editors;
 
 import java.util.HashMap;
+import java.util.Objects;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -39,7 +40,7 @@ public final class EnumerationEditorFactory extends AbstractEditorFactory<Object
 
     @Override
     public PropertyDescriptor<Object> createDescriptor(String name, String optionalDescription, Control[] otherData) {
-        return PropertyFactory.enumProperty(name, new HashMap<String, Object>()).desc("Value set " + name).build();
+        return PropertyFactory.enumProperty(name, new HashMap<>()).desc("Value set " + name).build();
     }
 
 
@@ -74,7 +75,7 @@ public final class EnumerationEditorFactory extends AbstractEditorFactory<Object
                 int selectionIdx = combo.getSelectionIndex();
                 Object[][] choices = (Object[][]) combo.getData();
                 Object newValue = choices[selectionIdx][1];
-                if (newValue == valueFor(source, desc)) {
+                if (Objects.equals(newValue, valueFor(source, desc))) {
                     return;
                 }
 

@@ -44,7 +44,7 @@ public class PMDNature implements IProjectNature {
         if (pmdBuilderFound(commands)) {
             ICommand[] newCommands = new ICommand[commands.length - 1];
             for (int i = 0, j = 0; i < commands.length; i++) {
-                if (!commands[i].getBuilderName().equals(PMDBuilder.PMD_BUILDER)) {
+                if (!PMDBuilder.PMD_BUILDER.equals(commands[i].getBuilderName())) {
                     newCommands[j++] = commands[i];
                 }
             }
@@ -133,7 +133,7 @@ public class PMDNature implements IProjectNature {
     private boolean pmdBuilderFound(ICommand[] commands) {
 
         for (ICommand command : commands) {
-            if (command.getBuilderName().equals(PMDBuilder.PMD_BUILDER)) {
+            if (PMDBuilder.PMD_BUILDER.equals(command.getBuilderName())) {
                 return true;
             }
         }

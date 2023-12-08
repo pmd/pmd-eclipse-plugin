@@ -36,7 +36,7 @@ public class FileChangeReviewer implements IResourceChangeListener {
         ADDED, REMOVED, CHANGED
     }
 
-    private class ResourceChange {
+    private final class ResourceChange {
         public final ChangeType resourceDeltaType;
         public final int flags;
         public final IFile file;

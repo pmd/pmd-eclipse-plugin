@@ -134,7 +134,7 @@ public class TextColumnDescriptor extends SimpleColumnDescriptor {
                         }
 
                         Point size = event.gc.textExtent(text);
-                        event.width = size.x + 2 * (3);
+                        event.width = size.x + 2 * 3;
                         // event.height = Math.max(event.height, size.y + (3));
                     }
                 };

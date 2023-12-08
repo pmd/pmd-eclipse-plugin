@@ -37,7 +37,6 @@ public class DataflowGraph extends Composite {
     protected int lineLength = 25;
     protected int rowHeight = 2 * nodeRadius + lineLength;
 
-    protected Color bgColor;
     protected Color nodeColor;
     protected Color textColor;
     protected boolean marked;
@@ -55,7 +54,6 @@ public class DataflowGraph extends Composite {
 
         //private DataFlowNode node;
         private int radius;
-        private Color bgColor;
         private Color nodeColor;
         private Color textColor;
 
@@ -82,7 +80,7 @@ public class DataflowGraph extends Composite {
 
             Display display = parent.getDisplay();
             // Default Colors
-            bgColor = display.getSystemColor(SWT.COLOR_WHITE); // new Color(null,255,255,255);
+            Color bgColor = display.getSystemColor(SWT.COLOR_WHITE); // new Color(null,255,255,255);
             nodeColor = display.getSystemColor(SWT.COLOR_GRAY); // new Color(null,128,128,128);
             textColor = display.getSystemColor(SWT.COLOR_WHITE); // new Color(null,255,255,255);
             markColor = display.getSystemColor(SWT.COLOR_RED); // new Color(null,192,0,0);
@@ -418,7 +416,7 @@ public class DataflowGraph extends Composite {
 
         Display display = parent.getDisplay();
         // Default Colors
-        bgColor = display.getSystemColor(SWT.COLOR_WHITE); // new Color(null,255,255,255);
+        Color bgColor = display.getSystemColor(SWT.COLOR_WHITE); // new Color(null,255,255,255);
         nodeColor = display.getSystemColor(SWT.COLOR_GRAY); // new Color(null,192,192,192);
         textColor = display.getSystemColor(SWT.COLOR_BLACK); // new Color(null,0,0,0);
         markColor = new Color(null, 192, 0, 0);

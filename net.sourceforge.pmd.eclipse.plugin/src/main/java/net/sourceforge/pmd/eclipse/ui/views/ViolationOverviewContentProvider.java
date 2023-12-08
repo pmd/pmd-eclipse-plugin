@@ -138,7 +138,7 @@ public class ViolationOverviewContentProvider
                 }
             }
 
-            return markers.values().toArray(new MarkerRecord[markers.size()]);
+            return markers.values().toArray(new MarkerRecord[0]);
         } else {
             return record.getChildren();
         }

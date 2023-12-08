@@ -9,7 +9,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
 import java.util.Collection;
-import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -223,7 +222,7 @@ public final class EclipseUtils {
                                 JavaRuntime.getDefaultJREContainerEntry() },
                             null);
 
-            Hashtable<String, String> javaOptions = JavaCore.getOptions();
+            Map<String, String> javaOptions = JavaCore.getOptions();
 
             IVMInstall defaultVMInstall = JavaRuntime.getDefaultVMInstall();
             if (defaultVMInstall instanceof AbstractVMInstall) {

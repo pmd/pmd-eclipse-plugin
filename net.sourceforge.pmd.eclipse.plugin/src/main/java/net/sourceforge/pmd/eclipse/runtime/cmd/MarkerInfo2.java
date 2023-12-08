@@ -36,7 +36,7 @@ public class MarkerInfo2 {
     public void addAsMarkerTo(IFile file) throws CoreException {
 
         IMarker marker = file.createMarker(type);
-        marker.setAttributes(data.keySet().toArray(new String[data.size()]), data.values().toArray());
+        marker.setAttributes(data.keySet().toArray(new String[0]), data.values().toArray());
     }
 
     @Override

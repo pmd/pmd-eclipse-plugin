@@ -22,11 +22,11 @@
     <tycho.version>4.0.4</tycho.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <pmd.version>7.0.0-rc4</pmd.version>
-    <pmd.build-tools.version>22</pmd.build-tools.version>
+    <pmd.build-tools.version>23-SNAPSHOT</pmd.build-tools.version>
     <checkstyle.version>10.7.0</checkstyle.version>
     <checkstyle.plugin.version>3.2.2</checkstyle.plugin.version>
-    <pmd.plugin.version>3.21.0</pmd.plugin.version>
-    <pmd.check.version>6.55.0</pmd.check.version>
+    <pmd.plugin.version>3.21.2</pmd.plugin.version>
+    <pmd.check.version>7.0.0-rc4</pmd.check.version>
 
     <keystorePath>.ci/files/pmd-eclipse-plugin.p12</keystorePath>
     <keystore>${basedir}/${keystorePath}</keystore>
@@ -397,12 +397,27 @@
           <dependencies>
             <dependency>
               <groupId>net.sourceforge.pmd</groupId>
+              <artifactId>pmd-compat6</artifactId>
+              <version>${pmd.check.version}</version>
+            </dependency>
+            <dependency>
+              <groupId>net.sourceforge.pmd</groupId>
               <artifactId>pmd-core</artifactId>
               <version>${pmd.check.version}</version>
             </dependency>
             <dependency>
               <groupId>net.sourceforge.pmd</groupId>
               <artifactId>pmd-java</artifactId>
+              <version>${pmd.check.version}</version>
+            </dependency>
+            <dependency>
+              <groupId>net.sourceforge.pmd</groupId>
+              <artifactId>pmd-javascript</artifactId>
+              <version>${pmd.check.version}</version>
+            </dependency>
+            <dependency>
+              <groupId>net.sourceforge.pmd</groupId>
+              <artifactId>pmd-jsp</artifactId>
               <version>${pmd.check.version}</version>
             </dependency>
             <!-- This contains the dogfood ruleset -->

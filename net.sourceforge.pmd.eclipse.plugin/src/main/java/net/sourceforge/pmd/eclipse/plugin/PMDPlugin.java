@@ -678,7 +678,6 @@ public class PMDPlugin extends AbstractUIPlugin {
             }
             addKids(allKids, kids);
             allKids.add(project);
-            return;
         }
     }
 

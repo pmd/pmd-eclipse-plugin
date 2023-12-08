@@ -128,7 +128,7 @@ public class ReportPreferencesPage extends AbstractPMDPreferencePage
         };
         BasicTableLabelProvider labelProvider = new BasicTableLabelProvider(ReportColumnUI.VISIBLE_COLUMNS);
 
-        BasicTableManager reportTableMgr = new BasicTableManager("renderers", null, ReportColumnUI.VISIBLE_COLUMNS);
+        BasicTableManager<Object> reportTableMgr = new BasicTableManager<>("renderers", null, ReportColumnUI.VISIBLE_COLUMNS);
         tableViewer = reportTableMgr.buildTableViewer(group,
                 SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL | SWT.MULTI | SWT.FULL_SELECTION | SWT.CHECK);
         reportTableMgr.setupColumns(ReportColumnUI.VISIBLE_COLUMNS);
