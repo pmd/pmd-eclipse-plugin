@@ -9,7 +9,7 @@ import java.util.Map;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
+import net.sourceforge.pmd.lang.java.ast.ASTClassType;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
@@ -53,8 +53,8 @@ public class NodeImageDeriver {
     private static NodeImageDeriver throwStatementDeriver = new NodeImageDeriver(ASTThrowStatement.class) {
         @Override
         public String deriveFrom(Node node) {
-            final ASTClassOrInterfaceType t = node.getFirstDescendantOfType(ASTClassOrInterfaceType.class);
-            return t == null ? null : t.getImage();
+            final ASTClassType t = node.descendants(ASTClassType.class).first();
+            return t == null ? null : t.getSimpleName();
         }
     };
 

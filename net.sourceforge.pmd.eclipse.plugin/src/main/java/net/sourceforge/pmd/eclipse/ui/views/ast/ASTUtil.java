@@ -8,19 +8,18 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-import net.sourceforge.pmd.lang.ast.impl.AbstractNode;
 import net.sourceforge.pmd.lang.ecmascript.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType;
 import net.sourceforge.pmd.lang.java.ast.ASTType;
-import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
-import net.sourceforge.pmd.lang.java.ast.AccessNode;
-import net.sourceforge.pmd.lang.java.ast.JavaNode;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
+import net.sourceforge.pmd.lang.java.ast.JModifier;
+import net.sourceforge.pmd.lang.java.ast.ModifierOwner;
+import net.sourceforge.pmd.lang.java.ast.ModifierOwner.Visibility;
+import net.sourceforge.pmd.lang.java.ast.internal.PrettyPrintingUtil;
 
 /**
  * 
@@ -39,7 +38,7 @@ public final class ASTUtil {
     }
 
     public static String getAnnotationLabel(ASTAnnotation annotation) {
-        ASTName name = annotation.getFirstChildOfType(ASTName.class);
+        ASTName name = annotation.firstChild(ASTName.class);
         return name == null ? "??" : name.getImage();
     }
 
@@ -63,48 +62,48 @@ public final class ASTUtil {
         return sb.toString();
     }
 
-    private static List<String> modifiersFor(AccessNode node) {
+    private static List<String> modifiersFor(ModifierOwner node) {
         List<String> modifiers = new ArrayList<>();
-        if (node.isPublic()) {
+        if (node.hasVisibility(Visibility.V_PUBLIC)) {
             modifiers.add("public");
         } else {
-            if (node.isProtected()) {
+            if (node.hasVisibility(Visibility.V_PROTECTED)) {
                 modifiers.add("protected");
             } else {
-                if (node.isPrivate()) {
+                if (node.hasVisibility(Visibility.V_PRIVATE)) {
                     modifiers.add("private");
                 }
             }
         }
 
-        if (node.isAbstract()) {
+        if (node.hasModifiers(JModifier.ABSTRACT)) {
             modifiers.add("abstract");
         }
-        if (node.isStatic()) {
+        if (node.hasModifiers(JModifier.STATIC)) {
             modifiers.add("static");
         }
-        if (node.isFinal()) {
+        if (node.hasModifiers(JModifier.FINAL)) {
             modifiers.add("final");
         }
-        if (node.isTransient()) {
+        if (node.hasModifiers(JModifier.TRANSIENT)) {
             modifiers.add("transient");
         }
-        if (node.isVolatile()) {
+        if (node.hasModifiers(JModifier.VOLATILE)) {
             modifiers.add("volatile");
         }
-        if (node.isSynchronized()) {
+        if (node.hasModifiers(JModifier.SYNCHRONIZED)) {
             modifiers.add("synchronized");
         }
-        if (node.isNative()) {
+        if (node.hasModifiers(JModifier.NATIVE)) {
             modifiers.add("native");
         }
-        if (node.isStrictfp()) {
+        if (node.hasModifiers(JModifier.STRICTFP)) {
             modifiers.add("strictfp");
         }
         return modifiers;
     }
 
-    private static void addModifiers(AccessNode node, StringBuilder sb) {
+    private static void addModifiers(ModifierOwner node, StringBuilder sb) {
 
         List<String> modifiers = modifiersFor(node);
         if (modifiers.isEmpty()) {
@@ -122,14 +121,14 @@ public final class ASTUtil {
         StringBuilder sb = new StringBuilder();
         addModifiers(pmdField, sb);
 
-        ASTType type = pmdField.getFirstChildOfType(ASTType.class);
+        ASTType type = pmdField.firstChild(ASTType.class);
         if (type != null) {
-            sb.append(' ').append(type.getTypeImage());
+            sb.append(' ').append(PrettyPrintingUtil.prettyPrintType(type));
         }
 
         sb.append(' ');
         boolean first = true;
-        for (ASTVariableDeclaratorId id : pmdField) {
+        for (ASTVariableId id : pmdField) {
             if (!first) {
                 sb.append(", ");
             }
@@ -145,14 +144,8 @@ public final class ASTUtil {
         StringBuilder sb = new StringBuilder();
 
         for (ASTFormalParameter formalParam : node.getFormalParameters()) {
-            JavaNode param = formalParam.getFirstDescendantOfType(ASTClassOrInterfaceType.class);
-            if (param == null) {
-                param = formalParam.getFirstDescendantOfType(ASTPrimitiveType.class);
-            }
-            if (param == null) {
-                continue;
-            }
-            sb.append(param.getImage()).append(", ");
+            ASTType typeNode = formalParam.getTypeNode();
+            sb.append(PrettyPrintingUtil.prettyPrintType(typeNode)).append(", ");
         }
 
         int length = sb.length();
@@ -161,14 +154,7 @@ public final class ASTUtil {
 
     public static String returnType(ASTMethodDeclaration node) {
         ASTType resultType = node.getResultTypeNode();
-        if (resultType.isVoid()) {
-            return "void";
-        }
-        AbstractNode param = resultType.getFirstDescendantOfType(ASTClassOrInterfaceType.class);
-        if (param == null) {
-            param = resultType.getFirstDescendantOfType(ASTPrimitiveType.class);
-        }
-        return param.getImage();
+        return PrettyPrintingUtil.prettyPrintType(resultType);
     }
 
     public static String getLocalVarDeclarationLabel(ASTLocalVariableDeclaration node) {
@@ -177,10 +163,10 @@ public final class ASTUtil {
         addModifiers(node, sb);
 
         ASTType type = node.getTypeNode();
-        sb.append(' ').append(type.getTypeImage());
+        sb.append(' ').append(PrettyPrintingUtil.prettyPrintType(type));
 
         boolean first = true;
-        for (ASTVariableDeclaratorId id : node) {
+        for (ASTVariableId id : node) {
             if (!first) {
                 sb.append(", ");
             }
