@@ -123,7 +123,6 @@ public final class InternalRuleSetUtil {
 
     public static RuleSetLoader getDefaultRuleSetLoader() {
         return new RuleSetLoader()
-                .enableCompatibility(true)
                 .warnDeprecated(false)
                 .filterAbovePriority(RulePriority.LOW);
     }
