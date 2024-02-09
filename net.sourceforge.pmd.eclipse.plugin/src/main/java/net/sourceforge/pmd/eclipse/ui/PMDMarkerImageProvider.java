@@ -9,8 +9,8 @@ import org.eclipse.jface.text.source.Annotation;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.texteditor.IAnnotationImageProvider;
 
-import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.eclipse.ui.priority.PriorityDescriptorCache;
+import net.sourceforge.pmd.lang.rule.RulePriority;
 
 public class PMDMarkerImageProvider implements IAnnotationImageProvider {
 

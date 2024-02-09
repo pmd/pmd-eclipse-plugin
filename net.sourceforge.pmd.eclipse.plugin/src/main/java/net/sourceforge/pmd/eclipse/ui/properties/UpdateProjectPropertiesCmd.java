@@ -10,11 +10,11 @@ import java.util.List;
 
 import org.eclipse.ui.IWorkingSet;
 
-import net.sourceforge.pmd.RuleSet;
-import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.eclipse.runtime.cmd.AbstractProjectCommand;
 import net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties;
 import net.sourceforge.pmd.eclipse.runtime.properties.PropertiesException;
+import net.sourceforge.pmd.lang.rule.RuleSet;
+import net.sourceforge.pmd.lang.rule.internal.RuleSets;
 
 /**
  * Save updated project properties. This is a composite command.

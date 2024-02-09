@@ -37,8 +37,6 @@ import org.eclipse.ui.dialogs.PropertyPage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.ui.actions.RuleSetUtil;
 import net.sourceforge.pmd.eclipse.ui.actions.internal.InternalRuleSetUtil;
@@ -48,6 +46,8 @@ import net.sourceforge.pmd.eclipse.ui.preferences.RuleSetContentProvider;
 import net.sourceforge.pmd.eclipse.ui.preferences.RuleTableViewerSorter;
 import net.sourceforge.pmd.eclipse.ui.preferences.editors.SWTUtil;
 import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.SummaryPanelManager;
+import net.sourceforge.pmd.lang.rule.Rule;
+import net.sourceforge.pmd.lang.rule.RuleSet;
 
 /**
  * Property page to enable or disable PMD on a project

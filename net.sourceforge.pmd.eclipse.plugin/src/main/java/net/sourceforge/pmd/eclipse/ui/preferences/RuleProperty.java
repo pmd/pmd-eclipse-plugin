@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.eclipse.ui.preferences;
 
-import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.lang.rule.Rule;
 
 /**
  * Helper class to display rule properties in a table.

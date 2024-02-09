@@ -6,7 +6,7 @@ package net.sourceforge.pmd.eclipse.runtime.writer;
 
 import java.io.OutputStream;
 
-import net.sourceforge.pmd.RuleSet;
+import net.sourceforge.pmd.lang.rule.RuleSet;
 
 /**
  * Interface for a rule set writer. A rule set writer is an object used to

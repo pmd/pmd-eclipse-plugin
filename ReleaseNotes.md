@@ -9,10 +9,11 @@ Eclipse Update Site:
 
 ## ????: 7.0.0.v????
 
-This is a minor release.
+This is a major release.
 
 ### New and noteworthy
 
+* Updated to PMD 7.0.0
 * Support for Eclipse 2023-12 added
 * Support for Eclipse 2022-12 removed
 
@@ -23,6 +24,9 @@ This is a minor release.
 * [#187](https://github.com/pmd/pmd-eclipse-plugin/pull/187): Bump tycho from 3.0.4 to 4.0.4
 
 ### API Changes
+
+Due to the updated PMD version, there are a couple of incompatible changes, like changed packages.
+For the details, see the release notes of PMD.
 
 ### External Contributions
 

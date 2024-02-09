@@ -7,8 +7,8 @@ package net.sourceforge.pmd.eclipse.ui.preferences.br;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.swt.graphics.Image;
 
-import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.eclipse.ui.preferences.AbstractTableLabelProvider;
+import net.sourceforge.pmd.lang.rule.Rule;
 
 /**
  *

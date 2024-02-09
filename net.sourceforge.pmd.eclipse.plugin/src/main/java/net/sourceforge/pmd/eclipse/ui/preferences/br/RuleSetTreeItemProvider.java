@@ -14,9 +14,9 @@ import java.util.Map;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 
-import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.eclipse.util.Util;
+import net.sourceforge.pmd.lang.rule.Rule;
+import net.sourceforge.pmd.lang.rule.RuleSet;
 
 /**
  * @author Brian Remedios

@@ -7,7 +7,7 @@ package net.sourceforge.pmd.eclipse.ui.preferences.br;
 import java.util.Iterator;
 import java.util.Set;
 
-import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.lang.rule.Rule;
 
 /**
  *

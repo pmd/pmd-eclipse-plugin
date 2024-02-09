@@ -7,9 +7,9 @@ package net.sourceforge.pmd.eclipse.util;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.eclipse.plugin.UISettings;
 import net.sourceforge.pmd.eclipse.ui.views.PriorityFilter;
+import net.sourceforge.pmd.lang.rule.RulePriority;
 
 /**
  * Priority Util is a manager of the available priorities in the app. This Util will update if the Violations Overview

@@ -7,10 +7,10 @@ package net.sourceforge.pmd.eclipse.runtime.cmd;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.document.FileLocation;
+import net.sourceforge.pmd.lang.rule.Rule;
+import net.sourceforge.pmd.reporting.RuleViolation;
 
 /**
  * This is an implementation of IRuleViolation. It is meant to rebuild a

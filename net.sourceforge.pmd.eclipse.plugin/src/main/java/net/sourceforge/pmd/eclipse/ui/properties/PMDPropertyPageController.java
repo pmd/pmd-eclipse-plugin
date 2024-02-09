@@ -16,7 +16,6 @@ import org.eclipse.ui.dialogs.IWorkingSetSelectionDialog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.runtime.cmd.BuildProjectCommand;
 import net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties;
@@ -24,6 +23,7 @@ import net.sourceforge.pmd.eclipse.runtime.properties.IProjectPropertiesManager;
 import net.sourceforge.pmd.eclipse.runtime.properties.PropertiesException;
 import net.sourceforge.pmd.eclipse.runtime.properties.impl.PropertiesFactoryImpl;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
+import net.sourceforge.pmd.lang.rule.RuleSet;
 
 /**
  * This class implements the controler of the Property page

@@ -10,7 +10,7 @@ import java.util.Locale;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerComparator;
 
-import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.lang.rule.Rule;
 
 /**
  * Sorter for the rule table in the PMD Preference page.

@@ -9,7 +9,7 @@ The Braces Ruleset contains a collection of braces rules.
    <rule name="ExtraIfStmtsMustUseBraces"
          language="java"
          message="Avoid using if statements without curly braces"
-         class="net.sourceforge.pmd.lang.rule.XPathRule">
+         class="net.sourceforge.pmd.lang.rule.xpath.XPathRule">
      <description>
 Avoid using if statements without using curly braces
      </description>
@@ -39,7 +39,7 @@ Avoid using if statements without using curly braces
     <rule name="ExtraWhileLoopsMustUseBraces"
           language="java"
           message="Avoid using 'while' statements without curly braces"
-          class="net.sourceforge.pmd.lang.rule.XPathRule">
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule">
       <description>
 Avoid using 'while' statements without using curly braces
       </description>
@@ -67,7 +67,7 @@ Avoid using 'while' statements without using curly braces
       <rule name="ExtraIfElseStmtsMustUseBraces"
             language="java"
            message="Avoid using 'if...else' statements without curly braces"
-           class="net.sourceforge.pmd.lang.rule.XPathRule">
+           class="net.sourceforge.pmd.lang.rule.xpath.XPathRule">
        <description>
 Avoid using if..else statements without using curly braces
        </description>
@@ -105,7 +105,7 @@ Avoid using if..else statements without using curly braces
      <rule name="ExtraForLoopsMustUseBraces"
            language="java"
            message="Avoid using 'for' statements without curly braces"
-           class="net.sourceforge.pmd.lang.rule.XPathRule">
+           class="net.sourceforge.pmd.lang.rule.xpath.XPathRule">
        <description>
 Avoid using 'for' statements without using curly braces
        </description>

@@ -11,10 +11,10 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
 
-import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.eclipse.internal.ResourceUtil;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.runtime.preferences.IPreferencesManager;
+import net.sourceforge.pmd.lang.rule.RuleSet;
 
 
 public class ChangeGlobalRuleSetExternallyTest {

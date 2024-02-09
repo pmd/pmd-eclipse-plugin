@@ -7,10 +7,10 @@ package net.sourceforge.pmd.eclipse.runtime.writer.impl;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import net.sourceforge.pmd.RuleSet;
-import net.sourceforge.pmd.RuleSetWriter;
 import net.sourceforge.pmd.eclipse.runtime.writer.IRuleSetWriter;
 import net.sourceforge.pmd.eclipse.runtime.writer.WriterException;
+import net.sourceforge.pmd.lang.rule.RuleSet;
+import net.sourceforge.pmd.lang.rule.RuleSetWriter;
 
 /**
  * Generate an XML rule set file from a rule set.

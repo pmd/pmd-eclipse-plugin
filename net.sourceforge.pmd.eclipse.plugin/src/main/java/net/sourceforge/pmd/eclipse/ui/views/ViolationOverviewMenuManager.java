@@ -17,7 +17,6 @@ import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.services.IDisposable;
 
-import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.plugin.UISettings;
 import net.sourceforge.pmd.eclipse.ui.model.AbstractPMDRecord;
@@ -28,6 +27,7 @@ import net.sourceforge.pmd.eclipse.ui.views.actions.CollapseAllAction;
 import net.sourceforge.pmd.eclipse.ui.views.actions.PriorityFilterAction;
 import net.sourceforge.pmd.eclipse.ui.views.actions.ProjectFilterAction;
 import net.sourceforge.pmd.eclipse.ui.views.actions.ViolationPresentationTypeAction;
+import net.sourceforge.pmd.lang.rule.RulePriority;
 
 /**
  *

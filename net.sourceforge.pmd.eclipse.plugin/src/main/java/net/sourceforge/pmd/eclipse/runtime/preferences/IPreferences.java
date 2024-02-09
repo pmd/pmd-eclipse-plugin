@@ -6,8 +6,8 @@ package net.sourceforge.pmd.eclipse.runtime.preferences;
 
 import java.util.Set;
 
-import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.eclipse.ui.priority.PriorityDescriptor;
+import net.sourceforge.pmd.lang.rule.RulePriority;
 
 /**
  * This interface models the PMD Plugin preferences

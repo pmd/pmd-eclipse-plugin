@@ -8,9 +8,9 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.eclipse.core.impl.RuleSetManagerImpl;
 import net.sourceforge.pmd.eclipse.ui.actions.RuleSetUtil;
+import net.sourceforge.pmd.lang.rule.RuleSet;
 
 /**
  * Test the ruleset manager.

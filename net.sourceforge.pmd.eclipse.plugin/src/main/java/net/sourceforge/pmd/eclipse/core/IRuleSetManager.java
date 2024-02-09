@@ -6,7 +6,7 @@ package net.sourceforge.pmd.eclipse.core;
 
 import java.util.Collection;
 
-import net.sourceforge.pmd.RuleSet;
+import net.sourceforge.pmd.lang.rule.RuleSet;
 
 /**
  * Interface for a rule set manager. A RuleSetManager handle a set of rule sets.

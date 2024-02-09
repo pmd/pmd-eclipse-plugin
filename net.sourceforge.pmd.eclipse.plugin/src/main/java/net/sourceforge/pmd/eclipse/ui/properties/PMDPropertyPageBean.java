@@ -10,9 +10,9 @@ import java.util.List;
 
 import org.eclipse.ui.IWorkingSet;
 
-import net.sourceforge.pmd.RuleSet;
-import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.eclipse.ui.actions.internal.InternalRuleSetUtil;
+import net.sourceforge.pmd.lang.rule.RuleSet;
+import net.sourceforge.pmd.lang.rule.internal.RuleSets;
 
 /**
  * This class is a bean that hold the property page data. It acts as the model in the MVC paradigm.

@@ -4,9 +4,9 @@
 
 package net.sourceforge.pmd.eclipse.runtime.preferences;
 
-import net.sourceforge.pmd.RulePriority;
-import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.eclipse.ui.priority.PriorityDescriptor;
+import net.sourceforge.pmd.lang.rule.RulePriority;
+import net.sourceforge.pmd.lang.rule.RuleSet;
 
 /**
  * This interface specifies the behaviour of the preferences manager.

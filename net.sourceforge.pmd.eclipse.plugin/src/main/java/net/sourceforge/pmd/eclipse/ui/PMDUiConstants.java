@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.eclipse.ui;
 
-import net.sourceforge.pmd.RulePriority;
+import net.sourceforge.pmd.lang.rule.RulePriority;
 
 /**
  * This interface groups all plugin constants

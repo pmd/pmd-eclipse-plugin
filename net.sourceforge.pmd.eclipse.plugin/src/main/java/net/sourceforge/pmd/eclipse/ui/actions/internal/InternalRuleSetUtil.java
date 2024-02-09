@@ -13,12 +13,12 @@ import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
 
-import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.RulePriority;
-import net.sourceforge.pmd.RuleSet;
-import net.sourceforge.pmd.RuleSetLoader;
-import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.lang.document.FileId;
+import net.sourceforge.pmd.lang.rule.Rule;
+import net.sourceforge.pmd.lang.rule.RulePriority;
+import net.sourceforge.pmd.lang.rule.RuleSet;
+import net.sourceforge.pmd.lang.rule.RuleSetLoader;
+import net.sourceforge.pmd.lang.rule.internal.RuleSets;
 
 public final class InternalRuleSetUtil {
     private InternalRuleSetUtil() {}

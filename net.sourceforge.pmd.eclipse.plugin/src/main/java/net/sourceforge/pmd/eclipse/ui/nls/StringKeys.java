@@ -148,7 +148,6 @@ public final class StringKeys {
     public static final String PREF_RULEEDIT_LABEL_EXTERNAL_INFO_URL = "preference.ruleedit.label.external_info_url";
     public static final String PREF_RULEEDIT_LABEL_EXAMPLES = "preference.ruleedit.label.examples";
     public static final String PREF_RULEEDIT_LABEL_XPATH = "preference.ruleedit.label.xpath";
-    public static final String PREF_RULEEDIT_LABEL_XPATH_VERSION = "preference.ruleedit.label.xpath.version";
     public static final String PREF_RULEEDIT_BUTTON_RULE_REFERENCE = "preference.ruleedit.button.rule_reference";
     public static final String PREF_RULEEDIT_BUTTON_XPATH_RULE = "preference.ruleedit.button.xpath_rule";
     public static final String PREF_RULEEDIT_BUTTON_USES_TYPE_RESOLUTION = "preference.ruleedit.button.uses_type_resolution";

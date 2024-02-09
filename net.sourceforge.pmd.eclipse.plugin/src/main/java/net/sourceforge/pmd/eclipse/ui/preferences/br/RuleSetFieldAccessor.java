@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.eclipse.ui.preferences.br;
 
-import net.sourceforge.pmd.RuleSet;
+import net.sourceforge.pmd.lang.rule.RuleSet;
 
 /**
  * A value and label extractor interface for anything implementing the RuleSet

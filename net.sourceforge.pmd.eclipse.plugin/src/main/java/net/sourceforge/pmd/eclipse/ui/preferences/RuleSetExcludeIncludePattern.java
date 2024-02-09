@@ -7,8 +7,8 @@ package net.sourceforge.pmd.eclipse.ui.preferences;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.eclipse.ui.actions.internal.InternalRuleSetUtil;
+import net.sourceforge.pmd.lang.rule.RuleSet;
 
 /**
  * Helper class to display rule set exclude/include patterns in a table

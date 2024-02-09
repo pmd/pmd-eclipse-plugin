@@ -27,7 +27,6 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.IPage;
 
-import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.eclipse.plugin.UISettings;
 import net.sourceforge.pmd.eclipse.ui.PMDUiConstants;
 import net.sourceforge.pmd.eclipse.ui.model.FileRecord;
@@ -38,6 +37,7 @@ import net.sourceforge.pmd.eclipse.ui.views.actions.QuickFixAction;
 import net.sourceforge.pmd.eclipse.ui.views.actions.RemoveViolationAction;
 import net.sourceforge.pmd.eclipse.ui.views.actions.ReviewAction;
 import net.sourceforge.pmd.eclipse.ui.views.actions.ShowViolationDetailsAction;
+import net.sourceforge.pmd.lang.rule.RulePriority;
 
 /**
  * A View to show a list of PMD-Violations for a file

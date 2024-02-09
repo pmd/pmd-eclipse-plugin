@@ -6,7 +6,7 @@ package net.sourceforge.pmd.eclipse.core;
 
 import java.util.Set;
 
-import net.sourceforge.pmd.RuleSet;
+import net.sourceforge.pmd.lang.rule.RuleSet;
 
 /**
  * This is the interface for implementors of the RuleSets extension point.

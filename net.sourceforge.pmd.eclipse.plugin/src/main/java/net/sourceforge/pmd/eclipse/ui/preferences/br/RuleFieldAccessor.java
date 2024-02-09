@@ -9,12 +9,12 @@ import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
 
-import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.eclipse.plugin.UISettings;
 import net.sourceforge.pmd.eclipse.ui.quickfix.PMDResolutionGenerator;
 import net.sourceforge.pmd.eclipse.util.Util;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.lang.rule.Rule;
 
 /**
  * A value and label extractor interface for anything implementing the Rule

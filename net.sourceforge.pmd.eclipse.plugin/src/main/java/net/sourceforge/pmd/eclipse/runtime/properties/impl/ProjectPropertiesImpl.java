@@ -30,7 +30,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.PmdAnalysis;
-import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.eclipse.core.internal.FileModificationUtil;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.runtime.cmd.JavaProjectClassLoader;
@@ -41,6 +40,7 @@ import net.sourceforge.pmd.eclipse.runtime.writer.IRuleSetWriter;
 import net.sourceforge.pmd.eclipse.runtime.writer.WriterException;
 import net.sourceforge.pmd.eclipse.ui.actions.RuleSetUtil;
 import net.sourceforge.pmd.eclipse.ui.actions.internal.InternalRuleSetUtil;
+import net.sourceforge.pmd.lang.rule.RuleSet;
 
 /**
  * Implementation of a project properties information structure
@@ -144,7 +144,7 @@ public class ProjectPropertiesImpl implements IProjectProperties {
      */
     @Deprecated
     @Override
-    public net.sourceforge.pmd.RuleSets getProjectRuleSets() throws PropertiesException {
+    public net.sourceforge.pmd.lang.rule.internal.RuleSets getProjectRuleSets() throws PropertiesException {
         return InternalRuleSetUtil.toRuleSets(projectRuleSets);
     }
 
@@ -168,7 +168,7 @@ public class ProjectPropertiesImpl implements IProjectProperties {
      */
     @Override
     @Deprecated
-    public void setProjectRuleSets(final net.sourceforge.pmd.RuleSets newProjectRuleSets) throws PropertiesException {
+    public void setProjectRuleSets(final net.sourceforge.pmd.lang.rule.internal.RuleSets newProjectRuleSets) throws PropertiesException {
         setProjectRuleSetList(Arrays.asList(newProjectRuleSets.getAllRuleSets()));
     }
 

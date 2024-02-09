@@ -15,12 +15,12 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 
-import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.eclipse.ui.PMDUiConstants;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.ValueChangeListener;
 import net.sourceforge.pmd.eclipse.ui.quickfix.Fix;
 import net.sourceforge.pmd.eclipse.ui.quickfix.PMDResolutionGenerator;
 import net.sourceforge.pmd.eclipse.util.ResourceManager;
+import net.sourceforge.pmd.lang.rule.Rule;
 
 public class QuickFixPanelManager extends AbstractRulePanelManager {
 

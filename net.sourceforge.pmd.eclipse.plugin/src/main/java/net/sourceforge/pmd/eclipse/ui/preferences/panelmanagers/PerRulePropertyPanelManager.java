@@ -16,7 +16,6 @@ import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 
-import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.EditorFactory;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.RuleSelection;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.RuleUtil;
@@ -31,6 +30,7 @@ import net.sourceforge.pmd.eclipse.ui.preferences.editors.MultiIntegerEditorFact
 import net.sourceforge.pmd.eclipse.ui.preferences.editors.MultiStringEditorFactory;
 import net.sourceforge.pmd.eclipse.ui.preferences.editors.RegexEditorFactory;
 import net.sourceforge.pmd.eclipse.ui.preferences.editors.StringEditorFactory;
+import net.sourceforge.pmd.lang.rule.Rule;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertySource;
 

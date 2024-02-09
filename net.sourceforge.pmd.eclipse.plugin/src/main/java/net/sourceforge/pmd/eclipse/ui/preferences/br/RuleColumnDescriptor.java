@@ -14,8 +14,8 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeColumn;
 
-import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.eclipse.ui.ColumnDescriptor;
+import net.sourceforge.pmd.lang.rule.Rule;
 
 /**
  *

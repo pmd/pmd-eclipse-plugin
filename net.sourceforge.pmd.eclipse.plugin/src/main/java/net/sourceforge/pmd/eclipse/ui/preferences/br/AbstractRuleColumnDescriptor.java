@@ -16,8 +16,8 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeColumn;
 
-import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.eclipse.ui.AbstractColumnDescriptor;
+import net.sourceforge.pmd.lang.rule.Rule;
 
 /**
  * Retains all values necessary to hydrate a table column for holding a set of

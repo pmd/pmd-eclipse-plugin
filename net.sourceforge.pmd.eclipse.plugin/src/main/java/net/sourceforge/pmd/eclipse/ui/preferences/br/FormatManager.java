@@ -7,9 +7,9 @@ package net.sourceforge.pmd.eclipse.ui.preferences.br;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.lang.rule.RulePriority;
 
 /**
  * 

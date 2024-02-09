@@ -4,9 +4,9 @@
 
 package net.sourceforge.pmd.eclipse.ui.preferences;
 
-import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.eclipse.plugin.UISettings;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.RuleUIUtil;
+import net.sourceforge.pmd.lang.rule.Rule;
 
 /**
  * Implements a label provider for the rules item to be displayed in the rule

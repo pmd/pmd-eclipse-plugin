@@ -32,12 +32,6 @@ import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.PmdAnalysis;
-import net.sourceforge.pmd.Report;
-import net.sourceforge.pmd.Report.ConfigurationError;
-import net.sourceforge.pmd.Report.ProcessingError;
-import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.RuleSet;
-import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.runtime.PMDRuntimeConstants;
 import net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties;
@@ -49,6 +43,12 @@ import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.LanguageVersionDiscoverer;
 import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.java.JavaLanguageModule;
+import net.sourceforge.pmd.lang.rule.Rule;
+import net.sourceforge.pmd.lang.rule.RuleSet;
+import net.sourceforge.pmd.reporting.Report;
+import net.sourceforge.pmd.reporting.Report.ConfigurationError;
+import net.sourceforge.pmd.reporting.Report.ProcessingError;
+import net.sourceforge.pmd.reporting.RuleViolation;
 
 /**
  * Factor some useful features for visitors
@@ -169,7 +169,7 @@ public class BaseVisitor {
      * @deprecated Use {@link #getRuleSetList()}
      */
     @Deprecated
-    public net.sourceforge.pmd.RuleSets getRuleSets() {
+    public net.sourceforge.pmd.lang.rule.internal.RuleSets getRuleSets() {
         return InternalRuleSetUtil.toRuleSets(this.ruleSets);
     }
 
@@ -199,7 +199,7 @@ public class BaseVisitor {
      * @deprecated Use {@link #setRuleSetList(List)}
      */
     @Deprecated
-    public void setRuleSets(final net.sourceforge.pmd.RuleSets ruleSets) {
+    public void setRuleSets(final net.sourceforge.pmd.lang.rule.internal.RuleSets ruleSets) {
         setRuleSetList(Arrays.asList(ruleSets.getAllRuleSets()));
     }
 

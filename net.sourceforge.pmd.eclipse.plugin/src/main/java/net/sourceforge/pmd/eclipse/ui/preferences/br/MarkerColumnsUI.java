@@ -10,7 +10,6 @@ import org.eclipse.core.resources.IMarker;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 
-import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.eclipse.runtime.builder.MarkerUtil;
 import net.sourceforge.pmd.eclipse.ui.ItemColumnDescriptor;
 import net.sourceforge.pmd.eclipse.ui.ItemFieldAccessor;
@@ -18,6 +17,7 @@ import net.sourceforge.pmd.eclipse.ui.ItemFieldAccessorAdapter;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
 import net.sourceforge.pmd.eclipse.ui.priority.PriorityDescriptorCache;
 import net.sourceforge.pmd.eclipse.util.Util;
+import net.sourceforge.pmd.lang.rule.RulePriority;
 
 /**
  * 

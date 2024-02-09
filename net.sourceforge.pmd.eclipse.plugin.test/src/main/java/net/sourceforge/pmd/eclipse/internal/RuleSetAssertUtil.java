@@ -16,8 +16,8 @@ import java.util.Objects;
 import java.util.TreeMap;
 import java.util.regex.Pattern;
 
-import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.RuleSet;
+import net.sourceforge.pmd.lang.rule.Rule;
+import net.sourceforge.pmd.lang.rule.RuleSet;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 
 public final class RuleSetAssertUtil {

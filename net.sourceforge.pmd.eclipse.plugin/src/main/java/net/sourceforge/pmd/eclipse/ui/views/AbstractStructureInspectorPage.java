@@ -33,7 +33,6 @@ import org.eclipse.ui.texteditor.ITextEditor;
 import org.eclipse.ui.themes.ITheme;
 import org.eclipse.ui.themes.IThemeManager;
 
-import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.ui.model.FileRecord;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
@@ -41,6 +40,7 @@ import net.sourceforge.pmd.eclipse.ui.views.ast.ASTUtil;
 import net.sourceforge.pmd.eclipse.ui.views.ast.XPathEvaluator;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
+import net.sourceforge.pmd.reporting.RuleViolation;
 
 /**
  * 

@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.eclipse.ui.preferences;
 
-import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.lang.rule.Rule;
 
 public interface RuleDupeChecker {
 

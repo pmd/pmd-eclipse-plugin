@@ -6,11 +6,11 @@ package net.sourceforge.pmd.eclipse.ui.preferences.br;
 
 import java.util.Date;
 
-import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.eclipse.plugin.UISettings;
 import net.sourceforge.pmd.eclipse.util.Util;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.lang.rule.RulePriority;
 
 /**
  *

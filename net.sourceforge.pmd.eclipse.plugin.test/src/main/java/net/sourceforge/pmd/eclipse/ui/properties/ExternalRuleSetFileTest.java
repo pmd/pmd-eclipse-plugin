@@ -17,7 +17,6 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.eclipse.EclipseUtils;
 import net.sourceforge.pmd.eclipse.LoggingRule;
 import net.sourceforge.pmd.eclipse.internal.ResourceUtil;
@@ -27,6 +26,7 @@ import net.sourceforge.pmd.eclipse.runtime.cmd.JobCommandProcessor;
 import net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties;
 import net.sourceforge.pmd.eclipse.runtime.properties.IProjectPropertiesManager;
 import net.sourceforge.pmd.eclipse.ui.actions.RuleSetUtil;
+import net.sourceforge.pmd.lang.rule.RuleSet;
 
 public class ExternalRuleSetFileTest {
     private static final Logger LOG = LoggerFactory.getLogger(ExternalRuleSetFileTest.class);

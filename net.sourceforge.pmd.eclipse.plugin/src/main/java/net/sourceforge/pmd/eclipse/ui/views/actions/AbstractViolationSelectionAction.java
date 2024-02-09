@@ -13,8 +13,8 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 
-import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.eclipse.runtime.builder.MarkerUtil;
+import net.sourceforge.pmd.lang.rule.Rule;
 
 /**
  * Base Class for Actions that need to know, which Markers are selected.

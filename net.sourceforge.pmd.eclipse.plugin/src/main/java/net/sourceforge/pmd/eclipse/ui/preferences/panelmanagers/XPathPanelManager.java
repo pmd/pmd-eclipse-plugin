@@ -8,31 +8,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Label;
 
-import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.eclipse.ui.editors.SyntaxManager;
-import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.ImplementationType;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.RuleSelection;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.ValueChangeListener;
-import net.sourceforge.pmd.eclipse.ui.preferences.editors.EnumerationEditorFactory;
-import net.sourceforge.pmd.eclipse.ui.preferences.editors.SWTUtil;
+import net.sourceforge.pmd.lang.rule.Rule;
 import net.sourceforge.pmd.lang.rule.RuleReference;
-import net.sourceforge.pmd.lang.rule.XPathRule;
-import net.sourceforge.pmd.lang.rule.xpath.XPathVersion;
-import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.lang.rule.xpath.XPathRule;
 
 /**
  *
@@ -41,8 +31,6 @@ import net.sourceforge.pmd.properties.PropertyDescriptor;
 public class XPathPanelManager extends AbstractRulePanelManager {
 
     private StyledText xpathField;
-    private Combo xpathVersionField;
-    private Label versionLabel;
     private List<String> unknownVariableNames;
 
     public static final String ID = "xpath";
@@ -86,8 +74,6 @@ public class XPathPanelManager extends AbstractRulePanelManager {
     @Override
     public void showControls(boolean flag) {
         xpathField.setVisible(flag);
-        xpathVersionField.setVisible(flag);
-        versionLabel.setVisible(flag);
     }
 
     @Override
@@ -144,46 +130,7 @@ public class XPathPanelManager extends AbstractRulePanelManager {
             }
         });
 
-        versionLabel = new Label(panel, 0);
-        versionLabel.setText(SWTUtil.stringFor(StringKeys.PREF_RULEEDIT_LABEL_XPATH_VERSION));
-        gridData = new GridData();
-        gridData.horizontalSpan = 1;
-        gridData.grabExcessHorizontalSpace = false;
-        versionLabel.setLayoutData(gridData);
-
-        final PropertyDescriptor<XPathVersion> ep = XPathRule.VERSION_DESCRIPTOR;
-        xpathVersionField = new Combo(panel, SWT.READ_ONLY);
-        gridData = new GridData();
-        gridData.horizontalSpan = 1;
-        gridData.grabExcessHorizontalSpace = false;
-        xpathVersionField.setLayoutData(gridData);
-        xpathVersionField.setItems(SWTUtil.labelsIn(EnumerationEditorFactory.choices(ep), 0));
-
-        xpathVersionField.addSelectionListener(new SelectionAdapter() {
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-                Rule rule = soleRule();
-                int selectionIdx = xpathVersionField.getSelectionIndex();
-                XPathVersion newValue = (XPathVersion) EnumerationEditorFactory.choices(ep)[selectionIdx][1];
-                if (newValue.equals(rule.getProperty(ep))) {
-                    return;
-                }
-
-                rule.setProperty(ep, newValue);
-                // adjustRendering(rule, ep, xpathVersionField); TODO - won't compile?
-            }
-        });
-
         return panel;
-    }
-
-    private void configureVersionFieldFor(Rule rule) {
-        Object value = rule.getProperty(XPathRule.VERSION_DESCRIPTOR);
-        int selectionIdx = EnumerationEditorFactory.indexOf(value,
-                EnumerationEditorFactory.choices(XPathRule.VERSION_DESCRIPTOR));
-        if (selectionIdx >= 0) {
-            xpathVersionField.select(selectionIdx);
-        }
     }
 
     // private static StyleRange styleFor(Rule rule, String source, int[] position, List<String> unknownVars) {
@@ -224,7 +171,6 @@ public class XPathPanelManager extends AbstractRulePanelManager {
             shutdown(xpathField);
         } else {
             show(xpathField, soleRule.getProperty(XPathRule.XPATH_DESCRIPTOR).trim());
-            configureVersionFieldFor(soleRule);
             // updateVariablesField();
         }
 

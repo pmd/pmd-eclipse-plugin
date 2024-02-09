@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.eclipse.ui.preferences;
 
-import net.sourceforge.pmd.RuleSet;
+import net.sourceforge.pmd.lang.rule.RuleSet;
 
 /**
  * This class implements a content provider for the ruleset exclude/include

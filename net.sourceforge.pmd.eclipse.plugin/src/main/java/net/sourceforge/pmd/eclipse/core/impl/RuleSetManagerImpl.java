@@ -8,8 +8,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.eclipse.core.IRuleSetManager;
+import net.sourceforge.pmd.lang.rule.RuleSet;
 
 /**
  *

@@ -51,7 +51,6 @@ import org.eclipse.ui.dialogs.PreferencesUtil;
 import org.eclipse.ui.preferences.ScopedPreferenceStore;
 
 import net.sourceforge.pmd.PMDVersion;
-import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.plugin.UISettings;
 import net.sourceforge.pmd.eclipse.runtime.builder.MarkerUtil;
@@ -67,6 +66,7 @@ import net.sourceforge.pmd.eclipse.ui.priority.PriorityColumnUI;
 import net.sourceforge.pmd.eclipse.ui.priority.PriorityDescriptor;
 import net.sourceforge.pmd.eclipse.ui.priority.PriorityDescriptorCache;
 import net.sourceforge.pmd.eclipse.ui.priority.PriorityDescriptorIcon;
+import net.sourceforge.pmd.lang.rule.RulePriority;
 
 /**
  * The top-level page for PMD preferences

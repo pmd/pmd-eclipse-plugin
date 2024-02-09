@@ -19,9 +19,9 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 
-import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.eclipse.ui.IndexedString;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.RuleFieldAccessor;
+import net.sourceforge.pmd.lang.rule.Rule;
 
 public class StyledTextBuilder extends AbstractCellPainterBuilder {
 
