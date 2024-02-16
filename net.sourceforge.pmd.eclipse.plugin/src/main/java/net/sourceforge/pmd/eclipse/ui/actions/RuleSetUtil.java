@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.eclipse.ui.actions;
 
+import java.io.StringWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -11,12 +13,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
+import javax.xml.stream.XMLOutputFactory;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamWriter;
 
 import net.sourceforge.pmd.eclipse.ui.actions.internal.InternalRuleSetUtil;
 import net.sourceforge.pmd.lang.rule.Rule;
-import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.lang.rule.RuleSet;
-import net.sourceforge.pmd.lang.rule.internal.RuleSetReference;
+import net.sourceforge.pmd.lang.rule.RuleSetLoader;
 
 /**
  * 
@@ -105,17 +109,35 @@ public final class RuleSetUtil {
     }
 
     public static RuleSet addRuleSetByReference(RuleSet ruleSet, RuleSet sourceRuleSet, boolean allRules) {
-        RuleSetReference reference = new RuleSetReference(sourceRuleSet.getFileName(), allRules);
-        Collection<Rule> rules = new ArrayList<>(ruleSet.getRules());
-        for (Rule rule : sourceRuleSet.getRules()) {
-            RuleReference ruleRef = new RuleReference(rule, reference);
-            rules.add(ruleRef);
+        StringWriter ruleSetXml = new StringWriter();
+        try {
+            XMLStreamWriter writer = XMLOutputFactory.newInstance().createXMLStreamWriter(ruleSetXml);
+            writer.writeStartDocument(StandardCharsets.UTF_8.name(), "1.0");
+            writer.writeStartElement("ruleset");
+            writer.writeAttribute("name", ruleSet.getName());
+            writer.writeStartElement("description");
+            writer.writeCharacters(ruleSet.getDescription());
+            writer.writeEndElement();
+
+            for (Rule rule : sourceRuleSet.getRules()) {
+                writer.writeStartElement("rule");
+                writer.writeAttribute("ref", sourceRuleSet.getFileName() + "/" + rule.getName());
+                writer.writeEndElement();
+            }
+
+            writer.writeEndElement();
+            writer.flush();
+        } catch (XMLStreamException e) {
+            throw new RuntimeException(e);
         }
+        RuleSetLoader ruleSetLoader = new RuleSetLoader();
+        RuleSet withReferences = ruleSetLoader.loadFromString("temporary-ruleset.xml", ruleSetXml.toString());
+
         return RuleSet.create(ruleSet.getName(), ruleSet.getDescription(),
                 ruleSet.getFileName(),
                 ruleSet.getFileExclusions(),
                 ruleSet.getFileInclusions(),
-                rules);
+                withReferences.getRules());
     }
 
     public static RuleSet addRules(RuleSet ruleSet, Collection<Rule> newRules) {

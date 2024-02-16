@@ -28,6 +28,17 @@ This is a major release.
 Due to the updated PMD version, there are a couple of incompatible changes, like changed packages.
 For the details, see the release notes of PMD.
 
+The following deprecated methods have been removed:
+* net.sourceforge.pmd.eclipse.runtime.properties.impl.ProjectPropertiesImpl#getProjectRuleSets()
+* net.sourceforge.pmd.eclipse.runtime.properties.impl.ProjectPropertiesImpl#setProjectRuleSets(RuleSets)
+* net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties#getProjectRuleSets()
+* net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties#setProjectRuleSets(RuleSets)
+* net.sourceforge.pmd.eclipse.ui.properties.PMDPropertyPageBean#getProjectRuleSets()
+* net.sourceforge.pmd.eclipse.ui.properties.PMDPropertyPageBean#setProjectRuleSets(RuleSets)
+* net.sourceforge.pmd.eclipse.runtime.cmd.BaseVisitor#getRuleSets()
+* net.sourceforge.pmd.eclipse.runtime.cmd.BaseVisitor#setRuleSets(RuleSets)
+* net.sourceforge.pmd.eclipse.ui.properties.UpdateProjectPropertiesCmd#setProjectRuleSets(RuleSets)
+
 ### External Contributions
 
 ## 30-September-2023: 7.0.0.v20230930-1814-rc4

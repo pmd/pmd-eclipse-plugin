@@ -18,7 +18,6 @@ import net.sourceforge.pmd.lang.rule.Rule;
 import net.sourceforge.pmd.lang.rule.RulePriority;
 import net.sourceforge.pmd.lang.rule.RuleSet;
 import net.sourceforge.pmd.lang.rule.RuleSetLoader;
-import net.sourceforge.pmd.lang.rule.internal.RuleSets;
 
 public final class InternalRuleSetUtil {
     private InternalRuleSetUtil() {}
@@ -115,10 +114,6 @@ public final class InternalRuleSetUtil {
             result.addAll(ruleset.getRules());
         }
         return result;
-    }
-
-    public static RuleSets toRuleSets(List<RuleSet> rulesets) {
-        return new RuleSets(rulesets);
     }
 
     public static RuleSetLoader getDefaultRuleSetLoader() {

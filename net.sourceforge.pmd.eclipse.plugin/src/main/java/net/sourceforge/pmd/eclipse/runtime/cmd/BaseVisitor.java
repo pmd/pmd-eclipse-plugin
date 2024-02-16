@@ -11,7 +11,6 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Deque;
 import java.util.HashSet;
 import java.util.List;
@@ -164,15 +163,6 @@ public class BaseVisitor {
         }
     }
 
-    /**
-     * @return Returns all the ruleSets.
-     * @deprecated Use {@link #getRuleSetList()}
-     */
-    @Deprecated
-    public net.sourceforge.pmd.lang.rule.internal.RuleSets getRuleSets() {
-        return InternalRuleSetUtil.toRuleSets(this.ruleSets);
-    }
-
     public List<RuleSet> getRuleSetList() {
         return this.ruleSets;
     }
@@ -191,16 +181,6 @@ public class BaseVisitor {
     public void setRuleSet(RuleSet ruleSet) {
         this.ruleSets = new ArrayList<>();
         this.ruleSets.add(ruleSet);
-    }
-    
-    /**
-     * @param ruleSet
-     *            The ruleSet to set.
-     * @deprecated Use {@link #setRuleSetList(List)}
-     */
-    @Deprecated
-    public void setRuleSets(final net.sourceforge.pmd.lang.rule.internal.RuleSets ruleSets) {
-        setRuleSetList(Arrays.asList(ruleSets.getAllRuleSets()));
     }
 
     public void setRuleSetList(List<RuleSet> ruleSets) {

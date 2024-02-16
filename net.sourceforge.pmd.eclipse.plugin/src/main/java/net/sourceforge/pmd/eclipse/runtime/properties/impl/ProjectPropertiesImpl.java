@@ -9,7 +9,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -139,15 +138,6 @@ public class ProjectPropertiesImpl implements IProjectProperties {
         }
     }
 
-    /**
-     * @deprecated Use {@link #getProjectRuleSetList()}
-     */
-    @Deprecated
-    @Override
-    public net.sourceforge.pmd.lang.rule.internal.RuleSets getProjectRuleSets() throws PropertiesException {
-        return InternalRuleSetUtil.toRuleSets(projectRuleSets);
-    }
-
     @Override
     public List<RuleSet> getProjectRuleSetList() throws PropertiesException {
         return projectRuleSets;
@@ -161,15 +151,6 @@ public class ProjectPropertiesImpl implements IProjectProperties {
     @Override
     public void setProjectRuleSet(RuleSet projectRuleSet) throws PropertiesException {
         setProjectRuleSetList(Collections.singletonList(projectRuleSet));
-    }
-
-    /**
-     * @deprecated Use {@link #setProjectRuleSetList(List)}
-     */
-    @Override
-    @Deprecated
-    public void setProjectRuleSets(final net.sourceforge.pmd.lang.rule.internal.RuleSets newProjectRuleSets) throws PropertiesException {
-        setProjectRuleSetList(Arrays.asList(newProjectRuleSets.getAllRuleSets()));
     }
 
     @Override
