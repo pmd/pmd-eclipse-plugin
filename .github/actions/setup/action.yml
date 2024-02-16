@@ -18,10 +18,10 @@ runs:
         key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml', '**/*.target') }}
         restore-keys: |
           ${{ runner.os }}-maven-
-    - name: Set up Ruby 2.7
+    - name: Set up Ruby 3.3
       uses: ruby/setup-ruby@v1
       with:
-        ruby-version: 2.7
+        ruby-version: 3.3
     - name: Setup Environment
       shell: bash
       run: |
