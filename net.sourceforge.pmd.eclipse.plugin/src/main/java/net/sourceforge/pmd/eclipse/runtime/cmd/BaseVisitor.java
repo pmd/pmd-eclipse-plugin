@@ -58,8 +58,6 @@ import net.sourceforge.pmd.reporting.RuleViolation;
 public class BaseVisitor {
     private static final Logger LOG = LoggerFactory.getLogger(BaseVisitor.class);
     private IProgressMonitor monitor;
-    @Deprecated
-    private boolean useTaskMarker = false;
     private Map<IFile, Set<MarkerInfo2>> accumulator;
     // private PMDEngine pmdEngine;
     private List<RuleSet> ruleSets;
@@ -83,29 +81,6 @@ public class BaseVisitor {
             configuration = new PMDConfiguration();
         }
         return configuration;
-    }
-
-    /**
-     * Returns the useTaskMarker.
-     *
-     * @return boolean
-     * @deprecated not used
-     */
-    @Deprecated
-    public boolean isUseTaskMarker() {
-        return useTaskMarker;
-    }
-
-    /**
-     * Sets the useTaskMarker.
-     *
-     * @param shouldUseTaskMarker
-     *            The useTaskMarker to set
-     * @deprecated not used
-     */
-    @Deprecated
-    public void setUseTaskMarker(final boolean shouldUseTaskMarker) {
-        this.useTaskMarker = shouldUseTaskMarker;
     }
 
     /**

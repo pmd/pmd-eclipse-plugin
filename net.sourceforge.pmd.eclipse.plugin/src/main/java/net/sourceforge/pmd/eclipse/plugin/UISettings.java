@@ -13,20 +13,12 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
-import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.ImageData;
-import org.eclipse.swt.graphics.ImageLoader;
 import org.eclipse.swt.graphics.RGB;
-import org.eclipse.swt.widgets.Display;
 
 import net.sourceforge.pmd.eclipse.runtime.preferences.IPreferencesManager;
 import net.sourceforge.pmd.eclipse.ui.Shape;
 import net.sourceforge.pmd.eclipse.ui.ShapeDescriptor;
-import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
-import net.sourceforge.pmd.eclipse.ui.nls.StringTable;
-import net.sourceforge.pmd.eclipse.ui.priority.PriorityDescriptor;
 import net.sourceforge.pmd.eclipse.ui.priority.PriorityDescriptorCache;
 import net.sourceforge.pmd.eclipse.util.FontBuilder;
 import net.sourceforge.pmd.lang.rule.RulePriority;
@@ -47,11 +39,6 @@ public final class UISettings {
         // utility class
     }
 
-
-    @Deprecated
-    public static void reloadPriorities() {
-        // no-op - nothing to be done anymore. The priority descriptor are cached by PriorityDescriptorCache and not here.
-    }
 
     public static Shape[] allShapes() {
         return new Shape[] { Shape.circle, Shape.star, Shape.domeLeft, Shape.domeRight, Shape.diamond, Shape.square,
@@ -84,72 +71,13 @@ public final class UISettings {
         return shapes;
     }
 
-    /**
-     * @deprecated Use {@link PriorityDescriptorCache#descriptorFor(RulePriority)} to retrieve the {@link PriorityDescriptor}.
-     */
-    @Deprecated
-    public static String markerFilenameFor(RulePriority priority) {
-        String fileDir = PMDPlugin.getPluginFolder().getAbsolutePath();
-        return fileDir + "/" + relativeMarkerFilenameFor(priority);
-    }
-
-    /**
-     * @deprecated Use {@link PriorityDescriptorCache#descriptorFor(RulePriority)} to retrieve the {@link PriorityDescriptor}.
-     */
-    @Deprecated
-    public static String relativeMarkerFilenameFor(RulePriority priority) {
-        return "icons/markerP" + priority.getPriority() + ".png";
-    }
-
-    /**
-     * @deprecated Use {@link PriorityDescriptorCache#descriptorFor(RulePriority)} to retrieve the {@link PriorityDescriptor}.
-     */
-    @Deprecated
-    public static ImageDescriptor markerDescriptorFor(RulePriority priority) {
-        PriorityDescriptor pd = PriorityDescriptorCache.INSTANCE.descriptorFor(priority);
-        return pd.getAnnotationImageDescriptor();
-    }
-
-    /**
-     * @deprecated Use {@link PriorityDescriptorCache#descriptorFor(RulePriority)} to retrieve the {@link PriorityDescriptor}.
-     */
-    @Deprecated
-    public static Map<Integer, ImageDescriptor> markerImgDescriptorsByPriority() {
-        RulePriority[] priorities = currentPriorities(true);
-        Map<Integer, ImageDescriptor> overlaysByPriority = new HashMap<>(priorities.length);
-        for (RulePriority priority : priorities) {
-            overlaysByPriority.put(priority.getPriority(), markerDescriptorFor(priority));
-        }
-        return overlaysByPriority;
-    }
-
-    /**
-     * Marker Icons are not stored to files anymore. They are generated on the fly and cached by {@link PriorityDescriptorCache}.
-     * @deprecated Use {@link PriorityDescriptorCache#descriptorFor(RulePriority)} to retrieve the {@link PriorityDescriptor}.
-     */
-    @Deprecated
-    public static void createRuleMarkerIcons(Display display) {
-        ImageLoader loader = new ImageLoader();
-
-        PriorityDescriptorCache pdc = PriorityDescriptorCache.INSTANCE;
-
-        for (RulePriority priority : currentPriorities(true)) {
-            Image image = pdc.descriptorFor(priority).getAnnotationImage();
-            loader.data = new ImageData[] { image.getImageData() };
-            String fullPath = markerFilenameFor(priority);
-            PMDPlugin.getDefault().logInformation("Writing marker icon to: " + fullPath);
-            loader.save(fullPath, SWT.IMAGE_PNG);
-            image.dispose();
-        }
-    }
-
     private static String pLabelFor(RulePriority priority, boolean useCustom) {
 
         if (!useCustom) {
             return priority.getName();
         }
 
-        String custom = descriptorFor(priority).label;
+        String custom = PriorityDescriptorCache.INSTANCE.descriptorFor(priority).label;
         return StringUtils.isBlank(custom) ? preferencesManager.defaultDescriptorFor(priority).label : custom;
     }
 
@@ -160,22 +88,6 @@ public final class UISettings {
         for (RulePriority priority : currentPriorities(true)) {
             labelsByPriority.put(priority, pLabelFor(priority, flag));
         }
-    }
-
-    /**
-     * @deprecated Use {@link PriorityDescriptorCache#descriptorFor(RulePriority)} to retrieve the {@link PriorityDescriptor#description}.
-     */
-    @Deprecated
-    public static String descriptionFor(RulePriority priority) {
-        return descriptorFor(priority).description;
-    }
-
-    /**
-     * @deprecated Use {@link PriorityDescriptorCache#descriptorFor(RulePriority)} to retrieve the {@link PriorityDescriptor}.
-     */
-    @Deprecated
-    public static PriorityDescriptor descriptorFor(RulePriority priority) {
-        return PriorityDescriptorCache.INSTANCE.descriptorFor(priority);
     }
 
     public static String labelFor(RulePriority priority) {
@@ -191,30 +103,6 @@ public final class UISettings {
             shapesByPriority.put(priority, PriorityDescriptorCache.INSTANCE.descriptorFor(priority).shape);
         }
         return shapesByPriority;
-    }
-
-    /**
-     * @deprecated Use {@link RulePriority#valueOf(int)} directly.
-     */
-    @Deprecated
-    public static RulePriority priorityFor(int value) {
-        return RulePriority.valueOf(value);
-    }
-
-    /**
-     * Return the priority labels
-     * 
-     * @deprecated - not referenced in the modern UI
-     */
-    @Deprecated
-    public static String[] getPriorityLabels() {
-        final StringTable stringTable = PMDPlugin.getDefault().getStringTable();
-        return new String[] { stringTable.getString(StringKeys.PRIORITY_ERROR_HIGH),
-            stringTable.getString(StringKeys.PRIORITY_ERROR),
-            stringTable.getString(StringKeys.PRIORITY_WARNING_HIGH),
-            stringTable.getString(StringKeys.PRIORITY_WARNING),
-            stringTable.getString(StringKeys.PRIORITY_INFORMATION),
-        };
     }
 
     public static List<Integer> getPriorityIntValues() {

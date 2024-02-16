@@ -15,9 +15,7 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.RGB;
-import org.eclipse.swt.widgets.Display;
 
-import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.ui.Shape;
 import net.sourceforge.pmd.eclipse.ui.ShapeDescriptor;
 import net.sourceforge.pmd.eclipse.ui.ShapePainter;
@@ -147,14 +145,6 @@ public class PriorityDescriptor implements Cloneable {
         sb.append(shape.size).append(DELIMITER);
     }
 
-    /**
-     * @deprecated use {@link #getAnnotationImageDescriptor()} instead.
-     */
-    @Deprecated
-    public ImageDescriptor getImageDescriptor() {
-        return PMDPlugin.getImageDescriptor(iconId);
-    }
-
     @Override
     public PriorityDescriptor clone() {
         try {
@@ -169,24 +159,6 @@ public class PriorityDescriptor implements Cloneable {
         } catch (CloneNotSupportedException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    /**
-     * @deprecated Use {@link #getAnnotationImage()} or {@link #getAnnotationImageDescriptor()} instead.
-     */
-    @Deprecated
-    public Image getImage(Display display) {
-        return createImage();
-    }
-
-    /**
-     * @deprecated Use {@link #getAnnotationImage()} or {@link #getAnnotationImageDescriptor()} instead.
-     */
-    @Deprecated
-    public Image getImage(Display display, int maxDimension) {
-        return ShapePainter.newDrawnImage(null, Math.min(shape.size, maxDimension),
-                Math.min(shape.size, maxDimension), shape.shape, PROTO_TRANSPARENT_COLOR, shape.rgbColor // fillColour
-        );
     }
 
     @Override
@@ -272,14 +244,5 @@ public class PriorityDescriptor implements Cloneable {
         for (Image image : copy) {
             image.dispose();
         }
-    }
-
-    /**
-     * Eagerly create the images.
-     * @deprecated not used anymore, it does nothing anymore. The images are created on demand now.
-     */
-    @Deprecated
-    public void refreshImages() {
-        // does nothing
     }
 }

@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.eclipse.ui.priority;
 
-import java.io.PrintStream;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -30,13 +29,6 @@ public final class PriorityDescriptorCache {
 
     private IPreferencesManager preferencesManager() {
         return PMDPlugin.getDefault().getPreferencesManager();
-    }
-
-    @Deprecated
-    public void dumpTo(PrintStream out) {
-        for (Map.Entry<RulePriority, PriorityDescriptor> entry : uiDescriptorsByPriority.entrySet()) {
-            out.println(entry.getKey() + " : " + entry.getValue());
-        }
     }
 
     public void loadFromPreferences() {

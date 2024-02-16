@@ -50,14 +50,6 @@ public class RuleLabelDecorator implements ILightweightLabelDecorator {
         }
     }
 
-    /**
-     * @deprecated reloading is not necessary anymore
-     */
-    @Deprecated
-    public void reloadDecorators() {
-        // nothing to do
-    }
-
     @Override
     public boolean isLabelProperty(Object element, String property) {
         return false;

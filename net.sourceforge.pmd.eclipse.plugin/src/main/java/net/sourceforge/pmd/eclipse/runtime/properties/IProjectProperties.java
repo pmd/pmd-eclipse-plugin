@@ -80,14 +80,6 @@ public interface IProjectProperties {
     void setRuleSetFile(String ruleSetFile) throws PropertiesException;
 
     /**
-     * @return Returns the resolved RuleSet File suitable for loading a rule
-     *         set.
-     * @deprecated use {@link #getResolvedRuleSetFiles()} instead
-     */
-    @Deprecated
-    File getResolvedRuleSetFile() throws PropertiesException;
-
-    /**
      * @return Returns the resolved RuleSet Files suitable for loading multiple
      * rulesets.
      */

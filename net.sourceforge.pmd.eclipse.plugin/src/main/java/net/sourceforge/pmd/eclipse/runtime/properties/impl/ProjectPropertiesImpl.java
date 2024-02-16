@@ -273,15 +273,6 @@ public class ProjectPropertiesImpl implements IProjectProperties {
         return allFilesCanBeRead;
     }
 
-    @Deprecated
-    @Override
-    public File getResolvedRuleSetFile() throws PropertiesException {
-        if (isRuleSetFileExist()) {
-            return getResolvedRuleSetFiles().get(0);
-        }
-        return null;
-    }
-
     @Override
     public List<File> getResolvedRuleSetFiles() {
         // Check as project-relative path

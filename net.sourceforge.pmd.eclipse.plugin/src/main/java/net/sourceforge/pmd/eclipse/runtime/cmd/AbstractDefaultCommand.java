@@ -45,16 +45,6 @@ public abstract class AbstractDefaultCommand {
         PMDPlugin.getDefault().logError(message, error);
     }
 
-    /**
-     * 
-     * @param file
-     * @return
-     * @deprecated we support multiple languages now
-     */
-    public static boolean isJavaFile(IFile file) {
-        return file != null && "JAVA".equalsIgnoreCase(file.getFileExtension());
-    }
-
     public static boolean isLanguageFile(IFile file, Language language) {
         return file != null && language.hasExtension(file.getFileExtension());
     }

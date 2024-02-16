@@ -26,8 +26,6 @@ public interface IPreferences {
     boolean PMD_VIOLATIONS_OUTLINE_ENABLED_DEFAULT = false;
     boolean PMD_CHECK_AFTER_SAVE_DEFAULT = false;
     boolean PMD_USE_CUSTOM_PRIORITY_NAMES_DEFAULT = true;
-    @Deprecated
-    int MAX_VIOLATIONS_PFPR_DEFAULT = 5;
     boolean DETERMINE_FILETYPES_AUTOMATICALLY_DEFAULT = true;
     String REVIEW_ADDITIONAL_COMMENT_DEFAULT = "by {0} on {1}";
     boolean REVIEW_PMD_STYLE_ENABLED_DEFAULT = true;
@@ -128,26 +126,6 @@ public interface IPreferences {
      * review is launched
      */
     void setPmdViolationsOutlineEnabled(boolean pmdViolationsOutlineEnabled);
-
-    /**
-     * Get the maximum number of violations per file per rule reported by the
-     * plugin. This parameter is used to improve performances
-     *
-     * @deprecated
-     */
-    @Deprecated
-    int getMaxViolationsPerFilePerRule();
-
-    /**
-     * Set the maximum number of violations per file per rule reported by the
-     * plugin
-     * 
-     * @param maxViolationPerFilePerRule
-     *
-     * @deprecated
-     */
-    @Deprecated
-    void setMaxViolationsPerFilePerRule(int maxViolationPerFilePerRule);
 
     /**
      * If true: When checking, whether a given file should be analyzed by PMD, take

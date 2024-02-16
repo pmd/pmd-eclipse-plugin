@@ -28,7 +28,7 @@ This is a major release.
 Due to the updated PMD version, there are a couple of incompatible changes, like changed packages.
 For the details, see the release notes of PMD.
 
-The following deprecated methods have been removed:
+The following deprecated members have been removed:
 * net.sourceforge.pmd.eclipse.runtime.properties.impl.ProjectPropertiesImpl#getProjectRuleSets()
 * net.sourceforge.pmd.eclipse.runtime.properties.impl.ProjectPropertiesImpl#setProjectRuleSets(RuleSets)
 * net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties#getProjectRuleSets()
@@ -38,6 +38,52 @@ The following deprecated methods have been removed:
 * net.sourceforge.pmd.eclipse.runtime.cmd.BaseVisitor#getRuleSets()
 * net.sourceforge.pmd.eclipse.runtime.cmd.BaseVisitor#setRuleSets(RuleSets)
 * net.sourceforge.pmd.eclipse.ui.properties.UpdateProjectPropertiesCmd#setProjectRuleSets(RuleSets)
+* net.sourceforge.pmd.eclipse.plugin.PMDPlugin#ROOT_LOG_ID
+* net.sourceforge.pmd.eclipse.plugin.PMDPlugin#setJavaClassLoader(PMDConfiguration, IProject)
+* net.sourceforge.pmd.eclipse.plugin.PMDPlugin#getPluginFolder()
+* net.sourceforge.pmd.eclipse.plugin.PMDPlugin#getOpenFiles()
+* net.sourceforge.pmd.eclipse.plugin.PMDPlugin#getPriorityValues()
+* net.sourceforge.pmd.eclipse.plugin.UISettings#createRuleMarkerIcons(Display)
+* net.sourceforge.pmd.eclipse.plugin.UISettings#markerFilenameFor(RulePriority)
+* net.sourceforge.pmd.eclipse.plugin.UISettings#relativeMarkerFilenameFor(RulePriority)
+* net.sourceforge.pmd.eclipse.plugin.UISettings#reloadPriorities()
+* net.sourceforge.pmd.eclipse.plugin.UISettings#markerImgDescriptorsByPriority()
+* net.sourceforge.pmd.eclipse.plugin.UISettings#markerDescriptorFor(RulePriority)
+* net.sourceforge.pmd.eclipse.plugin.UISettings#descriptionFor(RulePriority)
+* net.sourceforge.pmd.eclipse.plugin.UISettings#descriptorFor(RulePriority)
+* net.sourceforge.pmd.eclipse.plugin.UISettings#priorityFor(int)
+* net.sourceforge.pmd.eclipse.plugin.UISettings#getPriorityLabels()
+* net.sourceforge.pmd.eclipse.runtime.cmd.AbstractDefaultCommand#isJavaFile(IFile)
+* net.sourceforge.pmd.eclipse.runtime.cmd.BaseVisitor#isUseTaskMarker()
+* net.sourceforge.pmd.eclipse.runtime.cmd.BaseVisitor#setUseTaskMarker(boolean)
+* net.sourceforge.pmd.eclipse.runtime.cmd.ReviewCodeCmd#setTaskMarker(boolean)
+* net.sourceforge.pmd.eclipse.runtime.preferences.IPreferences#MAX_VIOLATIONS_PFPR_DEFAULT
+* net.sourceforge.pmd.eclipse.runtime.preferences.IPreferences#getMaxViolationsPerFilePerRule()
+* net.sourceforge.pmd.eclipse.runtime.preferences.IPreferences#setMaxViolationsPerFilePerRule(int)
+* net.sourceforge.pmd.eclipse.runtime.properties.impl.ProjectPropertiesImpl#getResolvedRuleSetFile()
+* net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties#getResolvedRuleSetFile()
+* net.sourceforge.pmd.eclipse.ui.actions.RuleSetUtil#addExcludePatterns(RuleSet, Collection<String>)
+* net.sourceforge.pmd.eclipse.ui.actions.RuleSetUtil#addExcludePatterns(RuleSet, Collection<String>, Collection<String>)
+* net.sourceforge.pmd.eclipse.ui.actions.RuleSetUtil#setExcludePatterns(RuleSet, Collection<String>)
+* net.sourceforge.pmd.eclipse.ui.actions.RuleSetUtil#addIncludePatterns(RuleSet, Collection<String>)
+* net.sourceforge.pmd.eclipse.ui.actions.RuleSetUtil#addIncludePatterns(RuleSet, Collection<String>, Collection<String>)
+* net.sourceforge.pmd.eclipse.ui.actions.RuleSetUtil#setIncludePatterns(RuleSet, Collection<String>)
+* net.sourceforge.pmd.eclipse.ui.actions.RuleSetUtil#addRuleSetByReference(RuleSet, RuleSet, boolean)
+* net.sourceforge.pmd.eclipse.ui.priority.PriorityDescriptor#getImageDescriptor()
+* net.sourceforge.pmd.eclipse.ui.priority.PriorityDescriptor#getImage(Display)
+* net.sourceforge.pmd.eclipse.ui.priority.PriorityDescriptor#getImage(Display, int)
+* net.sourceforge.pmd.eclipse.ui.priority.PriorityDescriptor#refreshImages()
+* net.sourceforge.pmd.eclipse.ui.priority.PriorityDescriptorCache#dumpTo(PrintStream)
+* net.sourceforge.pmd.eclipse.ui.views.PriorityFilter#PriorityFilter()
+* net.sourceforge.pmd.eclipse.ui.views.PriorityFilter#addPriorityToList(Integer)
+* net.sourceforge.pmd.eclipse.ui.views.PriorityFilter#removePriorityFromList(Integer)
+* net.sourceforge.pmd.eclipse.ui.views.PriorityFilter#setPriorityFilterListFromString(String, String)
+* net.sourceforge.pmd.eclipse.ui.views.PriorityFilter#getPriorityFilterListAsString(String)
+* net.sourceforge.pmd.eclipse.ui.views.PriorityFilter#getPriorityFilterList()
+* net.sourceforge.pmd.eclipse.ui.views.PriorityFilter#setPriorityFilterList(List<Integer>)
+* net.sourceforge.pmd.eclipse.ui.views.ViolationOverview#getPriorityFilterList()
+* net.sourceforge.pmd.eclipse.ui.RuleLabelDecorator#reloadDecorators()
+* net.sourceforge.pmd.eclipse.ui.ShapePainter#disposeAll()
 
 The following deprecated classes have been removed:
 * name.herlin.command.AbstractProcessableCommand
@@ -50,6 +96,13 @@ The following deprecated classes have been removed:
 * name.herlin.command.Timer
 * name.herlin.command.UnregisteredCommandException
 * name.herlin.command.UnsetInputPropertiesException
+* net.sourceforge.pmd.eclipse.plugin.EclipseUtil
+* net.sourceforge.pmd.eclipse.ui.views.AbstractViolationLabelProvider
+* net.sourceforge.pmd.eclipse.ui.preferences.RulePropertiesContentProvider
+* net.sourceforge.pmd.eclipse.ui.preferences.RulePropertyLabelProvider (not previously deprecated, but unused)
+* net.sourceforge.pmd.eclipse.ui.preferences.RuleProperty
+* net.sourceforge.pmd.eclipse.util.PriorityUtil
+* net.sourceforge.pmd.eclipse.util.IOUtil
 
 ### External Contributions
 
