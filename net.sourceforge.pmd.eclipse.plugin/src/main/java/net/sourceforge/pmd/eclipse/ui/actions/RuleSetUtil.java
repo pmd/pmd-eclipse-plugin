@@ -108,7 +108,12 @@ public final class RuleSetUtil {
         return RuleSet.create(name, description, null, emptySet, emptySet, emptyRules);
     }
 
+    @Deprecated
     public static RuleSet addRuleSetByReference(RuleSet ruleSet, RuleSet sourceRuleSet, boolean allRules) {
+        return addRuleSetByReference(ruleSet, sourceRuleSet);
+    }
+
+    public static RuleSet addRuleSetByReference(RuleSet ruleSet, RuleSet sourceRuleSet) {
         StringWriter ruleSetXml = new StringWriter();
         try {
             XMLStreamWriter writer = XMLOutputFactory.newInstance().createXMLStreamWriter(ruleSetXml);
@@ -132,12 +137,14 @@ public final class RuleSetUtil {
         }
         RuleSetLoader ruleSetLoader = new RuleSetLoader();
         RuleSet withReferences = ruleSetLoader.loadFromString("temporary-ruleset.xml", ruleSetXml.toString());
+        List<Rule> allRulesList = new ArrayList<>(ruleSet.getRules());
+        allRulesList.addAll(withReferences.getRules());
 
         return RuleSet.create(ruleSet.getName(), ruleSet.getDescription(),
                 ruleSet.getFileName(),
                 ruleSet.getFileExclusions(),
                 ruleSet.getFileInclusions(),
-                withReferences.getRules());
+                allRulesList);
     }
 
     public static RuleSet addRules(RuleSet ruleSet, Collection<Rule> newRules) {

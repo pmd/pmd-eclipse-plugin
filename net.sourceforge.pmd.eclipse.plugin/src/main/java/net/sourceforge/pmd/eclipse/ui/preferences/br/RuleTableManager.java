@@ -507,7 +507,7 @@ public class RuleTableManager extends AbstractTreeTableManager<Rule> implements 
                 filteredRS = RuleSetUtil.setFileName(filteredRS, selectedRuleSet.getFileName());
                 filteredRS = RuleSetUtil.addRules(filteredRS, selectedRuleSet.getRules());
 
-                ruleSet = RuleSetUtil.addRuleSetByReference(ruleSet, filteredRS, false);
+                ruleSet = RuleSetUtil.addRuleSetByReference(ruleSet, filteredRS);
                 ruleSet = InternalRuleSetUtil.addFileExclusions(ruleSet, selectedRuleSet.getFileExclusions());
                 ruleSet = InternalRuleSetUtil.addFileInclusions(ruleSet, selectedRuleSet.getFileInclusions());
             } else {
