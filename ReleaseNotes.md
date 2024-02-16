@@ -39,6 +39,18 @@ The following deprecated methods have been removed:
 * net.sourceforge.pmd.eclipse.runtime.cmd.BaseVisitor#setRuleSets(RuleSets)
 * net.sourceforge.pmd.eclipse.ui.properties.UpdateProjectPropertiesCmd#setProjectRuleSets(RuleSets)
 
+The following deprecated classes have been removed:
+* name.herlin.command.AbstractProcessableCommand
+* name.herlin.command.Command
+* name.herlin.command.CommandException
+* name.herlin.command.CommandProcessor
+* name.herlin.command.CommandProcessorStrategy
+* name.herlin.command.DefaultCommandProcessor
+* name.herlin.command.DefaultCommandProcessorStrategy
+* name.herlin.command.Timer
+* name.herlin.command.UnregisteredCommandException
+* name.herlin.command.UnsetInputPropertiesException
+
 ### External Contributions
 
 ## 30-September-2023: 7.0.0.v20230930-1814-rc4
