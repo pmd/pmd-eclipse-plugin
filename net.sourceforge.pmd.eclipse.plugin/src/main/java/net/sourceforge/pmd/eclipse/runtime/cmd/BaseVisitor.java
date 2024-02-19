@@ -35,7 +35,6 @@ import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.runtime.PMDRuntimeConstants;
 import net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties;
 import net.sourceforge.pmd.eclipse.runtime.properties.PropertiesException;
-import net.sourceforge.pmd.eclipse.ui.actions.internal.InternalRuleSetUtil;
 import net.sourceforge.pmd.eclipse.util.internal.IOUtil;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
@@ -248,7 +247,7 @@ public class BaseVisitor {
 
             final File sourceCodeFile = file.getRawLocation().toFile();
             final FileId fileId = FileId.fromPathLikeString(sourceCodeFile.getAbsolutePath());
-            if (included && InternalRuleSetUtil.ruleSetsApplies(ruleSets, sourceCodeFile) && isFileInWorkingSet(file)
+            if (included && isFileInWorkingSet(file)
                     && languageVersion != null) {
                 subTask("PMD checking: " + file.getProject() + ": " + file.getName());
 

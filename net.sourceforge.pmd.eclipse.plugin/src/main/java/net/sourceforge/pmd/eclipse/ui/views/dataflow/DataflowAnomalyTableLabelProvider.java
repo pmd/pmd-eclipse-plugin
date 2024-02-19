@@ -59,9 +59,9 @@ public class DataflowAnomalyTableLabelProvider extends LabelProvider implements 
                 }
 
             case 2:
-                return violation.getVariableName();
+                return violation.getAdditionalInfo().get(RuleViolation.VARIABLE_NAME);
             case 3:
-                return violation.getMethodName();
+                return violation.getAdditionalInfo().get(RuleViolation.METHOD_NAME);
 
             default:
                 return "";

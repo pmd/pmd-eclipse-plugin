@@ -20,7 +20,7 @@ public class RuleUIUtilTest {
      */
     @Test
     public void testTndexedPropertyStringFromRule() {
-        Rule rule = new XPathRule(XPathVersion.XPATH_2_0, "");
+        Rule rule = new XPathRule(XPathVersion.DEFAULT, "");
         IndexedString s = RuleUIUtil.indexedPropertyStringFrom(rule);
         assertNotNull(s);
     }

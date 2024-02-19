@@ -17,7 +17,7 @@ import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.lang.rule.RuleSet;
 import net.sourceforge.pmd.lang.rule.RuleSetLoadException;
 import net.sourceforge.pmd.lang.rule.RuleSetLoader;
-import net.sourceforge.pmd.util.log.MessageReporter;
+import net.sourceforge.pmd.util.log.PmdReporter;
 
 /**
  * Sample of an RuleSets extension.
@@ -100,7 +100,7 @@ public class RuleSetsExtension implements IRuleSetsExtension {
         return this.ruleSet2;
     }
 
-    private static final class RulesetLoaderMessageReporter implements MessageReporter {
+    private static final class RulesetLoaderMessageReporter implements PmdReporter {
         private int errors = 0;
 
         @Override

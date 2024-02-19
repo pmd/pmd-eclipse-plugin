@@ -252,7 +252,7 @@ public class ASTViewPage extends AbstractStructureInspectorPage {
         List<RuleViolation> results = null;
         try {
             results = XPathEvaluator.INSTANCE.evaluate(getDocument().get(), xpathField.getText(),
-                    XPathVersion.XPATH_2_0.getXmlName() // TODO derive from future combo widget
+                    XPathVersion.DEFAULT.getXmlName() // TODO derive from future combo widget
             );
         } catch (ParseException pe) {
             // TODO showError(pe.fillInStackTrace().getMessage());

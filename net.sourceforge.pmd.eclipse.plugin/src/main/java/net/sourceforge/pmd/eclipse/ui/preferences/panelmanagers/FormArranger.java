@@ -36,10 +36,10 @@ import net.sourceforge.pmd.eclipse.ui.preferences.br.ValueChangeListener;
 import net.sourceforge.pmd.eclipse.ui.preferences.editors.SWTUtil;
 import net.sourceforge.pmd.eclipse.util.ResourceManager;
 import net.sourceforge.pmd.eclipse.util.Util;
-import net.sourceforge.pmd.lang.rule.xpath.XPathRule;
+import net.sourceforge.pmd.properties.InternalApiBridge;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertySource;
-import net.sourceforge.pmd.properties.PropertyTypeId;
+import net.sourceforge.pmd.properties.internal.PropertyTypeId;
 
 /**
  * Takes in a property source instance, extracts its properties, creates a series of type-specific editors for each, and
@@ -100,7 +100,7 @@ public class FormArranger implements ValueChangeListener {
     }
 
     private EditorFactory<?> factoryFor(PropertyDescriptor<?> desc) {
-        PropertyTypeId typeId = desc.getTypeId();
+        PropertyTypeId typeId = InternalApiBridge.getTypeId(desc); // TODO internal api usage
         boolean multivalued;
         Class<?> type;
         switch (typeId) {
@@ -337,7 +337,8 @@ public class FormArranger implements ValueChangeListener {
             return Collections.emptyList();
         }
 
-        String source = propertySource.getProperty(XPathRule.XPATH_DESCRIPTOR);
+        PropertyDescriptor<String> xpathDescriptor = (PropertyDescriptor<String>) propertySource.getPropertyDescriptor(Configuration.XPATH_EXPRESSION_PROPERTY);
+        String source = propertySource.getProperty(xpathDescriptor);
         List<int[]> refPositions = Util.referencedNamePositionsIn(source, '$');
         if (refPositions.isEmpty()) {
             return Collections.emptyList();

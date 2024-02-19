@@ -28,6 +28,9 @@ This is a major release.
 Due to the updated PMD version, there are a couple of incompatible changes, like changed packages.
 For the details, see the release notes of PMD.
 
+The following members have been removed, even though they have not been deprecated before:
+* net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.Configuratio#EXCLUDED_RULE_PROPERTIES
+
 The following deprecated members have been removed:
 * net.sourceforge.pmd.eclipse.runtime.properties.impl.ProjectPropertiesImpl#getProjectRuleSets()
 * net.sourceforge.pmd.eclipse.runtime.properties.impl.ProjectPropertiesImpl#setProjectRuleSets(RuleSets)

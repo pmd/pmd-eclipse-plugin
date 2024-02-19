@@ -104,7 +104,7 @@ public class PageBuilder {
 
     public void setLanguage(Language language) {
 
-        SyntaxData syntax = SyntaxManager.getSyntaxData(language.getTerseName());
+        SyntaxData syntax = SyntaxManager.getSyntaxData(language.getId());
         codeStyleExtractor.syntax(syntax);
     }
 
