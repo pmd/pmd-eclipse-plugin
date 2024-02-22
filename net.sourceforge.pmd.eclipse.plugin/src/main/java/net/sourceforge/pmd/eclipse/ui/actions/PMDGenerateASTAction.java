@@ -45,7 +45,6 @@ import net.sourceforge.pmd.lang.document.TextDocument;
 import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.lang.java.JavaLanguageModule;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
-import net.sourceforge.pmd.lang.java.internal.JavaLanguageProperties;
 
 /**
  * Process PMDGenerateAST action menu. Generate a AST from the selected file.
@@ -86,7 +85,7 @@ public class PMDGenerateASTAction extends AbstractUIAction implements IRunnableW
         PmdCapableLanguage javaLanguage = JavaLanguageModule.getInstance();
         try (Reader reader = new InputStreamReader(file.getContents(), file.getCharset());
                 ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-                LanguageProcessor javaProcessor = javaLanguage.createProcessor(new JavaLanguageProperties());
+                LanguageProcessor javaProcessor = javaLanguage.createProcessor(javaLanguage.newPropertyBundle());
                 TextDocument textDocument = TextDocument.create(TextFile.forReader(reader, FileId.fromPathLikeString(file.getName()), javaLanguage.getDefaultVersion()));) {
 
             Parser parser = javaProcessor.services().getParser();

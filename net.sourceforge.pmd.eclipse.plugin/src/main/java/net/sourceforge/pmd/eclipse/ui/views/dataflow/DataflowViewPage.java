@@ -213,7 +213,7 @@ public class DataflowViewPage extends AbstractStructureInspectorPage implements 
             return;
         }
 
-        String varName = violation.getVariableName();
+        String varName = violation.getAdditionalInfo().get(RuleViolation.VARIABLE_NAME);
         if (StringUtils.isBlank(varName)) {
             return;
         }

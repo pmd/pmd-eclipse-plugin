@@ -4,9 +4,6 @@
 
 package net.sourceforge.pmd.eclipse.plugin;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -14,7 +11,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -25,9 +21,7 @@ import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
@@ -41,11 +35,8 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IDecoratorManager;
-import org.eclipse.ui.IEditorPart;
-import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IViewReference;
-import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
@@ -54,12 +45,10 @@ import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.eclipse.core.IRuleSetManager;
 import net.sourceforge.pmd.eclipse.core.ext.RuleSetsExtensionProcessor;
 import net.sourceforge.pmd.eclipse.core.impl.RuleSetManagerImpl;
 import net.sourceforge.pmd.eclipse.logging.internal.LogbackConfiguration;
-import net.sourceforge.pmd.eclipse.runtime.cmd.JavaProjectClassLoader;
 import net.sourceforge.pmd.eclipse.runtime.preferences.IPreferences;
 import net.sourceforge.pmd.eclipse.runtime.preferences.IPreferencesFactory;
 import net.sourceforge.pmd.eclipse.runtime.preferences.IPreferencesManager;
@@ -99,12 +88,6 @@ public class PMDPlugin extends AbstractUIPlugin {
     // The shared instance
     private static PMDPlugin plugin;
 
-    private static final Integer[] PRIORITY_VALUES = new Integer[] { Integer.valueOf(1), Integer.valueOf(2),
-        Integer.valueOf(3), Integer.valueOf(4), Integer.valueOf(5), };
-
-    @Deprecated
-    public static final String ROOT_LOG_ID = LogbackConfiguration.ROOT_LOG_ID;
-
     public static final String PLUGIN_ID = "net.sourceforge.pmd.eclipse.plugin";
     public static final String VIOLATIONS_OVERVIEW_ID = "net.sourceforge.pmd.eclipse.ui.views.violationOverview"; 
     public static final String VIOLATIONS_OUTLINE_ID = "net.sourceforge.pmd.eclipse.ui.views.violationOutline"; 
@@ -139,19 +122,6 @@ public class PMDPlugin extends AbstractUIPlugin {
         coloursByRgb.put(rgb, color);
 
         return color;
-    }
-
-    @Deprecated // use IProjectProperties#getAuxclasspath() instead
-    public static void setJavaClassLoader(PMDConfiguration config, IProject project) {
-
-        IPreferences preferences = getDefault().loadPreferences();
-        try {
-            if (preferences.isProjectBuildPathEnabled() && project.hasNature(JavaCore.NATURE_ID)) {
-                config.setClassLoader(new JavaProjectClassLoader(config.getClass().getClassLoader(), project));
-            }
-        } catch (CoreException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     /**
@@ -209,20 +179,6 @@ public class PMDPlugin extends AbstractUIPlugin {
         }
     }
 
-    /**
-     * @deprecated will be removed since it is not needed
-     */
-    @Deprecated
-    public static File getPluginFolder() {
-        URL url = Platform.getBundle(PLUGIN_ID).getEntry("/");
-        try {
-            url = FileLocator.resolve(url);
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
-        return new File(url.getPath());
-    }
-
     @Override
     public void start(BundleContext context) throws Exception {
         super.start(context);
@@ -254,26 +210,6 @@ public class PMDPlugin extends AbstractUIPlugin {
 
         version = context.getBundle().getHeaders().get("Bundle-Version");
         LOG.debug("PMD Plugin {} has started...", version);
-    }
-
-    /**
-     * Get a list of all the files that are open in eclipse currently.
-     * 
-     * @deprecated will be removed since it is not needed
-     */
-    @Deprecated
-    public Set<IFile> getOpenFiles() {
-        Set<IFile> files = new HashSet<>();
-        IEditorReference[] refs = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
-                .getEditorReferences();
-        if (refs.length > 0) {
-            final IWorkbenchPart part = refs[0].getPart(true);
-            IEditorPart[] editors = part.getSite().getPage().getEditors();
-            for (IEditorPart editor : editors) {
-                files.add((IFile) editor.getEditorInput().getAdapter(IFile.class));
-            }
-        }
-        return files;
     }
 
     /**
@@ -475,14 +411,6 @@ public class PMDPlugin extends AbstractUIPlugin {
         }
 
         return stringTable;
-    }
-
-    /**
-     * @return the priority values
-     * @deprecated
-     */
-    public Integer[] getPriorityValues() {
-        return PRIORITY_VALUES;
     }
 
     /**

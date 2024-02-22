@@ -618,7 +618,7 @@ class PreferencesManagerImpl implements IPreferencesManager {
 
         IRuleSetManager ruleSetManager = PMDPlugin.getDefault().getRuleSetManager();
         for (RuleSet ruleSet : ruleSetManager.getDefaultRuleSets()) {
-            defaultRuleSet = RuleSetUtil.addRuleSetByReference(defaultRuleSet, ruleSet, false);
+            defaultRuleSet = RuleSetUtil.addRuleSetByReference(defaultRuleSet, ruleSet);
         }
         return defaultRuleSet;
     }

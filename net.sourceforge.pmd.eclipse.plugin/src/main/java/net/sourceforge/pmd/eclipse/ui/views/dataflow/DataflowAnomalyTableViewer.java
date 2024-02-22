@@ -188,8 +188,8 @@ public class DataflowAnomalyTableViewer extends TableViewer {
                         final RuleViolation violation1 = (RuleViolation) e1;
                         final RuleViolation violation2 = (RuleViolation) e2;
 
-                        final String var1 = violation1.getVariableName();
-                        final String var2 = violation2.getVariableName();
+                        final String var1 = violation1.getAdditionalInfo().get(RuleViolation.VARIABLE_NAME);
+                        final String var2 = violation2.getAdditionalInfo().get(RuleViolation.VARIABLE_NAME);
                         result = var1.compareToIgnoreCase(var2) * sortOrder;
                     }
                     return result;

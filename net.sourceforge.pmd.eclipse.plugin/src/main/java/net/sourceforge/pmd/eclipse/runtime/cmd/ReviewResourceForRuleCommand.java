@@ -88,33 +88,31 @@ public class ReviewResourceForRuleCommand extends AbstractDefaultCommand {
 
             File sourceCodeFile = file.getFullPath().toFile();
             FileId fileId = FileId.fromPathLikeString(sourceCodeFile.toString());
-            if (ruleSet.applies(fileId)) {
-                PMDConfiguration configuration = new PMDConfiguration();
-                Report report = null;
+            PMDConfiguration configuration = new PMDConfiguration();
+            Report report = null;
 
-                try (Reader input = new InputStreamReader(file.getContents(), file.getCharset());
-                     PmdAnalysis pmdAnalysis = PmdAnalysis.create(configuration)) {
+            try (Reader input = new InputStreamReader(file.getContents(), file.getCharset());
+                 PmdAnalysis pmdAnalysis = PmdAnalysis.create(configuration)) {
 
-                    pmdAnalysis.addRuleSet(ruleSet);
-                    pmdAnalysis.files().addSourceFile(fileId, IOUtil.toString(input));
+                pmdAnalysis.addRuleSet(ruleSet);
+                pmdAnalysis.files().addSourceFile(fileId, IOUtil.toString(input));
 
-                    report = pmdAnalysis.performAnalysisAndCollectReport();
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
-                }
-
-                final Report finalResult = report;
-                // trigger event propertyChanged for all listeners
-                Display.getDefault().asyncExec(new Runnable() {
-                    @Override
-                    public void run() {
-                        for (IPropertyListener listener : listenerList) {
-                            listener.propertyChanged(finalResult.getViolations().iterator(),
-                                    PMDRuntimeConstants.PROPERTY_REVIEW);
-                        }
-                    }
-                });
+                report = pmdAnalysis.performAnalysisAndCollectReport();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
             }
+
+            final Report finalResult = report;
+            // trigger event propertyChanged for all listeners
+            Display.getDefault().asyncExec(new Runnable() {
+                @Override
+                public void run() {
+                    for (IPropertyListener listener : listenerList) {
+                        listener.propertyChanged(finalResult.getViolations().iterator(),
+                                PMDRuntimeConstants.PROPERTY_REVIEW);
+                    }
+                }
+            });
         }
     }
 }

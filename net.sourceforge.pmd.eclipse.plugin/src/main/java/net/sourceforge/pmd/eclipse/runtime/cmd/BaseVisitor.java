@@ -11,7 +11,6 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Deque;
 import java.util.HashSet;
 import java.util.List;
@@ -36,7 +35,6 @@ import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.runtime.PMDRuntimeConstants;
 import net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties;
 import net.sourceforge.pmd.eclipse.runtime.properties.PropertiesException;
-import net.sourceforge.pmd.eclipse.ui.actions.internal.InternalRuleSetUtil;
 import net.sourceforge.pmd.eclipse.util.internal.IOUtil;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
@@ -59,8 +57,6 @@ import net.sourceforge.pmd.reporting.RuleViolation;
 public class BaseVisitor {
     private static final Logger LOG = LoggerFactory.getLogger(BaseVisitor.class);
     private IProgressMonitor monitor;
-    @Deprecated
-    private boolean useTaskMarker = false;
     private Map<IFile, Set<MarkerInfo2>> accumulator;
     // private PMDEngine pmdEngine;
     private List<RuleSet> ruleSets;
@@ -84,29 +80,6 @@ public class BaseVisitor {
             configuration = new PMDConfiguration();
         }
         return configuration;
-    }
-
-    /**
-     * Returns the useTaskMarker.
-     *
-     * @return boolean
-     * @deprecated not used
-     */
-    @Deprecated
-    public boolean isUseTaskMarker() {
-        return useTaskMarker;
-    }
-
-    /**
-     * Sets the useTaskMarker.
-     *
-     * @param shouldUseTaskMarker
-     *            The useTaskMarker to set
-     * @deprecated not used
-     */
-    @Deprecated
-    public void setUseTaskMarker(final boolean shouldUseTaskMarker) {
-        this.useTaskMarker = shouldUseTaskMarker;
     }
 
     /**
@@ -164,15 +137,6 @@ public class BaseVisitor {
         }
     }
 
-    /**
-     * @return Returns all the ruleSets.
-     * @deprecated Use {@link #getRuleSetList()}
-     */
-    @Deprecated
-    public net.sourceforge.pmd.lang.rule.internal.RuleSets getRuleSets() {
-        return InternalRuleSetUtil.toRuleSets(this.ruleSets);
-    }
-
     public List<RuleSet> getRuleSetList() {
         return this.ruleSets;
     }
@@ -191,16 +155,6 @@ public class BaseVisitor {
     public void setRuleSet(RuleSet ruleSet) {
         this.ruleSets = new ArrayList<>();
         this.ruleSets.add(ruleSet);
-    }
-    
-    /**
-     * @param ruleSet
-     *            The ruleSet to set.
-     * @deprecated Use {@link #setRuleSetList(List)}
-     */
-    @Deprecated
-    public void setRuleSets(final net.sourceforge.pmd.lang.rule.internal.RuleSets ruleSets) {
-        setRuleSetList(Arrays.asList(ruleSets.getAllRuleSets()));
     }
 
     public void setRuleSetList(List<RuleSet> ruleSets) {
@@ -293,7 +247,7 @@ public class BaseVisitor {
 
             final File sourceCodeFile = file.getRawLocation().toFile();
             final FileId fileId = FileId.fromPathLikeString(sourceCodeFile.getAbsolutePath());
-            if (included && InternalRuleSetUtil.ruleSetsApplies(ruleSets, sourceCodeFile) && isFileInWorkingSet(file)
+            if (included && isFileInWorkingSet(file)
                     && languageVersion != null) {
                 subTask("PMD checking: " + file.getProject() + ": " + file.getName());
 

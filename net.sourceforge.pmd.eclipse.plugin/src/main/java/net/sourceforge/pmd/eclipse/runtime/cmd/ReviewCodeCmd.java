@@ -110,7 +110,6 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
     public static void runCodeReviewOnFiles(Set<IFile> files) {
         ReviewCodeCmd cmd = new ReviewCodeCmd();
         cmd.setStepCount(files.size());
-        cmd.setTaskMarker(true);
         cmd.setOpenPmdPerspective(PMDPlugin.getDefault().loadPreferences().isPmdPerspectiveEnabled());
         cmd.setOpenPmdViolationsOverviewView(PMDPlugin.getDefault().loadPreferences().isPmdViolationsOverviewEnabled());
         cmd.setOpenPmdViolationsOutlineView(PMDPlugin.getDefault().loadPreferences().isPmdViolationsOutlineEnabled());
@@ -404,14 +403,6 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
 
     public void setResourceDelta(IResourceDelta resourceDelta) {
         this.resourceDelta = resourceDelta;
-    }
-
-    /**
-     * @deprecated not used, never implemented
-     */
-    @Deprecated
-    public void setTaskMarker(boolean taskMarker) {
-        // the flag was never used
     }
 
     public void setRunAlways(boolean runAlways) {

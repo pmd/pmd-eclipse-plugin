@@ -22,7 +22,8 @@ import net.sourceforge.pmd.eclipse.ui.preferences.br.RuleSelection;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.ValueChangeListener;
 import net.sourceforge.pmd.lang.rule.Rule;
 import net.sourceforge.pmd.lang.rule.RuleReference;
-import net.sourceforge.pmd.lang.rule.xpath.XPathRule;
+import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.properties.PropertySource;
 
 /**
  *
@@ -76,6 +77,10 @@ public class XPathPanelManager extends AbstractRulePanelManager {
         xpathField.setVisible(flag);
     }
 
+    private PropertyDescriptor<String> getXPathDescriptor(PropertySource propertySource) {
+        return (PropertyDescriptor<String>) propertySource.getPropertyDescriptor(Configuration.XPATH_EXPRESSION_PROPERTY);
+    }
+
     @Override
     protected void updateOverridenFields() {
         Rule rule = soleRule();
@@ -83,7 +88,7 @@ public class XPathPanelManager extends AbstractRulePanelManager {
         if (rule instanceof RuleReference) {
             RuleReference ruleReference = (RuleReference) rule;
             xpathField.setBackground(
-                    ruleReference.hasOverriddenProperty(XPathRule.XPATH_DESCRIPTOR) ? overridenColour : null);
+                    ruleReference.isPropertyOverridden(getXPathDescriptor(ruleReference)) ? overridenColour : null);
         }
     }
 
@@ -116,17 +121,18 @@ public class XPathPanelManager extends AbstractRulePanelManager {
                 }
 
                 String newValue = xpathField.getText().trim();
-                String existingValue = soleRule.getProperty(XPathRule.XPATH_DESCRIPTOR).trim();
+                PropertyDescriptor<String> xpathDescriptor = getXPathDescriptor(soleRule);
+                String existingValue = soleRule.getProperty(xpathDescriptor).trim();
 
                 if (StringUtils.equals(StringUtils.stripToNull(existingValue), StringUtils.stripToNull(newValue))) {
                     return;
                 }
 
                 validate();
-                soleRule.setProperty(XPathRule.XPATH_DESCRIPTOR, newValue);
+                soleRule.setProperty(xpathDescriptor, newValue);
 
                 // updateVariablesField();
-                valueChanged(XPathRule.XPATH_DESCRIPTOR, newValue);
+                valueChanged(xpathDescriptor, newValue);
             }
         });
 
@@ -170,7 +176,8 @@ public class XPathPanelManager extends AbstractRulePanelManager {
         if (soleRule == null) {
             shutdown(xpathField);
         } else {
-            show(xpathField, soleRule.getProperty(XPathRule.XPATH_DESCRIPTOR).trim());
+            PropertyDescriptor<String> xpathDescriptor = getXPathDescriptor(soleRule);
+            show(xpathField, soleRule.getProperty(xpathDescriptor).trim());
             // updateVariablesField();
         }
 

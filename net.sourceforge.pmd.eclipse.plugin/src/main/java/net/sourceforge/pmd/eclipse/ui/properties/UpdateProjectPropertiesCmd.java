@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.eclipse.ui.properties;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -14,7 +13,6 @@ import net.sourceforge.pmd.eclipse.runtime.cmd.AbstractProjectCommand;
 import net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties;
 import net.sourceforge.pmd.eclipse.runtime.properties.PropertiesException;
 import net.sourceforge.pmd.lang.rule.RuleSet;
-import net.sourceforge.pmd.lang.rule.internal.RuleSets;
 
 /**
  * Save updated project properties. This is a composite command.
@@ -81,16 +79,6 @@ public class UpdateProjectPropertiesCmd extends AbstractProjectCommand {
 
     public void setProjectRuleSet(final RuleSet projectRuleSet) {
         this.projectRuleSets = Collections.singletonList(projectRuleSet);
-    }
-
-    /**
-     * @param projectRuleSet
-     *            The projectRuleSet to set.
-     * @deprecated Use {@link #setProjectRuleSetList(List)}
-     */
-    @Deprecated
-    public void setProjectRuleSets(final RuleSets projectRuleSets) {
-        this.projectRuleSets = Arrays.asList(projectRuleSets.getAllRuleSets());
     }
 
     public void setProjectRuleSetList(List<RuleSet> projectRuleSets) {

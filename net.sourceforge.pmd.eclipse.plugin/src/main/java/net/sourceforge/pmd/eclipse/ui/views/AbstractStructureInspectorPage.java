@@ -201,7 +201,7 @@ public abstract class AbstractStructureInspectorPage extends Page
             return;
         }
 
-        String varName = violation.getVariableName();
+        String varName = violation.getAdditionalInfo().get(RuleViolation.VARIABLE_NAME);
         if (StringUtils.isBlank(varName)) {
             return;
         }
@@ -313,7 +313,7 @@ public abstract class AbstractStructureInspectorPage extends Page
      */
     private List<ASTMethodDeclaration> getPMDMethods() {
         List<ASTMethodDeclaration> methodList = new ArrayList<>();
-        methodList.addAll(classNode.findDescendantsOfType(ASTMethodDeclaration.class));
+        methodList.addAll(classNode.descendants(ASTMethodDeclaration.class).toList());
         Collections.sort(methodList, ASTUtil.METHOD_COMPARATOR);
         return methodList;
     }

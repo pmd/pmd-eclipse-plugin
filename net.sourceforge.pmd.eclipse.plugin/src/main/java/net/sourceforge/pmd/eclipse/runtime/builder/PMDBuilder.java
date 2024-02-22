@@ -73,7 +73,6 @@ public class PMDBuilder extends IncrementalProjectBuilder {
      * 
      * @param monitor
      *            A progress monitor.
-     * @throws CommandException
      */
     private void buildFull(IProject project, IProgressMonitor monitor) {
         this.processProjectFiles(project, monitor);

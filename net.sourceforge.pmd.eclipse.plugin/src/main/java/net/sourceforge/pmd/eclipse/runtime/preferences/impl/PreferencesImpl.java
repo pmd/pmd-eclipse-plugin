@@ -36,7 +36,6 @@ class PreferencesImpl implements IPreferences {
     private boolean pmdViolationsOutlineEnabled;
     private boolean checkAfterSaveEnabled;
     private boolean useCustomPriorityNames;
-    private int maxViolationsPerFilePerRule;
     private boolean determineFiletypesAutomatically;
     private String reviewAdditionalComment;
     private boolean reviewPmdStyleEnabled;
@@ -115,16 +114,6 @@ class PreferencesImpl implements IPreferences {
     @Override
     public void setPmdViolationsOverviewEnabled(boolean thePmdViolationsOverviewEnabled) {
         this.pmdViolationsOverviewEnabled = thePmdViolationsOverviewEnabled;
-    }
-
-    @Override
-    public int getMaxViolationsPerFilePerRule() {
-        return maxViolationsPerFilePerRule;
-    }
-
-    @Override
-    public void setMaxViolationsPerFilePerRule(int maxViolationPerFilePerRule) {
-        this.maxViolationsPerFilePerRule = maxViolationPerFilePerRule;
     }
 
     @Override

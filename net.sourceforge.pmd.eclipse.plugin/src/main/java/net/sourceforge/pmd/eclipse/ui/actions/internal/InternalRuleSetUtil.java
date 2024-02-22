@@ -5,7 +5,6 @@
 
 package net.sourceforge.pmd.eclipse.ui.actions.internal;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -13,12 +12,10 @@ import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
 
-import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.rule.Rule;
 import net.sourceforge.pmd.lang.rule.RulePriority;
 import net.sourceforge.pmd.lang.rule.RuleSet;
 import net.sourceforge.pmd.lang.rule.RuleSetLoader;
-import net.sourceforge.pmd.lang.rule.internal.RuleSets;
 
 public final class InternalRuleSetUtil {
     private InternalRuleSetUtil() {}
@@ -91,16 +88,6 @@ public final class InternalRuleSetUtil {
         return result;
     }
 
-    public static boolean ruleSetsApplies(List<RuleSet> rulesets, File file) {
-        FileId fileId = FileId.fromPathLikeString(file.toString());
-        for (RuleSet ruleSet : rulesets) {
-            if (ruleSet.applies(fileId)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     public static int countRules(List<RuleSet> rulesets) {
         int rules = 0;
         for (RuleSet ruleset : rulesets) {
@@ -115,10 +102,6 @@ public final class InternalRuleSetUtil {
             result.addAll(ruleset.getRules());
         }
         return result;
-    }
-
-    public static RuleSets toRuleSets(List<RuleSet> rulesets) {
-        return new RuleSets(rulesets);
     }
 
     public static RuleSetLoader getDefaultRuleSetLoader() {

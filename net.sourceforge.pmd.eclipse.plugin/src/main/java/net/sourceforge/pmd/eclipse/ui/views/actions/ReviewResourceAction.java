@@ -58,7 +58,6 @@ public class ReviewResourceAction extends AbstractPMDAction {
                     ReviewCodeCmd cmd = new ReviewCodeCmd();
                     cmd.addResource(resource);
                     cmd.setStepCount(1);
-                    cmd.setTaskMarker(true);
                     cmd.setUserInitiated(true);
                     try {
                         cmd.performExecute();

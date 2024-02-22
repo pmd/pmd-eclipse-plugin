@@ -144,7 +144,7 @@ public class ExamplePanelManager extends AbstractRulePanelManager {
             shutdown(exampleField);
         } else {
             show(exampleField, examples(soleRule));
-            modifyListener = SyntaxManager.adapt(exampleField, soleRule.getLanguage().getTerseName(), modifyListener);
+            modifyListener = SyntaxManager.adapt(exampleField, soleRule.getLanguage().getId(), modifyListener);
         }
     }
 }

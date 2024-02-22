@@ -22,8 +22,9 @@ import net.sourceforge.pmd.eclipse.ui.Shape;
 import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.Configuration;
 import net.sourceforge.pmd.eclipse.util.FontBuilder;
 import net.sourceforge.pmd.lang.rule.Rule;
+import net.sourceforge.pmd.properties.InternalApiBridge;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
-import net.sourceforge.pmd.properties.PropertyTypeId;
+import net.sourceforge.pmd.properties.internal.PropertyTypeId;
 
 /**
  * 
@@ -110,9 +111,10 @@ public final class RuleUIUtil {
     private static int formatValueOn(StringBuilder target, Map.Entry<PropertyDescriptor<?>, Object> entry,
             String modifiedTag) {
 
+        PropertyDescriptor<?> property = entry.getKey();
         Object value = entry.getValue();
         Class<?> datatype = null;
-        PropertyTypeId typeId = entry.getKey().getTypeId();
+        PropertyTypeId typeId = InternalApiBridge.getTypeId(property); // TODO internal api access
         switch (typeId) {
         case BOOLEAN:
             datatype = Boolean.class;

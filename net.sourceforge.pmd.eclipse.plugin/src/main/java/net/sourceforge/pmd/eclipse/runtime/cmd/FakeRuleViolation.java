@@ -163,26 +163,6 @@ class FakeRuleViolation implements RuleViolation {
     }
 
     @Override
-    public String getPackageName() {
-        return packageName;
-    }
-
-    @Override
-    public String getClassName() {
-        return className;
-    }
-
-    @Override
-    public String getMethodName() {
-        return methodName;
-    }
-
-    @Override
-    public String getVariableName() {
-        return variableName;
-    }
-
-    @Override
     public FileLocation getLocation() {
         return FileLocation.caret(fileId, beginLine, beginColumn);
     }

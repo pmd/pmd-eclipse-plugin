@@ -34,6 +34,7 @@ import net.sourceforge.pmd.lang.rule.Rule;
 import net.sourceforge.pmd.lang.rule.RuleSet;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.reporting.Report;
+import net.sourceforge.pmd.util.BaseResultProducingCloseable;
 
 /**
  * This command produce a report for a project using the specified renderer.
@@ -174,27 +175,29 @@ public class RenderReportsCmd extends AbstractProjectCommand {
      * @return
      */
     private Report createReport(IProject project) throws CoreException {
-
-        Report report = new Report();
-
         IMarker[] markers = MarkerUtil.findAllMarkers(project);
-        RuleSet ruleSet = PMDPlugin.getDefault().getPreferencesManager().getRuleSet();
         boolean isJavaProject = project.hasNature(JavaCore.NATURE_ID);
 
-        for (IMarker marker : markers) {
-            String ruleName = marker.getAttribute(PMDRuntimeConstants.KEY_MARKERATT_RULENAME, "");
-            Rule rule = ruleSet.getRuleByName(ruleName);
+        return BaseResultProducingCloseable.using(new Report.ReportBuilderListener(), reportBuilderListener -> {
+            RuleSet ruleSet = PMDPlugin.getDefault().getPreferencesManager().getRuleSet();
 
-            FakeRuleViolation ruleViolation = createViolation(marker, rule);
+            for (IMarker marker : markers) {
+                String ruleName = marker.getAttribute(PMDRuntimeConstants.KEY_MARKERATT_RULENAME, "");
+                Rule rule = ruleSet.getRuleByName(ruleName);
 
-            if (isJavaProject && marker.getResource() instanceof IFile) {
-                classAndPackageFrom(marker, ruleViolation);
+                FakeRuleViolation ruleViolation = createViolation(marker, rule);
+
+                if (isJavaProject && marker.getResource() instanceof IFile) {
+                    try {
+                        classAndPackageFrom(marker, ruleViolation);
+                    } catch (JavaModelException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+
+                reportBuilderListener.onRuleViolation(ruleViolation);
             }
-
-            report.addRuleViolation(ruleViolation);
-        }
-
-        return report;
+        });
     }
 
     private static FakeRuleViolation createViolation(IMarker marker, Rule rule) {

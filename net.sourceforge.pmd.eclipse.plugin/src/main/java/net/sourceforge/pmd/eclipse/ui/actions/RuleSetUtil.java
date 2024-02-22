@@ -4,19 +4,21 @@
 
 package net.sourceforge.pmd.eclipse.ui.actions;
 
+import java.io.StringWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
+import javax.xml.stream.XMLOutputFactory;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamWriter;
 
-import net.sourceforge.pmd.eclipse.ui.actions.internal.InternalRuleSetUtil;
 import net.sourceforge.pmd.lang.rule.Rule;
-import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.lang.rule.RuleSet;
-import net.sourceforge.pmd.lang.rule.internal.RuleSetReference;
+import net.sourceforge.pmd.lang.rule.RuleSetLoader;
 
 /**
  * 
@@ -63,37 +65,6 @@ public final class RuleSetUtil {
         return retainOnly(ruleSet, wantedRules);
     }
 
-    @Deprecated
-    public static RuleSet addExcludePatterns(RuleSet ruleSet, Collection<String> activeExclusionPatterns,
-            Collection<String> buildPathExcludePatterns) {
-        Set<String> newExcludePatterns = new HashSet<>(InternalRuleSetUtil.convert(ruleSet.getFileExclusions()));
-        newExcludePatterns.addAll(activeExclusionPatterns);
-        newExcludePatterns.addAll(buildPathExcludePatterns);
-        Set<String> newIncludePatterns = new HashSet<>(InternalRuleSetUtil.convert(ruleSet.getFileInclusions()));
-
-        return RuleSet.create(ruleSet.getName(),
-                ruleSet.getDescription(),
-                ruleSet.getFileName(),
-                InternalRuleSetUtil.convertStringPatterns(newExcludePatterns),
-                InternalRuleSetUtil.convertStringPatterns(newIncludePatterns),
-                ruleSet.getRules());
-    }
-
-    @Deprecated
-    public static RuleSet addIncludePatterns(RuleSet ruleSet, Collection<String> activeInclusionPatterns,
-            Collection<String> buildPathIncludePatterns) {
-        Set<String> newExcludePatterns = new HashSet<>(InternalRuleSetUtil.convert(ruleSet.getFileExclusions()));
-        Set<String> newIncludePatterns = new HashSet<>(InternalRuleSetUtil.convert(ruleSet.getFileInclusions()));
-        newIncludePatterns.addAll(activeInclusionPatterns);
-        newIncludePatterns.addAll(buildPathIncludePatterns);
-
-        return RuleSet.create(ruleSet.getName(), ruleSet.getDescription(),
-                ruleSet.getFileName(),
-                InternalRuleSetUtil.convertStringPatterns(newExcludePatterns),
-                InternalRuleSetUtil.convertStringPatterns(newIncludePatterns),
-                ruleSet.getRules());
-    }
-
     public static RuleSet newSingle(Rule rule) {
         return RuleSet.forSingleRule(rule);
     }
@@ -104,18 +75,38 @@ public final class RuleSetUtil {
         return RuleSet.create(name, description, null, emptySet, emptySet, emptyRules);
     }
 
-    public static RuleSet addRuleSetByReference(RuleSet ruleSet, RuleSet sourceRuleSet, boolean allRules) {
-        RuleSetReference reference = new RuleSetReference(sourceRuleSet.getFileName(), allRules);
-        Collection<Rule> rules = new ArrayList<>(ruleSet.getRules());
-        for (Rule rule : sourceRuleSet.getRules()) {
-            RuleReference ruleRef = new RuleReference(rule, reference);
-            rules.add(ruleRef);
+    public static RuleSet addRuleSetByReference(RuleSet ruleSet, RuleSet sourceRuleSet) {
+        StringWriter ruleSetXml = new StringWriter();
+        try {
+            XMLStreamWriter writer = XMLOutputFactory.newInstance().createXMLStreamWriter(ruleSetXml);
+            writer.writeStartDocument(StandardCharsets.UTF_8.name(), "1.0");
+            writer.writeStartElement("ruleset");
+            writer.writeAttribute("name", ruleSet.getName());
+            writer.writeStartElement("description");
+            writer.writeCharacters(ruleSet.getDescription());
+            writer.writeEndElement();
+
+            for (Rule rule : sourceRuleSet.getRules()) {
+                writer.writeStartElement("rule");
+                writer.writeAttribute("ref", sourceRuleSet.getFileName() + "/" + rule.getName());
+                writer.writeEndElement();
+            }
+
+            writer.writeEndElement();
+            writer.flush();
+        } catch (XMLStreamException e) {
+            throw new RuntimeException(e);
         }
+        RuleSetLoader ruleSetLoader = new RuleSetLoader();
+        RuleSet withReferences = ruleSetLoader.loadFromString("temporary-ruleset.xml", ruleSetXml.toString());
+        List<Rule> allRulesList = new ArrayList<>(ruleSet.getRules());
+        allRulesList.addAll(withReferences.getRules());
+
         return RuleSet.create(ruleSet.getName(), ruleSet.getDescription(),
                 ruleSet.getFileName(),
                 ruleSet.getFileExclusions(),
                 ruleSet.getFileInclusions(),
-                rules);
+                allRulesList);
     }
 
     public static RuleSet addRules(RuleSet ruleSet, Collection<Rule> newRules) {
@@ -133,24 +124,6 @@ public final class RuleSetUtil {
         return addRules(ruleSet, Collections.singleton(newRule));
     }
 
-    @Deprecated
-    public static RuleSet setExcludePatterns(RuleSet ruleSet, Collection<String> excludePatterns) {
-        return RuleSet.create(ruleSet.getName(), ruleSet.getDescription(),
-                ruleSet.getFileName(),
-                InternalRuleSetUtil.convertStringPatterns(excludePatterns),
-                ruleSet.getFileInclusions(),
-                ruleSet.getRules());
-    }
-
-    @Deprecated
-    public static RuleSet setIncludePatterns(RuleSet ruleSet, Collection<String> includePatterns) {
-        return RuleSet.create(ruleSet.getName(), ruleSet.getDescription(),
-                ruleSet.getFileName(),
-                ruleSet.getFileExclusions(),
-                InternalRuleSetUtil.convertStringPatterns(includePatterns),
-                ruleSet.getRules());
-    }
-
     public static RuleSet setNameDescription(RuleSet ruleSet, String name, String description) {
         return RuleSet.create(name, description, ruleSet.getFileName(),
                 ruleSet.getFileExclusions(),
@@ -164,16 +137,6 @@ public final class RuleSetUtil {
                 ruleSet.getFileExclusions(),
                 ruleSet.getFileInclusions(),
                 ruleSet.getRules());
-    }
-
-    @Deprecated
-    public static RuleSet addExcludePatterns(RuleSet rs, Collection<String> excludePatterns) {
-        return addExcludePatterns(rs, excludePatterns, new HashSet<>());
-    }
-
-    @Deprecated
-    public static RuleSet addIncludePatterns(RuleSet rs, Collection<String> includePatterns) {
-        return addIncludePatterns(rs, includePatterns, new HashSet<>());
     }
 
     public static RuleSet clearRules(RuleSet ruleSet) {

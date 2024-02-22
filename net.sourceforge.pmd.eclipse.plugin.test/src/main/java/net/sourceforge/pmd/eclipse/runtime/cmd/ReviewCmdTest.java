@@ -250,7 +250,7 @@ public class ReviewCmdTest {
 
     private static Rule findRuleByName(RuleSet ruleset, String ruleName, String language) {
         for (Rule rule : ruleset.getRules()) {
-            if (rule.getName().equals(ruleName) && rule.getLanguage().getTerseName().equals(language)) {
+            if (rule.getName().equals(ruleName) && rule.getLanguage().getId().equals(language)) {
                 return rule;
             }
         }

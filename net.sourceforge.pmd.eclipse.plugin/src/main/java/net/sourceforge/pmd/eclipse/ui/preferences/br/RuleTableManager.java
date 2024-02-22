@@ -60,7 +60,6 @@ import net.sourceforge.pmd.eclipse.ui.preferences.editors.SWTUtil;
 import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.CreateRuleWizard;
 import net.sourceforge.pmd.eclipse.util.ResourceManager;
 import net.sourceforge.pmd.eclipse.util.Util;
-import net.sourceforge.pmd.internal.util.FileUtil;
 import net.sourceforge.pmd.lang.rule.Rule;
 import net.sourceforge.pmd.lang.rule.RuleSet;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
@@ -394,7 +393,7 @@ public class RuleTableManager extends AbstractTreeTableManager<Rule> implements 
         }
 
         if (flContinue && input != null) {
-            ruleSet = RuleSetUtil.setNameDescription(ruleSet, FileUtil.getFileNameWithoutExtension(file.getName()),
+            ruleSet = RuleSetUtil.setNameDescription(ruleSet, getFileNameWithoutExtension(file.getName()),
                     input.getValue());
             IRuleSetWriter writer = plugin.getRuleSetWriter();
             try (OutputStream out = Files.newOutputStream(file.toPath())) {
@@ -403,6 +402,17 @@ public class RuleTableManager extends AbstractTreeTableManager<Rule> implements 
             MessageDialog.openInformation(shell, getMessage(StringKeys.INFORMATION_TITLE),
                     getMessage(StringKeys.INFORMATION_RULESET_EXPORTED));
         }
+    }
+
+    private static String getFileNameWithoutExtension(String fileName) {
+        String name = fileName;
+
+        int index = fileName.lastIndexOf('.');
+        if (index != -1) {
+            name = fileName.substring(0, index);
+        }
+
+        return name;
     }
 
     private RuleColumnDescriptor newDupeIndicatorColumn() {
@@ -497,7 +507,7 @@ public class RuleTableManager extends AbstractTreeTableManager<Rule> implements 
                 filteredRS = RuleSetUtil.setFileName(filteredRS, selectedRuleSet.getFileName());
                 filteredRS = RuleSetUtil.addRules(filteredRS, selectedRuleSet.getRules());
 
-                ruleSet = RuleSetUtil.addRuleSetByReference(ruleSet, filteredRS, false);
+                ruleSet = RuleSetUtil.addRuleSetByReference(ruleSet, filteredRS);
                 ruleSet = InternalRuleSetUtil.addFileExclusions(ruleSet, selectedRuleSet.getFileExclusions());
                 ruleSet = InternalRuleSetUtil.addFileInclusions(ruleSet, selectedRuleSet.getFileInclusions());
             } else {

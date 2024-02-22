@@ -4,22 +4,34 @@
 
 package net.sourceforge.pmd.eclipse.ui.views.ast;
 
+import static net.sourceforge.pmd.util.AssertionUtil.shouldNotReachHere;
+
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import net.sourceforge.pmd.lang.ecmascript.ast.ASTName;
+import net.sourceforge.pmd.lang.java.ast.ASTAmbiguousName;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
+import net.sourceforge.pmd.lang.java.ast.ASTArrayType;
+import net.sourceforge.pmd.lang.java.ast.ASTClassType;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
+import net.sourceforge.pmd.lang.java.ast.ASTIntersectionType;
 import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType;
+import net.sourceforge.pmd.lang.java.ast.ASTReferenceType;
 import net.sourceforge.pmd.lang.java.ast.ASTType;
+import net.sourceforge.pmd.lang.java.ast.ASTTypeArguments;
+import net.sourceforge.pmd.lang.java.ast.ASTUnionType;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
+import net.sourceforge.pmd.lang.java.ast.ASTVoidType;
+import net.sourceforge.pmd.lang.java.ast.ASTWildcardType;
 import net.sourceforge.pmd.lang.java.ast.JModifier;
 import net.sourceforge.pmd.lang.java.ast.ModifierOwner;
 import net.sourceforge.pmd.lang.java.ast.ModifierOwner.Visibility;
-import net.sourceforge.pmd.lang.java.ast.internal.PrettyPrintingUtil;
 
 /**
  * 
@@ -123,7 +135,8 @@ public final class ASTUtil {
 
         ASTType type = pmdField.firstChild(ASTType.class);
         if (type != null) {
-            sb.append(' ').append(PrettyPrintingUtil.prettyPrintType(type));
+            sb.append(' ');
+            prettyPrintType(sb, type);
         }
 
         sb.append(' ');
@@ -145,7 +158,7 @@ public final class ASTUtil {
 
         for (ASTFormalParameter formalParam : node.getFormalParameters()) {
             ASTType typeNode = formalParam.getTypeNode();
-            sb.append(PrettyPrintingUtil.prettyPrintType(typeNode)).append(", ");
+            prettyPrintType(sb, typeNode).append(", ");
         }
 
         int length = sb.length();
@@ -154,7 +167,7 @@ public final class ASTUtil {
 
     public static String returnType(ASTMethodDeclaration node) {
         ASTType resultType = node.getResultTypeNode();
-        return PrettyPrintingUtil.prettyPrintType(resultType);
+        return prettyPrintType(resultType);
     }
 
     public static String getLocalVarDeclarationLabel(ASTLocalVariableDeclaration node) {
@@ -163,7 +176,8 @@ public final class ASTUtil {
         addModifiers(node, sb);
 
         ASTType type = node.getTypeNode();
-        sb.append(' ').append(PrettyPrintingUtil.prettyPrintType(type));
+        sb.append(' ');
+        prettyPrintType(sb, type);
 
         boolean first = true;
         for (ASTVariableId id : node) {
@@ -178,5 +192,51 @@ public final class ASTUtil {
         }
 
         return sb.toString();
+    }
+
+    private static String prettyPrintType(ASTType type) {
+        StringBuilder sb = new StringBuilder();
+        prettyPrintType(sb, type);
+        return sb.toString();
+    }
+
+    private static StringBuilder prettyPrintType(StringBuilder sb, ASTType type) {
+        if (type instanceof ASTPrimitiveType) {
+            sb.append(((ASTPrimitiveType) type).getKind().getSimpleName());
+        } else if (type instanceof ASTClassType) {
+            ASTClassType classT = (ASTClassType) type;
+            sb.append(classT.getSimpleName());
+
+            ASTTypeArguments targs = classT.getTypeArguments();
+            if (targs != null) {
+                sb.append("<");
+                sb.append(targs.toList().stream().map(ASTUtil::prettyPrintType).collect(Collectors.joining(", ")));
+                sb.append(">");
+            }
+        } else if (type instanceof ASTArrayType) {
+            sb.append(prettyPrintType(((ASTArrayType) type).getElementType()));
+            int depth = ((ASTArrayType) type).getArrayDepth();
+            for (int i = 0; i < depth; i++) {
+                sb.append("[]");
+            }
+        } else if (type instanceof ASTVoidType) {
+            sb.append("void");
+        } else if (type instanceof ASTWildcardType) {
+            sb.append("?");
+            ASTReferenceType bound = ((ASTWildcardType) type).getTypeBoundNode();
+            if (bound != null) {
+                sb.append(((ASTWildcardType) type).isLowerBound() ? " super " : " extends ");
+                sb.append(prettyPrintType(bound));
+            }
+        } else if (type instanceof ASTUnionType) {
+            sb.append(((ASTUnionType) type).getComponents().toList().stream().map(ASTUtil::prettyPrintType).collect(Collectors.joining(" | ")));
+        } else if (type instanceof ASTIntersectionType) {
+            sb.append(((ASTIntersectionType) type).getComponents().toList().stream().map(ASTUtil::prettyPrintType).collect(Collectors.joining(" & ")));
+        } else if (type instanceof ASTAmbiguousName) {
+            sb.append(((ASTAmbiguousName) type).getName());
+        } else {
+            throw shouldNotReachHere("Unhandled type? " + type);
+        }
+        return sb;
     }
 }

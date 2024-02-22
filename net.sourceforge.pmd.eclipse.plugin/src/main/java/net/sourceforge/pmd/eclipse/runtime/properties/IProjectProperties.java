@@ -52,22 +52,7 @@ public interface IProjectProperties {
      */
     void setProjectRuleSet(RuleSet projectRuleSet) throws PropertiesException;
 
-    /**
-     * @param projectRuleSets
-     *            The project Rule Sets to set.
-     * @deprecated Use {@link #setProjectRuleSetList(List)}
-     */
-    @Deprecated
-    void setProjectRuleSets(net.sourceforge.pmd.lang.rule.internal.RuleSets projectRuleSets) throws PropertiesException;
-    
     void setProjectRuleSetList(List<RuleSet> rulesets) throws PropertiesException;
-
-    /**
-     * @return Returns the project Rule Sets.
-     * @deprecated Use {@link #getProjectRuleSetList()}
-     */
-    @Deprecated
-    net.sourceforge.pmd.lang.rule.internal.RuleSets getProjectRuleSets() throws PropertiesException;
 
     List<RuleSet> getProjectRuleSetList() throws PropertiesException;
 
@@ -93,14 +78,6 @@ public interface IProjectProperties {
      *            The rule set file.
      */
     void setRuleSetFile(String ruleSetFile) throws PropertiesException;
-
-    /**
-     * @return Returns the resolved RuleSet File suitable for loading a rule
-     *         set.
-     * @deprecated use {@link #getResolvedRuleSetFiles()} instead
-     */
-    @Deprecated
-    File getResolvedRuleSetFile() throws PropertiesException;
 
     /**
      * @return Returns the resolved RuleSet Files suitable for loading multiple

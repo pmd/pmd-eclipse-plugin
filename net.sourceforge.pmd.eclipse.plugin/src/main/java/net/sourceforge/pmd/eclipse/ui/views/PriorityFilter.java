@@ -4,10 +4,8 @@
 
 package net.sourceforge.pmd.eclipse.ui.views;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumSet;
-import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
@@ -37,7 +35,7 @@ import net.sourceforge.pmd.lang.rule.RulePriority;
  *
  * @author SebastianRaffel ( 17.05.2005 )
  */
-public class PriorityFilter extends ViewerFilter {
+public final class PriorityFilter extends ViewerFilter {
     private static final PriorityFilter INSTANCE = new PriorityFilter();
 
     private static final String PREFERENCE_KEY = PriorityFilter.class.getName() + ".enabledPriorities";
@@ -52,10 +50,8 @@ public class PriorityFilter extends ViewerFilter {
      * Constructor
      *
      * @author SebastianRaffel ( 29.06.2005 )
-     * @deprecated will be made private in the future.
      */
-    @Deprecated
-    public PriorityFilter() {
+    private PriorityFilter() {
         enabledPriorities = Collections.synchronizedSet(EnumSet.allOf(RulePriority.class));
     }
 
@@ -67,7 +63,7 @@ public class PriorityFilter extends ViewerFilter {
      * Initialize the priority filter by loading the preferences and making sure, that
      * any change to the filter is stored to the preferences.
      */
-    public final void initialize() {
+    public void initialize() {
         addPriorityFilterChangeListener(new PriorityFilterChangeListener() {
             @Override
             public void priorityEnabled(RulePriority priority) {
@@ -174,36 +170,6 @@ public class PriorityFilter extends ViewerFilter {
         return hasMarkers;
     }
 
-    /**
-     * Sets the List of Priorities to filter.
-     *
-     * @param newList,
-     *            an ArrayLust of Integers
-     * @deprecated will be removed. The enabled priorities are stored in the preferences automatically now.
-     */
-    @Deprecated
-    public void setPriorityFilterList(List<Integer> newList) {
-        enabledPriorities.clear();
-        for (Integer priority : newList) {
-            enabledPriorities.add(RulePriority.valueOf(priority));
-        }
-    }
-
-    /**
-     * Gets the FilterList with the Priorities.
-     *
-     * @return an List of Integers
-     * @deprecated will be removed. Use {@link #isPriorityEnabled(RulePriority)} instead.
-     */
-    @Deprecated
-    public List<Integer> getPriorityFilterList() {
-        List<Integer> priorityList = new ArrayList<>();
-        for (RulePriority priority : enabledPriorities) {
-            priorityList.add(priority.getPriority());
-        }
-        return priorityList;
-    }
-
     public void enablePriority(RulePriority priority) {
         if (priority != null) {
             if (enabledPriorities.add(priority)) {
@@ -218,85 +184,6 @@ public class PriorityFilter extends ViewerFilter {
                 notifyPriorityDisabled(priority);
             }
         }
-    }
-
-    /**
-     * Adds a Priority to The List.
-     *
-     * @param priority
-     * @deprecated use {@link #enablePriority(RulePriority)}
-     */
-    @Deprecated
-    public void addPriorityToList(Integer priority) {
-        if (priority != null) {
-            RulePriority rulePriority = RulePriority.valueOf(priority);
-            enablePriority(rulePriority);
-        }
-    }
-
-    /**
-     * Removes a Priority From the List.
-     *
-     * @param priority
-     * @deprecated use {@link #disablePriority(RulePriority)}
-     */
-    @Deprecated
-    public void removePriorityFromList(Integer priority) {
-        if (priority != null) {
-            RulePriority rulePriority = RulePriority.valueOf(priority);
-            disablePriority(rulePriority);
-        }
-    }
-
-    /**
-     * Loads a PriorityList out of a String, e.g. from "1,2,3" it builds up the
-     * List {1,2,3} (for use with Mementos)
-     *
-     * @param newList,
-     *            the List-String
-     * @param splitter,
-     *            the List splitter (in general ",")
-     * @deprecated will be removed
-     */
-    @Deprecated
-    public void setPriorityFilterListFromString(String newList, String splitter) {
-        if (newList != null) {
-            final String[] newArray = newList.split(splitter);
-            final List<Integer> priorities = new ArrayList<>(newArray.length);
-
-            for (String element : newArray) {
-                priorities.add(Integer.valueOf(element));
-            }
-
-            setPriorityFilterList(priorities);
-        }
-    }
-
-    /**
-     * Returns the FilterList as String with the given splitter, e.g. with ","
-     * the Priorities {1,4,5} would look like "1,4,5" (for use with Mementos)
-     *
-     * @param splitter,
-     *            The String splitter (in general ",")
-     * @return the List-String
-     * @deprecated will be removed
-     */
-    @Deprecated
-    public String getPriorityFilterListAsString(String splitter) {
-        if (enabledPriorities.isEmpty()) {
-            return "";
-        }
-
-        StringBuilder listString = new StringBuilder();
-        int i = 0;
-        for (RulePriority priority : enabledPriorities) {
-            if (i > 0) {
-                listString.append(splitter);
-            }
-            listString.append(priority.getPriority());
-            i++;
-        }
-        return listString.toString();
     }
 
     public void addPriorityFilterChangeListener(PriorityFilterChangeListener listener) {
