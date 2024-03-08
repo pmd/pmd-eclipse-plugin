@@ -253,16 +253,16 @@ public class PMDPlugin extends AbstractUIPlugin {
      * @return view 
      */ 
     public static IViewPart getView(String id) { 
-        IViewReference[] viewReferences = PlatformUI.getWorkbench() 
-        .getActiveWorkbenchWindow().getActivePage().getViewReferences(); 
-        for (int i = 0; i < viewReferences.length; i++) { 
-            if (id.equals(viewReferences[i].getId())) { 
-                return viewReferences[i].getView(false); 
-            } 
-        } 
-        return null; 
-    } 
-     
+        IViewReference[] viewReferences = PlatformUI.getWorkbench()
+            .getActiveWorkbenchWindow().getActivePage().getViewReferences();
+        for (int i = 0; i < viewReferences.length; i++) {
+            if (id.equals(viewReferences[i].getId())) {
+                return viewReferences[i].getView(false);
+            }
+        }
+        return null;
+    }
+
     /** 
      * refresh a view to the id passed in. 
      *  

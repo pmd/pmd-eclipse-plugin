@@ -19,12 +19,12 @@
 
     <java.version>1.8</java.version>
     <!-- https://github.com/eclipse/tycho/blob/master/RELEASE_NOTES.md and https://github.com/eclipse-tycho/tycho/releases -->
-    <tycho.version>4.0.4</tycho.version>
+    <tycho.version>4.0.6</tycho.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <pmd.version>7.0.0-SNAPSHOT</pmd.version>
     <pmd.build-tools.version>23-SNAPSHOT</pmd.build-tools.version>
-    <checkstyle.version>10.7.0</checkstyle.version>
-    <checkstyle.plugin.version>3.2.2</checkstyle.plugin.version>
+    <checkstyle.version>10.14.0</checkstyle.version>
+    <checkstyle.plugin.version>3.3.1</checkstyle.plugin.version>
     <pmd.plugin.version>3.21.2</pmd.plugin.version>
     <pmd.check.version>7.0.0-rc4</pmd.check.version>
 
@@ -181,7 +181,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-clean-plugin</artifactId>
-          <version>3.2.0</version>
+          <version>3.3.2</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
@@ -191,17 +191,17 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-enforcer-plugin</artifactId>
-          <version>3.3.0</version>
+          <version>3.4.1</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-failsafe-plugin</artifactId>
-          <version>3.0.0-M8</version>
+          <version>3.2.5</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-install-plugin</artifactId>
-          <version>3.1.0</version>
+          <version>3.1.1</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
@@ -211,12 +211,12 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-site-plugin</artifactId>
-          <version>4.0.0-M8</version>
+          <version>4.0.0-M13</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-surefire-plugin</artifactId>
-          <version>3.1.0</version>
+          <version>3.2.5</version>
         </plugin>
         <plugin>
           <groupId>org.eclipse.tycho</groupId>
