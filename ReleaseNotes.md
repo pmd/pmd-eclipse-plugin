@@ -14,7 +14,9 @@ This is a major release.
 ### New and noteworthy
 
 * Updated to PMD 7.0.0
+* Support for Eclipse 2024-03 added
 * Support for Eclipse 2023-12 added
+* Support for Eclipse 2023-03 removed
 * Support for Eclipse 2022-12 removed
 
 ### Fixed Issues
@@ -22,6 +24,7 @@ This is a major release.
 * [#185](https://github.com/pmd/pmd-eclipse-plugin/pull/185): Bump ch.qos.logback:logback-classic from 1.2.3 to 1.2.13
 * [#186](https://github.com/pmd/pmd-eclipse-plugin/pull/186): Support eclipse 2023-12
 * [#187](https://github.com/pmd/pmd-eclipse-plugin/pull/187): Bump tycho from 3.0.4 to 4.0.4
+* [#190](https://github.com/pmd/pmd-eclipse-plugin/pull/190): Support eclipse 2024-03
 
 ### API Changes
 
