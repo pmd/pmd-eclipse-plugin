@@ -23,7 +23,7 @@ echo "-------------------------------------------"
 echo "Releasing PMD Eclipse Plugin"
 echo "-------------------------------------------"
 
-CURRENT_VERSION=$(./mvnw org.apache.maven.plugins:maven-help-plugin:3.2.0:evaluate -Dexpression=project.version -q -DforceStdout -Dtycho.mode=maven)
+CURRENT_VERSION=$(./mvnw org.apache.maven.plugins:maven-help-plugin:3.2.0:evaluate -Dexpression=project.version -q -DforceStdout)
 RELEASE_VERSION=${CURRENT_VERSION%-SNAPSHOT}
 MAJOR=$(echo "$RELEASE_VERSION" | cut -d . -f 1)
 MINOR=$(echo "$RELEASE_VERSION" | cut -d . -f 2)
@@ -76,9 +76,9 @@ echo "And also remove any empty/unnecessary sections"
 echo
 echo "Press enter to continue..."
 read -r
-./mvnw org.eclipse.tycho:tycho-versions-plugin:set-version -DnewVersion="${RELEASE_VERSION}.${BUILDQUALIFIER}" -Dtycho.mode=maven
+./mvnw org.eclipse.tycho:tycho-versions-plugin:set-version -DnewVersion="${RELEASE_VERSION}.${BUILDQUALIFIER}"
 git commit -a -m "Prepare release pmd-eclipse-plugin ${RELEASE_VERSION}.${BUILDQUALIFIER}"
-git tag "${RELEASE_VERSION}.${BUILDQUALIFIER}"
+git tag -m "Release version ${RELEASE_VERSION}.${BUILDQUALIFIER}" "${RELEASE_VERSION}.${BUILDQUALIFIER}"
 echo "Create (temporary) release branch"
 git branch "pmd-eclipse-plugin-rb-${RELEASE_VERSION}"
 
@@ -109,7 +109,7 @@ EOF
 
 echo
 echo "Updating version in master to next"
-./mvnw org.eclipse.tycho:tycho-versions-plugin:set-version -DnewVersion="${DEVELOPMENT_VERSION}-SNAPSHOT" -Dtycho.mode=maven
+./mvnw org.eclipse.tycho:tycho-versions-plugin:set-version -DnewVersion="${DEVELOPMENT_VERSION}-SNAPSHOT"
 git commit -a -m "Prepare next pmd-eclipse-plugin development version ${DEVELOPMENT_VERSION}-SNAPSHOT"
 echo "Pushing master"
 git push origin master
