@@ -39,7 +39,7 @@ fi
 
 # allow to override the next version, e.g. via "DEVELOPMENT_VERSION=7.0.0 ./do-release.sh"
 if [ "$DEVELOPMENT_VERSION" = "" ]; then
-    DEVELOPMENT_VERSION="$MAJOR.$NEXT_MINOR.$NEXT_PATCH-SNAPSHOT"
+    DEVELOPMENT_VERSION="$MAJOR.$NEXT_MINOR.$NEXT_PATCH"
 fi
 
 # allow to override the build qualifier, e.g. via "BUILDQUALIFIER="$(date -u +v%Y%m%d-%H%M)-rc1" ./do-release.sh"
