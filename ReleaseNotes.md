@@ -7,7 +7,7 @@ Eclipse Update Site:
 *   Releases: <https://pmd.github.io/pmd-eclipse-plugin-p2-site/>
 *   Snapshots: <https://pmd.github.io/pmd-eclipse-plugin-p2-site/snapshot/>
 
-## ????: 7.0.0.v????
+## 22-March-2024: 7.0.0.v20240322-0920-r
 
 This is a major release.
 
@@ -29,7 +29,7 @@ This is a major release.
 ### API Changes
 
 Due to the updated PMD version, there are a couple of incompatible changes, like changed packages.
-For the details, see the release notes of PMD.
+For the details, see the [release notes of PMD](https://docs.pmd-code.org/pmd-doc-7.0.0/pmd_release_notes.html).
 
 The following members have been removed, even though they have not been deprecated before:
 * net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.Configuratio#EXCLUDED_RULE_PROPERTIES
@@ -109,8 +109,6 @@ The following deprecated classes have been removed:
 * net.sourceforge.pmd.eclipse.ui.preferences.RuleProperty
 * net.sourceforge.pmd.eclipse.util.PriorityUtil
 * net.sourceforge.pmd.eclipse.util.IOUtil
-
-### External Contributions
 
 ## 30-September-2023: 7.0.0.v20230930-1814-rc4
 
