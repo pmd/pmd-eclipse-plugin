@@ -73,7 +73,7 @@ public abstract class AbstractEditorFactory<T> implements EditorFactory<T> {
     @Override
     public Label addLabel(Composite parent, PropertyDescriptor<T> desc) {
         Label label = new Label(parent, SWT.NONE);
-        label.setText(desc.description());
+        label.setText(desc.name() + " (" + desc.description() + ")");
         GridData data = new GridData();
         data.horizontalAlignment = SWT.LEFT;
         // CENTER is preferred only when showing a single row value widget...hmm

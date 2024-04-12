@@ -37,19 +37,9 @@ public final class RuleUtil {
         return areEqual(desc.defaultValue(), value);
     }
 
-    // TODO fix rule!!
-    // public static boolean isXPathRule(Rule rule) {
-    //
-    // for (PropertyDescriptor<?> desc : rule.getPropertyDescriptors()) {
-    // if (desc.equals(XPathRule.XPATH_DESCRIPTOR)) return true;
-    // }
-    // return false;
-    // }
-
     public static boolean isXPathRule(PropertySource source) {
-        // return rule.hasDescriptor(XPathRule.XPATH_DESCRIPTOR); // not
-        // reliable since it may not have it yet
-
+        // Testing for property descriptor XPathRule.XPATH_DESCRIPTOR ("xpath")
+        // is not reliable, since this property might not be existing yet
         return source instanceof XPathRule
                 || source instanceof RuleReference && ((RuleReference) source).getRule() instanceof XPathRule;
     }
