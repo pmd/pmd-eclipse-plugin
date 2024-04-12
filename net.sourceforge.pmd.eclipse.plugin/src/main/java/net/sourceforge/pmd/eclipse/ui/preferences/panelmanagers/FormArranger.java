@@ -10,7 +10,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 
@@ -22,8 +21,6 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.eclipse.ui.PMDUiConstants;
 import net.sourceforge.pmd.eclipse.ui.dialogs.NewPropertyDialog;
@@ -48,8 +45,6 @@ import net.sourceforge.pmd.properties.PropertySource;
  * @author Brian Remedios
  */
 public class FormArranger implements ValueChangeListener {
-    private static final Logger LOG = LoggerFactory.getLogger(FormArranger.class);
-
     private final Composite parent;
     private final ValueChangeListener changeListener;
     private final SizeChangeListener sizeChangeListener;
@@ -70,6 +65,7 @@ public class FormArranger implements ValueChangeListener {
      * @deprecated Use {@link #FormArranger(Composite, ValueChangeListener, SizeChangeListener)} instead.
      */
     @Deprecated // for removal
+    @SuppressWarnings("PMD.UnusedFormalParameter")
     public FormArranger(Composite theParent, Map<Class<?>, EditorFactory<?>> factories, ValueChangeListener listener,
             SizeChangeListener sizeListener) {
         this(theParent, listener, sizeListener);
@@ -101,10 +97,6 @@ public class FormArranger implements ValueChangeListener {
 
     protected void register(PropertyDescriptor<?> property, Control[] controls) {
         controlsByProperty.put(property, controls);
-    }
-
-    private EditorFactory<?> factoryFor(PropertyDescriptor<?> desc) {
-        return PropertyEditorFactory.INSTANCE;
     }
 
     public void clearChildren() {
@@ -150,20 +142,7 @@ public class FormArranger implements ValueChangeListener {
         PropertyDescriptor<?>[] orderedDescs = valuesByDescriptor.keySet().toArray(new PropertyDescriptor[0]);
         Arrays.sort(orderedDescs, Comparator.comparing(PropertyDescriptor::name));
 
-        int rowCount = 0; // count up the actual rows with widgets needed, not all have editors yet
-        for (PropertyDescriptor<?> desc : orderedDescs) {
-            EditorFactory<?> factory = factoryFor(desc);
-            if (factory == null) {
-                if (isPropertyDeprecated(desc)) {
-                    LOG.info("No property editor for deprecated property defined in rule {}: {}",
-                            theSource.getName(), desc);
-                } else {
-                    LOG.error("No property editor defined for rule {}: {}", theSource.getName(), desc);
-                }
-                continue;
-            }
-            rowCount++;
-        }
+        int rowCount = orderedDescs.length; // count up the actual rows with widgets needed, not all have editors yet
 
         boolean isXPathRule = RuleUtil.isXPathRule(propertySource);
         int columnCount = isXPathRule ? 3 : 2; // xpath descriptors have a column of delete buttons
@@ -178,7 +157,7 @@ public class FormArranger implements ValueChangeListener {
         int rowsAdded = 0;
 
         for (PropertyDescriptor<?> desc : orderedDescs) {
-            if (addRowWidgets(factoryFor(desc), rowsAdded, desc, isXPathRule)) {
+            if (addRowWidgets(PropertyEditorFactory.INSTANCE, rowsAdded, desc, isXPathRule)) {
                 rowsAdded++;
             }
         }
@@ -195,16 +174,6 @@ public class FormArranger implements ValueChangeListener {
         adjustEnabledStates();
 
         return rowsAdded;
-    }
-
-    private boolean isPropertyDeprecated(PropertyDescriptor<?> desc) {
-        String description = desc.description();
-        if (description != null) {
-            description = description.toLowerCase(Locale.ROOT).trim();
-        } else {
-            description = "";
-        }
-        return description.startsWith("deprecated");
     }
 
     private void addAddButton() {

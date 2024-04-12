@@ -84,6 +84,7 @@ public class NewPropertyDialog extends TitleAreaDialog implements SizeChangeList
      * @deprecated use {@link #NewPropertyDialog(Shell, PropertySource, ValueChangeListener)} instead.
      */
     @Deprecated // for removal
+    @SuppressWarnings("PMD.UnusedFormalParameter")
     public NewPropertyDialog(Shell parent, Map<Class<?>, EditorFactory<?>> theEditorFactoriesByValueType,
             PropertySource theSource, ValueChangeListener theChangeListener) {
         this(parent, theSource, theChangeListener);

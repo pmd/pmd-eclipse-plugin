@@ -20,7 +20,7 @@ import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
 import net.sourceforge.pmd.properties.PropertySource;
 
-public class PropertyEditorFactory extends AbstractEditorFactory {
+public final class PropertyEditorFactory extends AbstractEditorFactory {
 
     public static final PropertyEditorFactory INSTANCE = new PropertyEditorFactory();
 
