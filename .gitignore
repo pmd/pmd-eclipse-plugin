@@ -6,3 +6,4 @@ target/
 .pmd
 .ruleset
 .pmdruleset.xml
+net.sourceforge.pmd.eclipse.plugin/japicmp-data
