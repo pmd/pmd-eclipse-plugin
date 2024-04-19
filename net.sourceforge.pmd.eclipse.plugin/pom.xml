@@ -110,6 +110,66 @@
             <suppressionsLocation>checkstyle-suppressions.xml</suppressionsLocation>
           </configuration>
         </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-antrun-plugin</artifactId>
+          <version>3.1.0</version>
+          <executions>
+            <execution>
+              <phase>verify</phase>
+              <configuration>
+                <target description="Download previous plugin version for japicmp"
+                        unless="japicmp.skip">
+                  <property name="oldVersion" value="7.0.0.v20240322-0920-r"/>
+                  <mkdir dir="${project.basedir}/japicmp-data/net.sourceforge.pmd.eclipse.p2updatesite-${oldVersion}"/>
+                  <get src="https://github.com/pmd/pmd-eclipse-plugin/releases/download/${oldVersion}/net.sourceforge.pmd.eclipse.p2updatesite-${oldVersion}.zip"
+                       dest="${project.basedir}/japicmp-data/" skipexisting="true"/>
+                  <unzip src="${project.basedir}/japicmp-data/net.sourceforge.pmd.eclipse.p2updatesite-${oldVersion}.zip"
+                         dest="${project.basedir}/japicmp-data/net.sourceforge.pmd.eclipse.p2updatesite-${oldVersion}/"/>
+                </target>
+              </configuration>
+              <goals>
+                <goal>run</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+        <plugin>
+          <groupId>com.github.siom79.japicmp</groupId>
+          <artifactId>japicmp-maven-plugin</artifactId>
+          <configuration>
+            <oldVersion>
+              <file>
+                <path>${project.basedir}/japicmp-data/net.sourceforge.pmd.eclipse.p2updatesite-7.0.0.v20240322-0920-r/plugins/net.sourceforge.pmd.eclipse.plugin_7.0.0.v20240322-0920-r.jar</path>
+              </file>
+            </oldVersion>
+            <newVersion>
+              <file>
+                <path>${project.build.directory}/${project.artifactId}-${project.version}.jar</path>
+              </file>
+            </newVersion>
+            <parameter>
+              <breakBuildBasedOnSemanticVersioning>true</breakBuildBasedOnSemanticVersioning>
+              <onlyModified>true</onlyModified>
+              <excludes>
+                <exclude>net.sourceforge.pmd.eclipse.core.internal</exclude>
+                <exclude>net.sourceforge.pmd.eclipse.logging.internal</exclude>
+                <exclude>net.sourceforge.pmd.eclipse.runtime.cmd.internal</exclude>
+                <exclude>net.sourceforge.pmd.eclipse.ui.actions.internal</exclude>
+                <exclude>net.sourceforge.pmd.eclipse.util.internal</exclude>
+              </excludes>
+            </parameter>
+          </configuration>
+          <executions>
+            <execution>
+              <id>japicmp</id>
+              <phase>verify</phase>
+              <goals>
+                <goal>cmp</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
     </plugins>
     <pluginManagement>
       <plugins>

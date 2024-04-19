@@ -14,6 +14,7 @@ This is a minor release.
 ### New and noteworthy
 
 ### Fixed Issues
+* [#192](https://github.com/pmd/pmd-eclipse-plugin/pull/192): Add japicmp
 
 ### API Changes
 
