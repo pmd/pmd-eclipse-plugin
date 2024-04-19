@@ -130,15 +130,6 @@ public class FormArranger implements ValueChangeListener {
 
         Map<PropertyDescriptor<?>, Object> valuesByDescriptor = Configuration.filteredPropertiesOf(propertySource);
 
-        if (valuesByDescriptor.isEmpty()) {
-            if (RuleUtil.isXPathRule(propertySource)) {
-                addAddButton();
-                parent.pack();
-                return 1;
-            }
-            return 0;
-        }
-
         PropertyDescriptor<?>[] orderedDescs = valuesByDescriptor.keySet().toArray(new PropertyDescriptor[0]);
         Arrays.sort(orderedDescs, Comparator.comparing(PropertyDescriptor::name));
 
@@ -151,8 +142,9 @@ public class FormArranger implements ValueChangeListener {
         layout.verticalSpacing = 2;
         layout.marginTop = 1;
         parent.setLayout(layout);
-
         widgets = new Control[rowCount][columnCount];
+
+
 
         int rowsAdded = 0;
 
