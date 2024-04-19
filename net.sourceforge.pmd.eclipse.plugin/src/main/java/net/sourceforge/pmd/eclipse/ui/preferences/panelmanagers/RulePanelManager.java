@@ -642,7 +642,7 @@ public class RulePanelManager extends AbstractRulePanelManager {
         } catch (ClassNotFoundException e) {
             PMDPlugin.getDefault().logError("Couldn't find rule impl class " + newType, e);
         }
-        return newType != null && Rule.class.isAssignableFrom(newTypeClass);
+        return newTypeClass != null && Rule.class.isAssignableFrom(newTypeClass);
     }
 
     private String nameFieldValue() {
