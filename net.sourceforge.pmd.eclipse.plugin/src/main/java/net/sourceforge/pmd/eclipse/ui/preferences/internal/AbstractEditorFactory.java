@@ -13,7 +13,6 @@ import org.eclipse.swt.widgets.Label;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.EditorFactory;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.SizeChangeListener;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.ValueChangeListener;
-import net.sourceforge.pmd.eclipse.util.ColourManager;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertySource;
 
@@ -22,28 +21,10 @@ import net.sourceforge.pmd.properties.PropertySource;
  */
 public abstract class AbstractEditorFactory<T> implements EditorFactory<T> {
 
-    protected static ColourManager colourManager;
-    // protected static Color overriddenColour;
 
     protected AbstractEditorFactory() {
         // protected default constructor for subclassing
     }
-
-    // private static ColourManager colourManager() {
-    //
-    // if (colourManager != null) return colourManager;
-    // colourManager = ColourManager.managerFor(Display.getDefault());
-    // return colourManager;
-    // }
-
-    // private Color overriddenColour() {
-    //
-    // if (overriddenColour != null) return overriddenColour;
-    //
-    // overriddenColour =
-    // colourManager().colourFor(AbstractRulePanelManager.overridenColourValues);
-    // return overriddenColour;
-    // }
 
     /**
      * Generic control that provides a label/widget pair for the default value.
@@ -81,50 +62,4 @@ public abstract class AbstractEditorFactory<T> implements EditorFactory<T> {
         label.setLayoutData(data);
         return label;
     }
-
-    /**
-     * Adjust the display of the control to denote whether it holds onto the
-     * default value or not.
-     *
-     * @param control
-     * @param hasDefaultValue
-     */
-    // protected void adjustRendering(Control control, boolean hasDefaultValue)
-    // {
-    //
-    // Display display = control.getDisplay();
-    //
-    // control.setBackground(
-    // display.getSystemColor(hasDefaultValue ? SWT.COLOR_WHITE :
-    // SWT.COLOR_CYAN)
-    // );
-    // }
-    protected void adjustRendering(PropertySource source, PropertyDescriptor<?> desc, Control control) {
-
-        // return; // don't do it...kinda irritating
-
-        // if (!(rule instanceof RuleReference)) return;
-        //
-        // boolean isOverridden =
-        // ((RuleReference)rule).hasOverriddenProperty(desc);
-        // Display display = control.getDisplay();
-        // Color clr = isOverridden ? overriddenColour() :
-        // display.getSystemColor(SWT.COLOR_WHITE);
-        //
-        // control.setBackground(clr);
-    }
-
-    /**
-     * Return the value as a string that can be easily recognized and parsed
-     * when we see it again.
-     *
-     * @param value
-     *            Object
-     *
-     * @return String
-     */
-    protected static String asString(Object value) {
-        return value == null ? "" : value.toString();
-    }
-
 }

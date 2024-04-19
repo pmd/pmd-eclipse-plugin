@@ -77,7 +77,6 @@ public class RegexEditorFactory extends AbstractEditorFactory<Pattern> {
     protected void fillWidget(Text textWidget, PropertyDescriptor<Pattern> desc, PropertySource source) {
         String val = valueFor(source, desc).pattern();
         textWidget.setText(val);
-        adjustRendering(source, desc, textWidget);
     }
 
 

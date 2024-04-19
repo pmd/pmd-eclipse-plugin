@@ -59,7 +59,6 @@ public final class IntegerEditorFactory extends AbstractNumericEditorFactory<Int
 
                 source.setProperty(desc, newValue);
                 listener.changed(source, desc, newValue);
-                adjustRendering(source, desc, spinner);
             }
         });
 

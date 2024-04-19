@@ -243,7 +243,6 @@ public abstract class AbstractMultiValueEditorFactory<T> extends AbstractEditorF
 
                 renumberLabelsIn(newControls);
                 fillWidget(parentWidget, desc, source);
-                adjustRendering(source, desc, parentWidget);
                 sizeListener.addedRows(1);
                 changeListener.changed(source, desc, newValue);
                 parent.getParent().layout();
@@ -277,7 +276,6 @@ public abstract class AbstractMultiValueEditorFactory<T> extends AbstractEditorF
     protected void fillWidget(Text textWidget, PropertyDescriptor<List<T>> desc, PropertySource source) {
         List<T> values = valueFor(source, desc);
         textWidget.setText(values == null ? "" : StringUtils.join(values, DELIMITER + ' '));
-        adjustRendering(source, desc, textWidget);
     }
 
 

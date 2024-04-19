@@ -62,8 +62,6 @@ public final class DoubleEditorFactory extends AbstractRealNumberEditor<Double> 
 
                 source.setProperty(desc, newValue);
                 listener.changed(source, desc, newValue);
-
-                adjustRendering(source, desc, spinner);
             }
         });
 

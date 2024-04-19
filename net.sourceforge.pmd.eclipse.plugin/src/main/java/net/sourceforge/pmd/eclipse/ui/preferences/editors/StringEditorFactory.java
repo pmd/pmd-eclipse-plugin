@@ -80,7 +80,6 @@ public class StringEditorFactory extends AbstractEditorFactory<String> {
     protected void fillWidget(Text textWidget, PropertyDescriptor<String> desc, PropertySource source) {
         String val = valueFor(source, desc);
         textWidget.setText(val == null ? "" : val);
-        adjustRendering(source, desc, textWidget);
     }
 
 

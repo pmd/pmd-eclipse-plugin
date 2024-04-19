@@ -65,7 +65,6 @@ public final class BooleanEditorFactory extends AbstractEditorFactory<Boolean> {
 
                 source.setProperty(desc, selected);
                 listener.changed(source, desc, selected);
-                adjustRendering(source, desc, butt);
             }
         };
 

@@ -75,7 +75,6 @@ public final class PropertyEditorFactory extends AbstractEditorFactory {
         Object realVal = valueFor(source, desc);
         String val = desc.serializer().toString(realVal);
         textWidget.setText(val == null ? "" : val);
-        adjustRendering(source, desc, textWidget);
     }
 
 

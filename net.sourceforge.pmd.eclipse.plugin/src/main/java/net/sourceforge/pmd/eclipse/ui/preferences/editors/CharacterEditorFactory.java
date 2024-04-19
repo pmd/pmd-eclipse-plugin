@@ -67,7 +67,6 @@ public final class CharacterEditorFactory extends AbstractEditorFactory<Characte
 
                 source.setProperty(desc, newValue);
                 listener.changed(source, desc, newValue);
-                adjustRendering(source, desc, text);
             }
         });
 

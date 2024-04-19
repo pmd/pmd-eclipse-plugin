@@ -84,7 +84,6 @@ public final class EnumerationEditorFactory extends AbstractEditorFactory<Object
 
                 source.setProperty(desc, newValue);
                 listener.changed(source, desc, newValue);
-                adjustRendering(source, desc, combo);
             }
         });
 
