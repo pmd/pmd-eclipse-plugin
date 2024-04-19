@@ -22,6 +22,7 @@ import java.util.stream.Collectors;
 import org.eclipse.core.runtime.ILogListener;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.jface.preference.PreferenceDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swtbot.swt.finder.waits.WaitForObjectCondition;
@@ -30,6 +31,7 @@ import org.eclipse.swtbot.swt.finder.widgets.SWTBotShell;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTree;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.dialogs.PreferencesUtil;
 import org.hamcrest.Matcher;
 import org.junit.After;
 import org.junit.Before;
@@ -71,7 +73,7 @@ public class PMDPreferencePage2Test extends AbstractSWTBotTest {
      */
     @Test
     public void openPMDRuleConfiguration() {
-        bot.menu().menu("Window", "Preferences").click();
+        openPreferences();
         SWTBotShell preferencesDialog = bot.shell("Preferences");
         SWTBotTreeItem pmdItem = preferencesDialog.bot().tree(0).getTreeItem("PMD");
         pmdItem.click();
@@ -100,5 +102,14 @@ public class PMDPreferencePage2Test extends AbstractSWTBotTest {
             fail("There are " + errors.size() + " errors:\n"
                     + errors.stream().map(IStatus::getMessage).collect(Collectors.joining("\n")));
         }
+    }
+
+    private void openPreferences() {
+        // due to macosx, where the Preferences is not part of the Window menu but the application
+        // menu, we programmatically open the preferences dialog and not try to find it via the menu.
+        bot.getDisplay().execute(() -> {
+            PreferenceDialog dialog = PreferencesUtil.createPreferenceDialogOn(bot.shell().widget, null, null, errors);
+            dialog.open();
+        });
     }
 }
