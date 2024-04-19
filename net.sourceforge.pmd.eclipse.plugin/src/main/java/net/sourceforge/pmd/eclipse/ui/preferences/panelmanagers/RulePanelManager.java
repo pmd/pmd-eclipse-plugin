@@ -638,7 +638,9 @@ public class RulePanelManager extends AbstractRulePanelManager {
         String newType = implementationClassField.getText();
         Class<?> newTypeClass = null;
         try {
-            newTypeClass = getClass().getClassLoader().loadClass(newType);
+            if (newType != null && !newType.isEmpty()) {
+                newTypeClass = getClass().getClassLoader().loadClass(newType);
+            }
         } catch (ClassNotFoundException e) {
             PMDPlugin.getDefault().logError("Couldn't find rule impl class " + newType, e);
         }
