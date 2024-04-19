@@ -34,6 +34,14 @@ jobs:
           pmdCiSecretPassphrase: ${{ secrets.PMD_CI_SECRET_PASSPHRASE }}
           githubToken: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Upload screenshots of failed unit tests
+        uses: actions/upload-artifact@v4
+        if: ${{ failure() }}
+        with:
+          name: screenshots-ubuntu-latest-2024-03
+          path: net.sourceforge.pmd.eclipse.plugin.test/screenshots
+          if-no-files-found: ignore
+
 
   build:
     needs: fail-fast-build
@@ -74,3 +82,11 @@ jobs:
           deploy: false
           pmdCiSecretPassphrase: ${{ secrets.PMD_CI_SECRET_PASSPHRASE }}
           githubToken: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload screenshots of failed unit tests
+        uses: actions/upload-artifact@v4
+        if: ${{ failure() }}
+        with:
+          name: screenshots-${{ matrix.os }}-${{ matrix.targetPlatform }}
+          path: net.sourceforge.pmd.eclipse.plugin.test/screenshots
+          if-no-files-found: ignore
