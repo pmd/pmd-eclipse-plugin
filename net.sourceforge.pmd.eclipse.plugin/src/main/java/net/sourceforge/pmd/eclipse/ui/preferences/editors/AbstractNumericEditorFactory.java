@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.eclipse.ui.preferences.editors;
 
+import static net.sourceforge.pmd.eclipse.util.internal.SWTUtil.stringFor;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -38,12 +40,12 @@ public abstract class AbstractNumericEditorFactory<T> extends AbstractEditorFact
     public Control[] createOtherControlsOn(Composite parent, PropertyDescriptor<T> desc, Rule rule,
                                            ValueChangeListener listener, SizeChangeListener sizeListener) {
 
-        Label defaultLabel = newLabel(parent, SWTUtil.stringFor(StringKeys.RULEEDIT_LABEL_DEFAULT));
+        Label defaultLabel = newLabel(parent, stringFor(StringKeys.RULEEDIT_LABEL_DEFAULT));
         Control valueControl = newEditorOn(parent, desc, rule, listener, sizeListener);
 
-        Label minLabel = newLabel(parent, SWTUtil.stringFor(StringKeys.RULEEDIT_LABEL_MIN));
+        Label minLabel = newLabel(parent, stringFor(StringKeys.RULEEDIT_LABEL_MIN));
         Spinner minWidget = newSpinnerFor(parent, digitPrecision());
-        Label maxLabel = newLabel(parent, SWTUtil.stringFor(StringKeys.RULEEDIT_LABEL_MAX));
+        Label maxLabel = newLabel(parent, stringFor(StringKeys.RULEEDIT_LABEL_MAX));
         Spinner maxWidget = newSpinnerFor(parent, digitPrecision());
 
         linkup(minWidget, (Spinner) valueControl, maxWidget);

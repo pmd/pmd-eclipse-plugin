@@ -289,6 +289,13 @@ public abstract class AbstractRulePanelManager extends WizardPage implements Rul
         control.setEnabled(false);
     }
 
+    /**
+     * @deprecated The control {@link TypeText} is not used anymore. The implementation class is
+     *             shown in a normal Text control. USe {@link #show(Text, String)} instead.
+     * @param control
+     * @param type
+     */
+    @Deprecated // for removal
     protected void show(TypeText control, Class<?> type) {
         control.setType(type);
         // control.setEnabled(usageMode == EditorUsageMode.CreateNew);

@@ -67,7 +67,7 @@ public final class EnumerationEditorFactory extends AbstractEditorFactory<Object
         }
 
         combo.setData(choices);
-        combo.setItems(SWTUtil.labelsIn(choices, 0));
+        combo.setItems(net.sourceforge.pmd.eclipse.util.internal.SWTUtil.labelsIn(choices, 0));
         if (selectionIdx >= 0) {
             combo.select(selectionIdx);
         }

@@ -27,8 +27,8 @@ import org.eclipse.ui.browser.IWebBrowser;
 import net.sourceforge.pmd.eclipse.ui.editors.StyleExtractor;
 import net.sourceforge.pmd.eclipse.ui.editors.SyntaxData;
 import net.sourceforge.pmd.eclipse.ui.editors.SyntaxManager;
-import net.sourceforge.pmd.eclipse.ui.preferences.editors.SWTUtil;
 import net.sourceforge.pmd.eclipse.util.FontBuilder;
+import net.sourceforge.pmd.eclipse.util.internal.SWTUtil;
 import net.sourceforge.pmd.lang.Language;
 
 /**

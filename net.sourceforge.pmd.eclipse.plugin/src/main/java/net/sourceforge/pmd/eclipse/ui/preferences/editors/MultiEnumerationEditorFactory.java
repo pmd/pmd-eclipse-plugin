@@ -81,7 +81,7 @@ public final class MultiEnumerationEditorFactory extends AbstractMultiValueEdito
         final Combo combo = new Combo(parent, SWT.READ_ONLY);
 
         // TODO remove all choices already chosen by previous widgets
-        combo.setItems(SWTUtil.labelsIn(choices(desc), 0));
+        combo.setItems(net.sourceforge.pmd.eclipse.util.internal.SWTUtil.labelsIn(choices(desc), 0));
         int selectionIdx = EnumerationEditorFactory.indexOf(value, choices(desc));
         if (selectionIdx >= 0) {
             combo.select(selectionIdx);

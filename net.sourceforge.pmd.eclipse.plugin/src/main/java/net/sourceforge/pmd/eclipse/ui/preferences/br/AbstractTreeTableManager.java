@@ -44,9 +44,9 @@ import net.sourceforge.pmd.eclipse.ui.ColumnDescriptor;
 import net.sourceforge.pmd.eclipse.ui.ModifyListener;
 import net.sourceforge.pmd.eclipse.ui.PMDUiConstants;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
-import net.sourceforge.pmd.eclipse.ui.preferences.editors.SWTUtil;
 import net.sourceforge.pmd.eclipse.ui.views.ChangeRecord;
 import net.sourceforge.pmd.eclipse.util.ResourceManager;
+import net.sourceforge.pmd.eclipse.util.internal.SWTUtil;
 
 /**
  * Tree table support, everything non-Rule related.

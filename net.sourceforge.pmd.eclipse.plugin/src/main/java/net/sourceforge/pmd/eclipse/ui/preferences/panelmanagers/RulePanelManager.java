@@ -41,8 +41,7 @@ import net.sourceforge.pmd.eclipse.ui.preferences.br.RuleSelection;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.RuleUtil;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.RuleVisitor;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.ValueChangeListener;
-import net.sourceforge.pmd.eclipse.ui.preferences.editors.SWTUtil;
-import net.sourceforge.pmd.eclipse.ui.preferences.editors.TypeText;
+import net.sourceforge.pmd.eclipse.util.internal.SWTUtil;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
@@ -61,7 +60,7 @@ public class RulePanelManager extends AbstractRulePanelManager {
     private RuleTarget target;
 
     private Text nameField;
-    private TypeText implementationClassField;
+    private Text implementationClassField;
     private Combo ruleSetNameField;
 
     private Combo languageCombo;
@@ -126,7 +125,7 @@ public class RulePanelManager extends AbstractRulePanelManager {
     protected void clearControls() {
         nameField.setText("");
         ruleSetNameField.select(-1);
-        implementationClassField.setType(null);
+        implementationClassField.setText("");
         ruleSetNameField.setText("");
         languageCombo.select(-1);
         priorityCombo.select(-1);
@@ -215,7 +214,7 @@ public class RulePanelManager extends AbstractRulePanelManager {
         implementationTypeCombo.setEnabled(creatingNewRule());
 
         Class<?> impClass = RuleUtil.commonImplementationClass(rules);
-        show(implementationClassField, impClass);
+        show(implementationClassField, impClass != null ? impClass.getName() : "");
         implementationClassField.setEnabled(impClass != null);
 
         show(priorityCombo, commonPriorityName());
@@ -425,7 +424,7 @@ public class RulePanelManager extends AbstractRulePanelManager {
             usesDfaButton.setSelection(false);
             implementationTypeCombo.select(0);
             if (creatingNewRule()) {
-                implementationClassField.setType(XPathRule.class);
+                implementationClassField.setText(XPathRule.class.getName());
             }
             break;
         }
@@ -437,7 +436,7 @@ public class RulePanelManager extends AbstractRulePanelManager {
             usesDfaButton.setSelection(false);
             implementationTypeCombo.select(1);
             if (creatingNewRule()) {
-                implementationClassField.setType(null);
+                implementationClassField.setText("");
             }
             break;
         }
@@ -636,8 +635,14 @@ public class RulePanelManager extends AbstractRulePanelManager {
             return true;
         }
 
-        Class<?> newType = implementationClassField.getType(false);
-        return newType != null && Rule.class.isAssignableFrom(newType);
+        String newType = implementationClassField.getText();
+        Class<?> newTypeClass = null;
+        try {
+            newTypeClass = getClass().getClassLoader().loadClass(newType);
+        } catch (ClassNotFoundException e) {
+            PMDPlugin.getDefault().logError("Couldn't find rule impl class " + newType, e);
+        }
+        return newType != null && Rule.class.isAssignableFrom(newTypeClass);
     }
 
     private String nameFieldValue() {
@@ -757,10 +762,11 @@ public class RulePanelManager extends AbstractRulePanelManager {
     }
 
     private void populateRuleInstance() {
-        Class<Rule> ruleType = (Class<Rule>) implementationClassField.getType(true);
+        String ruleType = implementationClassField.getText();
 
         try {
-            Rule newRule = ruleType.getConstructor().newInstance();
+            Class<Rule> ruleTypeClass = (Class<Rule>) getClass().getClassLoader().loadClass(ruleType);
+            Rule newRule = ruleTypeClass.getConstructor().newInstance();
 
             if (rules == null) {
                 rules = new RuleSelection(newRule);
@@ -772,14 +778,14 @@ public class RulePanelManager extends AbstractRulePanelManager {
 
             copyLocalValuesTo(rules.soleRule());
 
-        } catch (InvocationTargetException | NoSuchMethodException | InstantiationException | IllegalAccessException e) {
+        } catch (InvocationTargetException | NoSuchMethodException | InstantiationException | IllegalAccessException | ClassNotFoundException e) {
             e.printStackTrace();
         }
     }
 
-    private TypeText buildImplementationClassField(Composite parent) {
+    private Text buildImplementationClassField(Composite parent) {
         int style = creatingNewRule() ? SWT.SINGLE | SWT.BORDER : SWT.READ_ONLY | SWT.BORDER;
-        final TypeText classField = new TypeText(parent, style, true, "");
+        final Text classField = new Text(parent, style);
 
         classField.setEnabled(false);
 
