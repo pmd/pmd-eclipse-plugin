@@ -21,7 +21,10 @@ import net.sourceforge.pmd.properties.PropertySource;
 
 /**
  * @author Brian Remedios
+ * @deprecated This editor factory will be removed without replacement. This was only used for supporting the UI
+ *             of the plugin and is considered internal API now.
  */
+@Deprecated // for removal
 public class StringEditorFactory extends AbstractEditorFactory<String> {
 
     public static final StringEditorFactory INSTANCE = new StringEditorFactory();

@@ -25,7 +25,9 @@ import org.eclipse.swt.widgets.Text;
  * A general purpose selection widget that deals with files.
  *
  * @author Brian Remedios
+ * @deprecated This class is not used and will be removed.
  */
+@Deprecated // for removal
 public class FilePicker extends Composite {
 
     private Text fileField;

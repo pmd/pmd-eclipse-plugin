@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -759,7 +760,7 @@ public class RulePanelManager extends AbstractRulePanelManager {
         Class<Rule> ruleType = (Class<Rule>) implementationClassField.getType(true);
 
         try {
-            Rule newRule = ruleType.newInstance();
+            Rule newRule = ruleType.getConstructor().newInstance();
 
             if (rules == null) {
                 rules = new RuleSelection(newRule);
@@ -771,7 +772,7 @@ public class RulePanelManager extends AbstractRulePanelManager {
 
             copyLocalValuesTo(rules.soleRule());
 
-        } catch (InstantiationException | IllegalAccessException e) {
+        } catch (InvocationTargetException | NoSuchMethodException | InstantiationException | IllegalAccessException e) {
             e.printStackTrace();
         }
     }

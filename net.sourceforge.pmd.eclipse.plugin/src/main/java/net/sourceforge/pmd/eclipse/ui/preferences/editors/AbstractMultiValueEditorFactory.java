@@ -48,7 +48,10 @@ import net.sourceforge.pmd.properties.PropertySource;
  * and update the values in the rule listings respectively.
  *
  * @author Brian Remedios
+ * @deprecated This editor factory will be removed without replacement. This was only used for supporting the UI
+ *             of the plugin and is considered internal API now.
  */
+@Deprecated // for removal
 public abstract class AbstractMultiValueEditorFactory<T> extends AbstractEditorFactory<List<T>> {
 
     protected static final String DELIMITER = ",";

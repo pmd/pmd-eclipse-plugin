@@ -21,6 +21,11 @@ import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
 import net.sourceforge.pmd.properties.PropertySource;
 
+/**
+ * @deprecated This editor factory will be removed without replacement. This was only used for supporting the UI
+ *             of the plugin and is considered internal API now.
+ */
+@Deprecated // for removal
 public class RegexEditorFactory extends AbstractEditorFactory<Pattern> {
 
     public static final RegexEditorFactory INSTANCE = new RegexEditorFactory();

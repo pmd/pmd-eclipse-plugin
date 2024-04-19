@@ -22,7 +22,10 @@ import net.sourceforge.pmd.properties.PropertySource;
 
 /**
  * @author Brian Remedios
+ * @deprecated This editor factory will be removed without replacement. This was only used for supporting the UI
+ *             of the plugin and is considered internal API now.
  */
+@Deprecated // for removal
 public final class EnumerationEditorFactory extends AbstractEditorFactory<Object> {
 
     public static final EnumerationEditorFactory INSTANCE = new EnumerationEditorFactory();

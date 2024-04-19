@@ -26,13 +26,16 @@ import net.sourceforge.pmd.properties.PropertySource;
  * Behaviour: Provide a set of widgets that allows the user to pick a range of integer values. The selected values can
  * only exist once.
  *
- * Provide a spin box for each value selected while ensuring that their choices only contain unselected values. If the
+ * <p>Provide a spin box for each value selected while ensuring that their choices only contain unselected values. If the
  * last spin box holds the only remaining choice then ensure it gets disabled, the user can only delete it or the
  * previous ones. If the user deletes a previous one then re-enable the last one and add the deleted value to its set of
  * choices.
  *
  * @author Brian Remedios
+ * @deprecated This editor factory will be removed without replacement. This was only used for supporting the UI
+ *             of the plugin and is considered internal API now.
  */
+@Deprecated // for removal
 public final class MultiIntegerEditorFactory extends AbstractMultiValueEditorFactory<Integer> {
 
     public static final MultiIntegerEditorFactory INSTANCE = new MultiIntegerEditorFactory();

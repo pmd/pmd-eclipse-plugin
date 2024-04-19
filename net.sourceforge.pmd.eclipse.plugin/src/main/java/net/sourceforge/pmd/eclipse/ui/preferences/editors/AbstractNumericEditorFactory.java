@@ -20,7 +20,10 @@ import net.sourceforge.pmd.properties.PropertyDescriptor;
 
 /**
  * @author Brian Remedios
+ * @deprecated This editor factory will be removed without replacement. This was only used for supporting the UI
+ *             of the plugin and is considered internal API now.
  */
+@Deprecated // for removal
 public abstract class AbstractNumericEditorFactory<T> extends AbstractEditorFactory<T> {
 
     public static final int DEFAULT_MINIMUM = 0;
