@@ -156,6 +156,7 @@
                 <exclude>net.sourceforge.pmd.eclipse.logging.internal</exclude>
                 <exclude>net.sourceforge.pmd.eclipse.runtime.cmd.internal</exclude>
                 <exclude>net.sourceforge.pmd.eclipse.ui.actions.internal</exclude>
+                <exclude>net.sourceforge.pmd.eclipse.ui.preferences.internal</exclude>
                 <exclude>net.sourceforge.pmd.eclipse.util.internal</exclude>
               </excludes>
             </parameter>
