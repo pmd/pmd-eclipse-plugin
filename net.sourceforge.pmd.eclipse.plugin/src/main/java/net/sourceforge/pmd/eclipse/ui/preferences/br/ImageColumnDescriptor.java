@@ -25,7 +25,13 @@ public class ImageColumnDescriptor extends AbstractRuleColumnDescriptor {
 
     public static final RuleFieldAccessor PROPERTIES_ACCESSOR = new BasicRuleFieldAccessor() {
         @Override
-        public Comparable<?> valueFor(Rule rule) {
+        public String labelFor(Rule rule) {
+            IndexedString value = valueFor(rule);
+            return value == null ? "" : value.string;
+        }
+
+        @Override
+        public IndexedString valueFor(Rule rule) {
             // notes indices of non-default values in the string for emphasis
             // during later rendering
             return RuleUIUtil.indexedPropertyStringFrom(rule); 

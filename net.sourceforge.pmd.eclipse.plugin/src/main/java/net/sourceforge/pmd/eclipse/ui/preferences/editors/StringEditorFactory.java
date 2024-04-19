@@ -21,7 +21,10 @@ import net.sourceforge.pmd.properties.PropertySource;
 
 /**
  * @author Brian Remedios
+ * @deprecated This editor factory will be removed without replacement. This was only used for supporting the UI
+ *             of the plugin and is considered internal API now.
  */
+@Deprecated // for removal
 public class StringEditorFactory extends AbstractEditorFactory<String> {
 
     public static final StringEditorFactory INSTANCE = new StringEditorFactory();
@@ -77,7 +80,6 @@ public class StringEditorFactory extends AbstractEditorFactory<String> {
     protected void fillWidget(Text textWidget, PropertyDescriptor<String> desc, PropertySource source) {
         String val = valueFor(source, desc);
         textWidget.setText(val == null ? "" : val);
-        adjustRendering(source, desc, textWidget);
     }
 
 

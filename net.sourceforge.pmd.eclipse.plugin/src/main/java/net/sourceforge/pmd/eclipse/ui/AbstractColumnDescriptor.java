@@ -10,8 +10,8 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeColumn;
 
-import net.sourceforge.pmd.eclipse.ui.preferences.editors.SWTUtil;
 import net.sourceforge.pmd.eclipse.util.ResourceManager;
+import net.sourceforge.pmd.eclipse.util.internal.SWTUtil;
 
 /**
  * 

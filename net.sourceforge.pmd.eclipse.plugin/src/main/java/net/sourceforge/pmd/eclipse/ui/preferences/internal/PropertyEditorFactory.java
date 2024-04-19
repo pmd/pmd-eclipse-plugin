@@ -2,9 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.eclipse.ui.preferences.editors;
-
-import java.util.regex.Pattern;
+package net.sourceforge.pmd.eclipse.ui.preferences.internal;
 
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.swt.SWT;
@@ -21,33 +19,30 @@ import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
 import net.sourceforge.pmd.properties.PropertySource;
 
-/**
- * @deprecated This editor factory will be removed without replacement. This was only used for supporting the UI
- *             of the plugin and is considered internal API now.
- */
-@Deprecated // for removal
-public class RegexEditorFactory extends AbstractEditorFactory<Pattern> {
+public final class PropertyEditorFactory extends AbstractEditorFactory {
 
-    public static final RegexEditorFactory INSTANCE = new RegexEditorFactory();
+    public static final PropertyEditorFactory INSTANCE = new PropertyEditorFactory();
 
-    protected RegexEditorFactory() {
-        // protected constructor for subclassing
+
+    private PropertyEditorFactory() {
     }
 
     @Override
-    public PropertyDescriptor<Pattern> createDescriptor(String name, String description, Control[] otherData) {
-        return PropertyFactory.regexProperty(name).desc(description)
-            .defaultValue(valueFrom(otherData[1]))
+    public PropertyDescriptor<?> createDescriptor(String name, String description, Control[] otherData) {
+        return PropertyFactory.stringProperty(name).desc(description)
+            .defaultValue(otherData == null ? "" : valueFrom(otherData[1]))
             .build();
     }
 
-    @Override
-    protected Pattern valueFrom(Control valueControl) {
-        return Pattern.compile(((Text) valueControl).getText());
-    }
 
     @Override
-    public Control newEditorOn(Composite parent, final PropertyDescriptor<Pattern> desc, final PropertySource source,
+    protected String valueFrom(Control valueControl) {
+        return ((Text) valueControl).getText();
+    }
+
+
+    @Override
+    public Control newEditorOn(Composite parent, final PropertyDescriptor desc, final PropertySource source,
                                final ValueChangeListener listener, SizeChangeListener sizeListener) {
 
         final Text text = new Text(parent, SWT.SINGLE | SWT.BORDER);
@@ -59,12 +54,14 @@ public class RegexEditorFactory extends AbstractEditorFactory<Pattern> {
             @Override
             public void handleEvent(Event event) {
                 String newValue = text.getText().trim();
-                String existingValue = valueFor(source, desc).pattern();
+                Object existingValueReal = valueFor(source, desc);
+                String existingValue = desc.serializer().toString(existingValueReal);
+
                 if (StringUtils.equals(StringUtils.trimToNull(existingValue), StringUtils.trimToNull(newValue))) {
                     return;
                 }
 
-                setValue(source, desc, Pattern.compile(newValue));
+                setValue(source, desc, newValue);
                 fillWidget(text, desc, source);     // redraw
                 listener.changed(source, desc, newValue);
             }
@@ -74,16 +71,18 @@ public class RegexEditorFactory extends AbstractEditorFactory<Pattern> {
     }
 
 
-    protected void fillWidget(Text textWidget, PropertyDescriptor<Pattern> desc, PropertySource source) {
-        String val = valueFor(source, desc).pattern();
-        textWidget.setText(val);
+    protected void fillWidget(Text textWidget, PropertyDescriptor desc, PropertySource source) {
+        Object realVal = valueFor(source, desc);
+        String val = desc.serializer().toString(realVal);
+        textWidget.setText(val == null ? "" : val);
     }
 
 
-    private void setValue(PropertySource source, PropertyDescriptor<Pattern> desc, Pattern value) {
+    private void setValue(PropertySource source, PropertyDescriptor desc, String value) {
         if (!source.hasDescriptor(desc)) {
             return;
         }
-        source.setProperty(desc, value);
+        Object realValue = desc.serializer().fromString(value);
+        source.setProperty(desc, realValue);
     }
 }

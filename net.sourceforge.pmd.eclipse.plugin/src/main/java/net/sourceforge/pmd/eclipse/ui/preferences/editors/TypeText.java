@@ -24,7 +24,9 @@ import org.eclipse.swt.widgets.Text;
  * <p>TODO - add a grey prompt within the field when it is empty, remove when user starts typing
  *
  * @author Brian Remedios
+ * @deprecated This class is not used anymore and will be removed.
  */
+@Deprecated // for removal
 public class TypeText extends Composite {
 
     private Text text;

@@ -49,6 +49,10 @@ public class PerRulePropertyPanelManager extends AbstractRulePanelManager implem
     private static final int MAX_WIDGET_HEIGHT = 30; // TODO derive this instead
     public static final String ID = "perRuleProperties";
 
+    /**
+     * @deprecated a single editor will be used for all property types. This map is anyway incomplete.
+     */
+    @Deprecated // for removal
     public static final Map<Class<?>, EditorFactory<?>> EDITOR_FACTORIES_BY_PROPERTY_TYPE;
 
     static {
@@ -130,7 +134,7 @@ public class PerRulePropertyPanelManager extends AbstractRulePanelManager implem
         sComposite.setExpandHorizontal(true);
         sComposite.setExpandVertical(true);
 
-        formArranger = new FormArranger(composite, EDITOR_FACTORIES_BY_PROPERTY_TYPE, chainedListener(), this);
+        formArranger = new FormArranger(composite, chainedListener(), this);
 
         return sComposite;
     }
@@ -164,6 +168,7 @@ public class PerRulePropertyPanelManager extends AbstractRulePanelManager implem
         }
 
         // any unref'd vars are not real errors
+        formArranger.loadValues();
         unreferencedVariables = formArranger.updateDeleteButtons(); 
 
         return true;

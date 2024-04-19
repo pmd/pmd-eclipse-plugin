@@ -20,7 +20,10 @@ import net.sourceforge.pmd.properties.PropertySource;
 
 /**
  * @author Brian Remedios
+ * @deprecated This editor factory will be removed without replacement. This was only used for supporting the UI
+ *             of the plugin and is considered internal API now.
  */
+@Deprecated // for removal
 public final class CharacterEditorFactory extends AbstractEditorFactory<Character> {
 
     public static final CharacterEditorFactory INSTANCE = new CharacterEditorFactory();
@@ -64,7 +67,6 @@ public final class CharacterEditorFactory extends AbstractEditorFactory<Characte
 
                 source.setProperty(desc, newValue);
                 listener.changed(source, desc, newValue);
-                adjustRendering(source, desc, text);
             }
         });
 

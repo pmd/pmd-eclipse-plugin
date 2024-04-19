@@ -37,7 +37,6 @@ import net.sourceforge.pmd.eclipse.runtime.preferences.impl.PreferenceUIStore;
 import net.sourceforge.pmd.eclipse.ui.ModifyListener;
 import net.sourceforge.pmd.eclipse.ui.actions.RuleSetUtil;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
-import net.sourceforge.pmd.eclipse.ui.preferences.editors.SWTUtil;
 import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.EditorUsageMode;
 import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.ExclusionPanelManager;
 import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.PerRulePropertyPanelManager;
@@ -45,6 +44,7 @@ import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.RulePanelManager
 import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.RulePropertyManager;
 import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.SummaryPanelManager;
 import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.XPathPanelManager;
+import net.sourceforge.pmd.eclipse.util.internal.SWTUtil;
 import net.sourceforge.pmd.lang.rule.Rule;
 import net.sourceforge.pmd.lang.rule.RuleSet;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
@@ -64,13 +64,18 @@ public class PMDPreferencePage2 extends AbstractPMDPreferencePage
     private Composite contentPanel;
 
     // columns shown in the rule treetable in the desired order
-    public static final RuleColumnDescriptor[] AVAILABLE_COLUMNS = new RuleColumnDescriptor[] { RuleTableColumns.NAME,
+    public static final RuleColumnDescriptor[] AVAILABLE_COLUMNS = new RuleColumnDescriptor[] {
+        RuleTableColumns.NAME,
         // PreferenceTableColumns.priorityName,
         // IconColumnDescriptor.priority,
         RuleTableColumns.IMG_PRIORITY,
         // PreferenceTableColumns.fixCount,
-        RuleTableColumns.SINCE, RuleTableColumns.RULE_SET_NAME, RuleTableColumns.RULE_TYPE, RuleTableColumns.MIN_LANGUAGE_VERSION,
-        RuleTableColumns.MAX_LANGUAGE_VERSION, RuleTableColumns.LANGUAGE,
+        RuleTableColumns.SINCE,
+        RuleTableColumns.RULE_SET_NAME,
+        RuleTableColumns.RULE_TYPE,
+        RuleTableColumns.MIN_LANGUAGE_VERSION,
+        RuleTableColumns.MAX_LANGUAGE_VERSION,
+        RuleTableColumns.LANGUAGE,
         // regex text -> compact color squares (for comparison)
         RuleTableColumns.FILTER_VIOLATION_REGEX,
         // xpath text -> compact color circles (for comparison)

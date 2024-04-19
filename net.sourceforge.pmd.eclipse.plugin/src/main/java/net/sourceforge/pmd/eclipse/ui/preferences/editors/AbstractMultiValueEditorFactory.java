@@ -48,7 +48,10 @@ import net.sourceforge.pmd.properties.PropertySource;
  * and update the values in the rule listings respectively.
  *
  * @author Brian Remedios
+ * @deprecated This editor factory will be removed without replacement. This was only used for supporting the UI
+ *             of the plugin and is considered internal API now.
  */
+@Deprecated // for removal
 public abstract class AbstractMultiValueEditorFactory<T> extends AbstractEditorFactory<List<T>> {
 
     protected static final String DELIMITER = ",";
@@ -240,7 +243,6 @@ public abstract class AbstractMultiValueEditorFactory<T> extends AbstractEditorF
 
                 renumberLabelsIn(newControls);
                 fillWidget(parentWidget, desc, source);
-                adjustRendering(source, desc, parentWidget);
                 sizeListener.addedRows(1);
                 changeListener.changed(source, desc, newValue);
                 parent.getParent().layout();
@@ -274,7 +276,6 @@ public abstract class AbstractMultiValueEditorFactory<T> extends AbstractEditorF
     protected void fillWidget(Text textWidget, PropertyDescriptor<List<T>> desc, PropertySource source) {
         List<T> values = valueFor(source, desc);
         textWidget.setText(values == null ? "" : StringUtils.join(values, DELIMITER + ' '));
-        adjustRendering(source, desc, textWidget);
     }
 
 

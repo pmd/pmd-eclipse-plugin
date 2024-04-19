@@ -19,7 +19,10 @@ import net.sourceforge.pmd.properties.PropertySource;
 
 /**
  * @author Brian Remedios
+ * @deprecated This editor factory will be removed without replacement. This was only used for supporting the UI
+ *             of the plugin and is considered internal API now.
  */
+@Deprecated // for removal
 public final class BooleanEditorFactory extends AbstractEditorFactory<Boolean> {
 
     public static final BooleanEditorFactory INSTANCE = new BooleanEditorFactory();
@@ -62,7 +65,6 @@ public final class BooleanEditorFactory extends AbstractEditorFactory<Boolean> {
 
                 source.setProperty(desc, selected);
                 listener.changed(source, desc, selected);
-                adjustRendering(source, desc, butt);
             }
         };
 

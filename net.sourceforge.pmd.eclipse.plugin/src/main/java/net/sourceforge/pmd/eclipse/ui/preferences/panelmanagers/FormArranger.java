@@ -4,16 +4,14 @@
 
 package net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
-import java.util.regex.Pattern;
 
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
@@ -23,8 +21,6 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.eclipse.ui.PMDUiConstants;
 import net.sourceforge.pmd.eclipse.ui.dialogs.NewPropertyDialog;
@@ -33,16 +29,15 @@ import net.sourceforge.pmd.eclipse.ui.preferences.br.RuleSelection;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.RuleUtil;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.SizeChangeListener;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.ValueChangeListener;
-import net.sourceforge.pmd.eclipse.ui.preferences.editors.SWTUtil;
+import net.sourceforge.pmd.eclipse.ui.preferences.internal.PropertyEditorFactory;
 import net.sourceforge.pmd.eclipse.util.ResourceManager;
 import net.sourceforge.pmd.eclipse.util.Util;
-import net.sourceforge.pmd.properties.InternalApiBridge;
+import net.sourceforge.pmd.eclipse.util.internal.SWTUtil;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertySource;
-import net.sourceforge.pmd.properties.internal.PropertyTypeId;
 
 /**
- * Takes in a property source instance, extracts its properties, creates a series of type-specific editors for each, and
+ * Takes in a property source instance, extracts its properties, creates a series of editors for each, and
  * then populates them with the current values. As some types can hold multiple values the vertical span can grow to
  * accommodate additional widgets and does so by broadcasting this through the SizeChange listener. The ValueChange
  * listener can be used to update any outside UIs as necessary.
@@ -50,10 +45,7 @@ import net.sourceforge.pmd.properties.internal.PropertyTypeId;
  * @author Brian Remedios
  */
 public class FormArranger implements ValueChangeListener {
-    private static final Logger LOG = LoggerFactory.getLogger(FormArranger.class);
-
     private final Composite parent;
-    private final Map<Class<?>, EditorFactory<?>> editorFactoriesByValueType;
     private final ValueChangeListener changeListener;
     private final SizeChangeListener sizeChangeListener;
     private PropertySource propertySource;
@@ -61,14 +53,22 @@ public class FormArranger implements ValueChangeListener {
 
     private Map<PropertyDescriptor<?>, Control[]> controlsByProperty;
 
-    public FormArranger(Composite theParent, Map<Class<?>, EditorFactory<?>> factories, ValueChangeListener listener,
-            SizeChangeListener sizeListener) {
+    public FormArranger(Composite theParent, ValueChangeListener listener, SizeChangeListener sizeListener) {
         parent = theParent;
-        editorFactoriesByValueType = factories;
         changeListener = chain(listener, this);
         sizeChangeListener = sizeListener;
 
         controlsByProperty = new HashMap<>();
+    }
+
+    /**
+     * @deprecated Use {@link #FormArranger(Composite, ValueChangeListener, SizeChangeListener)} instead.
+     */
+    @Deprecated // for removal
+    @SuppressWarnings("PMD.UnusedFormalParameter")
+    public FormArranger(Composite theParent, Map<Class<?>, EditorFactory<?>> factories, ValueChangeListener listener,
+            SizeChangeListener sizeListener) {
+        this(theParent, listener, sizeListener);
     }
 
     /**
@@ -97,70 +97,6 @@ public class FormArranger implements ValueChangeListener {
 
     protected void register(PropertyDescriptor<?> property, Control[] controls) {
         controlsByProperty.put(property, controls);
-    }
-
-    private EditorFactory<?> factoryFor(PropertyDescriptor<?> desc) {
-        PropertyTypeId typeId = InternalApiBridge.getTypeId(desc); // TODO internal api usage
-        boolean multivalued;
-        Class<?> type;
-        switch (typeId) {
-        case BOOLEAN:
-            type = Boolean.class;
-            multivalued = false;
-            break;
-        case CHARACTER:
-            type = Character.class;
-            multivalued = false;
-            break;
-        case CHARACTER_LIST:
-            type = Character.class;
-            multivalued = true;
-            break;
-        case DOUBLE:
-            type = Double.class;
-            multivalued = false;
-            break;
-        case DOUBLE_LIST:
-            type = Double.class;
-            multivalued = true;
-            break;
-        case INTEGER:
-            type = Integer.class;
-            multivalued = false;
-            break;
-        case INTEGER_LIST:
-            type = Integer.class;
-            multivalued = true;
-            break;
-        case LONG:
-            type = Long.class;
-            multivalued = false;
-            break;
-        case LONG_LIST:
-            type = Long.class;
-            multivalued = true;
-            break;
-        case STRING:
-            type = String.class;
-            multivalued = false;
-            break;
-        case STRING_LIST:
-            type = String.class;
-            multivalued = true;
-            break;
-        case REGEX:
-            type = Pattern.class;
-            multivalued = false;
-            break;
-        default:
-            throw new IllegalStateException("Unsupported type: " + typeId);
-        }
-        if (multivalued) {
-            // assume it is a array type (type[])
-            type = Array.newInstance(type, 0).getClass();
-        }
-
-        return editorFactoriesByValueType.get(type);
     }
 
     public void clearChildren() {
@@ -194,32 +130,10 @@ public class FormArranger implements ValueChangeListener {
 
         Map<PropertyDescriptor<?>, Object> valuesByDescriptor = Configuration.filteredPropertiesOf(propertySource);
 
-        if (valuesByDescriptor.isEmpty()) {
-            if (RuleUtil.isXPathRule(propertySource)) {
-                addAddButton();
-                parent.pack();
-                return 1;
-            }
-            return 0;
-        }
-
         PropertyDescriptor<?>[] orderedDescs = valuesByDescriptor.keySet().toArray(new PropertyDescriptor[0]);
-        Arrays.sort(orderedDescs);
+        Arrays.sort(orderedDescs, Comparator.comparing(PropertyDescriptor::name));
 
-        int rowCount = 0; // count up the actual rows with widgets needed, not all have editors yet
-        for (PropertyDescriptor<?> desc : orderedDescs) {
-            EditorFactory<?> factory = factoryFor(desc);
-            if (factory == null) {
-                if (isPropertyDeprecated(desc)) {
-                    LOG.info("No property editor for deprecated property defined in rule {}: {}",
-                            theSource.getName(), desc);
-                } else {
-                    LOG.error("No property editor defined for rule {}: {}", theSource.getName(), desc);
-                }
-                continue;
-            }
-            rowCount++;
-        }
+        int rowCount = orderedDescs.length; // count up the actual rows with widgets needed, not all have editors yet
 
         boolean isXPathRule = RuleUtil.isXPathRule(propertySource);
         int columnCount = isXPathRule ? 3 : 2; // xpath descriptors have a column of delete buttons
@@ -228,13 +142,14 @@ public class FormArranger implements ValueChangeListener {
         layout.verticalSpacing = 2;
         layout.marginTop = 1;
         parent.setLayout(layout);
-
         widgets = new Control[rowCount][columnCount];
+
+
 
         int rowsAdded = 0;
 
         for (PropertyDescriptor<?> desc : orderedDescs) {
-            if (addRowWidgets(factoryFor(desc), rowsAdded, desc, isXPathRule)) {
+            if (addRowWidgets(PropertyEditorFactory.INSTANCE, rowsAdded, desc, isXPathRule)) {
                 rowsAdded++;
             }
         }
@@ -253,16 +168,6 @@ public class FormArranger implements ValueChangeListener {
         return rowsAdded;
     }
 
-    private boolean isPropertyDeprecated(PropertyDescriptor<?> desc) {
-        String description = desc.description();
-        if (description != null) {
-            description = description.toLowerCase(Locale.ROOT).trim();
-        } else {
-            description = "";
-        }
-        return description.startsWith("deprecated");
-    }
-
     private void addAddButton() {
         Button button = new Button(parent, SWT.PUSH);
         button.setText("Add new...");
@@ -274,8 +179,7 @@ public class FormArranger implements ValueChangeListener {
 
             @Override
             public void widgetSelected(SelectionEvent e) {
-                NewPropertyDialog dialog = new NewPropertyDialog(parent.getShell(), editorFactoriesByValueType,
-                        propertySource, changeListener);
+                NewPropertyDialog dialog = new NewPropertyDialog(parent.getShell(), propertySource, changeListener);
                 if (dialog.open() == Window.OK) {
                     PropertyDescriptor<?> desc = dialog.descriptor();
                     propertySource.definePropertyDescriptor(desc);
@@ -364,7 +268,7 @@ public class FormArranger implements ValueChangeListener {
 
     private void adjustEnabledStates() {
         for (Map.Entry<PropertyDescriptor<?>, Control[]> entry : controlsByProperty.entrySet()) {
-            SWTUtil.setEnabled(entry.getValue(), true);
+            SWTUtil.setEnabled(Arrays.asList(entry.getValue()), true);
         }
     }
 

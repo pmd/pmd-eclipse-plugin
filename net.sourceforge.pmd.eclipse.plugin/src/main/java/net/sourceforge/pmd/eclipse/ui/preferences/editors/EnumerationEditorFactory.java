@@ -22,7 +22,10 @@ import net.sourceforge.pmd.properties.PropertySource;
 
 /**
  * @author Brian Remedios
+ * @deprecated This editor factory will be removed without replacement. This was only used for supporting the UI
+ *             of the plugin and is considered internal API now.
  */
+@Deprecated // for removal
 public final class EnumerationEditorFactory extends AbstractEditorFactory<Object> {
 
     public static final EnumerationEditorFactory INSTANCE = new EnumerationEditorFactory();
@@ -64,7 +67,7 @@ public final class EnumerationEditorFactory extends AbstractEditorFactory<Object
         }
 
         combo.setData(choices);
-        combo.setItems(SWTUtil.labelsIn(choices, 0));
+        combo.setItems(net.sourceforge.pmd.eclipse.util.internal.SWTUtil.labelsIn(choices, 0));
         if (selectionIdx >= 0) {
             combo.select(selectionIdx);
         }
@@ -81,7 +84,6 @@ public final class EnumerationEditorFactory extends AbstractEditorFactory<Object
 
                 source.setProperty(desc, newValue);
                 listener.changed(source, desc, newValue);
-                adjustRendering(source, desc, combo);
             }
         });
 

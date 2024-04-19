@@ -42,7 +42,6 @@ import net.sourceforge.pmd.eclipse.ui.preferences.br.RuleSelection;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.SizeChangeListener;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.ValueChangeListener;
 import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.FormArranger;
-import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.PerRulePropertyPanelManager;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertySource;
 import net.sourceforge.pmd.renderers.Renderer;
@@ -101,8 +100,7 @@ public class ReportPreferencesPage extends AbstractPMDPreferencePage
         group.setText("Properties");
         group.setLayout(new GridLayout(1, false));
 
-        formArranger = new FormArranger(group, PerRulePropertyPanelManager.EDITOR_FACTORIES_BY_PROPERTY_TYPE, this,
-                this);
+        formArranger = new FormArranger(group, this, this);
 
         return group;
     }

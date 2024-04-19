@@ -31,7 +31,10 @@ import net.sourceforge.pmd.properties.PropertySource;
  * @author Brian Remedios
  *
  *         ! PLACEHOLDER ONLY - NOT FINISHED YET !
+ * @deprecated This editor factory will be removed without replacement. This was only used for supporting the UI
+ *             of the plugin and is considered internal API now.
  */
+@Deprecated // for removal
 public final class MultiEnumerationEditorFactory extends AbstractMultiValueEditorFactory<Object> {
 
     public static final MultiEnumerationEditorFactory INSTANCE = new MultiEnumerationEditorFactory();
@@ -78,7 +81,7 @@ public final class MultiEnumerationEditorFactory extends AbstractMultiValueEdito
         final Combo combo = new Combo(parent, SWT.READ_ONLY);
 
         // TODO remove all choices already chosen by previous widgets
-        combo.setItems(SWTUtil.labelsIn(choices(desc), 0));
+        combo.setItems(net.sourceforge.pmd.eclipse.util.internal.SWTUtil.labelsIn(choices(desc), 0));
         int selectionIdx = EnumerationEditorFactory.indexOf(value, choices(desc));
         if (selectionIdx >= 0) {
             combo.select(selectionIdx);

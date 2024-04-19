@@ -27,7 +27,10 @@ import net.sourceforge.pmd.eclipse.util.Util;
  * <p>Note: Uses the default class loader to lookup the class, we'll probably want to supply an external one in the future?
  *
  * @author Brian Remedios
+ * @deprecated This editor factory will be removed without replacement. This was only used for supporting the UI
+ *             of the plugin and is considered internal API now.
  */
+@Deprecated // for removal
 public class MethodPicker extends Composite {
 
     private TypeText typeText;
