@@ -7,6 +7,18 @@ Eclipse Update Site:
 *   Releases: <https://pmd.github.io/pmd-eclipse-plugin-p2-site/>
 *   Snapshots: <https://pmd.github.io/pmd-eclipse-plugin-p2-site/snapshot/>
 
+## ????: 7.2.0.v????
+
+This is a minor release.
+
+### New and noteworthy
+
+### Fixed Issues
+
+### API Changes
+
+### External Contributions
+
 ## 26-April-2024: 7.1.0.v20240426-0821-r
 
 This is a minor release.
