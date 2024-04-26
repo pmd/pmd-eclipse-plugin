@@ -160,6 +160,12 @@ echo
 echo Update the marketplace entry with the new version:
 echo https://marketplace.eclipse.org/content/pmd-eclipse-plugin/edit
 echo
+echo "Check the milestone on github:"
+echo "<https://github.com/pmd/pmd-eclipse-plugin/milestones>"
+echo " --> move any open issues to the next milestone, close the current milestone"
+echo
+
+echo
 
 echo
 tweet="PMD for Eclipse ${RELEASE_VERSION}.${BUILDQUALIFIER} released #PMD
