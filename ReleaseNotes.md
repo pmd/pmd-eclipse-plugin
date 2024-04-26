@@ -13,6 +13,8 @@ This is a minor release.
 
 ### New and noteworthy
 
+* Updated to PMD 7.1.0
+
 ### Fixed Issues
 * [#191](https://github.com/pmd/pmd-eclipse-plugin/issues/191): Rule Configuration Pref Page - PropertyDescriptor cannot be cast to Comparable
 * [#192](https://github.com/pmd/pmd-eclipse-plugin/pull/192): Add japicmp
