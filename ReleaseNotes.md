@@ -17,6 +17,7 @@ This is a minor release.
 
 ### Merged pull requests
 * [#194](https://github.com/pmd/pmd-eclipse-plugin/pull/194): \[ci] Support macos on arm64/aarch64
+* [#195](https://github.com/pmd/pmd-eclipse-plugin/pull/195): chore: Use pmd 7.1.0 for checks
 
 ### API Changes
 

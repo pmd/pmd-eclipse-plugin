@@ -4,9 +4,7 @@
 
 package net.sourceforge.pmd.eclipse.ui.views.ast;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
@@ -47,7 +45,6 @@ import net.sourceforge.pmd.eclipse.ui.views.AbstractStructureInspectorPage;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.ast.impl.AbstractNode;
-import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.rule.xpath.XPathVersion;
 import net.sourceforge.pmd.reporting.RuleViolation;
@@ -71,13 +68,6 @@ public class ASTViewPage extends AbstractStructureInspectorPage {
     private ASTContentProvider contentProvider;
 
     // private static Set<String> keywords = new HashSet<String>();
-
-    private static Set<Class<?>> hiddenNodeTypes;
-
-    static {
-        hiddenNodeTypes = new HashSet<>();
-        hiddenNodeTypes.add(ASTImportDeclaration.class);
-    }
 
     public ASTViewPage(IWorkbenchPart part, FileRecord record) {
         super(part, record);

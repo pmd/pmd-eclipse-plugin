@@ -27,7 +27,7 @@ import net.sourceforge.pmd.lang.java.ast.JavaComment;
  */
 public class NodeImageDeriver {
 
-    private static NodeImageDeriver compilationUnitDeriver = new NodeImageDeriver(ASTCompilationUnit.class) {
+    private static final NodeImageDeriver COMPILATION_UNIT_DERIVER = new NodeImageDeriver(ASTCompilationUnit.class) {
         @Override
         public String deriveFrom(Node node) {
             dumpComments((ASTCompilationUnit) node);
@@ -35,7 +35,7 @@ public class NodeImageDeriver {
         }
     };
 
-    private static NodeImageDeriver importDeriver = new NodeImageDeriver(ASTImportDeclaration.class) {
+    private static final NodeImageDeriver IMPORT_DERIVER = new NodeImageDeriver(ASTImportDeclaration.class) {
         @Override
         public String deriveFrom(Node node) {
             // TODO show package name as well?
@@ -43,14 +43,14 @@ public class NodeImageDeriver {
         }
     };
 
-    private static NodeImageDeriver methodDeclarationDeriver = new NodeImageDeriver(ASTMethodDeclaration.class) {
+    private static final NodeImageDeriver METHOD_DECLARATION_DERIVER = new NodeImageDeriver(ASTMethodDeclaration.class) {
         @Override
         public String deriveFrom(Node node) {
             return ASTUtil.getMethodLabel((ASTMethodDeclaration) node, true);
         }
     };
 
-    private static NodeImageDeriver throwStatementDeriver = new NodeImageDeriver(ASTThrowStatement.class) {
+    private static final NodeImageDeriver THROW_STATEMENT_DERIVER = new NodeImageDeriver(ASTThrowStatement.class) {
         @Override
         public String deriveFrom(Node node) {
             final ASTClassType t = node.descendants(ASTClassType.class).first();
@@ -58,14 +58,14 @@ public class NodeImageDeriver {
         }
     };
 
-    private static NodeImageDeriver fieldDeclarationDeriver = new NodeImageDeriver(ASTFieldDeclaration.class) {
+    private static final NodeImageDeriver FIELD_DECLARATION_DERIVER = new NodeImageDeriver(ASTFieldDeclaration.class) {
         @Override
         public String deriveFrom(Node node) {
             return ASTUtil.getFieldLabel((ASTFieldDeclaration) node);
         }
     };
 
-    private static NodeImageDeriver localVariableDeclarationDeriver = new NodeImageDeriver(
+    private static final NodeImageDeriver LOCAL_VARIABLE_DECLARATION_DERIVER = new NodeImageDeriver(
             ASTLocalVariableDeclaration.class) {
         @Override
         public String deriveFrom(Node node) {
@@ -73,16 +73,16 @@ public class NodeImageDeriver {
         }
     };
 
-    private static NodeImageDeriver annotationDeriver = new NodeImageDeriver(ASTAnnotation.class) {
+    private static final NodeImageDeriver ANNOTATION_DERIVER = new NodeImageDeriver(ASTAnnotation.class) {
         @Override
         public String deriveFrom(Node node) {
             return ASTUtil.getAnnotationLabel((ASTAnnotation) node);
         }
     };
 
-    private static final NodeImageDeriver[] ALL_DERIVERS = new NodeImageDeriver[] { importDeriver,
-        methodDeclarationDeriver, localVariableDeclarationDeriver, fieldDeclarationDeriver, annotationDeriver,
-        compilationUnitDeriver, throwStatementDeriver };
+    private static final NodeImageDeriver[] ALL_DERIVERS = new NodeImageDeriver[] { IMPORT_DERIVER,
+        METHOD_DECLARATION_DERIVER, LOCAL_VARIABLE_DECLARATION_DERIVER, FIELD_DECLARATION_DERIVER, ANNOTATION_DERIVER,
+        COMPILATION_UNIT_DERIVER, THROW_STATEMENT_DERIVER };
 
     private static final Map<Class<?>, NodeImageDeriver> DERIVERS_BY_TYPE = new HashMap<>(
             NodeImageDeriver.ALL_DERIVERS.length);
