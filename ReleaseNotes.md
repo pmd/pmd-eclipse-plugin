@@ -7,12 +7,11 @@ Eclipse Update Site:
 *   Releases: <https://pmd.github.io/pmd-eclipse-plugin-p2-site/>
 *   Snapshots: <https://pmd.github.io/pmd-eclipse-plugin-p2-site/snapshot/>
 
-## ????: 7.1.0.v????
+## 26-April-2024: 7.1.0.v20240426-0821-r
 
 This is a minor release.
 
 ### New and noteworthy
-
 * Updated to PMD 7.1.0
 
 ### Fixed Issues
@@ -56,8 +55,6 @@ The following members have been deprecated for removal:
 * `net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.PerRulePropertyPanelManager#EDITOR_FACTORIES_BY_PROPERTY_TYPE`
 
 See the javadoc for more info and any possible alternatives if available.
-
-### External Contributions
 
 ## 22-March-2024: 7.0.0.v20240322-0920-r
 
