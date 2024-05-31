@@ -12,6 +12,7 @@ Eclipse Update Site:
 This is a minor release.
 
 ### New and noteworthy
+* Updated to PMD 7.2.0
 
 ### Fixed Issues
 
