@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: PMD eclipse test fragment
 Bundle-SymbolicName: net.sourceforge.pmd.eclipse.plugin.test.fragment;singleton:=true
-Bundle-Version: 7.2.0.v20240531-1152-r
+Bundle-Version: 7.3.0.qualifier
 Bundle-Vendor: PMD Development Team
 Fragment-Host: net.sourceforge.pmd.eclipse.plugin
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
