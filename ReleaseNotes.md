@@ -13,6 +13,9 @@ This is a minor release.
 
 ### New and noteworthy
 
+* Support for Eclipse 2024-06 added
+* Support for Eclipse 2023-06 removed
+
 ### Fixed Issues
 
 ### API Changes
