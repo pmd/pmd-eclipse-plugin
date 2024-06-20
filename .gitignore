@@ -7,3 +7,4 @@ target/
 .ruleset
 .pmdruleset.xml
 net.sourceforge.pmd.eclipse.plugin/japicmp-data
+net.sourceforge.pmd.eclipse.plugin.test/screenshots
