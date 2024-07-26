@@ -12,12 +12,7 @@ Eclipse Update Site:
 This is a minor release.
 
 ### New and noteworthy
-
-### Fixed Issues
-
-### API Changes
-
-### External Contributions
+* Update to PMD 7.4.0
 
 ## 28-June-2024: 7.3.0.v20240628-1015-r
 
