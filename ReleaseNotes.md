@@ -19,6 +19,9 @@ This is a minor release.
 
 ### External Contributions
 
+### Dependency updates
+* Bump org.apache.maven.plugins:maven-surefire-plugin from 3.3.0 to 3.4.0 ([#215](https://github.com/pmd/pmd-eclipse-plugin/pull/215))
+
 ## 26-July-2024: 7.4.0.v20240726-0845-r
 
 This is a minor release.
