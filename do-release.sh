@@ -108,11 +108,11 @@ ${RELEASE_NOTES_BODY}
 EOF
 
 echo
-echo "Updating version in master to next"
+echo "Updating version in main to next"
 ./mvnw org.eclipse.tycho:tycho-versions-plugin:set-version -DnewVersion="${DEVELOPMENT_VERSION}-SNAPSHOT"
 git commit -a -m "Prepare next pmd-eclipse-plugin development version ${DEVELOPMENT_VERSION}-SNAPSHOT"
-echo "Pushing master"
-git push origin master
+echo "Pushing main"
+git push origin main
 
 echo
 echo Checkout the release branch and build the plugin
@@ -142,7 +142,7 @@ read -r
 echo
 echo "Publishing now..."
 git restore net.sourceforge.pmd.eclipse.p2updatesite/category.xml
-git checkout master
+git checkout main
 git branch -D "pmd-eclipse-plugin-rb-${RELEASE_VERSION}"
 git push origin tag "${RELEASE_VERSION}.${BUILDQUALIFIER}"
 echo
@@ -198,7 +198,7 @@ echo
 echo "Please verify and commit and push..."
 echo "cd ${PMD_GITHUB_IO_DIR}"
 echo "git commit -m \"PMD For Eclipse ${RELEASE_VERSION}.${BUILDQUALIFIER} Released\""
-echo "git push origin master"
+echo "git push origin main"
 echo
 echo
 echo Done.
