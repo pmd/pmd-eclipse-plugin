@@ -13,6 +13,9 @@ This is a minor release.
 
 ### New and noteworthy
 
+* Support for Eclipse 2024-09 added
+* Support for Eclipse 2023-09 removed
+
 #### New Git default branch - "main"
 
 We are joining the Git community and updating "master" to "main". Using the term "master" for the main
