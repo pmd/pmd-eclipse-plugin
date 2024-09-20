@@ -15,20 +15,25 @@ This is a minor release.
 
 * Support for Eclipse 2024-09 added
 * Support for Eclipse 2023-09 removed
-
-#### New Git default branch - "main"
-
-We are joining the Git community and updating "master" to "main". Using the term "master" for the main
-development branch can be offensive to some people. Existing versions of Git have been always capable of
-working with any branch name and since 2.28.0 (July 2020) the default initial branch is configurable
-(`init.defaultBranch`). Since October 2020, the default branch for new repositories on GitHub
-is "main". Finally, PMD will also use this new name for the main branch in all our own repositories.
+* New Git default branch - "main":  
+  We are joining the Git community and updating "master" to "main". Using the term "master" for the main
+  development branch can be offensive to some people. Existing versions of Git have been always capable of
+  working with any branch name and since 2.28.0 (July 2020) the default initial branch is configurable
+  (`init.defaultBranch`). Since October 2020, the default branch for new repositories on GitHub
+  is "main". Finally, PMD will also use this new name for the main branch in all our own repositories.
 
 ### Fixed Issues
 
 ### API Changes
 
-### External Contributions
+### Merged pull requests
+* Only include the jars under target/lib that are on the classpath ([#223](https://github.com/pmd/pmd-eclipse-plugin/pull/223)) by [@adangel](https://github.com/adangel)
+* Update PMD icon to use small variant of the logo ([#222](https://github.com/pmd/pmd-eclipse-plugin/pull/222)) by [@adangel](https://github.com/adangel)
+* Support eclipse 2024-09 ([#221](https://github.com/pmd/pmd-eclipse-plugin/pull/221)) by [@adangel](https://github.com/adangel)
+* Change branch master to main ([#220](https://github.com/pmd/pmd-eclipse-plugin/pull/220)) by [@adangel](https://github.com/adangel)
+
+### Dependency updates
+* Bump checkstyle from 10.14.0 to 10.18.1 ([#217](https://github.com/pmd/pmd-eclipse-plugin/pull/217))
 
 ## 30-August-2024: 7.5.0.v20240830-0910-r
 
