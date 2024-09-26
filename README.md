@@ -1,6 +1,6 @@
 # PMD Eclipse Plugin
 
-[![Build Status](https://github.com/pmd/pmd-eclipse-plugin/workflows/build/badge.svg?branch=main)](https://github.com/pmd/pmd-eclipse-plugin/actions/?query=workflow%3Abuild+branch%3Amaster)
+[![Build Status](https://github.com/pmd/pmd-eclipse-plugin/actions/workflows/build.yml/badge.svg?branch=main)](https://github.com/pmd/pmd-eclipse-plugin/actions/workflows/build.yml)
 [![Eclipse Marketplace](https://img.shields.io/eclipse-marketplace/v/pmd-eclipse-plugin.svg)](https://marketplace.eclipse.org/content/pmd-eclipse-plugin)
 
 Release Notes: <https://github.com/pmd/pmd-eclipse-plugin/blob/main/ReleaseNotes.md>
