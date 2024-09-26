@@ -7,7 +7,7 @@ for pmd-code.org:
 
 ```
 $ export CI_SIGN_PASSPHRASE=...
-$ openssl pkcs12 -export -in Lets_Encrypt_pmd-code.org_2024-03-08.pem \
+$ openssl pkcs12 -export -in Lets_Encrypt_pmd-code.org_2024-09-26.pem \
     -name eclipse-plugin \
     -password env:CI_SIGN_PASSPHRASE \
     -out pmd-eclipse-plugin.p12 \
@@ -21,7 +21,7 @@ $ jarsigner -verbose \
   eclipse-plugin
 ```
 
-Note: The file "Lets_Encrypt_pmd-code.org_2024-03-08.pem" contains the private key, the certificate
+Note: The file "Lets_Encrypt_pmd-code.org_2024-09-26.pem" contains the private key, the certificate
 and intermediate certificates.
 
 Note: with openssl 3, the option `-legacy` is required in order to use the pkcs12 keystore with java8.
@@ -45,7 +45,7 @@ Decrypt it via:
 Signing the jar manually via `jarsigner` is difficult, since it changes the jar file and the p2 repo metadata
 fails with the wrong checksum. Therefore jarsigning is integrated via [maven-jarsigner-plugin](https://maven.apache.org/plugins/maven-jarsigner-plugin/). See also <https://stackoverflow.com/questions/7956267/tycho-jar-signing>.
 
-Note: The Let's Encrypt certificate is valid until 2024-06-06. But while signing a digital timestamp is created
+Note: The Let's Encrypt certificate is valid until 2024-12-25. But while signing a digital timestamp is created
 using [DigiCert's Timestamp Server](https://knowledge.digicert.com/generalinformation/INFO4231.html). That's
 why the signature is valid longer than the certificate.
 
