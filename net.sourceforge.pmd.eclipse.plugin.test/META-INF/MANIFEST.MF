@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Version: 7.6.0.v20240927-1030-r
+Bundle-Version: 7.7.0.qualifier
 Import-Package: org.apache.commons.io
 Bundle-Name: PMD Test Plugin
 Bundle-SymbolicName: net.sourceforge.pmd.eclipse.plugin.test;singleton:=true
