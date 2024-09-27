@@ -7,7 +7,7 @@ Eclipse Update Site:
 *   Releases: <https://pmd.github.io/pmd-eclipse-plugin-p2-site/>
 *   Snapshots: <https://pmd.github.io/pmd-eclipse-plugin-p2-site/snapshot/>
 
-## ????: 7.6.0.v????
+## 27-September-2024: 7.6.0.v20240927-1030-r
 
 This is a minor release.
 
@@ -21,10 +21,6 @@ This is a minor release.
   working with any branch name and since 2.28.0 (July 2020) the default initial branch is configurable
   (`init.defaultBranch`). Since October 2020, the default branch for new repositories on GitHub
   is "main". Finally, PMD will also use this new name for the main branch in all our own repositories.
-
-### Fixed Issues
-
-### API Changes
 
 ### Merged pull requests
 * Only include the jars under target/lib that are on the classpath ([#223](https://github.com/pmd/pmd-eclipse-plugin/pull/223)) by [@adangel](https://github.com/adangel)
