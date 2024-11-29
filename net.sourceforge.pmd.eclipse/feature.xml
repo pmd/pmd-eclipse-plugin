@@ -2,7 +2,7 @@
 <feature
       id="net.sourceforge.pmd.eclipse"
       label="%feature.label"
-      version="7.8.0.v20241129-1139-r"
+      version="7.9.0.qualifier"
       provider-name="%feature.provider_name"
       plugin="net.sourceforge.pmd.eclipse.plugin"
       image="pmd_logo_small.jpg">
@@ -36,6 +36,6 @@
          id="net.sourceforge.pmd.eclipse.plugin"
          download-size="0"
          install-size="0"
-         version="7.8.0.v20241129-1139-r"/>
+         version="7.9.0.qualifier"/>
 
 </feature>
