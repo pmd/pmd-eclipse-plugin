@@ -7,18 +7,17 @@ Eclipse Update Site:
 *   Releases: <https://pmd.github.io/pmd-eclipse-plugin-p2-site/>
 *   Snapshots: <https://pmd.github.io/pmd-eclipse-plugin-p2-site/snapshot/>
 
-## ????: 7.8.0.v????
+## 29-November-2024: 7.8.0.v20241129-1139-r
 
 This is a minor release.
 
 ### New and noteworthy
 * Update to PMD 7.8.0
 
-### Fixed Issues
-
-### API Changes
-
-### External Contributions
+### Dependency updates
+* Bump tycho from 4.0.8 to 4.0.10 ([#229](https://github.com/pmd/pmd-eclipse-plugin/pull/229))
+* Bump PMD from 7.7.0 to 7.8.0 ([#230](https://github.com/pmd/pmd-eclipse-plugin/pull/230))
+* Bump pmd-build-tools from 27 to 28 ([#231](https://github.com/pmd/pmd-eclipse-plugin/pull/231))
 
 ## 25-October-2024: 7.7.0.v20241025-0829-r
 
