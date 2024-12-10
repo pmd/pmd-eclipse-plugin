@@ -15,7 +15,7 @@ on:
 jobs:
   # verify build on one node before multiple builds on different os are started
   fail-fast-build:
-    name: verify (ubuntu-latest, 2024-09)
+    name: verify (ubuntu-latest, 2024-12)
     timeout-minutes: 60
     runs-on: ubuntu-latest
     steps:
@@ -28,7 +28,7 @@ jobs:
       - name: Build
         uses: ./.github/actions/build
         with:
-          targetPlatform: 2024-09
+          targetPlatform: 2024-12
           deploy: true
           pmdCiSecretPassphrase: ${{ secrets.PMD_CI_SECRET_PASSPHRASE }}
           githubToken: ${{ secrets.GITHUB_TOKEN }}
@@ -37,7 +37,7 @@ jobs:
         uses: actions/upload-artifact@v4
         if: ${{ failure() }}
         with:
-          name: screenshots-ubuntu-latest-2024-09
+          name: screenshots-ubuntu-latest-2024-12
           path: net.sourceforge.pmd.eclipse.plugin.test/screenshots
           if-no-files-found: ignore
 
@@ -51,19 +51,19 @@ jobs:
     strategy:
       matrix:
         os: [ ubuntu-latest, windows-latest, macos-latest ]
-        targetPlatform: [ 2024-09 ]
+        targetPlatform: [ 2024-12 ]
         exclude:
           # exclude the fail-fast-build, which already ran
           - os: ubuntu-latest
-            targetPlatform: 2024-09
+            targetPlatform: 2024-12
         # run other target platforms only on linux
         include:
+          - os: ubuntu-latest
+            targetPlatform: 2024-09
           - os: ubuntu-latest
             targetPlatform: 2024-06
           - os: ubuntu-latest
             targetPlatform: 2024-03
-          - os: ubuntu-latest
-            targetPlatform: 2023-12
       fail-fast: true
 
     runs-on: ${{ matrix.os }}

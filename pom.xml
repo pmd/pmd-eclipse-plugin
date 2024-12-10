@@ -15,7 +15,7 @@
   </modules>
 
   <properties>
-    <target.platform>2024-09</target.platform>
+    <target.platform>2024-12</target.platform>
 
     <java.version>1.8</java.version>
     <!-- https://github.com/eclipse/tycho/blob/master/RELEASE_NOTES.md and https://github.com/eclipse-tycho/tycho/releases -->
