@@ -14,6 +14,9 @@ This is a minor release.
 ### New and noteworthy
 * Support for Eclipse 2024-12 added
 * Support for Eclipse 2023-12 removed
+* The plugin now uses GPG signatures. Releases are signed with
+  [D0BF1D737C9A1C22](https://keyserver.ubuntu.com/pks/lookup?search=D0BF1D737C9A1C22&fingerprint=on&op=index).
+  The full fingerprint is `EBB2 41A5 45CB 17C8 7FAC B2EB D0BF 1D73 7C9A 1C22`.
 
 ### Fixed Issues
 
