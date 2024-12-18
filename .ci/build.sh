@@ -51,7 +51,6 @@ function build() {
         pmd_ci_setup_secrets_private_env
         pmd_ci_setup_secrets_ssh
         pmd_ci_maven_setup_settings
-        extract_keystore
     pmd_ci_log_group_end
 
     if pmd_ci_maven_isSnapshotBuild; then
@@ -68,17 +67,10 @@ function snapshot_build() {
     pmd_ci_log_group_start "Snapshot Build: ${PMD_CI_MAVEN_PROJECT_VERSION}"
         pmd_ci_log_info "This is a snapshot build on branch ${PMD_CI_BRANCH} (version: ${PMD_CI_MAVEN_PROJECT_VERSION})"
 
-        # Build 1 - without signing but with tests
-        ${xvfb_cmd} ./mvnw clean verify \
-            --show-version --errors --batch-mode --no-transfer-progress \
-            -Dtarget.platform=${TARGET_PLATFORM}
-
-        # Build 2 - with signing, but skipping tests, pmd, checkstyle
         ${xvfb_cmd} ./mvnw clean verify \
             --show-version --errors --batch-mode --no-transfer-progress \
             --activate-profiles sign \
-            -Dtarget.platform=${TARGET_PLATFORM} \
-            -Dpmd.skip=true -DskipTests -Dcheckstyle.skip
+            -Dtarget.platform=${TARGET_PLATFORM}
 
         # Upload update site to sourceforge
         local qualifiedVersion
@@ -125,17 +117,10 @@ function release_build() {
     pmd_ci_log_group_start "Release Build: ${PMD_CI_MAVEN_PROJECT_VERSION}"
         pmd_ci_log_info "This is a release build for tag ${PMD_CI_TAG} (version: ${PMD_CI_MAVEN_PROJECT_VERSION})"
 
-        # Build 1 - without signing but with tests
-        ${xvfb_cmd} ./mvnw clean verify \
-            --show-version --errors --batch-mode --no-transfer-progress \
-            -Dtarget.platform=${TARGET_PLATFORM}
-
-        # Build 2 - with signing, but skipping tests, pmd, checkstyle
         ${xvfb_cmd} ./mvnw clean verify \
             --show-version --errors --batch-mode --no-transfer-progress \
             --activate-profiles sign \
-            -Dtarget.platform=${TARGET_PLATFORM} \
-            -Dpmd.skip=true -DskipTests -Dcheckstyle.skip
+            -Dtarget.platform=${TARGET_PLATFORM}
 
     pmd_ci_log_group_end
 
@@ -287,15 +272,6 @@ ${children_index}
 For older versions, see <https://sourceforge.net/projects/pmd/files/pmd-eclipse/zipped/>
 
 " > index.md
-}
-
-function extract_keystore() {
-    local -r keystore=".ci/files/pmd-eclipse-plugin.p12"
-    pmd_ci_log_info "Extracting keystore ${keystore}..."
-    printenv PMD_CI_SECRET_PASSPHRASE | gpg --batch --yes --decrypt \
-        --passphrase-fd 0 \
-        --output "${keystore}" "${keystore}.asc"
-    chmod 600 "${keystore}"
 }
 
 build
