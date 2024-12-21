@@ -333,6 +333,14 @@
           <version>${tycho.version}</version>
         </plugin>
         <plugin>
+          <groupId>org.eclipse.tycho</groupId>
+          <artifactId>tycho-gpg-plugin</artifactId>
+          <version>${tycho.version}</version>
+          <configuration>
+            <bestPractices>true</bestPractices>
+          </configuration>
+        </plugin>
+        <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-checkstyle-plugin</artifactId>
           <version>${checkstyle.plugin.version}</version>
@@ -506,34 +514,6 @@
             </plugin>
           </plugins>
         </pluginManagement>
-      </build>
-    </profile>
-
-    <profile>
-      <id>sign</id>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-jarsigner-plugin</artifactId>
-            <version>3.0.0</version>
-            <configuration>
-              <alias>eclipse-plugin</alias>
-              <keystore>${keystore}</keystore>
-              <keypass>${env.CI_SIGN_PASSPHRASE}</keypass>
-              <storepass>${env.CI_SIGN_PASSPHRASE}</storepass>
-              <tsa>http://timestamp.digicert.com</tsa>
-            </configuration>
-            <executions>
-              <execution>
-                <id>sign</id>
-                <goals>
-                  <goal>sign</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
       </build>
     </profile>
   </profiles>
