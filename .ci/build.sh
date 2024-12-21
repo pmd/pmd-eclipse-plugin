@@ -49,6 +49,7 @@ function build() {
     # only builds on pmd/pmd-eclipse-plugin continue here
     pmd_ci_log_group_start "Setup environment"
         pmd_ci_setup_secrets_private_env
+        pmd_ci_setup_secrets_gpg_key
         pmd_ci_setup_secrets_ssh
         pmd_ci_maven_setup_settings
     pmd_ci_log_group_end
