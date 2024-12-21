@@ -70,7 +70,7 @@ function snapshot_build() {
         export MAVEN_GPG_PASSPHRASE="${CI_SIGN_PASSPHRASE}"
         ${xvfb_cmd} ./mvnw clean verify \
             --show-version --errors --batch-mode --no-transfer-progress \
-            --activate-profiles sign_env \
+            --activate-profiles sign_env -Dgpg.keyname="${CI_SIGN_KEYNAME}" \
             -Dtarget.platform=${TARGET_PLATFORM}
         unset MAVEN_GPG_PASSPHRASE
 
@@ -122,7 +122,7 @@ function release_build() {
         export MAVEN_GPG_PASSPHRASE="${CI_SIGN_PASSPHRASE}"
         ${xvfb_cmd} ./mvnw clean verify \
             --show-version --errors --batch-mode --no-transfer-progress \
-            --activate-profiles sign_env \
+            --activate-profiles sign_env -Dgpg.keyname="${CI_SIGN_KEYNAME}" \
             -Dtarget.platform=${TARGET_PLATFORM}
         unset MAVEN_GPG_PASSPHRASE
 
