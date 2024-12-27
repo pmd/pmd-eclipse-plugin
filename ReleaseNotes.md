@@ -7,7 +7,7 @@ Eclipse Update Site:
 *   Releases: <https://pmd.github.io/pmd-eclipse-plugin-p2-site/>
 *   Snapshots: <https://pmd.github.io/pmd-eclipse-plugin-p2-site/snapshot/>
 
-## ????: 7.9.0.v????
+## 27-December-2024: 7.9.0.v20241227-1626-r
 
 This is a minor release.
 
@@ -18,10 +18,6 @@ This is a minor release.
 * The plugin now uses GPG signatures. Releases are signed with
   [D0BF1D737C9A1C22](https://keyserver.ubuntu.com/pks/lookup?search=D0BF1D737C9A1C22&fingerprint=on&op=index).
   The full fingerprint is `EBB2 41A5 45CB 17C8 7FAC B2EB D0BF 1D73 7C9A 1C22`.
-
-### Fixed Issues
-
-### API Changes
 
 ### Merged pull requests
 * Use gpg signing ([#233](https://github.com/pmd/pmd-eclipse-plugin/pull/233)) by [@adangel](https://github.com/adangel)
