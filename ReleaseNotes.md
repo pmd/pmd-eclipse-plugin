@@ -12,6 +12,7 @@ Eclipse Update Site:
 This is a minor release.
 
 ### New and noteworthy
+* Update to PMD 7.9.0
 * Support for Eclipse 2024-12 added
 * Support for Eclipse 2023-12 removed
 * The plugin now uses GPG signatures. Releases are signed with
@@ -25,6 +26,9 @@ This is a minor release.
 ### Merged pull requests
 * Use gpg signing ([#233](https://github.com/pmd/pmd-eclipse-plugin/pull/233)) by [@adangel](https://github.com/adangel)
 * Support eclipse 2024-12 ([#232](https://github.com/pmd/pmd-eclipse-plugin/pull/232)) by [@adangel](https://github.com/adangel)
+
+### Dependency updates
+* Bump PMD from 7.8.0 to 7.9.0 ([#235](https://github.com/pmd/pmd-eclipse-plugin/pull/235)) by [@adangel](https://github.com/adangel)
 
 ## 29-November-2024: 7.8.0.v20241129-1139-r
 
