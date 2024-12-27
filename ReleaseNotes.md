@@ -27,6 +27,9 @@ This is a minor release.
 * Use gpg signing ([#233](https://github.com/pmd/pmd-eclipse-plugin/pull/233)) by [@adangel](https://github.com/adangel)
 * Support eclipse 2024-12 ([#232](https://github.com/pmd/pmd-eclipse-plugin/pull/232)) by [@adangel](https://github.com/adangel)
 
+### Dependency updates
+* Bump PMD from 7.8.0 to 7.9.0 ([#235](https://github.com/pmd/pmd-eclipse-plugin/pull/235)) by [@adangel](https://github.com/adangel)
+
 ## 29-November-2024: 7.8.0.v20241129-1139-r
 
 This is a minor release.
