@@ -39,7 +39,7 @@
 
     <profiles>
       <profile>
-        <id>sign_env</id>
+        <id>sign</id>
         <build>
           <plugins>
             <plugin>

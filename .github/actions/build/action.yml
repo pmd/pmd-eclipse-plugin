@@ -13,6 +13,12 @@ inputs:
   githubToken:
     description: 'The GitHub Token used for releases'
     required: false
+  pmdCiGpgPrivateKey:
+    description: 'The GPG Private Key used for signing the release'
+    required: false
+  pmdCiGpgPassphrase:
+    description: 'The passphrase for the GPG private key used for signing the release'
+    required: false
 
 runs:
   using: 'composite'
@@ -25,3 +31,5 @@ runs:
         DEPLOY: ${{ inputs.deploy }}
         PMD_CI_SECRET_PASSPHRASE: ${{ inputs.pmdCiSecretPassphrase }}
         GITHUB_TOKEN: ${{ inputs.githubToken }}
+        PMD_CI_GPG_PRIVATE_KEY: ${{ inputs.pmdCiGpgPrivateKey }}
+        MAVEN_GPG_PASSPHRASE: ${{ inputs.pmdCiGpgPassphrase }}

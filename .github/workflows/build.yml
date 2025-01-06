@@ -32,6 +32,8 @@ jobs:
           deploy: true
           pmdCiSecretPassphrase: ${{ secrets.PMD_CI_SECRET_PASSPHRASE }}
           githubToken: ${{ secrets.GITHUB_TOKEN }}
+          pmdCiGpgPrivateKey: ${{ secrets.PMD_CI_GPG_PRIVATE_KEY }}
+          pmdCiGpgPassphrase: ${{ secrets.PMD_CI_GPG_PASSPHRASE }}
 
       - name: Upload screenshots of failed unit tests
         uses: actions/upload-artifact@v4
@@ -79,8 +81,6 @@ jobs:
         with:
           targetPlatform: ${{ matrix.targetPlatform }}
           deploy: false
-          pmdCiSecretPassphrase: ${{ secrets.PMD_CI_SECRET_PASSPHRASE }}
-          githubToken: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Upload screenshots of failed unit tests
         uses: actions/upload-artifact@v4
