@@ -68,12 +68,10 @@ function snapshot_build() {
     pmd_ci_log_group_start "Snapshot Build: ${PMD_CI_MAVEN_PROJECT_VERSION}"
         pmd_ci_log_info "This is a snapshot build on branch ${PMD_CI_BRANCH} (version: ${PMD_CI_MAVEN_PROJECT_VERSION})"
 
-        export MAVEN_GPG_PASSPHRASE="${CI_SIGN_PASSPHRASE}"
         ${xvfb_cmd} ./mvnw clean verify \
             --show-version --errors --batch-mode --no-transfer-progress \
-            --activate-profiles sign_env -Dgpg.keyname="${CI_SIGN_KEYNAME}" \
+            --activate-profiles sign \
             -Dtarget.platform=${TARGET_PLATFORM}
-        unset MAVEN_GPG_PASSPHRASE
 
         # Upload update site to sourceforge
         local qualifiedVersion
@@ -120,12 +118,10 @@ function release_build() {
     pmd_ci_log_group_start "Release Build: ${PMD_CI_MAVEN_PROJECT_VERSION}"
         pmd_ci_log_info "This is a release build for tag ${PMD_CI_TAG} (version: ${PMD_CI_MAVEN_PROJECT_VERSION})"
 
-        export MAVEN_GPG_PASSPHRASE="${CI_SIGN_PASSPHRASE}"
         ${xvfb_cmd} ./mvnw clean verify \
             --show-version --errors --batch-mode --no-transfer-progress \
-            --activate-profiles sign_env -Dgpg.keyname="${CI_SIGN_KEYNAME}" \
+            --activate-profiles sign \
             -Dtarget.platform=${TARGET_PLATFORM}
-        unset MAVEN_GPG_PASSPHRASE
 
     pmd_ci_log_group_end
 
