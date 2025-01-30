@@ -12,6 +12,7 @@ Eclipse Update Site:
 This is a minor release.
 
 ### New and noteworthy
+* Update to PMD 7.10.0
 * The plugin uses a new GPG key for code signing. Releases are signed with
   [A0B5CA1A4E086838](https://keyserver.ubuntu.com/pks/lookup?search=0x2EFA55D0785C31F956F2F87EA0B5CA1A4E086838&fingerprint=on&op=index).
   The full fingerprint is `2EFA 55D0 785C 31F9 56F2  F87E A0B5 CA1A 4E08 6838`.

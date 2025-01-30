@@ -65,11 +65,12 @@
             <version>3.7.1</version>
             <configuration>
                 <stripVersion>true</stripVersion>
-                <prependGroupId>false</prependGroupId>
+                <prependGroupId>true</prependGroupId>
                 <outputDirectory>${project.build.directory}/lib</outputDirectory>
                 <excludeGroupIds>p2.eclipse-plugin,p2.eclipse.plugin</excludeGroupIds>
                 <excludeArtifactIds>net.sourceforge.pmd.eclipse.plugin,net.sourceforge.pmd.eclipse.plugin.source</excludeArtifactIds>
                 <useRepositoryLayout>false</useRepositoryLayout>
+                <includeScope>runtime</includeScope>
             </configuration>
             <executions>
                 <execution>
