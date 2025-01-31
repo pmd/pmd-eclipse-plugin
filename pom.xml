@@ -25,7 +25,7 @@
     <pmd.build-tools.version>29</pmd.build-tools.version>
     <checkstyle.version>10.18.1</checkstyle.version>
     <checkstyle.plugin.version>3.5.0</checkstyle.plugin.version>
-    <pmd.plugin.version>3.25.0</pmd.plugin.version>
+    <pmd.plugin.version>3.26.0</pmd.plugin.version>
     <pmd.check.version>7.9.0</pmd.check.version>
 
     <keystorePath>.ci/files/pmd-eclipse-plugin.p12</keystorePath>
