@@ -24,6 +24,10 @@ This is a minor release.
 ### Merged pull requests
 * Use new gpg key ([#237](https://github.com/pmd/pmd-eclipse-plugin/pull/237)) by [@adangel](https://github.com/adangel)
 
+### Dependency updates
+* Bump pmd-build-tools from 29-SNAPSHOT to 29 ([#238](https://github.com/pmd/pmd-eclipse-plugin/pull/238)) by [@adangel](https://github.com/adangel)
+* Bump PMD from 7.9.0 to 7.10.0 ([#239](https://github.com/pmd/pmd-eclipse-plugin/pull/239)) by [@adangel](https://github.com/adangel)
+
 ## 27-December-2024: 7.9.0.v20241227-1626-r
 
 This is a minor release.
