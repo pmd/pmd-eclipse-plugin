@@ -7,18 +7,12 @@ Eclipse Update Site:
 *   Releases: <https://pmd.github.io/pmd-eclipse-plugin-p2-site/>
 *   Snapshots: <https://pmd.github.io/pmd-eclipse-plugin-p2-site/snapshot/>
 
-## ????: 7.11.0.v????
+## 28-February-2025: 7.11.0.v20250228-1209-r
 
 This is a minor release.
 
 ### New and noteworthy
 * Update to PMD 7.11.0
-
-### Fixed Issues
-
-### API Changes
-
-### External Contributions
 
 ### Dependency updates
 * Bump maven-pmd-plugin from 3.25.0 to 3.26.0 ([#240](https://github.com/pmd/pmd-eclipse-plugin/pull/240))
