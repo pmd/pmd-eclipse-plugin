@@ -66,7 +66,7 @@ public class ViolationOverview extends ViewPart implements ISelectionProvider, I
     private ViewMemento memento;
 
     protected final Integer[] columnWidths = new Integer[5];
-    protected final int[] columnSortOrder = { 1, -1, -1, -1, 1 };
+    protected final int[] columnSortOrder = { 1, -1, -1, -1, 1 }; // NOPMD: Can't be static, as this is public API.
     protected int currentSortedColumn;
     private int showType;
 
