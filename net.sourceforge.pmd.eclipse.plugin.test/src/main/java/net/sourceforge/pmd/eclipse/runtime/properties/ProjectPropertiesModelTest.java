@@ -573,6 +573,11 @@ public class ProjectPropertiesModelTest {
             + "    <classpathentry kind=\"lib\" path=\"/ExternalProject/sample-lib4.jar\"/>\n"
             + "</classpath>\n";
         file.setContents(IOUtils.toInputStream(newClasspathContent, "UTF-8"), 0, null);
+        // refresh, so that changed .classpath file is considered
+        this.testProject.refreshLocal(IResource.DEPTH_INFINITE, null);
+        // rebuild again, so that changed classpath is configured on java project
+        this.testProject.build(IncrementalProjectBuilder.FULL_BUILD, null);
+
         final IProjectPropertiesManager mgr = PMDPlugin.getDefault().getPropertiesManager();
         IProjectProperties model = mgr.loadProjectProperties(this.testProject);
         URLClassLoader auxClasspath = (URLClassLoader) model.getAuxClasspath(); // NOPMD: don't close auxclasspath in test, this should be done by the plugin
