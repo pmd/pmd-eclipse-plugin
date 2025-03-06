@@ -1,0 +1,14 @@
+target "2025-03 (4.35)"
+with source requirements environment JavaSE-21
+location "https://download.eclipse.org/releases/2025-03/" {
+	org.eclipse.platform.feature.group
+	org.eclipse.jdt.feature.group
+	org.eclipse.wst.xml_core.feature.feature.group
+	org.eclipse.pde.feature.group
+	org.eclipse.swtbot.eclipse.feature.group
+	org.eclipse.swtbot.feature.group
+	org.eclipse.swtbot.ide.feature.group
+	org.eclipse.swtbot.generator.feature.feature.group
+	org.junit
+	org.junit.source
+}

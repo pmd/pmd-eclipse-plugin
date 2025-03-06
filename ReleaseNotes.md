@@ -12,6 +12,8 @@ Eclipse Update Site:
 This is a minor release.
 
 ### New and noteworthy
+* Support for Eclipse 2025-03 added
+* Support for Eclipse 2024-03 removed
 
 ### Fixed Issues
 
