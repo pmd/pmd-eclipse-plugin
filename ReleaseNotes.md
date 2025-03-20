@@ -19,7 +19,8 @@ This is a minor release.
 
 ### API Changes
 
-### External Contributions
+### Merged pull requests
+* Support eclipse 2025-03 ([#260](https://github.com/pmd/pmd-eclipse-plugin/pull/260)) by [@adangel](https://github.com/adangel)
 
 ## 28-February-2025: 7.11.0.v20250228-1209-r
 
