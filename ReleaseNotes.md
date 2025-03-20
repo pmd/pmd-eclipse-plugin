@@ -17,7 +17,8 @@ This is a minor release.
 
 ### API Changes
 
-### External Contributions
+### Merged pull requests
+* Explicitly refresh and rebuild test project after .classpath change ([#261](https://github.com/pmd/pmd-eclipse-plugin/pull/261)) by [@adangel](https://github.com/adangel)
 
 ## 28-February-2025: 7.11.0.v20250228-1209-r
 
