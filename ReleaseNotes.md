@@ -12,12 +12,15 @@ Eclipse Update Site:
 This is a minor release.
 
 ### New and noteworthy
+* Support for Eclipse 2025-03 added
+* Support for Eclipse 2024-03 removed
 
 ### Fixed Issues
 
 ### API Changes
 
 ### Merged pull requests
+* Support eclipse 2025-03 ([#260](https://github.com/pmd/pmd-eclipse-plugin/pull/260)) by [@adangel](https://github.com/adangel)
 * Explicitly refresh and rebuild test project after .classpath change ([#261](https://github.com/pmd/pmd-eclipse-plugin/pull/261)) by [@adangel](https://github.com/adangel)
 
 ## 28-February-2025: 7.11.0.v20250228-1209-r
