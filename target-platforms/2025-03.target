@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?pde?>
 <!-- generated with https://github.com/eclipse-cbi/targetplatform-dsl -->
-<target name="2025-03 (4.35)" sequenceNumber="1741245499">
+<target name="2025-03 (4.35)" sequenceNumber="1742482149">
   <locations>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
-      <unit id="org.eclipse.platform.feature.group" version="4.35.0.v20250220-0450"/>
-      <unit id="org.eclipse.jdt.feature.group" version="3.20.100.v20250220-0450"/>
-      <unit id="org.eclipse.wst.xml_core.feature.feature.group" version="3.36.0.v202409282004"/>
-      <unit id="org.eclipse.pde.feature.group" version="3.16.200.v20250220-0450"/>
+      <unit id="org.eclipse.platform.feature.group" version="4.35.0.v20250228-0640"/>
+      <unit id="org.eclipse.jdt.feature.group" version="3.20.100.v20250228-0140"/>
+      <unit id="org.eclipse.wst.xml_core.feature.feature.group" version="3.37.0.v202503020853"/>
+      <unit id="org.eclipse.pde.feature.group" version="3.16.200.v20250228-0140"/>
       <unit id="org.eclipse.swtbot.eclipse.feature.group" version="4.2.1.202406141605"/>
       <unit id="org.eclipse.swtbot.feature.group" version="4.2.1.202406141605"/>
       <unit id="org.eclipse.swtbot.ide.feature.group" version="4.2.1.202406141605"/>
