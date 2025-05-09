@@ -184,7 +184,7 @@ jobs:
           private-key: ${{ secrets.PMD_ACTIONS_HELPER_PRIVATE_KEY }}
           owner: pmd
           repositories: pmd-eclipse-plugin-p2-site
-          permission-actions: write
+          permission-contents: write
       - name: Prepare Local P2 Repository
         uses: actions/checkout@v4
         with:
