@@ -21,6 +21,7 @@ runs:
           ${{ runner.os }}-maven-
     - name: Setup xvfb
       if: ${{ runner.os == 'Linux' }}
+      shell: bash
       run: |
         #see https://github.com/GabrielBB/xvfb-action
         sudo apt-get install --yes xvfb
