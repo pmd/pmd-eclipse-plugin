@@ -155,7 +155,7 @@ jobs:
         run: |
           uploadUrl="${PMD_SF_USER}@web.sourceforge.net:/home/frs/project/pmd/pmd-eclipse/zipped/"
           rsync -avh \
-              "net.sourceforge.pmd.eclipse.p2updatesite/target/net.sourceforge.pmd.eclipse.p2updatesite-*.zip" \
+              "net.sourceforge.pmd.eclipse.p2updatesite-*.zip" \
               "${uploadUrl}/net.sourceforge.pmd.eclipse.p2updatesite-SNAPSHOT.zip"
 
       - name: Cleanup ssh
@@ -201,12 +201,12 @@ jobs:
           git config user.name "pmd-actions-helper[bot]"
           git config user.email "207160486+pmd-actions-helper[bot]@users.noreply.github.com"
 
-          qualifiedVersion="$(basename ../net.sourceforge.pmd.eclipse.p2updatesite/target/net.sourceforge.pmd.eclipse.p2updatesite-*.zip)"
+          qualifiedVersion="$(basename ../net.sourceforge.pmd.eclipse.p2updatesite-*.zip)"
           qualifiedVersion="${qualifiedVersion%.zip}"
           qualifiedVersion="${qualifiedVersion#net.sourceforge.pmd.eclipse.p2updatesite-}"
 
           rm -rf snapshot
-          unzip -q -d snapshot "../net.sourceforge.pmd.eclipse.p2updatesite/target/net.sourceforge.pmd.eclipse.p2updatesite-*.zip"
+          unzip -q -d snapshot "../net.sourceforge.pmd.eclipse.p2updatesite-*.zip"
           echo "This is a Eclipse Update Site for the [PMD Eclipse Plugin](https://github.com/pmd/pmd-eclipse-plugin/) ${VERSION}.
 
           Use <https://pmd.github.io/pmd-eclipse-plugin-p2-site/snapshot/> to install the plugin with the Eclipse Update Manager.

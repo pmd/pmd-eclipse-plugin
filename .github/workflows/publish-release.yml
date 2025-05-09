@@ -160,7 +160,7 @@ jobs:
           VERSION: ${{ needs.check-version.outputs.VERSION }}
         run: |
           RELEASE_NAME="PMD For Eclipse ${VERSION}"
-          gh release create "$TAG_NAME" "net.sourceforge.pmd.eclipse.p2updatesite/target/net.sourceforge.pmd.eclipse.p2updatesite-${VERSION}.zip" \
+          gh release create "$TAG_NAME" "net.sourceforge.pmd.eclipse.p2updatesite-${VERSION}.zip" \
               --verify-tag \
               --notes-file release_notes_prepared.md \
               --title "$RELEASE_NAME"
@@ -203,7 +203,7 @@ jobs:
         run: |
           uploadUrl="${PMD_SF_USER}@web.sourceforge.net:/home/frs/project/pmd/pmd-eclipse/zipped/"
           rsync -avh \
-              "net.sourceforge.pmd.eclipse.p2updatesite/target/net.sourceforge.pmd.eclipse.p2updatesite-${VERSION}.zip" \
+              "net.sourceforge.pmd.eclipse.p2updatesite-${VERSION}.zip" \
               "${uploadUrl}/net.sourceforge.pmd.eclipse.p2updatesite-SNAPSHOT.zip"
 
       - name: Cleanup ssh
@@ -249,7 +249,7 @@ jobs:
           git config user.name "pmd-actions-helper[bot]"
           git config user.email "207160486+pmd-actions-helper[bot]@users.noreply.github.com"
   
-          unzip -q -d "${VERSION}" "../net.sourceforge.pmd.eclipse.p2updatesite/target/net.sourceforge.pmd.eclipse.p2updatesite-${VERSION}.zip"
+          unzip -q -d "${VERSION}" "../net.sourceforge.pmd.eclipse.p2updatesite-${VERSION}.zip"
           git add "${VERSION}"
           ../.ci/files/regenerate_metadata.sh
 
