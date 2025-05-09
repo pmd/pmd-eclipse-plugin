@@ -26,4 +26,4 @@ runs:
         #see https://github.com/GabrielBB/xvfb-action
         sudo apt-get install --yes xvfb
         sudo apt-get install --yes libgtk2.0-0
-        echo 'xvfb_cmd="xvfb-run --auto-servernum"' >> "$GITHUB_ENV"
+        echo 'xvfb_cmd=xvfb-run --auto-servernum' >> "$GITHUB_ENV"
