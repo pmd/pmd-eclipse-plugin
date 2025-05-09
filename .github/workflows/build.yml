@@ -1,53 +1,73 @@
-name: build
+name: Build
 
 on:
+  pull_request:
+  merge_group:
   push:
     branches:
-      - main
+      - '**'
+      # don't run on dependabot branches. Dependabot will create pull requests, which will then be run instead
+      - '!dependabot/**'
     tags:
       - '**'
-  pull_request:
+  workflow_dispatch:
   schedule:
     # build it monthly: At 05:00 on day-of-month 1.
     - cron:  '0 5 1 * *'
-  workflow_dispatch:
+
+# if another commit is added to the same branch or PR (same github.ref),
+# then cancel already running jobs and start a new build.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read # to fetch code (actions/checkout)
+
+env:
+  LANG: 'en_US.UTF-8'
 
 jobs:
   # verify build on one node before multiple builds on different os are started
   fail-fast-build:
     name: verify (ubuntu-latest, 2025-03)
-    timeout-minutes: 60
+    timeout-minutes: 30
+    defaults:
+      run:
+        shell: bash
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
       - name: Setup Environment
         uses: ./.github/actions/setup
 
       - name: Build
-        uses: ./.github/actions/build
-        with:
-          targetPlatform: 2025-03
-          deploy: true
-          pmdCiSecretPassphrase: ${{ secrets.PMD_CI_SECRET_PASSPHRASE }}
-          githubToken: ${{ secrets.GITHUB_TOKEN }}
-          pmdCiGpgPrivateKey: ${{ secrets.PMD_CI_GPG_PRIVATE_KEY }}
-          pmdCiGpgPassphrase: ${{ secrets.PMD_CI_GPG_PASSPHRASE }}
+        run: |
+          ${xvfb_cmd} ./mvnw --show-version --errors --batch-mode \
+            verify
 
       - name: Upload screenshots of failed unit tests
         uses: actions/upload-artifact@v4
         if: ${{ failure() }}
         with:
-          name: screenshots-ubuntu-latest-2025-03
+          name: screenshots-ubuntu-latest
           path: net.sourceforge.pmd.eclipse.plugin.test/screenshots
           if-no-files-found: ignore
 
+      - name: Upload update-site
+        uses: actions/upload-artifact@v4
+        with:
+          name: update-site
+          path: net.sourceforge.pmd.eclipse.p2updatesite/target/net.sourceforge.pmd.eclipse.p2updatesite-*.zip
 
   build:
     needs: fail-fast-build
     name: verify (${{ matrix.os }}, ${{ matrix.targetPlatform }})
-    timeout-minutes: 60
+    timeout-minutes: 30
+    defaults:
+      run:
+        shell: bash
     continue-on-error: false
 
     strategy:
@@ -70,17 +90,18 @@ jobs:
 
     runs-on: ${{ matrix.os }}
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
       - name: Setup Environment
         uses: ./.github/actions/setup
 
       - name: Build
-        uses: ./.github/actions/build
-        with:
-          targetPlatform: ${{ matrix.targetPlatform }}
-          deploy: false
+        env:
+          TARGET_PLATFORM: ${{ matrix.targetPlatform }}
+        run: |
+          ${xvfb_cmd} ./mvnw --show-version --errors --batch-mode \
+            verify \
+            -Dtarget.platform="${TARGET_PLATFORM}"
 
       - name: Upload screenshots of failed unit tests
         uses: actions/upload-artifact@v4

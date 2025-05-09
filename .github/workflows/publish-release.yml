@@ -1,0 +1,306 @@
+name: Publish Release
+
+on:
+  workflow_run:
+    workflows: [Build]
+    types:
+      - completed
+    branches:
+      - '**'
+      - '!main'
+      - '!dependabot/**'
+
+permissions:
+  contents: read # to fetch code (actions/checkout)
+
+env:
+  LANG: 'en_US.UTF-8'
+
+jobs:
+  check-version:
+    # only run in the official pmd/pmd-eclipse-plugin repo, where we have access to the secrets and not on forks
+    # and only run for _successful_ push workflow runs on tags.
+    if: ${{ github.repository == 'pmd/pmd-eclipse-plugin'
+      && contains(fromJSON('["push", "workflow_dispatch"]'), github.event.workflow_run.event)
+      && github.event.workflow_run.head_branch != 'main'
+      && github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        shell: bash
+    outputs:
+      VERSION: ${{ steps.version.outputs.VERSION }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_branch }}
+      - uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+      - name: Cache local Maven repository
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.m2/repository
+            net.sourceforge.pmd.eclipse.plugin/japicmp-data
+          # re-cache on changes in the pom and target files
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml', '**/*.target') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+      - name: Determine Version
+        id: version
+        env:
+          REF: ${{ github.event.workflow_run.head_branch }}
+        run: |
+          if ! git show-ref --exists "refs/tags/$REF"; then
+            echo "::error ::Tag $REF does not exist, aborting."
+            exit 1
+          fi
+          
+          VERSION=$(./mvnw --batch-mode --no-transfer-progress help:evaluate -Dexpression=project.version -q -DforceStdout)
+          echo "Determined VERSION=$VERSION"
+          if [[ "$VERSION" = *-SNAPSHOT ]]; then
+            echo "::error ::VERSION=$VERSION is a snapshot version, aborting."
+            exit 1
+          fi
+          echo "VERSION=$VERSION" >> "$GITHUB_OUTPUT"
+      - name: Add Job Summary
+        env:
+          WORKFLOW_RUN_DISPLAY_TITLE: ${{ github.event.workflow_run.display_title }}
+          WORKFLOW_RUN_NAME: ${{ github.event.workflow_run.name }}
+          WORKFLOW_RUN_NUMBER: ${{ github.event.workflow_run.run_number }}
+          WORKFLOW_RUN_HTML_URL: ${{ github.event.workflow_run.html_url }}
+          VERSION: ${{ steps.version.outputs.VERSION }}
+          TAG: ${{ github.event.workflow_run.head_branch }}
+        run: |
+          echo "### Run Info" >> "${GITHUB_STEP_SUMMARY}"
+          echo "Building Version: ${VERSION}" >> "${GITHUB_STEP_SUMMARY}"
+          echo "" >> "${GITHUB_STEP_SUMMARY}"
+          echo "Tag: ${TAG}" >> "${GITHUB_STEP_SUMMARY}"
+          echo "" >> "${GITHUB_STEP_SUMMARY}"
+          echo "Called by [${WORKFLOW_RUN_DISPLAY_TITLE} (${WORKFLOW_RUN_NAME} #${WORKFLOW_RUN_NUMBER})](${WORKFLOW_RUN_HTML_URL})" >> "${GITHUB_STEP_SUMMARY}"
+          echo "" >> "${GITHUB_STEP_SUMMARY}"
+
+  create-signed-update-site:
+    needs: check-version
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_branch }}
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          gpg-private-key: ${{ secrets.PMD_CI_GPG_PRIVATE_KEY }}
+
+      - name: Cache local Maven repository
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.m2/repository
+            net.sourceforge.pmd.eclipse.plugin/japicmp-data
+          # re-cache on changes in the pom and target files
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml', '**/*.target') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+
+      - name: Build
+        env:
+          MAVEN_GPG_PASSPHRASE: ${{ secrets.PMD_CI_GPG_PASSPHRASE }}
+        run: |
+          ./mvnw --show-version --errors --batch-mode \
+            verify \
+            -Psign -DskipTests
+
+      - name: Upload update-site
+        uses: actions/upload-artifact@v4
+        with:
+          name: update-site
+          path: net.sourceforge.pmd.eclipse.p2updatesite/target/net.sourceforge.pmd.eclipse.p2updatesite-*.zip
+
+  create-release:
+    needs: [check-version, create-signed-update-site]
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_branch }}
+      - uses: actions/download-artifact@v4
+        with:
+          name: update-site
+      - name: Prepare Release Notes
+        run: |
+          # extract the release notes
+          BEGIN_LINE=$(grep -n "^## " ReleaseNotes.md|head -1|cut -d ":" -f 1)
+          END_LINE=$(grep -n "^## " ReleaseNotes.md|head -2|tail -1|cut -d ":" -f 1)
+          END_LINE=$((END_LINE - 1))
+
+          RELEASE_BODY="A new PMD for Eclipse plugin version has been released.
+          It is available via the update site: https://pmd.github.io/pmd-eclipse-plugin-p2-site/
+
+          $(head -$END_LINE ReleaseNotes.md | tail -$((END_LINE - BEGIN_LINE)))
+          "
+          echo "${RELEASE_BODY}" > release_notes_prepared.md
+      - name: Create Release
+        env:
+          TAG_NAME: ${{ github.event.workflow_run.head_branch }}
+          VERSION: ${{ needs.check-version.outputs.VERSION }}
+        run: |
+          RELEASE_NAME="PMD For Eclipse ${VERSION}"
+          gh release create "$TAG_NAME" "net.sourceforge.pmd.eclipse.p2updatesite/target/net.sourceforge.pmd.eclipse.p2updatesite-${VERSION}.zip" \
+              --verify-tag \
+              --notes-file release_notes_prepared.md \
+              --title "$RELEASE_NAME"
+
+  deploy-to-sourceforge-files:
+    needs: [check-version, create-signed-update-site]
+    # use environment sourceforge, where secrets/vars are configured for PMD_WEB_SOURCEFORGE_NET_DEPLOY_KEY
+    # and PMD_WEB_SOURCEFORGE_NET_KNOWN_HOSTS
+    environment:
+      name: sourceforge
+      url: https://sourceforge.net/projects/pmd/files/pmd-eclipse/zipped/
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: update-site
+      - name: Setup ssh key for sourceforge
+        env:
+          WEB_SF_DEPLOY_KEY: ${{ secrets.PMD_WEB_SOURCEFORGE_NET_DEPLOY_KEY }}
+          WEB_SF_KNOWN_HOSTS: ${{ vars.PMD_WEB_SOURCEFORGE_NET_KNOWN_HOSTS }}
+        run: |
+          mkdir -p "${HOME}/.ssh"
+          chmod 700 "${HOME}/.ssh"
+          printenv WEB_SF_DEPLOY_KEY > "${HOME}/.ssh/web.sourceforge.net_deploy_key"
+          chmod 600 "${HOME}/.ssh/web.sourceforge.net_deploy_key"
+          echo "
+          Host web.sourceforge.net
+              IdentityFile=$HOME/.ssh/web.sourceforge.net_deploy_key
+          " > "$HOME/.ssh/config"
+          echo "${WEB_SF_KNOWN_HOSTS}" > "$HOME/.ssh/known_hosts"
+      - name: Upload to sourceforge
+        id: upload
+        env:
+          VERSION: ${{ needs.check-version.outputs.VERSION }}
+          PMD_SF_USER: adangel
+        run: |
+          uploadUrl="${PMD_SF_USER}@web.sourceforge.net:/home/frs/project/pmd/pmd-eclipse/zipped/"
+          rsync -avh \
+              "net.sourceforge.pmd.eclipse.p2updatesite/target/net.sourceforge.pmd.eclipse.p2updatesite-${VERSION}.zip" \
+              "${uploadUrl}/net.sourceforge.pmd.eclipse.p2updatesite-SNAPSHOT.zip"
+
+      - name: Cleanup ssh
+        if: ${{ always() }}
+        run: |
+          rm -rf "${HOME}/.ssh"
+
+  deploy-to-pmd-eclipse-plugin-p2-site:
+    needs: [check-version, create-signed-update-site]
+    environment:
+      name: github-pages
+      url: https://pmd.github.io/pmd-eclipse-plugin-p2-site/
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: update-site
+      - uses: actions/create-github-app-token@v2
+        id: pmd-actions-helper-app-token
+        with:
+          app-id: ${{ secrets.PMD_ACTIONS_HELPER_ID }}
+          private-key: ${{ secrets.PMD_ACTIONS_HELPER_PRIVATE_KEY }}
+          owner: pmd
+          repositories: pmd-eclipse-plugin-p2-site
+          permission-actions: write
+      - name: Prepare Local P2 Repository
+        uses: actions/checkout@v4
+        with:
+          repository: pmd/pmd-eclipse-plugin-p2-site
+          ref: gh-pages
+          path: current-p2-site
+          token: ${{ steps.pmd-actions-helper-app-token.outputs.token }}
+      - name: Update Local P2 Repository
+        env:
+          VERSION: ${{ needs.check-version.outputs.VERSION }}
+        run: |
+          cd current-p2-site
+          # https://api.github.com/users/pmd-actions-helper[bot]
+          git config user.name "pmd-actions-helper[bot]"
+          git config user.email "207160486+pmd-actions-helper[bot]@users.noreply.github.com"
+  
+          unzip -q -d "${VERSION}" "../net.sourceforge.pmd.eclipse.p2updatesite/target/net.sourceforge.pmd.eclipse.p2updatesite-${VERSION}.zip"
+          git add "${VERSION}"
+          ../.ci/files/regenerate_metadata.sh
+
+          # create a new single commit
+          git checkout --orphan=gh-pages-2
+          git commit -a -m "Update pmd/pmd-eclipse-plugin-p2-site"
+          git push --force origin gh-pages-2:gh-pages
+
+  create-sourceforge-blog-post:
+    needs: [check-version, create-signed-update-site]
+    # use environment sourceforge, where secrets/vars are configured for PMD_SF_BEARER_TOKEN
+    environment:
+      name: sourceforge
+      url: ${{ steps.upload.outputs.url_output }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_branch }}
+      - name: Prepare Release Notes
+        run: |
+          # extract the release notes
+          BEGIN_LINE=$(grep -n "^## " ReleaseNotes.md|head -1|cut -d ":" -f 1)
+          END_LINE=$(grep -n "^## " ReleaseNotes.md|head -2|tail -1|cut -d ":" -f 1)
+          END_LINE=$((END_LINE - 1))
+
+          RELEASE_BODY="A new PMD for Eclipse plugin version has been released.
+          It is available via the update site: https://pmd.github.io/pmd-eclipse-plugin-p2-site/
+
+          $(head -$END_LINE ReleaseNotes.md | tail -$((END_LINE - BEGIN_LINE)))
+          "
+          echo "${RELEASE_BODY}" > release_notes_prepared.md
+      - name: Create Blog Post
+        id: upload
+        env:
+          TAG_NAME: ${{ github.event.workflow_run.head_branch }}
+          VERSION: ${{ needs.check-version.outputs.VERSION }}
+          PMD_SF_BEARER_TOKEN: ${{ secrets.PMD_SF_BEARER_TOKEN }}
+        run: |
+          RELEASE_NAME="PMD For Eclipse ${VERSION}"
+          # See https://sourceforge.net/p/forge/documentation/Allura%20API/
+          url_output=$(curl --silent --include --request POST \
+                --header "Authorization: Bearer ${PMD_SF_BEARER_TOKEN}" \
+                --form "labels=pmd-eclipse-plugin,release" \
+                --form "state=published" \
+                --form "text=<release_notes_prepared.md" \
+                --form "title=${RELEASE_NAME}" \
+                https://sourceforge.net/rest/p/pmd/news | grep -i "location: "|cut -d " " -f 2|tr -d "\r\n")
+          
+          echo "url_output=${url_output}" >> "$GITHUB_OUTPUT"
