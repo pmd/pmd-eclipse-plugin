@@ -167,7 +167,7 @@ jobs:
     needs: [check-version, create-signed-update-site]
     environment:
       name: github-pages
-      url: https://pmd.github.io/pmd-eclipse-plugin-p2-site/
+      url: https://pmd.github.io/pmd-eclipse-plugin-p2-site/snapshot/
     runs-on: ubuntu-latest
     timeout-minutes: 10
     defaults:
