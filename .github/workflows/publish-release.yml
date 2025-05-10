@@ -131,6 +131,8 @@ jobs:
     needs: [check-version, create-signed-update-site]
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    permissions:
+      contents: write # to create a release (via gh cli)
     defaults:
       run:
         shell: bash
@@ -156,6 +158,8 @@ jobs:
           echo "${RELEASE_BODY}" > release_notes_prepared.md
       - name: Create Release
         env:
+          # Token required for GH CLI:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TAG_NAME: ${{ github.event.workflow_run.head_branch }}
           VERSION: ${{ needs.check-version.outputs.VERSION }}
         run: |
