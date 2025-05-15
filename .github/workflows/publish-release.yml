@@ -2,7 +2,7 @@ name: Publish Release
 
 on:
   workflow_run:
-    workflows: [Build]
+    workflows: [Build Release]
     types:
       - completed
     branches:
