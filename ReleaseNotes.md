@@ -7,18 +7,21 @@ Eclipse Update Site:
 *   Releases: <https://pmd.github.io/pmd-eclipse-plugin-p2-site/>
 *   Snapshots: <https://pmd.github.io/pmd-eclipse-plugin-p2-site/snapshot/>
 
-## ????: 7.14.0.v????
+## 30-May-2025: 7.14.0.v20250530-1904-r
 
 This is a minor release.
 
 ### New and noteworthy
 * Update to PMD 7.14.0
 
-### Fixed Issues
+### Merged pull requests
+* Refactor GitHub Action Workflows ([#271](https://github.com/pmd/pmd-eclipse-plugin/pull/271)) by [@adangel](https://github.com/adangel)
+* [ci] Make build a reuseable workflow ([#272](https://github.com/pmd/pmd-eclipse-plugin/pull/272)) by [@adangel](https://github.com/adangel)
 
-### API Changes
-
-### External Contributions
+### Dependency updates
+* Bump com.puppycrawl.tools:checkstyle from 10.23.0 to 10.23.1 ([#270](https://github.com/pmd/pmd-eclipse-plugin/pull/270))
+* Bump com.puppycrawl.tools:checkstyle from 10.23.1 to 10.24.0 ([#273](https://github.com/pmd/pmd-eclipse-plugin/pull/273))
+* Bump PMD from 7.13.0 to 7.14.0 ([#274](https://github.com/pmd/pmd-eclipse-plugin/pull/274))
 
 ## 25-April-2025: 7.13.0.v20250425-0909-r
 
