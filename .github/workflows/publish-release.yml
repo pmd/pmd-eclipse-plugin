@@ -226,6 +226,9 @@ jobs:
       run:
         shell: bash
     steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_branch }}
       - uses: actions/download-artifact@v4
         with:
           name: update-site
