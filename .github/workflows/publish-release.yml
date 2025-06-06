@@ -208,7 +208,7 @@ jobs:
           uploadUrl="${PMD_SF_USER}@web.sourceforge.net:/home/frs/project/pmd/pmd-eclipse/zipped/"
           rsync -avh \
               "net.sourceforge.pmd.eclipse.p2updatesite-${VERSION}.zip" \
-              "${uploadUrl}/net.sourceforge.pmd.eclipse.p2updatesite-SNAPSHOT.zip"
+              "${uploadUrl}/net.sourceforge.pmd.eclipse.p2updatesite-${VERSION}.zip"
 
       - name: Cleanup ssh
         if: ${{ always() }}
