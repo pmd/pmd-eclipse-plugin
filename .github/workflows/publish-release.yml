@@ -144,18 +144,7 @@ jobs:
         with:
           name: update-site
       - name: Prepare Release Notes
-        run: |
-          # extract the release notes
-          BEGIN_LINE=$(grep -n "^## " ReleaseNotes.md|head -1|cut -d ":" -f 1)
-          END_LINE=$(grep -n "^## " ReleaseNotes.md|head -2|tail -1|cut -d ":" -f 1)
-          END_LINE=$((END_LINE - 1))
-
-          RELEASE_BODY="A new PMD for Eclipse plugin version has been released.
-          It is available via the update site: https://pmd.github.io/pmd-eclipse-plugin-p2-site/
-
-          $(head -$END_LINE ReleaseNotes.md | tail -$((END_LINE - BEGIN_LINE)))
-          "
-          echo "${RELEASE_BODY}" > release_notes_prepared.md
+        run: .ci/files/prepare_release_notes.sh
       - name: Create Release
         env:
           # Token required for GH CLI:
@@ -281,18 +270,7 @@ jobs:
         with:
           ref: ${{ github.event.workflow_run.head_branch }}
       - name: Prepare Release Notes
-        run: |
-          # extract the release notes
-          BEGIN_LINE=$(grep -n "^## " ReleaseNotes.md|head -1|cut -d ":" -f 1)
-          END_LINE=$(grep -n "^## " ReleaseNotes.md|head -2|tail -1|cut -d ":" -f 1)
-          END_LINE=$((END_LINE - 1))
-
-          RELEASE_BODY="A new PMD for Eclipse plugin version has been released.
-          It is available via the update site: https://pmd.github.io/pmd-eclipse-plugin-p2-site/
-
-          $(head -$END_LINE ReleaseNotes.md | tail -$((END_LINE - BEGIN_LINE)))
-          "
-          echo "${RELEASE_BODY}" > release_notes_prepared.md
+        run: .ci/files/prepare_release_notes.sh
       - name: Create Blog Post
         id: upload
         env:
