@@ -28,7 +28,7 @@ public class DeleteMarkersCommand extends AbstractDefaultCommand {
         setUserInitiated(false);
     }
 
-    public final void setMarkers(IMarker[] theMarkers) { // NOPMD by Sven on 13.11.06 11:43
+    public final void setMarkers(IMarker[] theMarkers) {
         markers = theMarkers;
     }
 

@@ -50,7 +50,7 @@ public class CPDCheckProjectAction extends AbstractUIAction {
     private static final String CSV_KEY = "CSV";
 
     @Override
-    public void run(final IAction action) { // NOPMD:UnusedFormalParameter
+    public void run(final IAction action) {
         final IWorkbenchPartSite site = targetPartSite();
         final ISelection sel = targetSelection();
         final Shell shell = site.getShell();

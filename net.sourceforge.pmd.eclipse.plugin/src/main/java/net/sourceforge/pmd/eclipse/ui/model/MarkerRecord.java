@@ -64,7 +64,7 @@ public class MarkerRecord extends AbstractPMDRecord {
 
         while (markerIterator.hasNext()) {
             final MarkerRecord marker = (MarkerRecord) markerIterator.next();
-            children.add(new FileToMarkerRecord(marker)); // NOPMD by Sven on 13.11.06 12:05
+            children.add(new FileToMarkerRecord(marker));
         }
 
         return children.toArray(new AbstractPMDRecord[0]);
@@ -72,7 +72,7 @@ public class MarkerRecord extends AbstractPMDRecord {
 
     @Override
     public AbstractPMDRecord[] getChildren() {
-        return children; // NOPMD by Sven on 13.11.06 12:05
+        return children;
     }
 
     @Override

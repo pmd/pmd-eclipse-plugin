@@ -98,12 +98,12 @@ public class PMDPlugin extends AbstractUIPlugin {
 
     private Map<RGB, Color> coloursByRgb = new HashMap<>();
 
-    private StringTable stringTable; // NOPMD by Herlin on 11/10/06 00:22
+    private StringTable stringTable;
 
     private IPreferencesFactory preferencesFactory = new PreferencesFactoryImpl();
     private IPropertiesFactory propertiesFactory = new PropertiesFactoryImpl();
 
-    private final IRuleSetManager ruleSetManager = new RuleSetManagerImpl(); // NOPMD:SingularField
+    private final IRuleSetManager ruleSetManager = new RuleSetManagerImpl();
 
     private final LogbackConfiguration logbackConfiguration = new LogbackConfiguration();
 

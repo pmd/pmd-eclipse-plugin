@@ -133,15 +133,15 @@ public class CPDView extends ViewPart implements IPropertyListener {
             CpdMatchWithSourceCode data = new CpdMatchWithSourceCode(result, match);
 
             // create a treenode for the match and add to the list
-            TreeNode matchNode = new TreeNode(data); // NOPMD by Sven on 02.11.06 11:27
+            TreeNode matchNode = new TreeNode(data);
             elements.add(matchNode);
 
             // create the children of the match
-            TreeNode[] children = new TreeNode[match.getMarkCount()]; // NOPMD by Sven on 02.11.06 11:28
+            TreeNode[] children = new TreeNode[match.getMarkCount()];
             Iterator<Mark> entryIterator = match.getMarkSet().iterator();
             for (int j = 0; entryIterator.hasNext(); j++) {
                 final CpdMarkWithSourceCode entry = new CpdMarkWithSourceCode(result, entryIterator.next());
-                children[j] = new TreeNode(entry); // NOPMD by Sven on 02.11.06 11:28
+                children[j] = new TreeNode(entry);
                 children[j].setParent(matchNode);
             }
             matchNode.setChildren(children);
