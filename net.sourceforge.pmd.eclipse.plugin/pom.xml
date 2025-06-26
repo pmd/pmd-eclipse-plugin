@@ -90,7 +90,7 @@
                                 <groupId>net.sourceforge.pmd</groupId>
                                 <artifactId>pmd-test-schema</artifactId>
                                 <version>${pmd.version}</version>
-                                <includes>net/sourceforge/pmd/test/schema/rule-tests_1_0_0.xsd</includes>
+                                <includes>net/sourceforge/pmd/test/schema/rule-tests_1_1_0.xsd</includes>
                                 <fileMappers>
                                     <org.codehaus.plexus.components.io.filemappers.RegExpFileMapper>
                                         <pattern>^\Qnet/sourceforge/pmd/test/schema/\E</pattern>
