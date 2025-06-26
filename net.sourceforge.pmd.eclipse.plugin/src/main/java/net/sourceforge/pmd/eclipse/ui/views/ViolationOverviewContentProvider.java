@@ -333,7 +333,7 @@ public class ViolationOverviewContentProvider
     //
     // // if the Project is closed or deleted,
     // // we also delete it from the Model and go on
-    // if (!(project.isOpen() && project.isAccessible())) { // NOPMD by Sven on 09.11.06 22:17
+    // if (!(project.isOpen() && project.isAccessible())) {
     // LOG.debug("The project is not open or not accessible. Remove it");
     // List<AbstractPMDRecord>[] array = updateFiles(project, changedFiles);
     // removals.addAll(array[1]);

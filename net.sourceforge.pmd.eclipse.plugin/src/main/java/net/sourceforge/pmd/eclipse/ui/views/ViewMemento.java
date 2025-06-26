@@ -33,7 +33,7 @@ import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
  *
  */
 public class ViewMemento {
-    private final IPath path; // NOPMD by Herlin on 11/10/06 00:15
+    private final IPath path;
     private final File file;
     private XMLMemento memento;
 

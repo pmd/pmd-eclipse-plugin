@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.eclipse.ui.views; // NOPMD by Sven on 13.11.06 11:45
+package net.sourceforge.pmd.eclipse.ui.views;
 
 import java.util.ArrayList;
 import java.util.Arrays;

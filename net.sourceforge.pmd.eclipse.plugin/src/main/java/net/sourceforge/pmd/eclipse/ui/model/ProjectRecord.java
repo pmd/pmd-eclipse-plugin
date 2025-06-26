@@ -80,7 +80,7 @@ public class ProjectRecord extends AbstractPMDRecord {
 
     @Override
     public AbstractPMDRecord[] getChildren() {
-        return children; // NOPMD by Herlin on 09/10/06 00:43
+        return children;
     }
 
     @Override
@@ -187,7 +187,7 @@ public class ProjectRecord extends AbstractPMDRecord {
         try {
             for (IResource resource : rootFolder.members()) {
                 if (resource instanceof IFolder) {
-                    folder.add(new FolderRecord((IFolder) resource, this)); // NOPMD
+                    folder.add(new FolderRecord((IFolder) resource, this));
                 }
             }
         } catch (CoreException e) {

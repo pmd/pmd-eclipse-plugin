@@ -38,7 +38,7 @@ public class PMDResolutionGenerator implements IMarkerResolutionGenerator {
     private static final Set<String> MISSING_FIXES = new HashSet<>();
     private static final Map<String, String> BROKEN_FIXES = new HashMap<>();
 
-    private static final String QUICKFIX_BUNDLE = "properties.QuickFix"; // NOPMD
+    private static final String QUICKFIX_BUNDLE = "properties.QuickFix";
 
     public static final IMarkerResolution[] EMPTY_RESOLUTIONS = new IMarkerResolution[0];
 

@@ -45,7 +45,7 @@ public class RootRecord extends AbstractPMDRecord {
 
     @Override
     public AbstractPMDRecord[] getChildren() {
-        return children; // NOPMD by Herlin on 09/10/06 00:56
+        return children;
     }
 
     @Override

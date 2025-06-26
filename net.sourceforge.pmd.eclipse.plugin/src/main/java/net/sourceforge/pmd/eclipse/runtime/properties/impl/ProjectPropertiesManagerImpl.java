@@ -348,7 +348,7 @@ public class ProjectPropertiesManagerImpl implements IProjectPropertiesManager {
 
             for (RuleSet ruleSet : ruleSets) {
                 for (Rule rule : ruleSet.getRules()) {
-                    rules.add(new RuleSpecTO(rule.getName(), rule.getRuleSetName())); // NOPMD:AvoidInstantiatingObjectInLoop
+                    rules.add(new RuleSpecTO(rule.getName(), rule.getRuleSetName()));
                 }
                 for (Pattern pattern : ruleSet.getFileExclusions()) {
                     excludePatterns.add(pattern.pattern());
