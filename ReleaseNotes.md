@@ -11,15 +11,23 @@ Eclipse Update Site:
 
 This is a minor release.
 
-### New and noteworthy
+### 🚀 New and noteworthy
 * Support for Eclipse 2025-06 added
 * Support for Eclipse 2024-06 removed
 
-### Fixed Issues
+### 🐛 Fixed Issues
+
+### ✨ Merged pull requests
+* [#277](https://github.com/pmd/pmd-eclipse-plugin/pull/277): \[ci] Fix publish release - [Andreas Dangel](https://github.com/adangel) (@adangel)
+* [#281](https://github.com/pmd/pmd-eclipse-plugin/pull/281): Support eclipse 2025-06 - [Andreas Dangel](https://github.com/adangel) (@adangel)
+
+### 📦 Dependency updates
+* [#275](https://github.com/pmd/pmd-eclipse-plugin/pull/275): Bump com.puppycrawl.tools:checkstyle from 10.24.0 to 10.25.0
+* [#276](https://github.com/pmd/pmd-eclipse-plugin/pull/276): Bump org.apache.maven.plugins:maven-clean-plugin from 3.4.1 to 3.5.0
+* [#278](https://github.com/pmd/pmd-eclipse-plugin/pull/278): Bump com.puppycrawl.tools:checkstyle from 10.25.0 to 10.25.1
+* [#280](https://github.com/pmd/pmd-eclipse-plugin/pull/280): Bump build-tools from 30 to 32
 
 ### API Changes
-
-### External Contributions
 
 ## 30-May-2025: 7.14.0.v20250530-1904-r
 
@@ -31,7 +39,6 @@ This is a minor release.
 ### Merged pull requests
 * Refactor GitHub Action Workflows ([#271](https://github.com/pmd/pmd-eclipse-plugin/pull/271)) by [@adangel](https://github.com/adangel)
 * [ci] Make build a reuseable workflow ([#272](https://github.com/pmd/pmd-eclipse-plugin/pull/272)) by [@adangel](https://github.com/adangel)
-* Support eclipse 2025-06 ([#281](https://github.com/pmd/pmd-eclipse-plugin/pull/281)) by [@adangel](https://github.com/adangel)
 
 ### Dependency updates
 * Bump com.puppycrawl.tools:checkstyle from 10.23.0 to 10.23.1 ([#270](https://github.com/pmd/pmd-eclipse-plugin/pull/270))
@@ -2266,4 +2273,3 @@ a lib subdirectory.
 **Development**
 * Adding a ant build file
 * Adapting .project to be compatible with both Eclipse 2.02 and WSAD v5.
-
