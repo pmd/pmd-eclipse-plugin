@@ -31,6 +31,7 @@ This is a minor release.
 ### Merged pull requests
 * Refactor GitHub Action Workflows ([#271](https://github.com/pmd/pmd-eclipse-plugin/pull/271)) by [@adangel](https://github.com/adangel)
 * [ci] Make build a reuseable workflow ([#272](https://github.com/pmd/pmd-eclipse-plugin/pull/272)) by [@adangel](https://github.com/adangel)
+* Support eclipse 2025-06 ([#281](https://github.com/pmd/pmd-eclipse-plugin/pull/281)) by [@adangel](https://github.com/adangel)
 
 ### Dependency updates
 * Bump com.puppycrawl.tools:checkstyle from 10.23.0 to 10.23.1 ([#270](https://github.com/pmd/pmd-eclipse-plugin/pull/270))
