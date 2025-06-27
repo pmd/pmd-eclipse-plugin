@@ -12,6 +12,7 @@ Eclipse Update Site:
 This is a minor release.
 
 ### 🚀 New and noteworthy
+* Update to PMD 7.15.0
 * Support for Eclipse 2025-06 added
 * Support for Eclipse 2024-06 removed
 
@@ -25,6 +26,7 @@ This is a minor release.
 * [#275](https://github.com/pmd/pmd-eclipse-plugin/pull/275): Bump com.puppycrawl.tools:checkstyle from 10.24.0 to 10.25.0
 * [#276](https://github.com/pmd/pmd-eclipse-plugin/pull/276): Bump org.apache.maven.plugins:maven-clean-plugin from 3.4.1 to 3.5.0
 * [#278](https://github.com/pmd/pmd-eclipse-plugin/pull/278): Bump com.puppycrawl.tools:checkstyle from 10.25.0 to 10.25.1
+* [#279](https://github.com/pmd/pmd-eclipse-plugin/pull/279): Bump PMD from 7.14.0 to 7.15.0
 * [#280](https://github.com/pmd/pmd-eclipse-plugin/pull/280): Bump build-tools from 30 to 32
 
 ### API Changes
