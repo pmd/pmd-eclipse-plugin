@@ -53,7 +53,7 @@ public class ViolationOverviewMenuManager implements IDisposable {
 
         // create the Actions for the PriorityFilter
         for (int i = 0; i < priorities.length; i++) {
-            priorityActions[i] = new PriorityFilterAction(priorities[i], overview); // NOPMD by Herlin on 09/10/06 15:02
+            priorityActions[i] = new PriorityFilterAction(priorities[i], overview);
             priorityActions[i].setChecked(PriorityFilter.getInstance().isPriorityEnabled(priorities[i]));
         }
     }
@@ -148,11 +148,11 @@ public class ViolationOverviewMenuManager implements IDisposable {
             // if the Project contains Errors,
             // we add a FilterAction for it
             if (project.hasMarkers()) {
-                final Action projectFilterAction = new ProjectFilterAction(project, this.overview); // NOPMD by Herlin on 09/10/06 15:03
+                final Action projectFilterAction = new ProjectFilterAction(project, this.overview);
 
                 // if it is not already in the List,
                 // we set it as "visible"
-                if (!projectFilterList.contains(projects[i])) { // NOPMD by Herlin on 09/10/06 15:04
+                if (!projectFilterList.contains(projects[i])) {
                     projectFilterAction.setChecked(true);
                 }
 

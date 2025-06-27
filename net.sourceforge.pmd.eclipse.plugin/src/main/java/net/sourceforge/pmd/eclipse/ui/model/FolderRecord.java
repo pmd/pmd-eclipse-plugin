@@ -42,7 +42,7 @@ public class FolderRecord extends AbstractPMDRecord {
 
     @Override
     public AbstractPMDRecord[] getChildren() {
-        return children; // NOPMD by Herlin on 09/10/06 00:22
+        return children;
     }
 
     @Override
@@ -65,12 +65,7 @@ public class FolderRecord extends AbstractPMDRecord {
         try {
             for (IResource member : folder.members()) {
                 if (member != null) {
-                    fileList.add(new FileRecord(member, this)); // NOPMD
-                    // by
-                    // Herlin
-                    // on
-                    // 09/10/06
-                    // 00:25
+                    fileList.add(new FileRecord(member, this));
                 }
             }
         } catch (CoreException ce) {
@@ -115,12 +110,7 @@ public class FolderRecord extends AbstractPMDRecord {
             if (file.getResource().equals(resource)) {
                 files.remove(i);
 
-                children = new AbstractPMDRecord[files.size()]; // NOPMD
-                // by
-                // Herlin
-                // on
-                // 09/10/06
-                // 00:31
+                children = new AbstractPMDRecord[files.size()];
                 files.toArray(this.children);
                 removed = true;
                 removedFile = file;

@@ -96,13 +96,16 @@ ${RELEASE_NOTES_HEADER}
 
 This is a minor release.
 
-### New and noteworthy
+### 🚀 New and noteworthy
 
-### Fixed Issues
+### 🐛 Fixed Issues
+
+### ✨ Merged pull requests
+
+### 📦 Dependency updates
 
 ### API Changes
 
-### External Contributions
 ${RELEASE_NOTES_BODY}
 
 EOF

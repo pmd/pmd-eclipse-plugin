@@ -15,15 +15,15 @@
   </modules>
 
   <properties>
-    <target.platform>2025-03</target.platform>
+    <target.platform>2025-06</target.platform>
 
     <java.version>1.8</java.version>
     <!-- https://github.com/eclipse/tycho/blob/master/RELEASE_NOTES.md and https://github.com/eclipse-tycho/tycho/releases -->
     <tycho.version>4.0.10</tycho.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <pmd.version>7.15.0</pmd.version>
-    <pmd.build-tools.version>30</pmd.build-tools.version>
-    <checkstyle.version>10.24.0</checkstyle.version>
+    <pmd.build-tools.version>32</pmd.build-tools.version>
+    <checkstyle.version>10.25.1</checkstyle.version>
     <checkstyle.plugin.version>3.6.0</checkstyle.plugin.version>
     <pmd.plugin.version>3.26.0</pmd.plugin.version>
     <pmd.check.version>7.15.0</pmd.check.version>
@@ -181,7 +181,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-clean-plugin</artifactId>
-          <version>3.4.1</version>
+          <version>3.5.0</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>

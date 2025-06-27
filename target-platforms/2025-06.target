@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?pde?>
+<!-- generated with https://github.com/eclipse-cbi/targetplatform-dsl -->
+<target name="2025-06 (4.36)" sequenceNumber="1750950983">
+  <locations>
+    <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
+      <unit id="org.eclipse.platform.feature.group" version="4.36.0.v20250528-2229"/>
+      <unit id="org.eclipse.jdt.feature.group" version="3.20.200.v20250528-1830"/>
+      <unit id="org.eclipse.wst.xml_core.feature.feature.group" version="3.37.0.v202503020853"/>
+      <unit id="org.eclipse.pde.feature.group" version="3.16.300.v20250528-1830"/>
+      <unit id="org.eclipse.swtbot.eclipse.feature.group" version="4.3.0.202505280955"/>
+      <unit id="org.eclipse.swtbot.feature.group" version="4.3.0.202505280955"/>
+      <unit id="org.eclipse.swtbot.ide.feature.group" version="4.3.0.202505280955"/>
+      <unit id="org.eclipse.swtbot.generator.feature.feature.group" version="4.3.0.202505280955"/>
+      <unit id="org.junit" version="4.13.2.v20240929-1000"/>
+      <unit id="org.junit.source" version="4.13.2.v20240929-1000"/>
+      <repository location="https://download.eclipse.org/releases/2025-06/"/>
+    </location>
+  </locations>
+  <targetJRE path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-21"/>
+</target>

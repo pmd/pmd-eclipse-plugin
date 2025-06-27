@@ -122,7 +122,7 @@ public class FileRecord extends AbstractPMDRecord {
      */
     @Override
     public AbstractPMDRecord[] getChildren() {
-        return children; // NOPMD by Sven on 13.11.06 11:57
+        return children;
     }
 
     /**
