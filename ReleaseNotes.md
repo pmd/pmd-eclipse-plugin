@@ -12,12 +12,14 @@ Eclipse Update Site:
 This is a minor release.
 
 ### 🚀 New and noteworthy
+* Update to PMD 7.16.0
 
 ### 🐛 Fixed Issues
 
 ### ✨ Merged pull requests
 
 ### 📦 Dependency updates
+* [#289](https://github.com/pmd/pmd-eclipse-plugin/pull/289): Bump PMD from 7.15.0 to 7.16.0
 
 ### API Changes
 
