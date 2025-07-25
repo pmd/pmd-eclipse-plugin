@@ -52,7 +52,7 @@ public class ViolationOutlinePage extends Page implements IPage, ISelectionChang
     private FileRecord resource;
 
     protected final Integer[] columnWidths = {Integer.valueOf(20), Integer.valueOf(170), Integer.valueOf(40)};
-    protected final int[] columnSortOrder = { 1, 1, 1 }; // NOPMD: Can't be static, as this is public API.
+    protected final int[] columnSortOrder = { 1, 1, 1 };
     protected int currentSortedColumn;
 
     /**
