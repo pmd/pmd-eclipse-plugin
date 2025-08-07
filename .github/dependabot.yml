@@ -9,5 +9,6 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
+      day: "wednesday"
     # Allow up to 10 open pull requests for maven dependencies
     open-pull-requests-limit: 10
