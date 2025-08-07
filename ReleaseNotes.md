@@ -16,6 +16,7 @@ This is a minor release.
 ### 🐛 Fixed Issues
 
 ### ✨ Merged pull requests
+* [#290](https://github.com/pmd/pmd-eclipse-plugin/pull/290): chore: Add pmd-css - [Andreas Dangel](https://github.com/adangel) (@adangel)
 
 ### 📦 Dependency updates
 
