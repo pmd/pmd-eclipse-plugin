@@ -68,6 +68,14 @@ echo
 echo "Press enter to continue... (or CTRL+C to cancel)"
 read -r
 
+echo
+echo "Has the PMD version been upgraded? Did this version introduce a new language?"
+echo "If yes, then update net.sourceforge.pmd.eclipse.plugin/META-INF/MANIFEST.MF and"
+echo "net.sourceforge.pmd.eclipse.plugin/build.properties to add the new pmd module jar."
+echo
+echo "Press enter to continue... (or CTRL+C to cancel)"
+read -r
+
 echo Update the ReleaseNotes with the release date and version:
 echo 
 echo "## $(date -u +%d-%B-%Y): ${RELEASE_VERSION}.${BUILDQUALIFIER}"
@@ -121,7 +129,7 @@ echo
 echo Checkout the release branch and build the plugin
 git checkout "pmd-eclipse-plugin-rb-${RELEASE_VERSION}"
 
-./mvnw clean verify
+./mvnw clean verify -U
 
 # extract the release notes
 BEGIN_LINE=$(grep -n "^## " ReleaseNotes.md|head -1|cut -d ":" -f 1)
