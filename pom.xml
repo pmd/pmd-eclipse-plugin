@@ -424,6 +424,11 @@
               <artifactId>pmd-jsp</artifactId>
               <version>${pmd.check.version}</version>
             </dependency>
+            <dependency>
+              <groupId>net.sourceforge.pmd</groupId>
+              <artifactId>pmd-xml</artifactId>
+              <version>${pmd.check.version}</version>
+            </dependency>
             <!-- This contains the dogfood ruleset -->
             <dependency>
               <groupId>net.sourceforge.pmd</groupId>
