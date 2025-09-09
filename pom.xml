@@ -22,7 +22,7 @@
     <tycho.version>4.0.10</tycho.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <pmd.version>7.16.0</pmd.version>
-    <pmd.build-tools.version>33</pmd.build-tools.version>
+    <pmd.build-tools.version>34</pmd.build-tools.version>
     <checkstyle.version>10.26.1</checkstyle.version>
     <checkstyle.plugin.version>3.6.0</checkstyle.plugin.version>
     <pmd.plugin.version>3.27.0</pmd.plugin.version>
@@ -422,6 +422,11 @@
             <dependency>
               <groupId>net.sourceforge.pmd</groupId>
               <artifactId>pmd-jsp</artifactId>
+              <version>${pmd.check.version}</version>
+            </dependency>
+            <dependency>
+              <groupId>net.sourceforge.pmd</groupId>
+              <artifactId>pmd-xml</artifactId>
               <version>${pmd.check.version}</version>
             </dependency>
             <!-- This contains the dogfood ruleset -->
