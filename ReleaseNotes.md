@@ -12,6 +12,8 @@ Eclipse Update Site:
 This is a minor release.
 
 ### 🚀 New and noteworthy
+* Support for Eclipse 2025-09 added
+* Support for Eclipse 2024-09 removed
 
 ### 🐛 Fixed Issues
 
@@ -19,6 +21,7 @@ This is a minor release.
 * [#290](https://github.com/pmd/pmd-eclipse-plugin/pull/290): chore: Add pmd-css - [Andreas Dangel](https://github.com/adangel) (@adangel)
 * [#291](https://github.com/pmd/pmd-eclipse-plugin/pull/291): chore: Improve do-release.sh - [Andreas Dangel](https://github.com/adangel) (@adangel)
 * [#292](https://github.com/pmd/pmd-eclipse-plugin/pull/292): chore: CI Improvements - [Andreas Dangel](https://github.com/adangel) (@adangel)
+* [#300](https://github.com/pmd/pmd-eclipse-plugin/pull/300): Support eclipse 2025-09 - [Andreas Dangel](https://github.com/adangel) (@adangel)
 
 ### 📦 Dependency updates
 
