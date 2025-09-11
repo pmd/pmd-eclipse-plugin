@@ -1,6 +1,7 @@
-target "2024-09 (4.33)"
+// https://github.com/eclipse-simrel/.github/blob/main/wiki/Simultaneous_Release.md
+target "2025-09 (4.37)"
 with source requirements environment JavaSE-21
-location "https://download.eclipse.org/releases/2024-09/" {
+location "https://download.eclipse.org/releases/2025-09/" {
 	org.eclipse.platform.feature.group
 	org.eclipse.jdt.feature.group
 	org.eclipse.wst.xml_core.feature.feature.group
