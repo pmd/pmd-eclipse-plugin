@@ -65,7 +65,6 @@ public class FormArranger implements ValueChangeListener {
      * @deprecated Use {@link #FormArranger(Composite, ValueChangeListener, SizeChangeListener)} instead.
      */
     @Deprecated // for removal
-    @SuppressWarnings("PMD.UnusedFormalParameter")
     public FormArranger(Composite theParent, Map<Class<?>, EditorFactory<?>> factories, ValueChangeListener listener,
             SizeChangeListener sizeListener) {
         this(theParent, listener, sizeListener);

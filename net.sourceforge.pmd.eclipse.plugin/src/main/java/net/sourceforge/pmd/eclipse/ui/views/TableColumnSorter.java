@@ -21,7 +21,7 @@ public class TableColumnSorter extends ViewerSorter {
      * @param order,
      *            the Direction to sort by, -1 (desc) or 1 (asc)
      */
-    public TableColumnSorter(TreeColumn column, int order) { // NOPMD: TODO unused formal parameters...
+    public TableColumnSorter(TreeColumn column, int order) {
         super();
 
         // column.getParent().setSortColumn(column);
@@ -34,7 +34,7 @@ public class TableColumnSorter extends ViewerSorter {
      * @param order,
      *            the Direction to sort by, -1 (desc) or 1 (asc)
      */
-    public TableColumnSorter(TableColumn column, int order) { // NOPMD: TODO unused formal parameters...
+    public TableColumnSorter(TableColumn column, int order) {
         super();
 
         // column.getParent().setSortColumn(column);

@@ -32,7 +32,7 @@ public class TypeText extends Composite {
     private Text text;
     private boolean acceptPrimitives;
 
-    public TypeText(Composite parent, int style, boolean primitivesOK, String thePromptText) { // NOPMD: thePromptText is unused TODO
+    public TypeText(Composite parent, int style, boolean primitivesOK, String thePromptText) {
         super(parent, SWT.None);
 
         GridLayout layout = new GridLayout(1, false);

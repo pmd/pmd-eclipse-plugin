@@ -47,7 +47,7 @@ public class ASTContentProvider implements ITreeContentProvider {
         includeComments = includeCommentsFlag;
     }
 
-    public ASTContentProvider(Set<Class<?>> theHiddenNodeTypes) { // NOPMD: unused formal parameter TODO
+    public ASTContentProvider(Set<Class<?>> theHiddenNodeTypes) {
         // hiddenNodeTypes = theHiddenNodeTypes;
     }
 
