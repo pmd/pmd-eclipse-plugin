@@ -8,6 +8,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -107,12 +108,13 @@ public class RenderReportsCmd extends AbstractProjectCommand {
 
         LOG.debug("   Creating the report file");
         IFile reportFile = folder.getFile(reportName);
-        try (InputStream contentsStream = new ByteArrayInputStream(reportString.getBytes())) {
+        try (InputStream contentsStream = new ByteArrayInputStream(reportString.getBytes(StandardCharsets.UTF_8))) {
             if (reportFile.exists()) {
                 reportFile.setContents(contentsStream, true, false, getMonitor());
             } else {
                 reportFile.create(contentsStream, true, getMonitor());
             }
+            reportFile.setCharset(StandardCharsets.UTF_8.name(), getMonitor());
         }
         reportFile.refreshLocal(IResource.DEPTH_INFINITE, getMonitor());
     }

@@ -12,6 +12,7 @@ import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -273,7 +274,7 @@ public class DetectCutAndPasteCmd extends AbstractProjectCommand {
 
             byte[] data = new byte[0];
             try (ByteArrayOutputStream renderedReport = new ByteArrayOutputStream();
-                 Writer writer = new OutputStreamWriter(renderedReport);) {
+                 Writer writer = new OutputStreamWriter(renderedReport, StandardCharsets.UTF_8);) {
                 renderer.render(cpdResult, writer);
                 writer.flush();
                 data = renderedReport.toByteArray();
@@ -286,6 +287,7 @@ public class DetectCutAndPasteCmd extends AbstractProjectCommand {
                 if (reportFile.exists()) {
                     LOG.debug("   Overwriting report file");
                     reportFile.setContents(contentsStream, true, false, getMonitor());
+                    reportFile.setCharset(StandardCharsets.UTF_8.name(), getMonitor());
                 } else {
                     LOG.debug("   Creating report file");
                     reportFile.create(contentsStream, true, getMonitor());

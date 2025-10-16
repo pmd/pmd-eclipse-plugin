@@ -445,10 +445,6 @@ public class RulePanelManager extends AbstractRulePanelManager {
             implementationTypeCombo.deselectAll();
             break;
         }
-        
-        default: {
-            throw new IllegalStateException();
-        }
         }
         validateRuleParams();
     }

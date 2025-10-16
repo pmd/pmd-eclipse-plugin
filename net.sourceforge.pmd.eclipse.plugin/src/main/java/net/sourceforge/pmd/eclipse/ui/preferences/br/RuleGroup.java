@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -142,5 +143,25 @@ public class RuleGroup<T extends Comparable<T>> implements RuleCollection, Compa
         }
 
         return id.compareTo(otherGroup.id());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        RuleGroup<?> other = (RuleGroup<?>) obj;
+        return Objects.equals(id, other.id);
     }
 }

@@ -9,6 +9,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.InputStream;
 import java.io.PrintStream;
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -201,13 +202,13 @@ public class ProjectPropertiesModelTest {
      * 
      */
     @Test
-    public void testProjectRuleSet() throws PropertiesException {
+    public void testProjectRuleSet() throws PropertiesException, UnsupportedEncodingException {
         final IProjectPropertiesManager mgr = PMDPlugin.getDefault().getPropertiesManager();
         final IProjectProperties model = mgr.loadProjectProperties(this.testProject);
 
         final IPreferencesManager pmgr = PMDPlugin.getDefault().getPreferencesManager();
         ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
-        PrintStream out = new PrintStream(byteStream);
+        PrintStream out = new PrintStream(byteStream, false, StandardCharsets.UTF_8.name());
 
         Assert.assertTrue("A new project is not created with the default plugin ruleset", EclipseUtils
                 .assertRuleSetEquals(model.getProjectRuleSet().getRules(), pmgr.getRuleSet().getRules(), out));

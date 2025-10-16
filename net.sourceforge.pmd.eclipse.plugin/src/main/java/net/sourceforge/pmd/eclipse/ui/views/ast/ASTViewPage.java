@@ -339,47 +339,6 @@ public class ASTViewPage extends AbstractStructureInspectorPage {
     }
 
     /**
-     * Shows the DataflowGraph (and Dataflow-Anomalies) for a Method.
-     *
-     * @param pmdMethod
-     *            Method to show in the graph
-     */
-    // protected void showMethod(final ASTMethodDeclaration pmdMethod) {
-    // if (pmdMethod != null) {
-    //
-    // final String resourceString = getDocument().get();
-    // give the Data to the GraphViewer
-    // astViewer.setVisible(true);
-    // astViewer.setData(pmdMethod, resourceString);
-    // astViewer.addMouseListener(new MouseAdapter() {
-    //
-    // @Override
-    // public void mouseDown(MouseEvent e) {
-    // if (textEditor != null) {
-    // final int row = (int)((double)e.y / DataflowGraphViewer.ROW_HEIGHT);
-    // astViewer.getGraph().demark();
-    // astViewer.getGraph().markNode(row);
-    // final int startLine =
-    // pmdMethod.getDataFlowNode().getFlow().get(row).getLine()-1;
-    // int offset = 0;
-    // int length = 0;
-    // try {
-    // offset = getDocument().getLineOffset(startLine);
-    // length = getDocument().getLineLength(startLine);
-    // } catch (BadLocationException ble) {
-    // logError(StringKeys.MSGKEY_ERROR_RUNTIME_EXCEPTION + "Exception when
-    // selecting a line in the editor" , ble);
-    // }
-    // textEditor.selectAndReveal(offset, length);
-    // astViewer.getTree().deselectAll();
-    // }
-    // }
-    // });
-    // showTableArea(isTableShown);
-    // }
-    // }
-
-    /**
      * Refreshes the page with a new resource.
      * 
      * @param newResource
