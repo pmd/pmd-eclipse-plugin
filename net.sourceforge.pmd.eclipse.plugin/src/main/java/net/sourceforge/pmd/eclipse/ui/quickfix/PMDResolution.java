@@ -92,7 +92,7 @@ public class PMDResolution implements IMarkerResolution, IRunnableWithProgress {
             monitor.worked(1);
 
             String fixCode = this.fix.fix(sw.toString(), this.lineNumber);
-            file.setContents(new ByteArrayInputStream(fixCode.getBytes()), false, true, monitor);
+            file.setContents(new ByteArrayInputStream(fixCode.getBytes(file.getCharset())), false, true, monitor);
 
             monitor.worked(1);
         } catch (CoreException e) {

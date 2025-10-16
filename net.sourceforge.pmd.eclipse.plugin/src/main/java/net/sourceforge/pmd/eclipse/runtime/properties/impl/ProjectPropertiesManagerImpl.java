@@ -317,10 +317,11 @@ public class ProjectPropertiesManagerImpl implements IProjectPropertiesManager {
 
             final IFile propertiesFile = project.getFile(ProjectPropertiesTimestampTupel.PROPERTIES_FILE);
             if (propertiesFile.exists() && propertiesFile.isAccessible()) {
-                propertiesFile.setContents(new ByteArrayInputStream(writer.getBytes()), false, false, null);
+                propertiesFile.setContents(new ByteArrayInputStream(writer.getBytes(StandardCharsets.UTF_8)), false, false, null);
             } else {
-                propertiesFile.create(new ByteArrayInputStream(writer.getBytes()), false, null);
+                propertiesFile.create(new ByteArrayInputStream(writer.getBytes(StandardCharsets.UTF_8)), false, null);
             }
+            propertiesFile.setCharset(StandardCharsets.UTF_8.name(), null);
         } catch (CoreException e) {
             throw new PropertiesException("Error while writing project properties file for project " + project.getName(), e);
         }

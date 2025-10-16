@@ -830,23 +830,6 @@ public class RuleTableManager extends AbstractTreeTableManager<Rule> implements 
         updateCheckControls();
     }
 
-    // private void popupRuleSelectionMenu(Event event) {
-    //
-    // // have to do it here or else the ruleset var is null in the menu setup -
-    // timing issue
-    //// if (rulesetMenusByName == null) {
-    // // addRulesetMenuOptions(ruleListMenu);
-    // // new MenuItem(ruleListMenu, SWT.SEPARATOR);
-    // // addColumnSelectionOptions(ruleListMenu);
-    //// }
-    //
-    // // adjustMenuPrioritySettings();
-    //// adjustMenuRulesetSettings();
-    //// adjustMenuUseDefaultsOption();
-    //// ruleListMenu.setLocation(event.x, event.y);
-    //// ruleListMenu.setVisible(true);
-    // }
-
     @Override
     protected void redrawTable(String sortColumnLabel, int sortDir) {
         groupBy(groupingColumn);

@@ -351,9 +351,8 @@ public class BaseVisitor {
             return PMDRuntimeConstants.PMD_MARKER_4;
         case LOW:
             return PMDRuntimeConstants.PMD_MARKER_5;
-        default:
-            return PMDRuntimeConstants.PMD_MARKER;
         }
+        return PMDRuntimeConstants.PMD_MARKER;
     }
 
     private void prepareMarkerAccumulator(IFile file) {
@@ -418,7 +417,7 @@ public class BaseVisitor {
         boolean findLine = false;
         boolean comment = false;
         final Deque<String> pendingReviews = new ArrayDeque<>();
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(file.getContents()))) {
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(file.getContents(), file.getCharset()))) {
             while (reader.ready()) {
                 String line = reader.readLine();
                 if (line != null) {
@@ -491,7 +490,6 @@ public class BaseVisitor {
             break;
 
         case LOW:
-        default:
             info.add(IMarker.SEVERITY, IMarker.SEVERITY_INFO);
             break;
         }

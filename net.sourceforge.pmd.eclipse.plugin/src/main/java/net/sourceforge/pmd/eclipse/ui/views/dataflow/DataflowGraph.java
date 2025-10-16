@@ -426,7 +426,7 @@ public class DataflowGraph extends Composite {
         setSize(parent.getSize());
         setBackground(bgColor);
 
-        createDataflowGraph(/*node*/);
+        //createDataflowGraph(/*node*/);
     }
 
     @Override
@@ -463,39 +463,6 @@ public class DataflowGraph extends Composite {
     }
 
     /**
-     * Builds the DataflowGraph out of the given SimpleNode
-     *
-     * @param node
-     */
-    private void createDataflowGraph(/*Node node*/) {
-        //List<DataFlowNode> flow = node.getDataFlowNode().getFlow();
-        //
-        //// the Data-Flow gives us all the Nodes
-        //// every Node has children, for which we can build Paths
-        //for (int i = 0; i < flow.size(); i++) {
-        //    DataFlowNode inode = flow.get(i);
-        //
-        //    // create a new Node and add it to the List
-        //    Point location = new Point((getSize().x - 2 * nodeRadius) / 2, i * rowHeight + lineLength / 2);
-        //    NodeCanvas nod = new NodeCanvas(this, inode, location, nodeRadius);
-        //    nodes.add(nod);
-        //
-        //    // get the Nodes children and build Paths between them
-        //    List<DataFlowNode> children = inode.getChildren();
-        //    for (DataFlowNode dfNode : children) {
-        //
-        //        // create a new Path and add it to the List
-        //        int x = (getSize().x - 2 * nodeRadius) / 2;
-        //        int y1 = inode.getIndex() * rowHeight + lineLength / 2;
-        //        int y2 = dfNode.getIndex() * rowHeight + lineLength / 2;
-        //
-        //        PathCanvas path = new PathCanvas(this, inode.getIndex(), dfNode.getIndex(), x, y1, y2, nodeRadius);
-        //        paths.add(path);
-        //    }
-        //}
-    }
-
-    /**
      * Returns the graphical Node of the given Index
      *
      * @param index
@@ -514,27 +481,6 @@ public class DataflowGraph extends Composite {
 
         return null;
     }
-
-    /**
-     * Returns the Path between the given Indexes
-     *
-     * @param index1
-     * @param index2
-     * @return the Path
-     */
-    //private PathCanvas getPath(int index1, int index2) {
-    //    if (paths == null) {
-    //        return null;
-    //    }
-    //
-    //    for (PathCanvas path : paths) {
-    //        if (path.getIndex1() == index1 && path.getIndex2() == index2) {
-    //            return path;
-    //        }
-    //    }
-    //
-    //    return null;
-    //}
 
     /**
      * Checks, if a Path in the Graph has been marked
@@ -662,59 +608,4 @@ public class DataflowGraph extends Composite {
         redraw();
         marked = true;
     }
-
-    /**
-     * Recursively finds a Path from the starting Node to the ending Node, the
-     * visited-List contains Paths, that already have been visited, so the
-     * Function does not produce Loops, the List should be a new ArrayList()
-     * when calling this Function.
-     *
-     * @param start
-     * @param end
-     * @param visited
-     * @return an List of PathCanvas, that build up the path from Start-Node to
-     *         End-Node or null, if there no such path could be found
-     */
-    //protected List<PathCanvas> findPath(DataFlowNode start, DataFlowNode end, List<DataFlowNode> visited) {
-    //
-    //    // this is the break-Condition for the Recursion
-    //    // if the Node's direct children contain the ending Node
-    //    // we return the Path from the current Node to the End
-    //    if (start.getChildren().contains(end)) {
-    //        List<PathCanvas> found = new ArrayList<>();
-    //        PathCanvas path = getPath(start.getIndex(), end.getIndex());
-    //        if (path != null) {
-    //            found.add(path);
-    //            return found;
-    //        }
-    //    } else {
-    //        // this is the Search
-    //        for (DataFlowNode node : start.getChildren()) {
-    //            // here we avoid Loops by checking the visited nodes
-    //            if (visited.contains(node)) {
-    //                continue;
-    //            }
-    //            // ... and adding the current Node
-    //            visited.add(node);
-    //
-    //            // the Recursion: find the Path from
-    //            // the current Node's children to the End
-    //            List<PathCanvas> isFound = findPath(node, end, visited);
-    //            if (isFound.isEmpty()) {
-    //                continue;
-    //            } else {
-    //                // if a Path (from child to end) is found
-    //                // we can add the Path from this Node to the child
-    //                PathCanvas path2 = isFound.get(0);
-    //                PathCanvas path1 = getPath(start.getIndex(), path2.getIndex1());
-    //                if (path1 != null) {
-    //                    isFound.add(0, path1);
-    //                    return isFound;
-    //                }
-    //            }
-    //        }
-    //    }
-    //
-    //    return Collections.emptyList();
-    //}
 }
