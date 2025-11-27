@@ -36,7 +36,7 @@ public class ShapeDescriptor implements Cloneable {
 
         ShapeDescriptor otherOne = (ShapeDescriptor) other;
 
-        return shape.equals(otherOne.shape) && rgbColor.equals(otherOne.rgbColor) && size == otherOne.size;
+        return shape == otherOne.shape && rgbColor.equals(otherOne.rgbColor) && size == otherOne.size;
     }
 
     @Override

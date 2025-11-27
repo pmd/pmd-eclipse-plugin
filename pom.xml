@@ -22,7 +22,7 @@
     <tycho.version>4.0.10</tycho.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <pmd.version>7.18.0</pmd.version>
-    <pmd.build-tools.version>35</pmd.build-tools.version>
+    <pmd.build-tools.version>36</pmd.build-tools.version>
     <checkstyle.version>12.1.2</checkstyle.version>
     <checkstyle.plugin.version>3.6.0</checkstyle.plugin.version>
     <pmd.plugin.version>3.28.0</pmd.plugin.version>

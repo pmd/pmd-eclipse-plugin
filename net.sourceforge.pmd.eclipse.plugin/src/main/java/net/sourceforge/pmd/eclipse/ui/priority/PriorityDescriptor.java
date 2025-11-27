@@ -116,7 +116,7 @@ public class PriorityDescriptor implements Cloneable {
 
         PriorityDescriptor otherOne = (PriorityDescriptor) other;
 
-        return priority.equals(otherOne.priority)
+        return priority == otherOne.priority
                 && StringUtils.equals(label, otherOne.label)
                 && shape.equals(otherOne.shape)
                 && StringUtils.equals(description, otherOne.description)
