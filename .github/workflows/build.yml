@@ -36,7 +36,7 @@ jobs:
             verify
 
       - name: Upload screenshots of failed unit tests
-        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 #v5.0.0
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f #v6.0.0
         if: ${{ failure() }}
         with:
           name: screenshots-ubuntu-latest
@@ -44,7 +44,7 @@ jobs:
           if-no-files-found: ignore
 
       - name: Upload update-site
-        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 #v5.0.0
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f #v6.0.0
         with:
           name: update-site
           path: net.sourceforge.pmd.eclipse.p2updatesite/target/net.sourceforge.pmd.eclipse.p2updatesite-*.zip
@@ -92,7 +92,7 @@ jobs:
             -Dtarget.platform="${TARGET_PLATFORM}"
 
       - name: Upload screenshots of failed unit tests
-        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 #v5.0.0
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f #v6.0.0
         if: ${{ failure() }}
         with:
           name: screenshots-${{ matrix.os }}-${{ matrix.targetPlatform }}
