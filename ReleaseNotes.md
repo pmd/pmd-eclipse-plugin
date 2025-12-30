@@ -7,7 +7,7 @@ Eclipse Update Site:
 *   Releases: <https://pmd.github.io/pmd-eclipse-plugin-p2-site/>
 *   Snapshots: <https://pmd.github.io/pmd-eclipse-plugin-p2-site/snapshot/>
 
-## ????: 7.20.0.v????
+## 30-December-2025: 7.20.0.v20251230-1608-r
 
 This is a minor release.
 
@@ -15,8 +15,6 @@ This is a minor release.
 * Update to PMD 7.20.0
 * Support for Eclipse 2025-12 added
 * Support for Eclipse 2024-12 removed
-
-### 🐛 Fixed Issues
 
 ### ✨ Merged pull requests
 * [#338](https://github.com/pmd/pmd-eclipse-plugin/pull/338): Support eclipse 2025-12 - [Andreas Dangel](https://github.com/adangel) (@adangel)
@@ -33,10 +31,6 @@ This is a minor release.
 * [#343](https://github.com/pmd/pmd-eclipse-plugin/pull/343): Bump actions/download-artifact from 6.0.0 to 7.0.0
 * [#345](https://github.com/pmd/pmd-eclipse-plugin/pull/345): Bump com.github.siom79.japicmp:japicmp-maven-plugin from 0.25.0 to 0.25.1
 * [#346](https://github.com/pmd/pmd-eclipse-plugin/pull/346): Bump PMD from 7.19.0 to 7.20.0
-
-
-### API Changes
-
 
 ## 28-November-2025: 7.19.0.v20251128-1211-r
 
