@@ -12,6 +12,7 @@ Eclipse Update Site:
 This is a minor release.
 
 ### 🚀 New and noteworthy
+* Update to PMD 7.20.0
 * Support for Eclipse 2025-12 added
 * Support for Eclipse 2024-12 removed
 
