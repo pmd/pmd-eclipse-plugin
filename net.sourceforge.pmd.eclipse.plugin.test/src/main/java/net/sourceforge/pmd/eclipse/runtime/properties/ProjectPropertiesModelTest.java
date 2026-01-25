@@ -687,10 +687,10 @@ public class ProjectPropertiesModelTest {
 
         // own project's output folder
         Assert.assertTrue(classpath.remove(
-                this.testProject.getLocation().toFile().getAbsoluteFile() + "/bin"));
+                new File(this.testProject.getLocation().toFile().getAbsoluteFile(), "bin").toString()));
         // output folder of other project 2 (project dependency)
         Assert.assertTrue(classpath.remove(
-                otherProject2.getLocation().toFile().getAbsoluteFile() + "/bin"));
+                new File(otherProject2.getLocation().toFile().getAbsoluteFile(), "bin").toString()));
         // sample-lib1.jar stored in OtherProject
         Assert.assertTrue(classpath.remove(realSampleLib1.toString()));
         // sample-lib2.jar referenced with absolute path
