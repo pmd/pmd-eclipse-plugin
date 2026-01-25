@@ -13,6 +13,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.core.resources.IFile;
@@ -32,6 +33,7 @@ import net.sourceforge.pmd.PmdAnalysis;
 import net.sourceforge.pmd.eclipse.core.internal.FileModificationUtil;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.runtime.cmd.JavaProjectClassLoader;
+import net.sourceforge.pmd.eclipse.runtime.cmd.internal.JavaProjectClasspath;
 import net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties;
 import net.sourceforge.pmd.eclipse.runtime.properties.IProjectPropertiesManager;
 import net.sourceforge.pmd.eclipse.runtime.properties.PropertiesException;
@@ -67,6 +69,7 @@ public class ProjectPropertiesImpl implements IProjectProperties {
     private Set<String> buildPathExcludePatterns = new HashSet<>();
     private Set<String> buildPathIncludePatterns = new HashSet<>();
     private JavaProjectClassLoader auxclasspath;
+    private JavaProjectClasspath classpath;
 
     /**
      * The default constructor takes a project as an argument
@@ -437,7 +440,11 @@ public class ProjectPropertiesImpl implements IProjectProperties {
         return buildPathIncludePatterns;
     }
 
+    /**
+     * @deprecated Since 7.21.0. Avoid using a classloader directly. Use {@link #getClasspath()} instead.
+     */
     @Override
+    @Deprecated
     public ClassLoader getAuxClasspath() {
         try {
             if (project != null && project.hasNature(JavaCore.NATURE_ID)) {
@@ -463,6 +470,31 @@ public class ProjectPropertiesImpl implements IProjectProperties {
         } catch (CoreException e) {
             LOG.error("Error determining aux classpath", e);
             PMDPlugin.getDefault().logError("Error determining aux classpath", e);
+        }
+        return null;
+    }
+
+    @Override
+    public String getClasspath() {
+        try {
+            if (project != null && project.hasNature(JavaCore.NATURE_ID)) {
+                String projectName = project.getName();
+                if (classpath != null && classpath.isModified()) {
+                    PMDPlugin.getDefault().logInformation("Classpath of project " + projectName
+                            + " changed - recreating it.");
+                    classpath = null;
+                }
+
+                if (classpath == null) {
+                    PMDPlugin.getDefault()
+                            .logInformation("Creating new classpath for project " + project.getName());
+                    classpath = new JavaProjectClasspath(project);
+                }
+                return classpath.getClasspath().stream().collect(Collectors.joining(File.pathSeparator));
+            }
+        } catch (CoreException e) {
+            LOG.error("Error determining classpath", e);
+            PMDPlugin.getDefault().logError("Error determining classpath", e);
         }
         return null;
     }
