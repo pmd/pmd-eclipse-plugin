@@ -239,7 +239,7 @@ public class BaseVisitor {
             LOG.debug("discovered language: {}", languageVersion);
 
             if (PMDPlugin.getDefault().loadPreferences().isProjectBuildPathEnabled()) {
-                configuration().setClassLoader(projectProperties.getAuxClasspath());
+                configuration().prependAuxClasspath(projectProperties.getClasspath());
             }
 
             // Avoid warnings about not providing cache for incremental analysis

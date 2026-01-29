@@ -21,6 +21,19 @@ This is a minor release.
 
 ### API Changes
 
+#### Deprecations
+
+The following methods have been deprecated for removal:
+
+* `net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties#getAuxClasspath()`
+* `net.sourceforge.pmd.eclipse.runtime.properties.impl.ProjectPropertiesImpl#getAuxClasspath()`
+
+Use the new method `getClasspath()` instead. It doesn't use a custom classloader anymore and just returns
+the classpath as a single string (path elements separated by the os specific path separator).
+
+The following class has been deprecated for removal:
+
+* `net.sourceforge.pmd.eclipse.runtime.cmd.JavaProjectClassLoader`
 
 ## 30-December-2025: 7.20.0.v20251230-1608-r
 

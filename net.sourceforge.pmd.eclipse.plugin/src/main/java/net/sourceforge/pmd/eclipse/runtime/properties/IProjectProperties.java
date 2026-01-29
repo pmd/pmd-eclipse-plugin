@@ -182,6 +182,18 @@ public interface IProjectProperties {
      * The classloader is not stored to the project properties file.
      * 
      * @return the classpath or <code>null</code> if the project is not a java project
+     * @deprecated Since 7.21.0. Avoid using a classloader directly. Use {@link #getClasspath()} instead.
      */
+    @Deprecated
     ClassLoader getAuxClasspath();
+
+    /**
+     * Determines the auxiliary classpath needed for type resolution.
+     * The classpath is cached and used for all PMD executions for the same project.
+     * The classpath is not stored to the project properties file.
+     *
+     * @return the classpath or <code>null</code> if the project is not a java project
+     * @since 7.21.0
+     */
+    String getClasspath();
 }
