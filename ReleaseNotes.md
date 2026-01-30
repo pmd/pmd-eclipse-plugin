@@ -7,14 +7,12 @@ Eclipse Update Site:
 *   Releases: <https://pmd.github.io/pmd-eclipse-plugin-p2-site/>
 *   Snapshots: <https://pmd.github.io/pmd-eclipse-plugin-p2-site/snapshot/>
 
-## ????: 7.21.0.v????
+## 30-January-2026: 7.21.0.v20260130-1017-r
 
 This is a minor release.
 
 ### 🚀 New and noteworthy
 * Update to PMD 7.21.0
-
-### 🐛 Fixed Issues
 
 ### ✨ Merged pull requests
 * [#353](https://github.com/pmd/pmd-eclipse-plugin/pull/353): chore: Avoid using classloader for auxclasspath settings - [Andreas Dangel](https://github.com/adangel) (@adangel)
@@ -28,7 +26,6 @@ This is a minor release.
 * [#356](https://github.com/pmd/pmd-eclipse-plugin/pull/356): Bump actions/setup-java from 5.1.0 to 5.2.0
 * [#357](https://github.com/pmd/pmd-eclipse-plugin/pull/357): Bump tycho from 4.0.10 to 5.0.2
 * [#358](https://github.com/pmd/pmd-eclipse-plugin/pull/358): Bump PMD from 7.20.0 to 7.21.0
-
 
 ### API Changes
 
