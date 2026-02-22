@@ -8,6 +8,7 @@ package net.sourceforge.pmd.eclipse.ui.preferences.br;
  * 
  * @author Brian Remedios
  */
+@SuppressWarnings("PMD.FieldNamingConventions") // unfortunately, this is "Public API"...
 public enum ImplementationType {
 
     XPath, Java, Mixed

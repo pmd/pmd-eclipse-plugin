@@ -8,6 +8,7 @@ package net.sourceforge.pmd.eclipse.ui;
  * 
  * @author Brian Remedios
  */
+@SuppressWarnings("PMD.FieldNamingConventions") // unfortunately, this is "Public API"...
 public enum Shape {
 
     square(1, "Square"),

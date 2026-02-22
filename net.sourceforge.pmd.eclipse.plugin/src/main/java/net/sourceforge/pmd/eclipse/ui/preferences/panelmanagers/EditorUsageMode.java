@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers;
 
+@SuppressWarnings("PMD.FieldNamingConventions") // unfortunately, this is "Public API"...
 public enum EditorUsageMode {
 
     CreateNew, Editing
