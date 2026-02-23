@@ -809,9 +809,9 @@
                uri="platform:/plugin/net.sourceforge.pmd.eclipse.plugin/report_2_0_0.xsd">
          </public>
          <public
-               id="rule-tests_1_0_0"
+               id="rule-tests_1_1_1"
                publicId="http://pmd.sourceforge.net/rule-tests"
-               uri="platform:/plugin/net.sourceforge.pmd.eclipse.plugin/rule-tests_1_0_0.xsd">
+               uri="platform:/plugin/net.sourceforge.pmd.eclipse.plugin/rule-tests_1_1_1.xsd">
          </public>
       </catalogContribution>
    </extension>
