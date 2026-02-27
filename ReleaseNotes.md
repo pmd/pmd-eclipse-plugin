@@ -12,6 +12,7 @@ Eclipse Update Site:
 This is a minor release.
 
 ### 🚀 New and noteworthy
+* Update to PMD 7.22.0
 
 ### 🐛 Fixed Issues
 * [#367](https://github.com/pmd/pmd-eclipse-plugin/issues/367): FileNotFoundException: rule-tests_1_0_0.xsd
