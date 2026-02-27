@@ -7,6 +7,21 @@ Eclipse Update Site:
 *   Releases: <https://pmd.github.io/pmd-eclipse-plugin-p2-site/>
 *   Snapshots: <https://pmd.github.io/pmd-eclipse-plugin-p2-site/snapshot/>
 
+## ????: 7.23.0.v????
+
+This is a minor release.
+
+### 🚀 New and noteworthy
+
+### 🐛 Fixed Issues
+
+### ✨ Merged pull requests
+
+### 📦 Dependency updates
+
+### API Changes
+
+
 ## 27-February-2026: 7.22.0.v20260227-1301-r
 
 This is a minor release.
@@ -2430,3 +2445,4 @@ a lib subdirectory.
 **Development**
 * Adding a ant build file
 * Adapting .project to be compatible with both Eclipse 2.02 and WSAD v5.
+
