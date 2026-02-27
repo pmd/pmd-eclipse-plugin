@@ -7,7 +7,7 @@ Eclipse Update Site:
 *   Releases: <https://pmd.github.io/pmd-eclipse-plugin-p2-site/>
 *   Snapshots: <https://pmd.github.io/pmd-eclipse-plugin-p2-site/snapshot/>
 
-## ????: 7.22.0.v????
+## 27-February-2026: 7.22.0.v20260227-1301-r
 
 This is a minor release.
 
@@ -18,11 +18,17 @@ This is a minor release.
 * [#367](https://github.com/pmd/pmd-eclipse-plugin/issues/367): FileNotFoundException: rule-tests_1_0_0.xsd
 
 ### ✨ Merged pull requests
+* [#368](https://github.com/pmd/pmd-eclipse-plugin/pull/368): Update rule-tests schema to 1.1.1 and fix #367 - [Andreas Dangel](https://github.com/adangel) (@adangel)
 
 ### 📦 Dependency updates
-
-### API Changes
-
+* [#359](https://github.com/pmd/pmd-eclipse-plugin/pull/359): Bump com.puppycrawl.tools:checkstyle from 13.0.0 to 13.1.0
+* [#361](https://github.com/pmd/pmd-eclipse-plugin/pull/361): Bump actions/cache from 5.0.2 to 5.0.3
+* [#362](https://github.com/pmd/pmd-eclipse-plugin/pull/362): Bump net.sourceforge.pmd:pmd-build-tools-config from 36 to 37
+* [#363](https://github.com/pmd/pmd-eclipse-plugin/pull/363): Bump org.apache.maven.plugins:maven-dependency-plugin from 3.9.0 to 3.10.0
+* [#365](https://github.com/pmd/pmd-eclipse-plugin/pull/365): Bump com.puppycrawl.tools:checkstyle from 13.1.0 to 13.2.0
+* [#369](https://github.com/pmd/pmd-eclipse-plugin/pull/369): Bump org.apache.maven.plugins:maven-failsafe-plugin from 3.5.4 to 3.5.5
+* [#370](https://github.com/pmd/pmd-eclipse-plugin/pull/370): Bump org.apache.maven.plugins:maven-surefire-plugin from 3.5.4 to 3.5.5
+* [#371](https://github.com/pmd/pmd-eclipse-plugin/pull/371): Bump PMD from 7.21.0 to 7.22.0
 
 ## 30-January-2026: 7.21.0.v20260130-1017-r
 
@@ -2424,4 +2430,3 @@ a lib subdirectory.
 **Development**
 * Adding a ant build file
 * Adapting .project to be compatible with both Eclipse 2.02 and WSAD v5.
-
