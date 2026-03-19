@@ -19,11 +19,6 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.regex.Pattern;
-import javax.xml.bind.DataBindingException;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBElement;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 
@@ -47,6 +42,12 @@ import net.sourceforge.pmd.lang.rule.Rule;
 import net.sourceforge.pmd.lang.rule.RuleSet;
 import net.sourceforge.pmd.lang.rule.RuleSetLoadException;
 import net.sourceforge.pmd.lang.rule.RuleSetLoader;
+
+import jakarta.xml.bind.DataBindingException;
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBElement;
+import jakarta.xml.bind.JAXBException;
+import jakarta.xml.bind.Marshaller;
 
 /**
  * This class manages the persistence of the ProjectProperies information structure
