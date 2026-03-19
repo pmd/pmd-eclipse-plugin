@@ -4,8 +4,8 @@
 
 package net.sourceforge.pmd.eclipse.runtime.properties.impl;
 
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlType;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlType;
 
 /**
  * This class is a simple data bean to help serialize project properties. Is
