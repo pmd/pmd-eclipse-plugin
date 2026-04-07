@@ -96,7 +96,7 @@ public final class Util {
      * 
      * @param source
      * @param prefix
-     * @return List<int[]>
+     * @return List of array of integers
      */
     public static List<int[]> referencedNamePositionsIn(String source, char prefix) {
         List<int[]> namePositions = new ArrayList<>();
