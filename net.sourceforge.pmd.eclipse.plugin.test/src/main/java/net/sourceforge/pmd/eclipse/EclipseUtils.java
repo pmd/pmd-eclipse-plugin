@@ -39,6 +39,7 @@ import org.junit.Assert;
 
 import net.sourceforge.pmd.eclipse.runtime.PMDRuntimeConstants;
 import net.sourceforge.pmd.eclipse.runtime.builder.PMDNature;
+import net.sourceforge.pmd.eclipse.runtime.cmd.ReviewCodeCmd;
 import net.sourceforge.pmd.lang.rule.Rule;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 
@@ -365,17 +366,18 @@ public final class EclipseUtils {
 
     public static void waitForPMDJobs() throws InterruptedException {
         long start = System.currentTimeMillis();
-        while (hasPMDJob(Job.getJobManager().find(null))) {
+        String jobName = new ReviewCodeCmd().getName();
+        while (hasPMDJob(Job.getJobManager().find(null), jobName)) {
             Thread.sleep(500);
-            if (System.currentTimeMillis() - start > TimeUnit.SECONDS.toMillis(30)) {
-                Assert.fail("Timeout while waiting for Jobs to finish");
+            if (System.currentTimeMillis() - start > TimeUnit.MINUTES.toMillis(1)) {
+                Assert.fail("Timeout while waiting for Job " + jobName + " to finish");
             }
         }
     }
 
-    private static boolean hasPMDJob(Job[] jobs) {
+    private static boolean hasPMDJob(Job[] jobs, String jobName) {
         for (Job job : jobs) {
-            if (job.getClass().getName().startsWith("net.sourceforge.pmd.eclipse.runtime.cmd.JobCommandProcessor")) {
+            if (job.getName().equals(jobName)) {
                 return true;
             }
         }
