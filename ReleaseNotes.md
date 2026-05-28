@@ -16,6 +16,7 @@ This is a minor release.
 ### 🐛 Fixed Issues
 
 ### ✨ Merged pull requests
+* [#404](https://github.com/pmd/pmd-eclipse-plugin/pull/404): chore: Make ViolationDetailsDialogTest more reliable by waiting for ReviewCmd - [Andreas Dangel](https://github.com/adangel) (@adangel)
 
 ### 📦 Dependency updates
 
