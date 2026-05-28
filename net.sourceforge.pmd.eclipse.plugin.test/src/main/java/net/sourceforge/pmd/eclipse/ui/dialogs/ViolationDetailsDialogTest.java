@@ -16,7 +16,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotView;
-import org.eclipse.swtbot.swt.finder.exceptions.WidgetNotFoundException;
 import org.eclipse.swtbot.swt.finder.waits.DefaultCondition;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotShell;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTableItem;
@@ -85,24 +84,6 @@ public class ViolationDetailsDialogTest extends AbstractSWTBotTest {
 
         SWTBotView problemsView = bot.viewByPartName("Problems");
         String markerText = "UnnecessaryModifier: Unnecessary modifier 'public' on method 'run': the method is declared in an interface type";
-
-        problemsView.bot().waitUntil(new DefaultCondition() {
-            @Override
-            public boolean test() throws Exception {
-                try {
-                    SWTBotTreeItem item = bot.tree().getTreeItem("Warnings (4 items)").expand();
-                    item.getNode(markerText);
-                } catch (WidgetNotFoundException e) {
-                    return false;
-                }
-                return true;
-            }
-
-            @Override
-            public String getFailureMessage() {
-                return "Marker not found";
-            }
-        });
         SWTBotTreeItem item = problemsView.bot().tree().getTreeItem("Warnings (4 items)").expand();
         SWTBotTreeItem markerItem = item.getNode(markerText).select();
         markerItem.contextMenu("Show details...").click();
@@ -114,7 +95,7 @@ public class ViolationDetailsDialogTest extends AbstractSWTBotTest {
     public void openDialogViaViolationOutlineView() throws Exception {
         buildAndWaitForViolations();
         openPMDPerspective();
-        
+
         SWTBotTree projectTree = bot.viewByPartName("Package Explorer").bot().tree();
         SWTBotTreeItem item = projectTree.getTreeItem("ViolationDetailsDialogTest").expand();
         item = item.getNode("src").expand();
@@ -139,8 +120,9 @@ public class ViolationDetailsDialogTest extends AbstractSWTBotTest {
         assertEquals("Unnecessary modifier 'public' on method 'run': the method is declared in an interface type", message);
     }
 
-    private void buildAndWaitForViolations() throws CoreException {
+    private void buildAndWaitForViolations() throws CoreException, InterruptedException {
         testProject.build(IncrementalProjectBuilder.FULL_BUILD, new NullProgressMonitor());
+        EclipseUtils.waitForPMDJobs();
 
         bot.waitUntil(new DefaultCondition() {
             @Override
