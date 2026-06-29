@@ -18,6 +18,7 @@ This is a minor release.
 ### 🐛 Fixed Issues
 
 ### ✨ Merged pull requests
+* [#422](https://github.com/pmd/pmd-eclipse-plugin/pull/422): Support eclipse 2026-06 - [Andreas Dangel](https://github.com/adangel) (@adangel)
 
 ### 📦 Dependency updates
 
