@@ -19,6 +19,11 @@ public class MarkerPropertyTester extends PropertyTester {
 
         IMarker marker = (IMarker) receiver;
 
+        // during shutdown, the files/resources might have already been closed
+        if (!marker.exists()) {
+            return false;
+        }
+
         try {
             return marker.getType().startsWith(PMDPlugin.PLUGIN_ID);
         } catch (CoreException e) {
