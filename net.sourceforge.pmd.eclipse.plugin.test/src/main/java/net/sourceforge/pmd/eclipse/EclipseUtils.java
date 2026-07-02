@@ -8,10 +8,12 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
@@ -395,12 +397,23 @@ public final class EclipseUtils {
                         state = "unknown";
                         break;
                     }
-                    LOG.debug("Still running? {}. state={}", job.getName(), state);
+                    LOG.debug("Still running after {} ms? {}. state={}, testClass={}",
+                            System.currentTimeMillis() - start,
+                            job.getName(), state, determineTestClass());
                 }
                 Assert.fail("Timeout while waiting for Job " + jobName + " to finish");
             }
         }
-        LOG.debug("waitForPMDJobs finished in {} ms", System.currentTimeMillis() - start);
+        LOG.debug("waitForPMDJobs finished in {} ms ({})", System.currentTimeMillis() - start, determineTestClass());
+    }
+
+    private static String determineTestClass() {
+        Exception exception = new Exception();
+        Optional<String> testClass = Arrays.stream(exception.getStackTrace())
+            .map(e -> e.getClassName())
+            .filter(s -> s.endsWith("Test"))
+            .findFirst();
+        return testClass.orElse("unkown");
     }
 
     private static Job findPMDJob(Job[] jobs, String jobName) {
