@@ -36,6 +36,8 @@ import org.eclipse.jdt.launching.AbstractVMInstall;
 import org.eclipse.jdt.launching.IVMInstall;
 import org.eclipse.jdt.launching.JavaRuntime;
 import org.junit.Assert;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.eclipse.runtime.PMDRuntimeConstants;
 import net.sourceforge.pmd.eclipse.runtime.builder.PMDNature;
@@ -50,6 +52,8 @@ import net.sourceforge.pmd.properties.PropertyDescriptor;
  * @author Brian Remedios
  */
 public final class EclipseUtils {
+    private static final Logger LOG = LoggerFactory.getLogger(EclipseUtils.class);
+
     /**
      * Because this class is a utility class, it cannot be instantiated
      */
@@ -365,22 +369,46 @@ public final class EclipseUtils {
     }
 
     public static void waitForPMDJobs() throws InterruptedException {
+        LOG.debug("waitForPMDJobs started...");
         long start = System.currentTimeMillis();
         String jobName = new ReviewCodeCmd().getName();
-        while (hasPMDJob(Job.getJobManager().find(null), jobName)) {
+        while (findPMDJob(Job.getJobManager().find(null), jobName) != null) {
             Thread.sleep(500);
             if (System.currentTimeMillis() - start > TimeUnit.MINUTES.toMillis(1)) {
+                Job job = findPMDJob(Job.getJobManager().find(null), jobName);
+                if (job != null) {
+                    final String state;
+                    switch (job.getState()) {
+                    case Job.SLEEPING:
+                        state = "sleeping";
+                        break;
+                    case Job.RUNNING:
+                        state = "running";
+                        break;
+                    case Job.WAITING:
+                        state = "waiting";
+                        break;
+                    case Job.NONE:
+                        state = "none";
+                        break;
+                    default:
+                        state = "unknown";
+                        break;
+                    }
+                    LOG.debug("Still running? {}. state={}", job.getName(), state);
+                }
                 Assert.fail("Timeout while waiting for Job " + jobName + " to finish");
             }
         }
+        LOG.debug("waitForPMDJobs finished in {} ms", System.currentTimeMillis() - start);
     }
 
-    private static boolean hasPMDJob(Job[] jobs, String jobName) {
+    private static Job findPMDJob(Job[] jobs, String jobName) {
         for (Job job : jobs) {
             if (job.getName().equals(jobName)) {
-                return true;
+                return job;
             }
         }
-        return false;
+        return null;
     }
 }
