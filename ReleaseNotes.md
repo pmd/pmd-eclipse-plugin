@@ -16,6 +16,7 @@ This is a minor release.
 ### 🐛 Fixed Issues
 
 ### ✨ Merged pull requests
+* [#431](https://github.com/pmd/pmd-eclipse-plugin/pull/431): chore: Improve logging during tests at waitForPMDJobs - [Andreas Dangel](https://github.com/adangel) (@adangel)
 
 ### 📦 Dependency updates
 
