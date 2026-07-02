@@ -11,12 +11,13 @@ import java.io.PrintStream;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
@@ -409,11 +410,14 @@ public final class EclipseUtils {
 
     private static String determineTestClass() {
         Exception exception = new Exception();
-        Optional<String> testClass = Arrays.stream(exception.getStackTrace())
-            .map(e -> e.getClassName())
-            .filter(s -> s.endsWith("Test"))
-            .findFirst();
-        return testClass.orElse("unkown");
+        List<String> methods = Arrays.stream(exception.getStackTrace())
+            .filter(e -> e.getClassName().endsWith("Test"))
+            .map(e -> e.getClassName() + "#" + e.getMethodName())
+            .collect(Collectors.toList());
+        if (methods.isEmpty()) {
+            return "unknown";
+        }
+        return methods.get(methods.size() - 1); // take the last method - the entry point into the test class
     }
 
     private static Job findPMDJob(Job[] jobs, String jobName) {
