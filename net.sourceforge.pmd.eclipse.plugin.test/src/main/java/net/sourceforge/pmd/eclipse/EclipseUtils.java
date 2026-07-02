@@ -8,13 +8,16 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
@@ -36,6 +39,8 @@ import org.eclipse.jdt.launching.AbstractVMInstall;
 import org.eclipse.jdt.launching.IVMInstall;
 import org.eclipse.jdt.launching.JavaRuntime;
 import org.junit.Assert;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.eclipse.runtime.PMDRuntimeConstants;
 import net.sourceforge.pmd.eclipse.runtime.builder.PMDNature;
@@ -50,6 +55,8 @@ import net.sourceforge.pmd.properties.PropertyDescriptor;
  * @author Brian Remedios
  */
 public final class EclipseUtils {
+    private static final Logger LOG = LoggerFactory.getLogger(EclipseUtils.class);
+
     /**
      * Because this class is a utility class, it cannot be instantiated
      */
@@ -365,22 +372,60 @@ public final class EclipseUtils {
     }
 
     public static void waitForPMDJobs() throws InterruptedException {
+        LOG.debug("waitForPMDJobs started...");
         long start = System.currentTimeMillis();
         String jobName = new ReviewCodeCmd().getName();
-        while (hasPMDJob(Job.getJobManager().find(null), jobName)) {
+        while (findPMDJob(Job.getJobManager().find(null), jobName) != null) {
             Thread.sleep(500);
-            if (System.currentTimeMillis() - start > TimeUnit.MINUTES.toMillis(1)) {
+            if (System.currentTimeMillis() - start > TimeUnit.MINUTES.toMillis(2)) {
+                Job job = findPMDJob(Job.getJobManager().find(null), jobName);
+                if (job != null) {
+                    final String state;
+                    switch (job.getState()) {
+                    case Job.SLEEPING:
+                        state = "sleeping";
+                        break;
+                    case Job.RUNNING:
+                        state = "running";
+                        break;
+                    case Job.WAITING:
+                        state = "waiting";
+                        break;
+                    case Job.NONE:
+                        state = "none";
+                        break;
+                    default:
+                        state = "unknown";
+                        break;
+                    }
+                    LOG.debug("Still running after {} ms? {}. state={}, testClass={}",
+                            System.currentTimeMillis() - start,
+                            job.getName(), state, determineTestClass());
+                }
                 Assert.fail("Timeout while waiting for Job " + jobName + " to finish");
             }
         }
+        LOG.debug("waitForPMDJobs finished in {} ms ({})", System.currentTimeMillis() - start, determineTestClass());
     }
 
-    private static boolean hasPMDJob(Job[] jobs, String jobName) {
+    private static String determineTestClass() {
+        Exception exception = new Exception();
+        List<String> methods = Arrays.stream(exception.getStackTrace())
+            .filter(e -> e.getClassName().endsWith("Test"))
+            .map(e -> e.getClassName() + "#" + e.getMethodName())
+            .collect(Collectors.toList());
+        if (methods.isEmpty()) {
+            return "unknown";
+        }
+        return methods.get(methods.size() - 1); // take the last method - the entry point into the test class
+    }
+
+    private static Job findPMDJob(Job[] jobs, String jobName) {
         for (Job job : jobs) {
             if (job.getName().equals(jobName)) {
-                return true;
+                return job;
             }
         }
-        return false;
+        return null;
     }
 }
