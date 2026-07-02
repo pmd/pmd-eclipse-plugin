@@ -376,7 +376,7 @@ public final class EclipseUtils {
         String jobName = new ReviewCodeCmd().getName();
         while (findPMDJob(Job.getJobManager().find(null), jobName) != null) {
             Thread.sleep(500);
-            if (System.currentTimeMillis() - start > TimeUnit.MINUTES.toMillis(1)) {
+            if (System.currentTimeMillis() - start > TimeUnit.MINUTES.toMillis(2)) {
                 Job job = findPMDJob(Job.getJobManager().find(null), jobName);
                 if (job != null) {
                     final String state;
