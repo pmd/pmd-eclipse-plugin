@@ -83,8 +83,6 @@ import net.sourceforge.pmd.lang.rule.RuleSetLoader;
 public class PMDPlugin extends AbstractUIPlugin {
     private static final Logger LOG = LoggerFactory.getLogger(PMDPlugin.class);
 
-    private static Map<IProject, IJavaProject> javaProjectsByIProject = new HashMap<>();
-
     // The shared instance
     private static PMDPlugin plugin;
 
@@ -126,44 +124,47 @@ public class PMDPlugin extends AbstractUIPlugin {
 
     /**
      * Return the Java language version for the resources found within the specified project or null if it isn't a Java
-     * project or a Java version we don't support yet.
+     * project or a Java version we don't support yet or the project doesn't exist.
      * 
      * @param project
      * @return
      */
     public static LanguageVersion javaVersionFor(IProject project) {
-
-        IJavaProject jProject = javaProjectsByIProject.get(project);
-        if (jProject == null) {
-            jProject = JavaCore.create(project);
-            javaProjectsByIProject.put(project, jProject);
+        if (!project.exists()) {
+            return null;
         }
 
-        if (jProject.exists()) {
-            String compilerCompliance = jProject.getOption(JavaCore.COMPILER_COMPLIANCE, true);
-            return JavaLanguageModule.getInstance().getVersion(compilerCompliance);
+        IJavaProject jProject = JavaCore.create(project);
+        if (!jProject.exists()) {
+            return null;
         }
-        return null;
+
+        String compilerCompliance = jProject.getOption(JavaCore.COMPILER_COMPLIANCE, true);
+        return JavaLanguageModule.getInstance().getVersion(compilerCompliance);
     }
 
     public static IClasspathEntry buildSourceClassPathEntryFor(IProject project) {
-        IJavaProject jProject = javaProjectsByIProject.get(project);
-        if (jProject == null) {
-            jProject = JavaCore.create(project);
-            javaProjectsByIProject.put(project, jProject);
+        if (!project.exists()) {
+            return null;
         }
-        if (jProject.exists()) {
-            try {
-                if (jProject.getRawClasspath() != null) {
-                    for (IClasspathEntry entry : jProject.getRawClasspath()) {
-                        if (entry.getEntryKind() == IClasspathEntry.CPE_SOURCE) {
-                            return entry;
-                        }
+
+        IJavaProject jProject = JavaCore.create(project);
+        if (!jProject.exists()) {
+            return null;
+        }
+
+        try {
+            IClasspathEntry[] rawClasspath = jProject.getRawClasspath();
+            if (rawClasspath != null) {
+                for (IClasspathEntry entry : rawClasspath) {
+                    if (entry.getEntryKind() == IClasspathEntry.CPE_SOURCE) {
+                        LOG.debug("Found source classpath entry: path={}", entry.getPath());
+                        return entry;
                     }
                 }
-            } catch (JavaModelException e) {
-                LOG.error("Couldn't determine source classpath", e);
             }
+        } catch (JavaModelException e) {
+            LOG.error("Couldn't determine source classpath", e);
         }
         return null;
     }
