@@ -17,6 +17,7 @@ This is a minor release.
 
 ### ✨ Merged pull requests
 * [#431](https://github.com/pmd/pmd-eclipse-plugin/pull/431): chore: Improve logging during tests at waitForPMDJobs - [Andreas Dangel](https://github.com/adangel) (@adangel)
+* [#432](https://github.com/pmd/pmd-eclipse-plugin/pull/432): refactor: Remove custom JavaProject cache - [Andreas Dangel](https://github.com/adangel) (@adangel)
 
 ### 📦 Dependency updates
 
