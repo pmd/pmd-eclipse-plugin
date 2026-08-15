@@ -53,9 +53,7 @@ public class JobCommandProcessor {
             @Override
             protected IStatus run(IProgressMonitor monitor) {
                 try {
-                    if (aCommand instanceof AbstractDefaultCommand) {
-                        ((AbstractDefaultCommand) aCommand).setMonitor(monitor);
-                    }
+                    aCommand.setMonitor(monitor);
                     long start = System.currentTimeMillis();
                     aCommand.execute();
                     long duration = System.currentTimeMillis() - start;
@@ -75,9 +73,7 @@ public class JobCommandProcessor {
             }
         };
 
-        if (aCommand instanceof AbstractDefaultCommand) {
-            job.setUser(((AbstractDefaultCommand) aCommand).isUserInitiated());
-        }
+        job.setUser(aCommand.isUserInitiated());
 
         synchronized (outstanding) {
             if (count.incrementAndGet() > 10) {

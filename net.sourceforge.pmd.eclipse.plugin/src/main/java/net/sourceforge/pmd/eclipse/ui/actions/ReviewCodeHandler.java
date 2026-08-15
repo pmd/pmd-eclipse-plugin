@@ -125,7 +125,7 @@ public class ReviewCodeHandler extends AbstractHandler {
             }
 
             if (!resources.isEmpty()) {
-                fResources = (IResource[]) resources.toArray(new IResource[0]);
+                fResources = resources.toArray(new IResource[0]);
             }
 
         } else if (selection instanceof ITextSelection) {

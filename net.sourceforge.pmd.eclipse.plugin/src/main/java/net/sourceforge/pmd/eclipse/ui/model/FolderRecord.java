@@ -47,7 +47,7 @@ public class FolderRecord extends AbstractPMDRecord {
 
     @Override
     public IResource getResource() {
-        return (IResource) folder;
+        return folder;
     }
 
     /**

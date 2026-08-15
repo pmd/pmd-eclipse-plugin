@@ -103,7 +103,7 @@ public class PMDCheckAction extends AbstractUIAction {
     }
 
     private void addAdaptable(ReviewCodeCmd cmd, IAdaptable adaptable) {
-        IResource resource = (IResource) adaptable.getAdapter(IResource.class);
+        IResource resource = adaptable.getAdapter(IResource.class);
         if (resource != null) {
             cmd.addResource(resource);
         } else {

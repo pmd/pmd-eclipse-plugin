@@ -57,7 +57,7 @@ public final class MarkerColumnsUI {
             Util.COMP_INT) {
         @Override
         public Integer valueFor(IMarker marker) {
-            return (Integer) marker.getAttribute(IMarker.LINE_NUMBER, 0);
+            return marker.getAttribute(IMarker.LINE_NUMBER, 0);
         }
     };
 

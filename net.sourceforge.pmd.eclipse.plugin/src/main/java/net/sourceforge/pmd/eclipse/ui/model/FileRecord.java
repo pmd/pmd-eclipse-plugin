@@ -332,7 +332,7 @@ public class FileRecord extends AbstractPMDRecord {
      */
     protected String resourceToString(IResource resource) {
         final StringBuilder fileContents = new StringBuilder();
-        IFile file = (IFile) resource.getAdapter(IFile.class);
+        IFile file = resource.getAdapter(IFile.class);
         try (BufferedReader bReader = new BufferedReader(new InputStreamReader(file.getContents(), file.getCharset()))) {
             // ... and read the File line by line
             while (bReader.ready()) {

@@ -105,7 +105,8 @@ public class GenerateReportAction extends AbstractUIAction {
     private static IProject getProject(IStructuredSelection selection) {
         Object object = selection.getFirstElement();
         if (object instanceof IAdaptable) {
-            final IResource resource = (IResource) ((IAdaptable) object).getAdapter(IResource.class);
+            final IAdaptable adaptable = (IAdaptable) object;
+            final IResource resource = adaptable.getAdapter(IResource.class);
             if (resource != null) {
                 return resource.getProject();
             }

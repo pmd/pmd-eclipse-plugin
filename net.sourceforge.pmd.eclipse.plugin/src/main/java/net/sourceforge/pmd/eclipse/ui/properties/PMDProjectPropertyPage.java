@@ -91,7 +91,7 @@ public class PMDProjectPropertyPage extends PropertyPage {
     protected Control createContents(final Composite parent) {
         LOG.info("PMD properties editing requested");
         controller = new PMDPropertyPageController(getShell());
-        final IProject project = (IProject) getElement().getAdapter(IProject.class);
+        final IProject project = getElement().getAdapter(IProject.class);
         controller.setProject(project);
         model = controller.getPropertyPageBean();
 

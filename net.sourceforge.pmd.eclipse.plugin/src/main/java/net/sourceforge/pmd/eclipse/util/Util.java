@@ -418,7 +418,7 @@ public final class Util {
                         GC gc = event.gc;
                         Rectangle area = tree.getClientArea();
 
-                        Rule rule = (Rule) ((TreeItem) event.item).getData();
+                        Rule rule = (Rule) event.item.getData();
                         String text = getter.valueFor(rule).toString();
 
                         int columnCount = tree.getColumnCount();

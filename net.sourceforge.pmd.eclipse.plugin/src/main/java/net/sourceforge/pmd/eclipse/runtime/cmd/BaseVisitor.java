@@ -202,7 +202,7 @@ public class BaseVisitor {
             return;
         }
 
-        IFile file = (IFile) resource.getAdapter(IFile.class);
+        IFile file = resource.getAdapter(IFile.class);
         if (file == null || file.getFileExtension() == null) {
             return;
         }

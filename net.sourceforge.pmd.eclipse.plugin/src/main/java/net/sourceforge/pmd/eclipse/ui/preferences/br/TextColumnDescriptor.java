@@ -101,7 +101,7 @@ public class TextColumnDescriptor extends SimpleColumnDescriptor {
                             return;
                         }
 
-                        Object value = ((TreeItem) event.item).getData();
+                        Object value = event.item.getData();
                         if (value == null || value instanceof RuleCollection) {
                             return;
                         }
