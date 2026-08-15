@@ -93,7 +93,7 @@ public class PMDRemoveMarkersAction extends AbstractUIAction implements IViewAct
             LOG.debug("Remove markers on resource " + resource.getName());
         } else if (element instanceof IAdaptable) {
             final IAdaptable adaptable = (IAdaptable) element;
-            final IResource resource = (IResource) adaptable.getAdapter(IResource.class);
+            final IResource resource = adaptable.getAdapter(IResource.class);
             if (resource == null) {
                 LOG.warn("The selected object cannot adapt to a resource");
                 LOG.debug("   -> selected object : " + element);

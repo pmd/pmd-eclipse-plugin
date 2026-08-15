@@ -74,7 +74,7 @@ public class CPDCheckProjectAction extends AbstractUIAction {
                 final Object obj = i.next();
                 if (obj instanceof IAdaptable) {
                     final IAdaptable adaptable = (IAdaptable) obj;
-                    final IProject project = (IProject) adaptable.getAdapter(IProject.class);
+                    final IProject project = adaptable.getAdapter(IProject.class);
                     
                     if (project == null) {
                         LOG.warn("The selected object cannot adapt to a project");

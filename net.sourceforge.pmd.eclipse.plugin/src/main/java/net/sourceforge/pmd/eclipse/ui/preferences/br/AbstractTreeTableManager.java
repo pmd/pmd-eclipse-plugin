@@ -372,7 +372,7 @@ public abstract class AbstractTreeTableManager<T extends Object> extends Abstrac
 
     @Override
     protected void setMenu(Control control, Menu menu) {
-        ((Tree) control).setMenu(menu);
+        control.setMenu(menu);
     }
 
     @Override

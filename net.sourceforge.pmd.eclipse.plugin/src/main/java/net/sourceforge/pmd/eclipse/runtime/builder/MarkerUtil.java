@@ -128,7 +128,7 @@ public final class MarkerUtil {
     public static Long createdOn(IMarker marker, long onErrorValue) {
 
         try {
-            return (Long) marker.getCreationTime();
+            return marker.getCreationTime();
         } catch (CoreException ce) {
             return onErrorValue;
         }

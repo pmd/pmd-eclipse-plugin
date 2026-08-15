@@ -132,7 +132,7 @@ public class ClearReviewsAction extends AbstractUIAction implements IResourceVis
                             resource = ((IMarker) object).getResource();
                         } else if (object instanceof IAdaptable) {
                             IAdaptable adaptable = (IAdaptable) object;
-                            resource = (IResource) adaptable.getAdapter(IResource.class);
+                            resource = adaptable.getAdapter(IResource.class);
                         } else {
                             LOG.warn("The selected object is not adaptable");
                             LOG.debug("   -> selected object = " + object);

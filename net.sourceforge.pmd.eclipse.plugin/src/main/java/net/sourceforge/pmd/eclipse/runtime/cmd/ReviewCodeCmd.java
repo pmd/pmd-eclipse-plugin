@@ -254,7 +254,7 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
                 LOG.info("Review code command finished. {} rules were executed against {} files.\n"
                         + "Actual PMD duration is about {}ms, that is about {}ms/file, {}ms/rule, {}ms/filerule",
                         ruleCount, fileCount, pmdDuration, (float) pmdDuration / fileCount,
-                        (float) pmdDuration / ruleCount, (float) pmdDuration / ((long) fileCount * (long) ruleCount));
+                        (float) pmdDuration / ruleCount, (float) pmdDuration / (fileCount * ruleCount));
             } else {
                 LOG.info("Review code command finished. {} rules were executed against {} files. "
                         + "PMD has not been executed.", ruleCount, fileCount);
@@ -466,7 +466,7 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
         } else {
             ISchedulingRule[] rules = new ISchedulingRule[resources.size()];
             for (int i = 0; i < rules.length; i++) {
-                rules[i] = ruleFactory.markerRule((IResource) resources.get(i));
+                rules[i] = ruleFactory.markerRule(resources.get(i));
             }
             rule = new MultiRule(resources.toArray(rules));
         }

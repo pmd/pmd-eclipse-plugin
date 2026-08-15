@@ -39,7 +39,7 @@ public class MarkerMenuFiller extends ContributionItem {
     }
 
     private IVerticalRulerInfo getRulerInfo() {
-        return (IVerticalRulerInfo) editor.getAdapter(IVerticalRulerInfo.class);
+        return editor.getAdapter(IVerticalRulerInfo.class);
     }
 
     private List<IMarker> getMarkers() {

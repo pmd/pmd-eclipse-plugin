@@ -117,7 +117,7 @@ public class UniqueItemsAsShapeBuilder extends AbstractCellPainterBuilder {
                     return;
                 }
 
-                Object item = ((TreeItem) event.item).getData();
+                Object item = event.item.getData();
                 if (item == null) {
                     return;
                 }

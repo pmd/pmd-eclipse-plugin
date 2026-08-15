@@ -146,7 +146,7 @@ public class PMDGenerateASTAction extends AbstractUIAction implements IRunnableW
             Object element = i.next();
             if (element instanceof IAdaptable) {
                 IAdaptable adaptable = (IAdaptable) element;
-                IResource resource = (IResource) adaptable.getAdapter(IResource.class);
+                IResource resource = adaptable.getAdapter(IResource.class);
                 if (resource != null) {
                     monitor.subTask(resource.getName());
                     generateAST((IFile) resource);

@@ -80,7 +80,7 @@ public class ReviewResourceForRuleCommand extends AbstractDefaultCommand {
 
     @Override
     public void execute() {
-        IFile file = (IFile) resource.getAdapter(IFile.class);
+        IFile file = resource.getAdapter(IFile.class);
         beginTask("PMD checking for rule: " + rule.getName(), 1);
 
         if (file != null) {

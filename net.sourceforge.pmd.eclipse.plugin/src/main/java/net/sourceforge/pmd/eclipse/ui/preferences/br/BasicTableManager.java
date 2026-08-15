@@ -227,7 +227,7 @@ public class BasicTableManager<T extends Object> extends AbstractTableManager<T>
 
     @Override
     protected void setMenu(Control control, Menu menu) {
-        ((Table) control).setMenu(menu);
+        control.setMenu(menu);
     }
 
     @Override
