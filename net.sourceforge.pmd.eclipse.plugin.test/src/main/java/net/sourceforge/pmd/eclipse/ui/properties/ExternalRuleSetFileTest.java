@@ -53,15 +53,12 @@ public class ExternalRuleSetFileTest {
 
     @After
     public void tearDown() throws Exception {
-        try {
-            if (this.testProject != null) {
-                if (this.testProject.exists() && this.testProject.isAccessible()) {
-                    this.testProject.delete(true, true, null);
-                    this.testProject = null;
-                }
+        EclipseUtils.waitForJobsToComplete();
+        if (this.testProject != null) {
+            if (this.testProject.exists() && this.testProject.isAccessible()) {
+                this.testProject.delete(true, true, null);
+                this.testProject = null;
             }
-        } catch (CoreException e) {
-            throw new RuntimeException(e);
         }
     }
 

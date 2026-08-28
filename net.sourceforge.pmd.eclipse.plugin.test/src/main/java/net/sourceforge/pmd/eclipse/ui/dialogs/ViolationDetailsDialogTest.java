@@ -32,6 +32,7 @@ import org.junit.Test;
 
 import net.sourceforge.pmd.eclipse.AbstractSWTBotTest;
 import net.sourceforge.pmd.eclipse.EclipseUtils;
+import net.sourceforge.pmd.eclipse.LoggingRule;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.runtime.PMDRuntimeConstants;
 import net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties;
@@ -61,19 +62,19 @@ public class ViolationDetailsDialogTest extends AbstractSWTBotTest {
         properties.sync();
     }
 
+    @org.junit.Rule
+    public LoggingRule loggingRule = new LoggingRule();
+
     @After
     public void tearDown() throws Exception {
-        try {
-            if (this.testProject != null) {
-                if (this.testProject.exists() && this.testProject.isAccessible()) {
-                    EclipseUtils.removePMDNature(this.testProject);
-                    this.testProject.refreshLocal(IResource.DEPTH_INFINITE, null);
-                    this.testProject.delete(true, true, null);
-                    this.testProject = null;
-                }
+        EclipseUtils.waitForJobsToComplete();
+        if (this.testProject != null) {
+            if (this.testProject.exists() && this.testProject.isAccessible()) {
+                EclipseUtils.removePMDNature(this.testProject);
+                this.testProject.refreshLocal(IResource.DEPTH_INFINITE, null);
+                this.testProject.delete(true, true, null);
+                this.testProject = null;
             }
-        } catch (final Exception e) {
-            System.out.println("Exception " + e.getClass().getName() + " when tearing down. Ignored.");
         }
     }
 
@@ -89,17 +90,31 @@ public class ViolationDetailsDialogTest extends AbstractSWTBotTest {
         bot.waitUntil(new DefaultCondition() {
             @Override
             public boolean test() throws Exception {
-                try {
-                    // Try to find all violation nodes - if all exist, tree is ready
-                    return warningsNode.getItems().length >= 4;
-                } catch (Exception e) {
-                    return false;
-                }
+                // Try to find all violation nodes - if all exist, tree is ready
+                return warningsNode.getItems().length >= 4;
             }
 
             @Override
             public String getFailureMessage() {
                 return "Warnings tree items did not render";
+            }
+        });
+
+        // Wait for the marker by partial match or iterate through nodes
+        bot.waitUntil(new DefaultCondition() {
+            @Override
+            public boolean test() throws Exception {
+                for (SWTBotTreeItem node : warningsNode.getItems()) {
+                    if (node.getText().contains("UnnecessaryModifier")) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+
+            @Override
+            public String getFailureMessage() {
+                return "Violation UnnecessaryModifier not found in ProblemsView";
             }
         });
 

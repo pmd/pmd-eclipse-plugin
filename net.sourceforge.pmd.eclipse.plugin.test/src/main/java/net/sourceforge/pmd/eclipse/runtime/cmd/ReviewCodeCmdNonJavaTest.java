@@ -75,6 +75,7 @@ public class ReviewCodeCmdNonJavaTest {
         // only one file has an extension, that could be mapped to a language, and therefore pmd was executed
         Assert.assertEquals(1, cmd.getFileCount());
 
+        EclipseUtils.waitForJobsToComplete();
         if (testProject.exists() && testProject.isAccessible()) {
             EclipseUtils.removePMDNature(testProject);
             testProject.refreshLocal(IResource.DEPTH_INFINITE, null);
