@@ -35,12 +35,14 @@ jobs:
           ${xvfb_cmd} ./mvnw --show-version --errors --batch-mode \
             verify
 
-      - name: Upload screenshots of failed unit tests
+      - name: Upload screenshots and surefire reports of failed unit tests
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a #v7.0.1
         if: ${{ failure() }}
         with:
-          name: screenshots-ubuntu-latest
-          path: net.sourceforge.pmd.eclipse.plugin.test/screenshots
+          name: test-reports-ubuntu-latest
+          path: |
+            net.sourceforge.pmd.eclipse.plugin.test/screenshots
+            net.sourceforge.pmd.eclipse.plugin.test/target/surefire-reports
           if-no-files-found: ignore
 
       - name: Upload update-site
@@ -95,7 +97,7 @@ jobs:
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a #v7.0.1
         if: ${{ failure() }}
         with:
-          name: screenshots-${{ matrix.os }}-${{ matrix.targetPlatform }}
+          name: test-reports-${{ matrix.os }}-${{ matrix.targetPlatform }}
           path: |
             net.sourceforge.pmd.eclipse.plugin.test/screenshots
             net.sourceforge.pmd.eclipse.plugin.test/target/surefire-reports
