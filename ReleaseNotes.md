@@ -26,6 +26,7 @@ This is a minor release.
 ### 📦 Dependency updates
 
 ### API Changes
+* The method `net.sourceforge.pmd.eclipse.runtime.cmd.BaseVisitor#configuration()` has been deprecated for removal.
 
 
 ## 29-June-2026: 7.26.0.v20260629-1513-r

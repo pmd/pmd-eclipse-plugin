@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.core.resources.IFile;
@@ -35,7 +36,9 @@ import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.runtime.PMDRuntimeConstants;
 import net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties;
 import net.sourceforge.pmd.eclipse.runtime.properties.PropertiesException;
+import net.sourceforge.pmd.eclipse.ui.actions.RuleSetUtil;
 import net.sourceforge.pmd.eclipse.util.internal.IOUtil;
+import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.LanguageVersionDiscoverer;
@@ -65,8 +68,6 @@ public class BaseVisitor {
     private long pmdDuration;
     private IProjectProperties projectProperties;
 
-    private PMDConfiguration configuration;
-
     /**
      * The constructor is protected to avoid illegal instantiation.
      *
@@ -75,11 +76,12 @@ public class BaseVisitor {
         super();
     }
 
+    /**
+     * @deprecated Since 7.27.0. This always creates a new default configuration. Do not use it anymore.
+     */
+    @Deprecated
     protected PMDConfiguration configuration() {
-        if (configuration == null) {
-            configuration = new PMDConfiguration();
-        }
-        return configuration;
+        return new PMDConfiguration();
     }
 
     /**
@@ -191,6 +193,18 @@ public class BaseVisitor {
                 || !projectProperties.isIncludeDerivedFiles() && !file.isDerived();
     }
 
+    private RuleSet filterByLanguage(RuleSet ruleset, Language language) {
+        List<Rule> filteredRules = ruleset.getRules().stream()
+            .filter(r -> r.getLanguage().equals(language))
+            .collect(Collectors.toList());
+        RuleSet filteredRuleSet = RuleSetUtil.newCopyOf(ruleset);
+        filteredRuleSet = RuleSetUtil.clearRules(filteredRuleSet);
+        filteredRuleSet = RuleSetUtil.addRules(filteredRuleSet, filteredRules);
+        LOG.debug("RuleSet filtered by language {}: Rules before={} Rules after={}",
+                language, ruleset.size(), filteredRuleSet.size());
+        return filteredRuleSet;
+    }
+
     /**
      * Run PMD against a resource
      *
@@ -228,24 +242,37 @@ public class BaseVisitor {
 
             LanguageVersionDiscoverer languageDiscoverer = new LanguageVersionDiscoverer(LanguageRegistry.PMD);
             LanguageVersion languageVersion = languageDiscoverer.getDefaultLanguageVersionForFile(file.getName());
+
+            final PMDConfiguration configuration;
+            final List<RuleSet> ruleSetList;
+            if (languageVersion != null) {
+                configuration = new PMDConfiguration(LanguageRegistry.singleton(languageVersion.getLanguage()));
+                final Language language = languageVersion.getLanguage();
+                ruleSetList = getRuleSetList()
+                        .stream()
+                        .map(r -> filterByLanguage(r, language))
+                        .collect(Collectors.toList());
+            } else {
+                configuration = new PMDConfiguration();
+                ruleSetList = getRuleSetList();
+            }
+
             // in case it is java, select the correct java version
             if (languageVersion != null
                     && JavaLanguageModule.getInstance().equals(languageVersion.getLanguage())) {
                 languageVersion = PMDPlugin.javaVersionFor(file.getProject());
             }
             if (languageVersion != null) {
-                configuration().setDefaultLanguageVersion(languageVersion);
+                configuration.setDefaultLanguageVersion(languageVersion);
             }
             LOG.debug("discovered language: {}", languageVersion);
 
-            if (PMDPlugin.getDefault().loadPreferences().isProjectBuildPathEnabled()
-                    && configuration().getAuxClasspath() == null) {
-                // only set the auxclasspath once
-                configuration().prependAuxClasspath(projectProperties.getClasspath());
+            if (PMDPlugin.getDefault().loadPreferences().isProjectBuildPathEnabled()) {
+                configuration.prependAuxClasspath(projectProperties.getClasspath());
             }
 
             // Avoid warnings about not providing cache for incremental analysis
-            configuration().setIgnoreIncrementalAnalysis(true);
+            configuration.setIgnoreIncrementalAnalysis(true);
 
             final File sourceCodeFile = file.getRawLocation().toFile();
             final FileId fileId = FileId.fromPathLikeString(sourceCodeFile.getAbsolutePath());
@@ -259,17 +286,17 @@ public class BaseVisitor {
                 // not recreated and shared between threads...
                 // but as we anyway have only one file to process, it won't hurt
                 // here.
-                configuration().setThreads(0);
+                configuration.setThreads(0);
 
                 Report collectingReport = null;
 
                 try (Reader input = new InputStreamReader(file.getContents(), file.getCharset());
-                     PmdAnalysis pmdAnalysis = PmdAnalysis.create(configuration());) {
+                     PmdAnalysis pmdAnalysis = PmdAnalysis.create(configuration);) {
 
                     String sourceContents = IOUtil.toString(input);
                     pmdAnalysis.files().addSourceFile(fileId, sourceContents);
 
-                    pmdAnalysis.addRuleSets(getRuleSetList());
+                    pmdAnalysis.addRuleSets(ruleSetList);
 
                     LOG.debug("PMD running on file {}", file.getName());
                     collectingReport = pmdAnalysis.performAnalysisAndCollectReport();
