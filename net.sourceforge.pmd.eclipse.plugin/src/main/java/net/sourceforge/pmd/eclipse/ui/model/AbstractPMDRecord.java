@@ -163,14 +163,13 @@ public abstract class AbstractPMDRecord {
             if (element.hasMarkers()) {
                 // get the children markers
                 final IMarker[] childrenMarkers = element.findMarkers();
-                if (childrenMarkers != null) {
-                    // ...and add them to the list
-                    markerList.addAll(Arrays.asList(childrenMarkers));
-                }
+
+                // ...and add them to the list
+                markerList.addAll(Arrays.asList(childrenMarkers));
             }
         }
 
-        return markerList.isEmpty() ? null : markerList.toArray(new IMarker[0]);
+        return markerList.toArray(new IMarker[0]);
     }
 
     /**

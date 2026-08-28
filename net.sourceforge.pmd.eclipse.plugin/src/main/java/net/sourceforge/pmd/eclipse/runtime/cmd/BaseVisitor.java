@@ -238,7 +238,9 @@ public class BaseVisitor {
             }
             LOG.debug("discovered language: {}", languageVersion);
 
-            if (PMDPlugin.getDefault().loadPreferences().isProjectBuildPathEnabled()) {
+            if (PMDPlugin.getDefault().loadPreferences().isProjectBuildPathEnabled()
+                    && configuration().getAuxClasspath() == null) {
+                // only set the auxclasspath once
                 configuration().prependAuxClasspath(projectProperties.getClasspath());
             }
 
