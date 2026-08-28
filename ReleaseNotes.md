@@ -19,6 +19,7 @@ This is a minor release.
 * [#430](https://github.com/pmd/pmd-eclipse-plugin/pull/430): chore: Use client-id for create-github-app-token - [Andreas Dangel](https://github.com/adangel) (@adangel)
 * [#431](https://github.com/pmd/pmd-eclipse-plugin/pull/431): chore: Improve logging during tests at waitForPMDJobs - [Andreas Dangel](https://github.com/adangel) (@adangel)
 * [#432](https://github.com/pmd/pmd-eclipse-plugin/pull/432): refactor: Remove custom JavaProject cache - [Andreas Dangel](https://github.com/adangel) (@adangel)
+* [#449](https://github.com/pmd/pmd-eclipse-plugin/pull/449): chore: Upload surefire reports for failed unit tests - [Andreas Dangel](https://github.com/adangel) (@adangel)
 
 ### 📦 Dependency updates
 
