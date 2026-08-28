@@ -38,6 +38,7 @@ public class PMDProjectPropertyPageTest extends AbstractSWTBotTest {
 
     @After
     public void tearDown() throws Exception {
+        EclipseUtils.waitForJobsToComplete();
         if (this.testProject != null) {
             if (this.testProject.exists() && this.testProject.isAccessible()) {
                 EclipseUtils.removePMDNature(this.testProject);

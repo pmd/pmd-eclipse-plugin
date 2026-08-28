@@ -99,6 +99,7 @@ public class ProjectPropertiesModelTest {
 
     @After
     public void tearDown() throws Exception {
+        EclipseUtils.waitForJobsToComplete();
         // 1. Delete the test project
         if (this.testProject != null) {
             if (this.testProject.exists() && this.testProject.isAccessible()) {
