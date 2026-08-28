@@ -22,6 +22,7 @@ This is a minor release.
 * [#432](https://github.com/pmd/pmd-eclipse-plugin/pull/432): refactor: Remove custom JavaProject cache - [Andreas Dangel](https://github.com/adangel) (@adangel)
 * [#449](https://github.com/pmd/pmd-eclipse-plugin/pull/449): chore: Upload surefire reports for failed unit tests - [Andreas Dangel](https://github.com/adangel) (@adangel)
 * [#451](https://github.com/pmd/pmd-eclipse-plugin/pull/451): chore: Make ViolationDetailsDialogTest more reliable - [Andreas Dangel](https://github.com/adangel) (@adangel)
+* [#452](https://github.com/pmd/pmd-eclipse-plugin/pull/452): chore: Wait for workspace jobs to complete before teardown of tests - [Andreas Dangel](https://github.com/adangel) (@adangel)
 
 ### 📦 Dependency updates
 
