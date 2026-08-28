@@ -83,9 +83,39 @@ public class ViolationDetailsDialogTest extends AbstractSWTBotTest {
         openJavaPerspective();
 
         SWTBotView problemsView = bot.viewByPartName("Problems");
+        SWTBotTreeItem warningsNode = problemsView.bot().tree().getTreeItem("Warnings (4 items)").expand();
+
+        // Wait for the tree to fully render
+        bot.waitUntil(new DefaultCondition() {
+            @Override
+            public boolean test() throws Exception {
+                try {
+                    // Try to find all violation nodes - if all exist, tree is ready
+                    return warningsNode.getItems().length >= 4;
+                } catch (Exception e) {
+                    return false;
+                }
+            }
+
+            @Override
+            public String getFailureMessage() {
+                return "Warnings tree items did not render";
+            }
+        });
+
+        // Now search for the marker by partial match or iterate through nodes
+        SWTBotTreeItem markerItem = null;
+        for (SWTBotTreeItem node : warningsNode.getItems()) {
+            if (node.getText().contains("UnnecessaryModifier")) {
+                markerItem = node;
+                break;
+            }
+        }
+
+        Assert.assertNotNull("Could not find UnnecessaryModifier violation in Problems view", markerItem);
         String markerText = "UnnecessaryModifier: Unnecessary modifier 'public' on method 'run': the method is declared in an interface type";
-        SWTBotTreeItem item = problemsView.bot().tree().getTreeItem("Warnings (4 items)").expand();
-        SWTBotTreeItem markerItem = item.getNode(markerText).select();
+        Assert.assertEquals(markerText, markerItem.getText());
+        markerItem.select();
         markerItem.contextMenu("Show details...").click();
 
         assertDialog();
