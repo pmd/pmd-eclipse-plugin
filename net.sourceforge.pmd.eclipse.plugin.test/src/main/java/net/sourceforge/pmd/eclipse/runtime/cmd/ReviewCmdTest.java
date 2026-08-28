@@ -68,6 +68,9 @@ public class ReviewCmdTest {
         IProjectProperties properties = PMDPlugin.getDefault().getPropertiesManager()
                 .loadProjectProperties(testProject);
         properties.setPmdEnabled(true);
+
+        testProject.refreshLocal(IResource.DEPTH_INFINITE, null);
+        EclipseUtils.waitForPMDJobs();
     }
 
     @After
