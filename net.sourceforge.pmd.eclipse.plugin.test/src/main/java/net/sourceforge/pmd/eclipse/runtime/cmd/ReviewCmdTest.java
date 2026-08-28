@@ -68,10 +68,14 @@ public class ReviewCmdTest {
         IProjectProperties properties = PMDPlugin.getDefault().getPropertiesManager()
                 .loadProjectProperties(testProject);
         properties.setPmdEnabled(true);
+
+        testProject.refreshLocal(IResource.DEPTH_INFINITE, null);
+        EclipseUtils.waitForPMDJobs();
     }
 
     @After
     public void tearDown() throws Exception {
+        EclipseUtils.waitForJobsToComplete();
         if (this.testProject != null) {
             if (this.testProject.exists() && this.testProject.isAccessible()) {
                 EclipseUtils.removePMDNature(this.testProject);
@@ -94,6 +98,7 @@ public class ReviewCmdTest {
         cmd.addResource(this.testProject);
         cmd.performExecute();
         cmd.join();
+
         final Map<IFile, Set<MarkerInfo2>> markers = cmd.getMarkers();
 
         // We do not test PMD, only a non-empty report is enough

@@ -27,9 +27,11 @@ import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.resources.WorkspaceJob;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.jobs.IJobManager;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
@@ -369,6 +371,25 @@ public final class EclipseUtils {
             }
             current = folder;
         }
+    }
+
+    public static void waitForJobsToComplete() throws InterruptedException {
+        long start = System.currentTimeMillis();
+        String testClass = determineTestClass();
+        LOG.debug("waitForJobsToComplete started ({})...", testClass);
+        IJobManager jobManager = Job.getJobManager();
+        jobManager.suspend();
+        try {
+            Job[] jobs = jobManager.find(null);
+            for (Job job : jobs) {
+                if (job instanceof WorkspaceJob) {
+                    job.join();
+                }
+            }
+        } finally {
+            jobManager.resume();
+        }
+        LOG.debug("waitForJobsToComplete finished in {} ms ({})", System.currentTimeMillis() - start, testClass);
     }
 
     public static void waitForPMDJobs() throws InterruptedException {

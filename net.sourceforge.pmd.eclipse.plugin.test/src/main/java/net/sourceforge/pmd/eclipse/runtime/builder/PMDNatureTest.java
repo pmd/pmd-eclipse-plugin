@@ -26,6 +26,7 @@ public class PMDNatureTest {
 
         Assert.assertTrue(testProject.hasNature(PMDNature.PMD_NATURE));
 
+        EclipseUtils.waitForJobsToComplete();
         if (testProject.exists() && testProject.isAccessible()) {
             EclipseUtils.removePMDNature(testProject);
             testProject.refreshLocal(IResource.DEPTH_INFINITE, null);
