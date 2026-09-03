@@ -107,7 +107,9 @@ jobs:
         env:
           MAVEN_GPG_PASSPHRASE: ${{ secrets.PMD_CI_GPG_PASSPHRASE }}
         run: |
-          ./mvnw --show-version --errors --batch-mode \
+          MVN_DEBUG=()
+          [ "${RUNNER_DEBUG:-}" = "1" ] && MVN_DEBUG=(--debug)
+          ./mvnw "${MVN_DEBUG[@]}" --show-version --errors --batch-mode \
             verify \
             -Psign -DskipTests
 
