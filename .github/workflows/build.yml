@@ -32,7 +32,9 @@ jobs:
 
       - name: Build
         run: |
-          ${xvfb_cmd} ./mvnw --show-version --errors --batch-mode \
+          MVN_DEBUG=()
+          [ "${RUNNER_DEBUG:-}" = "1" ] && MVN_DEBUG=(--debug)
+          ${xvfb_cmd} ./mvnw "${MVN_DEBUG[@]}" --show-version --errors --batch-mode \
             verify
 
       - name: Upload screenshots and surefire reports of failed unit tests
@@ -89,7 +91,9 @@ jobs:
         env:
           TARGET_PLATFORM: ${{ matrix.targetPlatform }}
         run: |
-          ${xvfb_cmd} ./mvnw --show-version --errors --batch-mode \
+          MVN_DEBUG=()
+          [ "${RUNNER_DEBUG:-}" = "1" ] && MVN_DEBUG=(--debug)
+          ${xvfb_cmd} ./mvnw "${MVN_DEBUG[@]}" --show-version --errors --batch-mode \
             verify \
             -Dtarget.platform="${TARGET_PLATFORM}"
 
