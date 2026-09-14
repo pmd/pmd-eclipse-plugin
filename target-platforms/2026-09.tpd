@@ -13,3 +13,6 @@ location "https://download.eclipse.org/releases/2026-09/" {
 	org.junit
 	org.junit.source
 }
+location "https://download.eclipse.org/tools/orbit/simrel/orbit-aggregation/2026-09" {
+	org.apache.commons.commons-io
+}
