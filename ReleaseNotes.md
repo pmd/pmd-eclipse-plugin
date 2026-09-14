@@ -12,10 +12,13 @@ Eclipse Update Site:
 This is a minor release.
 
 ### 🚀 New and noteworthy
+* Support for Eclipse 2026-09 added
+* Support for Eclipse 2025-09 removed
 
 ### 🐛 Fixed Issues
 
 ### ✨ Merged pull requests
+* [#462](https://github.com/pmd/pmd-eclipse-plugin/pull/462): Support eclipse 2026-09 - [Andreas Dangel](https://github.com/adangel) (@adangel)
 
 ### 📦 Dependency updates
 
