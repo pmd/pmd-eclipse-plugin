@@ -497,6 +497,15 @@
                   <arch>aarch64</arch>
                 </environment>
               </environments>
+              <dependency-resolution>
+                <extraRequirements combine.children="append">
+                  <requirement>
+                    <type>eclipse-plugin</type>
+                    <id>org.eclipse.jdt.launching.macosx</id>
+                    <versionRange>0.0.0</versionRange>
+                  </requirement>
+                </extraRequirements>
+              </dependency-resolution>
             </configuration>
           </plugin>
         </plugins>
