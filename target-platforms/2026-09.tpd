@@ -1,7 +1,7 @@
 // https://github.com/eclipse-simrel/.github/blob/main/wiki/Simultaneous_Release.md
-target "2025-09 (4.37)"
+target "2026-09 (4.41)"
 with source requirements environment JavaSE-21
-location "https://download.eclipse.org/releases/2025-09/" {
+location "https://download.eclipse.org/releases/2026-09/" {
 	org.eclipse.platform.feature.group
 	org.eclipse.jdt.feature.group
 	org.eclipse.wst.xml_core.feature.feature.group
@@ -12,4 +12,7 @@ location "https://download.eclipse.org/releases/2025-09/" {
 	org.eclipse.swtbot.generator.feature.feature.group
 	org.junit
 	org.junit.source
+}
+location "https://download.eclipse.org/tools/orbit/simrel/orbit-aggregation/2026-09" {
+	org.apache.commons.commons-io
 }

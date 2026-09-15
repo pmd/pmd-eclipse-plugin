@@ -15,7 +15,7 @@
   </modules>
 
   <properties>
-    <target.platform>2026-06</target.platform>
+    <target.platform>2026-09</target.platform>
 
     <java.version>1.8</java.version>
     <!-- https://github.com/eclipse/tycho/blob/master/RELEASE_NOTES.md and https://github.com/eclipse-tycho/tycho/releases -->
@@ -507,15 +507,6 @@
               <artifactId>tycho-surefire-plugin</artifactId>
               <configuration>
                 <argLine>-XstartOnFirstThread</argLine>
-                <dependencies combine.children="append">
-                  <!--this dependency is needed to detect and set the default VM correctly on Mac OS,
-                  https://github.com/eclipse-jdt/eclipse.jdt.debug/tree/master/org.eclipse.jdt.launching.macosx -->
-                  <dependency>
-                    <artifactId>org.eclipse.jdt.launching.macosx</artifactId>
-                    <type>eclipse-plugin</type>
-                    <version>0.0.0</version>
-                  </dependency>
-                </dependencies>
               </configuration>
             </plugin>
           </plugins>
