@@ -497,15 +497,6 @@
                   <arch>aarch64</arch>
                 </environment>
               </environments>
-              <dependency-resolution>
-                <extraRequirements combine.children="append">
-                  <requirement>
-                    <type>eclipse-plugin</type>
-                    <id>org.eclipse.jdt.launching.macosx</id>
-                    <versionRange>0.0.0</versionRange>
-                  </requirement>
-                </extraRequirements>
-              </dependency-resolution>
             </configuration>
           </plugin>
         </plugins>
@@ -516,15 +507,6 @@
               <artifactId>tycho-surefire-plugin</artifactId>
               <configuration>
                 <argLine>-XstartOnFirstThread</argLine>
-                <dependencies combine.children="append">
-                  <!--this dependency is needed to detect and set the default VM correctly on Mac OS,
-                  https://github.com/eclipse-jdt/eclipse.jdt.debug/tree/master/org.eclipse.jdt.launching.macosx -->
-                  <dependency>
-                    <artifactId>org.eclipse.jdt.launching.macosx</artifactId>
-                    <type>eclipse-plugin</type>
-                    <version>0.0.0</version>
-                  </dependency>
-                </dependencies>
               </configuration>
             </plugin>
           </plugins>
